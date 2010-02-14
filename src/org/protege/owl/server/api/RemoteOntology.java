@@ -20,8 +20,6 @@ public class RemoteOntology implements Serializable {
         this.revision = revision;
     }
 
-
-
     public Integer getRevision() {
         return revision;
     }
