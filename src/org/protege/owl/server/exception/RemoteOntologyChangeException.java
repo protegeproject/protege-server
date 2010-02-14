@@ -5,7 +5,7 @@ import java.util.List;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 
-public class RemoteOntologyChangeException extends Exception {
+public class RemoteOntologyChangeException extends RemoteOntologyException {
     private static final long serialVersionUID = -1046543185411030949L;
     private List<OWLOntologyChange> rejectedChanges;
     
