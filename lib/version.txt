@@ -1,0 +1,3 @@
+OWLAPI version 3.0.0 (27-Jan-2010) which corresponds to svn revision
+1441 (https://owlapi.svn.sourceforge.net/svnroot/owlapi/v3/trunk).
+
