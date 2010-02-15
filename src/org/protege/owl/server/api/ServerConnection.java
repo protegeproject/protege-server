@@ -10,7 +10,7 @@ import java.io.IOException;
  *
  */
 
-public interface ServerTransport {
+public interface ServerConnection {
 
     void initialize(Server server) throws IOException;
 }

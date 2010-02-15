@@ -10,7 +10,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologySetProvider;
 
-public interface Client extends OWLOntologySetProvider {
+public interface ClientConnection extends OWLOntologySetProvider {
     
     OWLOntologyManager getOntologyManager();
     
