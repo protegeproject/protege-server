@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 import org.semanticweb.owlapi.model.IRI;
 
@@ -14,9 +14,9 @@ public class RemoteOntologyRevisions implements Serializable {
     private static final long serialVersionUID = -3112740928909735463L;
     private int maxRevision;
     private IRI ontologyName;
-    private Map<IRI, Integer> markedRevisions;
+    private Set<Integer> markedRevisions;
     
-    public RemoteOntologyRevisions(IRI ontologyName, Map<IRI, Integer> markedRevisions, int maxRevision) {
+    public RemoteOntologyRevisions(IRI ontologyName, Set<Integer> markedRevisions, int maxRevision) {
         this.ontologyName = ontologyName;
         this.markedRevisions = markedRevisions;
         this.maxRevision = maxRevision;
@@ -30,8 +30,8 @@ public class RemoteOntologyRevisions implements Serializable {
         return ontologyName;
     }
 
-    public Map<IRI, Integer> getMarkedRevisions() {
-        return Collections.unmodifiableMap(markedRevisions);
+    public Set<Integer> getMarkedRevisions() {
+        return Collections.unmodifiableSet(markedRevisions);
     }
     
 
@@ -40,9 +40,8 @@ public class RemoteOntologyRevisions implements Serializable {
         out.write(maxRevision);
         out.writeObject(ontologyName.toString());
         out.write(markedRevisions.size());
-        for (Entry<IRI, Integer> entry : markedRevisions.entrySet()) {
-            out.writeObject(entry.getKey().toString());
-            out.writeInt(entry.getValue());
+        for (Integer revision : markedRevisions) {
+            out.writeObject(revision);
         }
     }
     
@@ -51,7 +50,7 @@ public class RemoteOntologyRevisions implements Serializable {
         ontologyName = IRI.create((String) in.readObject());
         int count = in.readInt();
         for (int i = 0; i < count; i++) {
-            markedRevisions.put(IRI.create((String) in.readObject()),  in.readInt());
+            markedRevisions.add(in.readInt());
         }
     }
     
