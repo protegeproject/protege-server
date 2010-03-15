@@ -36,7 +36,9 @@ public interface Server extends OWLOntologySetProvider {
     
     List<OWLOntologyChange> getChanges(RemoteOntology version1, RemoteOntology version2) throws RemoteOntologyException;
 
-    void applyChanges(List<OWLOntologyChange> changes) throws RemoteOntologyChangeException;
+    void applyChanges(Set<RemoteOntology> versions, List<OWLOntologyChange> changes) throws RemoteOntologyChangeException;
     
     void setConflictManager(ConflictManager conflictManager);
+    
+    List<OWLOntologyChange> reduceChangeList(Set<RemoteOntology> versions, List<OWLOntologyChange> changes);
 }
