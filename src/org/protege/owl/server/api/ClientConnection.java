@@ -1,10 +1,11 @@
 package org.protege.owl.server.api;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.protege.owl.server.exception.RemoteOntologyChangeException;
 import org.protege.owl.server.exception.RemoteOntologyCreationException;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -14,17 +15,15 @@ public interface ClientConnection extends OWLOntologySetProvider {
     
     OWLOntologyManager getOntologyManager();
     
-    Set<RemoteOntologyRevisions> getRemoteOntologyList();
+    Map<IRI, RemoteOntologyRevisions> getRemoteOntologyList();
 
-    OWLOntology pull(RemoteOntology specification) throws RemoteOntologyCreationException;
+    OWLOntology pull(IRI ontologyName, Integer revision) throws RemoteOntologyCreationException;
     
-    RemoteOntology getRevision(OWLOntology ontology);
+    int getRevision(OWLOntology ontology);
     
     void commit(OWLOntology ontology) throws RemoteOntologyChangeException;
     
-    boolean isConnected(OWLOntology ontology);
-    
-    boolean setConnected(OWLOntology ontology, boolean connected);
+    void update(OWLOntology ontology, Integer revision);
     
     List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology);
 

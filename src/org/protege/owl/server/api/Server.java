@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.protege.owl.server.exception.RemoteOntologyChangeException;
@@ -11,6 +12,7 @@ import org.protege.owl.server.exception.RemoteOntologyCreationException;
 import org.protege.owl.server.exception.RemoteOntologyException;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
+import org.semanticweb.owlapi.model.OWLOntologyID;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologySetProvider;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
@@ -35,13 +37,13 @@ public interface Server extends OWLOntologySetProvider {
     
     Set<RemoteOntologyRevisions> getOntologyList();
     
-    Writer getOntologyWriter(RemoteOntology ontology) throws RemoteOntologyCreationException;
+    Writer getOntologyWriter(IRI ontologyName, int revision) throws RemoteOntologyCreationException;
     
-    void save(RemoteOntology remoteOntology, IRI versionId, File location) throws IOException, OWLOntologyStorageException;
+    void save(OWLOntologyID id, int revision, File location) throws IOException, OWLOntologyStorageException;
     
-    List<OWLOntologyChange> getChanges(RemoteOntology version1, RemoteOntology version2) throws RemoteOntologyException;
+    List<OWLOntologyChange> getChanges(IRI ontologyName, int version1, int version2) throws RemoteOntologyException;
 
-    void applyChanges(Set<RemoteOntology> versions, List<OWLOntologyChange> changes) throws RemoteOntologyChangeException;
+    void applyChanges(Map<IRI, Integer> versions, List<OWLOntologyChange> changes) throws RemoteOntologyChangeException;
 
-    List<OWLOntologyChange> reduceChangeList(Set<RemoteOntology> versions, List<OWLOntologyChange> changes);
+    List<OWLOntologyChange> reduceChangeList(Map<IRI, Integer> versions, List<OWLOntologyChange> changes);
 }
