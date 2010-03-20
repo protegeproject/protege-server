@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.semanticweb.owlapi.model.IRI;
@@ -24,15 +24,22 @@ public class RemoteOntologyRevisions implements Serializable {
     public int getMaxRevision() {
         return maxRevision;
     }
+    
+    public void setMarkedRevisions(Set<Integer> markedRevisions) {
+        this.markedRevisions = markedRevisions;
+    }
 
     public IRI getOntologyName() {
         return ontologyName;
     }
 
     public Set<Integer> getMarkedRevisions() {
-        return Collections.unmodifiableSet(markedRevisions);
+        return new HashSet<Integer>(markedRevisions);
     }
     
+    public void addMarkedRevision(int revision) {
+        markedRevisions.add(revision);
+    }
 
 
     private void writeObject(ObjectOutputStream out) throws IOException {

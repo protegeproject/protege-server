@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.protege.owl.server.exception.RemoteOntologyChangeException;
 import org.protege.owl.server.exception.RemoteOntologyCreationException;
@@ -35,7 +34,7 @@ public interface Server extends OWLOntologySetProvider {
     
     void setConflictManager(ConflictManager conflictManager);
     
-    Set<RemoteOntologyRevisions> getOntologyList();
+    Map<IRI, RemoteOntologyRevisions> getOntologyList();
     
     Writer getOntologyWriter(IRI ontologyName, int revision) throws RemoteOntologyCreationException;
     

@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Protege Development Team
 Export-Package: org.protege.owl.server.api,
- org.protege.owl.server.exception
+ org.protege.owl.server.exception,
+ org.protege.owl.server.util
 Import-Package: org.apache.log4j,
  com.clarkparsia.owlapi.explanation,
  com.clarkparsia.owlapi.explanation.io,
@@ -54,4 +55,7 @@ Import-Package: org.apache.log4j,
  uk.ac.manchester.cs.owl.explanation.ordering,
  uk.ac.manchester.cs.owl.owlapi,
  uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer,
- uk.ac.manchester.cs.owl.owlapi.turtle.parser
+ uk.ac.manchester.cs.owl.owlapi.turtle.parser,
+ org.protege.owl.server.api,
+ org.protege.owl.server.exception,
+ org.protege.owl.server.util

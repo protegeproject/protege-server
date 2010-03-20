@@ -1,12 +1,12 @@
 package org.protege.owl.server.util;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.protege.owl.server.api.ConflictManager;
+import org.protege.owl.server.api.RemoteOntologyRevisions;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.exception.RemoteOntologyChangeException;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -18,12 +18,9 @@ import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLAxiomChange;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
-import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyChangeVisitor;
-import org.semanticweb.owlapi.model.OWLOntologyID;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
@@ -56,8 +53,9 @@ public abstract class AbstractServer implements Server {
         this.conflictManager = conflictManager;
     }
     
+    
     @Override
-    public void applyChanges(Map<IRI, Integer> versions, List<OWLOntologyChange> changes) throws RemoteOntologyChangeException {
+    public synchronized void applyChanges(Map<IRI, Integer> versions, List<OWLOntologyChange> changes) throws RemoteOntologyChangeException {
         changes = reduceChangeList(versions, changes);
         if (conflictManager != null) {
             conflictManager.validateChanges(versions, changes);
@@ -77,15 +75,6 @@ public abstract class AbstractServer implements Server {
             }
         }
         return reducedList;
-    }
-    
-    @Override
-    public void save(OWLOntologyID savedId, int revision, File location) throws IOException, OWLOntologyStorageException {
-        OWLOntologyID id = new OWLOntologyID(savedId.getOntologyIRI());
-        OWLOntology ontology = ontologyManager.getOntology(id);
-        ontologyManager.applyChange(new SetOntologyID(ontology, savedId));
-        ontologyManager.saveOntology(ontology, IRI.create(location));
-        ontologyManager.applyChange(new SetOntologyID(ontology, id));
     }
     
     private class AcceptRejectChangeVisitor implements OWLOntologyChangeVisitor {
