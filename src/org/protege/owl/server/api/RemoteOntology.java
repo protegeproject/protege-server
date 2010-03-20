@@ -17,9 +17,7 @@ public class RemoteOntology implements Serializable {
     public Integer getRevision() {
         return revision;
     }
-    public void setRevision(Integer revision) {
-        this.revision = revision;
-    }
+
     public IRI getOntologyName() {
         return ontologyName;
     } 

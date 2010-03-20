@@ -13,6 +13,7 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologySetProvider;
+import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 /**
  * This interface defines the server side responsibilities for managing versions of ontologies.  Essentially 
@@ -36,7 +37,7 @@ public interface Server extends OWLOntologySetProvider {
     
     Writer getOntologyWriter(RemoteOntology ontology) throws RemoteOntologyCreationException;
     
-    void save(IRI version, File location) throws IOException;
+    void save(RemoteOntology remoteOntology, IRI versionId, File location) throws IOException, OWLOntologyStorageException;
     
     List<OWLOntologyChange> getChanges(RemoteOntology version1, RemoteOntology version2) throws RemoteOntologyException;
 
