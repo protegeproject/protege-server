@@ -28,6 +28,10 @@ public interface Server extends OWLOntologySetProvider {
     
     OWLOntologyManager getOntologyManager();
     
+    ConflictManager getConflictManager();
+    
+    void setConflictManager(ConflictManager conflictManager);
+    
     Set<RemoteOntologyRevisions> getOntologyList();
     
     Writer getOntologyWriter(RemoteOntology ontology) throws RemoteOntologyCreationException;
@@ -37,8 +41,6 @@ public interface Server extends OWLOntologySetProvider {
     List<OWLOntologyChange> getChanges(RemoteOntology version1, RemoteOntology version2) throws RemoteOntologyException;
 
     void applyChanges(Set<RemoteOntology> versions, List<OWLOntologyChange> changes) throws RemoteOntologyChangeException;
-    
-    void setConflictManager(ConflictManager conflictManager);
-    
+
     List<OWLOntologyChange> reduceChangeList(Set<RemoteOntology> versions, List<OWLOntologyChange> changes);
 }
