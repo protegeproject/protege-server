@@ -8,6 +8,7 @@ import org.protege.owl.server.exception.RemoteOntologyCreationException;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
+import org.semanticweb.owlapi.model.OWLOntologyChangeException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologySetProvider;
 
@@ -23,8 +24,10 @@ public interface ClientConnection extends OWLOntologySetProvider {
     
     void commit(OWLOntology ontology) throws RemoteOntologyChangeException;
     
-    void update(OWLOntology ontology, Integer revision);
+    void update(OWLOntology ontology, Integer revision) throws OWLOntologyChangeException;
     
     List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology);
+    
+    void dispose();
 
 }
