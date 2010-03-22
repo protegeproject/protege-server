@@ -1,14 +1,19 @@
 package org.protege.owl.server.util;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.protege.owl.server.api.ConflictManager;
-import org.protege.owl.server.api.RemoteOntologyRevisions;
 import org.protege.owl.server.api.Server;
+import org.protege.owl.server.connection.LocalClientConnection;
 import org.protege.owl.server.exception.RemoteOntologyChangeException;
+import org.protege.owl.server.exception.RemoteOntologyCreationException;
+import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
+import org.semanticweb.owlapi.io.StreamDocumentTarget;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
@@ -18,9 +23,12 @@ import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLAxiomChange;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyChangeVisitor;
+import org.semanticweb.owlapi.model.OWLOntologyID;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
@@ -61,6 +69,18 @@ public abstract class AbstractServer implements Server {
             conflictManager.validateChanges(versions, changes);
         }
         ontologyManager.applyChanges(changes);
+    }
+    
+    @Override
+    public void save(OWLOntologyID id, int revision, File location) throws IOException, OWLOntologyStorageException {
+        LocalClientConnection client = new LocalClientConnection(this);
+        OWLOntology ontology;
+        try {
+            ontology = client.pull(id.getOntologyIRI(), revision);
+        } catch (RemoteOntologyCreationException e) {
+            throw new OWLOntologyStorageException(e);
+        }
+        client.getOntologyManager().saveOntology(ontology, new RDFXMLOntologyFormat(), new StreamDocumentTarget(new FileOutputStream(location)));
     }
     
     @Override
