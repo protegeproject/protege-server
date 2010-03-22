@@ -21,27 +21,39 @@ public class RemoteOntologyRevisions implements Serializable {
         this.maxRevision = maxRevision;
     }
 
+    public IRI getOntologyName() {
+        return ontologyName;
+    }
+
     public int getMaxRevision() {
         return maxRevision;
+    }
+    
+    public Set<Integer> getMarkedRevisions() {
+        return new HashSet<Integer>(markedRevisions);
     }
     
     public void setMarkedRevisions(Set<Integer> markedRevisions) {
         this.markedRevisions = markedRevisions;
     }
 
-    public IRI getOntologyName() {
-        return ontologyName;
-    }
-
-    public Set<Integer> getMarkedRevisions() {
-        return new HashSet<Integer>(markedRevisions);
-    }
-    
     public void addMarkedRevision(int revision) {
         markedRevisions.add(revision);
     }
 
-
+    public Integer getLatestMarkedRevision(Integer revision) {
+        Integer latest = null;
+        for (int marked : markedRevisions) {
+            if (revision != null && marked > revision) {
+                continue;
+            }
+            if (latest == null || marked > latest) {
+                latest = marked;
+            }
+        }
+        return latest;
+    }
+    
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.write(maxRevision);
         out.writeObject(ontologyName.toString());
