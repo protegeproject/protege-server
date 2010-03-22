@@ -2,7 +2,7 @@ package org.protege.owl.server.api;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +36,7 @@ public interface Server extends OWLOntologySetProvider {
     
     Map<IRI, RemoteOntologyRevisions> getOntologyList();
     
-    OutputStream getOntologyStream(IRI ontologyName, int revision) throws RemoteOntologyCreationException;
+    InputStream getOntologyStream(IRI ontologyName, int revision) throws RemoteOntologyCreationException;
     
     void save(OWLOntologyID id, int revision, File location) throws IOException, OWLOntologyStorageException;
     
