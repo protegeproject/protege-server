@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Mar 23, 2010 11:32:47 PM                                                        
+
+	Initial build file for the protege owlapi server project.
+                   
+     tredmond                                                                
+     ====================================================================== -->
+<project name="owl api server" default="jar">
+	<property file="local.properties"/>
+    <property environment="env"/>
+	<property name = "protege.home"      location="${env.PROTEGE_HOME}"/>
+	<property file = "${protege.home}/build.properties"/>
+	
+	<property name = "protege.common"    location="${protege.home}/bundles"/>
+	<property name = "protege.plugins"   location="${protege.home}/plugins"/>
+	
+    <property name="owl.lib"             location="${protege.plugins}/org.semanticweb.owl.owlapi.jar"/>
+    <property name="common.lib"          location="${protege.common}/org.protege.common.jar"/>
+
+	<property name="src"     location="./src"/>
+	<property name="build"   location="./build"/>
+	<property name="genlib"  location="./build/lib"/>
+	<property name="dist"    location="${build}/dist"/>
+	<property name="classes" location="${build}/classes"/>
+	<property name="plugin"  value="org.protege.owl.server"/>
+
+	   <!-- ============================================================= -->
+	   <!--             Configuring the Compile Classpath                 -->
+	   <!-- ============================================================= -->
+
+
+	    <target name="checkProtegeLibsAndReport" depends="checkProtegeLibs"
+	            unless="libs.found">
+	      <echo message="Missing protege libraries.  You need to set "/>
+	      <echo message="the PROTEGE_HOME environment variable to a"/>
+	      <echo message="protege installation directory where the"/>
+	      <echo message="appropriate plugins have been installed."/>
+	      <echo message="Alternatively set the jar libs in local.properties (protege.lib=...)"/>
+	      <echo message="Use the -v option to ant to see what jars are missing."/>
+	      <fail message = "missing protege libraries"/>
+	    </target>
+
+	   <!-- 
+	        The following target only needs to be modified if the user
+	        needs to change the classpath.  It is preconfigured to use
+	        the common protege 4 jars, the lib directory and the
+	        libraries that have been uncovered in buildlibs. 
+	     -->
+	   <target name = "checkProtegeLibs" depends="init">
+	     <echo message="Using Protege Home = ${protege.home} to find protege jars"/>
+	     <condition property="libs.found">
+	       <and>
+	         <available file="${protege.osgi}" type="file"/>
+	         <available file="${owl.lib}" type="file"/>
+	       </and>
+	     </condition>
+	     <path id = "project.classpath">    
+	       <pathelement location="${protege.osgi}"/>
+	       <pathelement location="${owl.lib}"/>
+	       <fileset dir="${genlib}"/>
+	     </path>
+	   </target>
+
+
+	   <!-- 
+	        The following target only needs to be modified if the
+	        developer needs to obtain some jar files that are contained in
+	        the Protege bundles.  The contents of these jar files are
+	        found when Protege 4 runs but may be needed in order to
+	        compile the plugin. 
+	     -->
+	   <target name = "buildlibs" depends="checkProtegeLibsAndReport">
+	       <unjar dest="${build}"
+	              src="${common.lib}">
+	           <patternset>
+	               <include name = "**/log4j.jar"/>
+	           </patternset>
+	       </unjar>
+	       <!-- see svn revision 16765 to see how to build xmlcatalog with externals -->
+	   </target>
+	
+	<target name="init">
+		<mkdir dir="${classes}"/>
+	</target>
+
+    <target name="compile" depends="init, buildlibs">
+        <javac srcdir="${src}" destdir="${classes}"
+    		   debug="true">
+        	<classpath refid="project.classpath"/>
+    	</javac>
+    </target>
+
+
+	   <target name = "jar" depends = "compile">
+	     <jar jarfile = "${build}/${plugin}.jar"
+	          basedir = "${classes}" 
+	          manifest = "META-INF/MANIFEST.MF"/>
+	   </target>
+	
+	<target name="clean">
+		<delete dir="${build}"/>
+	</target>
+
+</project>
