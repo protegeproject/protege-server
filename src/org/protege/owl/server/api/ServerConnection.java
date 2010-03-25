@@ -15,4 +15,6 @@ public interface ServerConnection {
     void initialize(Server server) throws IOException;
     
     Object getUserToken();
+    
+    void dispose();
 }

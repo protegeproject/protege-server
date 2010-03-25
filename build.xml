@@ -7,10 +7,9 @@
      tredmond                                                                
      ====================================================================== -->
 <project name="owl api server" default="jar">
-	<property file="local.properties"/>
-    <property environment="env"/>
-	<property name = "protege.home"      location="${env.PROTEGE_HOME}"/>
-	<property file = "${protege.home}/build.properties"/>
+	<property file="local.properties"/> <property environment="env"/>
+    <property name = "protege.home" location="${env.PROTEGE_HOME}"/>
+    <property file = "${protege.home}/build.properties"/>
 	
 	<property name = "protege.common"    location="${protege.home}/bundles"/>
 	<property name = "protege.plugins"   location="${protege.home}/plugins"/>
@@ -21,21 +20,21 @@
 	<property name="src"     location="./src"/>
 	<property name="build"   location="./build"/>
 	<property name="genlib"  location="./build/lib"/>
-	<property name="dist"    location="${build}/dist"/>
+	<property name="dist"    location="${build}/OSGi/bundle"/>
 	<property name="classes" location="${build}/classes"/>
 	<property name="plugin"  value="org.protege.owl.server"/>
 
-	   <!-- ============================================================= -->
-	   <!--             Configuring the Compile Classpath                 -->
-	   <!-- ============================================================= -->
+	<!-- ============================================================= -->
+	<!--             Configuring the Compile Classpath                 -->
+	<!-- ============================================================= -->
 
 
-	    <target name="checkProtegeLibsAndReport" depends="checkProtegeLibs"
-	            unless="libs.found">
-	      <echo message="Missing protege libraries.  You need to set "/>
-	      <echo message="the PROTEGE_HOME environment variable to a"/>
-	      <echo message="protege installation directory where the"/>
-	      <echo message="appropriate plugins have been installed."/>
+	<target name="checkProtegeLibsAndReport" depends="checkProtegeLibs"
+	        unless="libs.found">
+	       <echo message="Missing protege libraries.  You need to set "/>
+	       <echo message="the PROTEGE_HOME environment variable to a"/>
+	       <echo message="protege installation directory where the"/>
+	       <echo message="appropriate plugins have been installed."/>
 	      <echo message="Alternatively set the jar libs in local.properties (protege.lib=...)"/>
 	      <echo message="Use the -v option to ant to see what jars are missing."/>
 	      <fail message = "missing protege libraries"/>
@@ -62,14 +61,6 @@
 	     </path>
 	   </target>
 
-
-	   <!-- 
-	        The following target only needs to be modified if the
-	        developer needs to obtain some jar files that are contained in
-	        the Protege bundles.  The contents of these jar files are
-	        found when Protege 4 runs but may be needed in order to
-	        compile the plugin. 
-	     -->
 	   <target name = "buildlibs" depends="checkProtegeLibsAndReport">
 	       <unjar dest="${build}"
 	              src="${common.lib}">
@@ -77,11 +68,17 @@
 	               <include name = "**/log4j.jar"/>
 	           </patternset>
 	       </unjar>
-	       <!-- see svn revision 16765 to see how to build xmlcatalog with externals -->
 	   </target>
 	
 	<target name="init">
 		<mkdir dir="${classes}"/>
+        <copy todir="${build}/OSGi">
+			<fileset dir="./OSGi"/>
+        </copy>
+		<copy todir="${build}/OSGi/bundle">
+			<fileset file="${common.lib}"/>
+			<fileset file="${owl.lib}"/>
+		</copy>
 	</target>
 
     <target name="compile" depends="init, buildlibs">
@@ -91,15 +88,13 @@
     	</javac>
     </target>
 
-
-	   <target name = "jar" depends = "compile">
-	     <jar jarfile = "${build}/${plugin}.jar"
-	          basedir = "${classes}" 
-	          manifest = "META-INF/MANIFEST.MF"/>
-	   </target>
+	<target name = "jar" depends = "compile">
+	    <jar jarfile = "${dist}/${plugin}.jar"
+	         basedir = "${classes}" 
+	         manifest = "META-INF/MANIFEST.MF"/>
+	</target>
 	
 	<target name="clean">
 		<delete dir="${build}"/>
 	</target>
-
 </project>
