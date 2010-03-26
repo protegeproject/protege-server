@@ -20,7 +20,7 @@
 	<property name="src"     location="./src"/>
 	<property name="build"   location="./build"/>
 	<property name="genlib"  location="./build/lib"/>
-	<property name="dist"    location="${build}/OSGi/bundle"/>
+	<property name="bundle.dir"    location="${build}"/>
 	<property name="classes" location="${build}/classes"/>
 	<property name="plugin"  value="org.protege.owl.server"/>
 
@@ -72,10 +72,7 @@
 	
 	<target name="init">
 		<mkdir dir="${classes}"/>
-        <copy todir="${build}/OSGi">
-			<fileset dir="./OSGi"/>
-        </copy>
-		<copy todir="${build}/OSGi/bundle">
+		<copy todir="${bundle.dir}">
 			<fileset file="${common.lib}"/>
 			<fileset file="${owl.lib}"/>
 		</copy>
@@ -89,7 +86,7 @@
     </target>
 
 	<target name = "jar" depends = "compile">
-	    <jar jarfile = "${dist}/${plugin}.jar"
+	    <jar jarfile = "${bundle.dir}/${plugin}.jar"
 	         basedir = "${classes}" 
 	         manifest = "META-INF/MANIFEST.MF"/>
 	</target>
