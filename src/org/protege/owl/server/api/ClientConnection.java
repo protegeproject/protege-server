@@ -1,7 +1,7 @@
 package org.protege.owl.server.api;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import org.protege.owl.server.exception.RemoteOntologyChangeException;
 import org.protege.owl.server.exception.RemoteOntologyCreationException;
@@ -16,7 +16,7 @@ public interface ClientConnection extends OWLOntologySetProvider {
     
     OWLOntologyManager getOntologyManager();
     
-    Map<IRI, RemoteOntologyRevisions> getRemoteOntologyList();
+    Set<RemoteOntologyRevisions> getRemoteOntologyList();
 
     OWLOntology pull(IRI ontologyName, Integer revision) throws RemoteOntologyCreationException;
     
