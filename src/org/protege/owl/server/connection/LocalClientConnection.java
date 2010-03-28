@@ -38,7 +38,7 @@ public class LocalClientConnection extends AbstractClientConnection {
     }
 
     @Override
-    public Map<IRI, RemoteOntologyRevisions> getRemoteOntologyList() {
+    public Set<RemoteOntologyRevisions> getRemoteOntologyList() {
         return server.getOntologyList();
     }
 
@@ -49,8 +49,14 @@ public class LocalClientConnection extends AbstractClientConnection {
 
     @Override
     public OWLOntology pull(IRI ontologyName, Integer revision) throws RemoteOntologyCreationException {
-        Map<IRI, RemoteOntologyRevisions> ontologyList = getRemoteOntologyList();
-        RemoteOntologyRevisions versions = ontologyList.get(ontologyName);
+        Set<RemoteOntologyRevisions> ontologyList = getRemoteOntologyList();
+        RemoteOntologyRevisions versions = null;
+        for (RemoteOntologyRevisions tryMe : ontologyList) {
+            if (tryMe.getOntologyName().equals(ontologyName)) {
+                versions = tryMe;
+                break;
+            }
+        }
         if (versions == null) { 
             return null;
         }
@@ -83,8 +89,13 @@ public class LocalClientConnection extends AbstractClientConnection {
             return;
         }
         if (revision == null) {
-            Map<IRI, RemoteOntologyRevisions> ontologyList = getRemoteOntologyList();
-            RemoteOntologyRevisions revisions = ontologyList.get(ontologyName);
+            Set<RemoteOntologyRevisions> ontologyList = getRemoteOntologyList();
+            RemoteOntologyRevisions revisions = null;
+            for (RemoteOntologyRevisions tryMe : ontologyList) {
+                if (tryMe.getOntologyName().equals(ontologyName)) {
+                    revisions = tryMe;
+                }
+            }
             revision = revisions.getMaxRevision();
         }
         try {
