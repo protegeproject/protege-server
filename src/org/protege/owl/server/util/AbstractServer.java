@@ -18,10 +18,8 @@ import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.ImportChange;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLAxiomChange;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -85,7 +83,7 @@ public abstract class AbstractServer implements Server {
     
     @Override
     public List<OWLOntologyChange> reduceChangeList(Map<IRI, Integer> versions, List<OWLOntologyChange> changes) {
-        changes = removeRedundantChanges(changes);
+        changes = Utilities.removeRedundantChanges(changes);
         List<OWLOntologyChange> reducedList = new ArrayList<OWLOntologyChange>();
         AcceptRejectChangeVisitor visitor = new AcceptRejectChangeVisitor(versions);
         for (OWLOntologyChange change : changes) {
@@ -154,100 +152,6 @@ public abstract class AbstractServer implements Server {
             IRI ontologyName = change.getOntology().getOntologyID().getOntologyIRI();
             int version = versions.get(ontologyName);
             accepted = contains(ontologyName, version, change.getAnnotation());
-        }
-        
-    }
-    
-    protected static List<OWLOntologyChange> removeRedundantChanges(List<OWLOntologyChange> changes) {
-        List<OWLOntologyChange> result = new ArrayList<OWLOntologyChange>();
-        for (int i = 0; i < changes.size(); i++) {
-            OWLOntologyChange change1 = changes.get(i);
-            if (!(change1 instanceof SetOntologyID)) {
-                boolean overlap = false;
-                for (int j = i + 1; j < changes.size(); j++) {
-                    OWLOntologyChange change2 = changes.get(j);
-                    if (overlappingChange(change1, change2)) {
-                        overlap = true;
-                        break;
-                    }
-                }
-                if (!overlap) {
-                    result.add(change1);
-                }
-            }
-        }
-        return result;
-    }
-    
-    private static boolean overlappingChange(OWLOntologyChange change1, OWLOntologyChange change2) {
-        if (change1.getOntology().equals(change2.getOntology())) {
-            OverlapVisitor visitor = new OverlapVisitor(change1);
-            change2.accept(visitor);
-            return visitor.isOverlapping();
-        }
-        return false;
-    }
-    
-    private static class OverlapVisitor implements OWLOntologyChangeVisitor {
-        private OWLOntologyChange testChange;
-        private boolean overlapping;
-        
-        public OverlapVisitor(OWLOntologyChange change) {
-            testChange = change;
-            overlapping = false;
-        }
-        
-        public boolean isOverlapping() {
-            return overlapping;
-        }
-
-        @Override
-        public void visit(AddAxiom change) {
-            overlapping = testChange instanceof OWLAxiomChange 
-                                && ((OWLAxiomChange) testChange).getAxiom().equals(change.getAxiom());
-        }
-
-        @Override
-        public void visit(RemoveAxiom change) {
-            overlapping = testChange instanceof OWLAxiomChange 
-                                && ((OWLAxiomChange) testChange).getAxiom().equals(change.getAxiom());
-        }
-
-        @Override
-        public void visit(SetOntologyID change) {
-            overlapping = testChange instanceof SetOntologyID;
-        }
-
-        @Override
-        public void visit(AddImport change) {
-            overlapping = testChange instanceof ImportChange 
-                               && ((ImportChange) testChange).getImportDeclaration().equals(change.getImportDeclaration());
-        }
-
-        @Override
-        public void visit(RemoveImport change) {
-            overlapping = testChange instanceof ImportChange 
-                              && ((ImportChange) testChange).getImportDeclaration().equals(change.getImportDeclaration());
-        }
-
-        @Override
-        public void visit(AddOntologyAnnotation change) {
-            if (testChange instanceof AddOntologyAnnotation) {
-                overlapping = ((AddOntologyAnnotation) testChange).getAnnotation().equals(change.getAnnotation());
-            }
-            else if (testChange instanceof RemoveOntologyAnnotation) {
-                overlapping = ((RemoveOntologyAnnotation) testChange).getAnnotation().equals(change.getAnnotation());
-            }
-        }
-
-        @Override
-        public void visit(RemoveOntologyAnnotation change) {
-            if (testChange instanceof AddOntologyAnnotation) {
-                overlapping = ((AddOntologyAnnotation) testChange).getAnnotation().equals(change.getAnnotation());
-            }
-            else if (testChange instanceof RemoveOntologyAnnotation) {
-                overlapping = ((RemoveOntologyAnnotation) testChange).getAnnotation().equals(change.getAnnotation());
-            }
         }
         
     }
