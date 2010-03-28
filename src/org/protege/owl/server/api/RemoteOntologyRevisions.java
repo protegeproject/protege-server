@@ -13,16 +13,22 @@ public class RemoteOntologyRevisions implements Serializable {
     private static final long serialVersionUID = -3112740928909735463L;
     private int maxRevision;
     private IRI ontologyName;
+    private String shortName;
     private Set<Integer> markedRevisions;
     
-    public RemoteOntologyRevisions(IRI ontologyName, Set<Integer> markedRevisions, int maxRevision) {
+    public RemoteOntologyRevisions(IRI ontologyName, String shortName, Set<Integer> markedRevisions, int maxRevision) {
         this.ontologyName = ontologyName;
+        this.shortName = shortName;
         this.markedRevisions = markedRevisions;
         this.maxRevision = maxRevision;
     }
 
     public IRI getOntologyName() {
         return ontologyName;
+    }
+    
+    public String getShortName() {
+        return shortName;
     }
 
     public int getMaxRevision() {
