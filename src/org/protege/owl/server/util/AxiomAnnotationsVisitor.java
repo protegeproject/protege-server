@@ -46,12 +46,14 @@ import org.semanticweb.owlapi.model.OWLSymmetricObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLTransitiveObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.SWRLRule;
 
+import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
+
 public abstract class AxiomAnnotationsVisitor implements OWLAxiomVisitor {
     private OWLDataFactory factory;
     private OWLAxiom result;
 
-    protected AxiomAnnotationsVisitor(OWLDataFactory factory) {
-        this.factory = factory;
+    protected AxiomAnnotationsVisitor() {
+        this.factory = OWLDataFactoryImpl.getInstance();
     }
 
     protected abstract Set<OWLAnnotation> processAnnotations(Set<OWLAnnotation> axiomAnnotations);

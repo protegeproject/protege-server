@@ -1,5 +1,7 @@
 package org.protege.owl.server.connection.servlet;
 
+import static org.protege.owl.server.util.OntologyConstants.NS;
+
 import java.io.IOException;
 import java.util.StringTokenizer;
 
@@ -27,7 +29,6 @@ import org.semanticweb.owlapi.model.SetOntologyID;
 
 public class OntologyDeltaServlet extends HttpServlet {
     private static final long serialVersionUID = 4100741469050997929L;
-    public static final String NS = "http://protege.stanford.edu/ontologies/OntologyChanges.owl";
     public static String PATH = "/ontology/changes";
     
     private Server server;

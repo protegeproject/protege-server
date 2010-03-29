@@ -1,11 +1,11 @@
 package org.protege.owl.server.connection.servlet;
 
 
-import static org.protege.owl.server.connection.servlet.OntologyListServlet.ONTOLOGY_MARKED_REVISION_PROPERTY;
-import static org.protege.owl.server.connection.servlet.OntologyListServlet.ONTOLOGY_MAX_REVISION_PROPERTY;
-import static org.protege.owl.server.connection.servlet.OntologyListServlet.ONTOLOGY_NAME_PROPERTY;
-import static org.protege.owl.server.connection.servlet.OntologyListServlet.ONTOLOGY_SHORT_NAME_PROPERTY;
-import static org.protege.owl.server.connection.servlet.OntologyListServlet.REMOTE_ONTOLOGY_CLASS;
+import static org.protege.owl.server.util.OntologyConstants.ONTOLOGY_MARKED_REVISION_PROPERTY;
+import static org.protege.owl.server.util.OntologyConstants.ONTOLOGY_MAX_REVISION_PROPERTY;
+import static org.protege.owl.server.util.OntologyConstants.ONTOLOGY_NAME_PROPERTY;
+import static org.protege.owl.server.util.OntologyConstants.ONTOLOGY_SHORT_NAME_PROPERTY;
+import static org.protege.owl.server.util.OntologyConstants.REMOTE_ONTOLOGY_CLASS;
 
 import java.util.HashSet;
 import java.util.Set;
