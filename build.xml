@@ -20,7 +20,6 @@
 	<property name="src"        location="./src"/>
 	<property name="build"      location="./build"/>
 	<property name="genlib"     location="${build}/lib"/>
-	<property name="bundle.dir" location="${build}"/>
 	<property name="classes"    location="${build}/classes"/>
 	<property name="plugin"     value="org.protege.owl.server"/>
 
@@ -76,7 +75,7 @@
 	
 	<target name="init">
 		<mkdir dir="${classes}"/>
-		<copy todir="${bundle.dir}">
+		<copy todir="${build}">
 			<fileset file="${common.lib}"/>
 			<fileset file="${owl.lib}"/>
 		</copy>
@@ -90,7 +89,7 @@
     </target>
 
 	<target name = "jar" depends = "compile">
-	    <jar jarfile = "${bundle.dir}/${plugin}.jar"
+	    <jar jarfile = "${build}/${plugin}.jar"
 	         basedir = "${classes}" 
 	         manifest = "META-INF/MANIFEST.MF"/>
 	</target>
