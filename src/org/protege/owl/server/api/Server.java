@@ -63,5 +63,24 @@ public interface Server extends OWLOntologySetProvider {
 
     void applyChanges(Map<IRI, Integer> versions, List<OWLOntologyChange> changes) throws RemoteOntologyChangeException;
 
+    /**
+     * This method takes a list of changes and calculates the minimal set of changes that will have the same
+     * effect when starting at the ontologies with the listed versions.
+     * 
+     * The changes returned is a subset of the changes that are provided.  No axiom change in the returned set will 
+     * involve the same ontology and axiom.  No axiom will be removed it it was not present in given ontology at the
+     * specified revision.  Similarly for ontology annotation changes and import declaration changes.  The advantages of 
+     * calculating this minimal collection of changes is that
+     * <ol>
+     * <li> the order of the changes is unimportant</li>
+     * <li> the changes can be inverted by replacing "add'' changes with "remove" changes and vice-versa.
+     * </ol>
+     * 
+     * 
+     * 
+     * @param versions
+     * @param changes
+     * @return
+     */
     List<OWLOntologyChange> reduceChangeList(Map<IRI, Integer> versions, List<OWLOntologyChange> changes);
 }
