@@ -56,7 +56,9 @@ public class ChangeToAxiomConverter implements OWLOntologyChangeVisitor {
 		manager.applyChanges(changes);
 	}
 	
-
+	public OWLOntology getOntology() {
+		return ontology;
+	}
 
 	@Override
 	public void visit(AddAxiom change) {
