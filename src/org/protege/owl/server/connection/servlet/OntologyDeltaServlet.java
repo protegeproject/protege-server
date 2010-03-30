@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.protege.owl.server.api.RemoteOntologyRevisions;
 import org.protege.owl.server.api.Server;
+import org.protege.owl.server.util.ChangeToAxiomConverter;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
 import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
@@ -47,51 +49,14 @@ public class OntologyDeltaServlet extends HttpServlet {
             int revision2 = Integer.parseInt(tokenizer.nextToken());
             for (RemoteOntologyRevisions revisions: server.getOntologyList()) {
                 if (revisions.getShortName().equals(shortName)) {
-                    final OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-                    final OWLOntology ontology = manager.createOntology(IRI.create(NS));
-                    OWLOntologyChangeVisitor visitor = new OWLOntologyChangeVisitor() {
-
-                        @Override
-                        public void visit(AddAxiom change) {
-                            manager.addAxiom(ontology, change.getAxiom());
-                        }
-
-                        @Override
-                        public void visit(RemoveAxiom change) {
-                            manager.removeAxiom(ontology, change.getAxiom());
-                        }
-
-                        @Override
-                        public void visit(SetOntologyID change) {
-                            ;
-                        }
-
-                        @Override
-                        public void visit(AddImport change) {
-                            manager.applyChange(new AddImport(ontology, change.getImportDeclaration()));
-                        }
-
-                        @Override
-                        public void visit(RemoveImport change) {
-                            manager.applyChange(new RemoveImport(ontology, change.getImportDeclaration()));
-                        }
-
-                        @Override
-                        public void visit(AddOntologyAnnotation change) {
-                            manager.applyChange(new AddOntologyAnnotation(ontology, change.getAnnotation()));
-                        }
-
-                        @Override
-                        public void visit(RemoveOntologyAnnotation change) {
-                            manager.applyChange(new RemoveOntologyAnnotation(ontology, change.getAnnotation()));
-                        }
-
-                    };
+                	ChangeToAxiomConverter visitor = new ChangeToAxiomConverter();
                     for (OWLOntologyChange change : server.getChanges(revisions.getOntologyName(), revision1, revision2)) {
-                        change.accept(visitor);
+                    	change.accept(visitor);
                     }
-                    manager.setOntologyFormat(ontology, new RDFXMLOntologyFormat());
-                    manager.saveOntology(ontology, response.getOutputStream());
+                    OWLOntology summary = visitor.getOntology();
+                    OWLOntologyManager manager = summary.getOWLOntologyManager();
+                    manager.setOntologyFormat(summary, new OWLXMLOntologyFormat());  // don't use rdf/xml format - owlapi gforge 2959943
+                    manager.saveOntology(summary, response.getOutputStream());
                     return;
                 }
             }
