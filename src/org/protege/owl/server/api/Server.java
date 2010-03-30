@@ -3,6 +3,7 @@ package org.protege.owl.server.api;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,23 @@ public interface Server extends OWLOntologySetProvider {
     
     void save(OWLOntologyID id, int revision, File location) throws IOException, OWLOntologyStorageException;
     
+    /**
+     * Returns a minimal set of changes required to go from version1 of the ontology with the name ontologyName
+     * to version2 of the 
+     * ontology.  There are two important reasons why the minimality of the set of changes is important:
+     * <ol>
+     * <li> The order of the changes is unimportant.</li>
+     * <li> The changes to go from version2 of the ontology to version1 of the ontology can be calculated by
+     *      simply replacing the add axiom/import/ontology annotation with the remove axiom/import/ontology annotation
+     *      calls and vice-versa.</li>
+     * </ol>
+     * As usual the setOntologyID calls are not recorded.
+     * 
+     * @param ontologyName the name of the ontology whose changes are being calculated.
+     * @param version1 the starting revision of the ontology
+     * @param version2 the ending revision of the ontology
+     * @return a minimal collection of changes needed to go from version1 to version2 of the ontology.
+     */
     List<OWLOntologyChange> getChanges(IRI ontologyName, int version1, int version2) throws RemoteOntologyException;
 
     void applyChanges(Map<IRI, Integer> versions, List<OWLOntologyChange> changes) throws RemoteOntologyChangeException;
