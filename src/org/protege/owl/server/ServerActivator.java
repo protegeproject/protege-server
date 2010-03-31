@@ -21,7 +21,6 @@ public class ServerActivator implements BundleActivator {
     
     
     private ServiceListener listener = new ServiceListener() {
-        @Override
         public void serviceChanged(ServiceEvent event) {
             if (event.getType() == ServiceEvent.REGISTERED) {
                 ServiceReference reference = event.getServiceReference();
@@ -37,7 +36,6 @@ public class ServerActivator implements BundleActivator {
         }
     };
 
-    @Override
     public void start(final BundleContext context) throws Exception {
         this.context = context;
         try {
@@ -53,7 +51,6 @@ public class ServerActivator implements BundleActivator {
         }
     }
 
-    @Override
     public void stop(BundleContext context) throws Exception {
         if (connection != null) {
             connection.dispose();

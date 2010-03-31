@@ -93,36 +93,36 @@ public class Utilities {
             return overlapping;
         }
     
-        @Override
+        
         public void visit(AddAxiom change) {
             overlapping = testChange instanceof OWLAxiomChange 
                                 && ((OWLAxiomChange) testChange).getAxiom().equals(change.getAxiom());
         }
     
-        @Override
+        
         public void visit(RemoveAxiom change) {
             overlapping = testChange instanceof OWLAxiomChange 
                                 && ((OWLAxiomChange) testChange).getAxiom().equals(change.getAxiom());
         }
     
-        @Override
+        
         public void visit(SetOntologyID change) {
             overlapping = testChange instanceof SetOntologyID;
         }
     
-        @Override
+        
         public void visit(AddImport change) {
             overlapping = testChange instanceof ImportChange 
                                && ((ImportChange) testChange).getImportDeclaration().equals(change.getImportDeclaration());
         }
     
-        @Override
+        
         public void visit(RemoveImport change) {
             overlapping = testChange instanceof ImportChange 
                               && ((ImportChange) testChange).getImportDeclaration().equals(change.getImportDeclaration());
         }
     
-        @Override
+        
         public void visit(AddOntologyAnnotation change) {
             if (testChange instanceof AddOntologyAnnotation) {
                 overlapping = ((AddOntologyAnnotation) testChange).getAnnotation().equals(change.getAnnotation());
@@ -132,7 +132,7 @@ public class Utilities {
             }
         }
     
-        @Override
+        
         public void visit(RemoveOntologyAnnotation change) {
             if (testChange instanceof AddOntologyAnnotation) {
                 overlapping = ((AddOntologyAnnotation) testChange).getAnnotation().equals(change.getAnnotation());

@@ -32,37 +32,37 @@ public class InvertChangesVisitor implements OWLOntologyChangeVisitor {
 		return visitor.getChanges();
 	}
 
-	@Override
+	
 	public void visit(AddAxiom change) {
 		changes.add(new RemoveAxiom(change.getOntology(), change.getAxiom()));
 	}
 
-	@Override
+	
 	public void visit(RemoveAxiom change) {
 		changes.add(new AddAxiom(change.getOntology(), change.getAxiom()));
 	}
 
-	@Override
+	
 	public void visit(SetOntologyID change) {
 		;
 	}
 
-	@Override
+	
 	public void visit(AddImport change) {
 		changes.add(new RemoveImport(change.getOntology(), change.getImportDeclaration()));
 	}
 
-	@Override
+	
 	public void visit(RemoveImport change) {
 		changes.add(new AddImport(change.getOntology(), change.getImportDeclaration()));
 	}
 
-	@Override
+	
 	public void visit(AddOntologyAnnotation change) {
 		changes.add(new RemoveOntologyAnnotation(change.getOntology(), change.getAnnotation()));
 	}
 
-	@Override
+	
 	public void visit(RemoveOntologyAnnotation change) {
 		changes.add(new AddOntologyAnnotation(change.getOntology(), change.getAnnotation()));
 	}

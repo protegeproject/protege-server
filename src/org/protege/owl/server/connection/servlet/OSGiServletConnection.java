@@ -17,7 +17,6 @@ public class OSGiServletConnection implements ServerConnection {
     private Server server;
     private BundleContext context;
     private ServiceListener httpServiceListener = new ServiceListener() {
-        @Override
         public void serviceChanged(ServiceEvent event) {
             if (event.getType() == ServiceEvent.REGISTERED
                     && event.getServiceReference().isAssignableTo(context.getBundle(), HttpService.class.getCanonicalName())) {
@@ -35,7 +34,6 @@ public class OSGiServletConnection implements ServerConnection {
         this.context = context;
     }
 
-    @Override
     public void initialize(Server server) throws IOException {
         this.server = server;
         try {
@@ -64,17 +62,17 @@ public class OSGiServletConnection implements ServerConnection {
             logger.info("Servlets registered");
         }
         catch (Throwable t) {
-            throw new IOException(t);
+            IOException ioe = new IOException();
+            ioe.initCause(t);
+            throw ioe;
         }
     }
     
-    @Override
     public Object getUserToken() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
     public void dispose() {
         // TODO Auto-generated method stub
     

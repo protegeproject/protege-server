@@ -11,16 +11,13 @@ import org.semanticweb.owlapi.model.OWLOntology;
 public class ServletActivator implements BundleActivator {
     private ServiceRegistration registration;
 
-    @Override
     public void start(final BundleContext context) {
         ServerFactory factory = new ServerFactory() {
 
-            @Override
             public Server createServer(OWLOntology metaproject) {
                 return null;
             }
 
-            @Override
             public ServerConnection createServerConnection(OWLOntology metaproject) {
                 return new OSGiServletConnection(context);
             }
@@ -29,7 +26,6 @@ public class ServletActivator implements BundleActivator {
         registration = context.registerService(ServerFactory.class.getCanonicalName(), factory, null);
     }
 
-    @Override
     public void stop(BundleContext context) {
         registration.unregister();
     }

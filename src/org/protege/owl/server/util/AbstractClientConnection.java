@@ -15,7 +15,6 @@ public abstract class AbstractClientConnection implements ClientConnection {
     private List<OWLOntologyChange> uncommittedChanges = new ArrayList<OWLOntologyChange>();
     private OWLOntologyChangeListener uncommittedChangesListener = new OWLOntologyChangeListener() {
 
-        @Override
         public void ontologiesChanged(List<? extends OWLOntologyChange> changes) throws OWLException {
             uncommittedChanges.addAll(changes);
         }
@@ -27,7 +26,6 @@ public abstract class AbstractClientConnection implements ClientConnection {
         manager.addOntologyChangeListener(uncommittedChangesListener);
     }
     
-    @Override
     public OWLOntologyManager getOntologyManager() {
         return manager;
     }
@@ -46,7 +44,6 @@ public abstract class AbstractClientConnection implements ClientConnection {
         return changes;
     }
     
-    @Override
     public void dispose() {
         manager.removeOntologyChangeListener(uncommittedChangesListener);
     }

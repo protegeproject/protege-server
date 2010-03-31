@@ -27,7 +27,6 @@ public class LocalClientConnection extends AbstractClientConnection {
         this.server = server;
     }
 
-    @Override
     public void commit(OWLOntology ontology) throws RemoteOntologyChangeException {
         IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
         if (!localVersions.containsKey(ontologyName)) {
@@ -37,17 +36,14 @@ public class LocalClientConnection extends AbstractClientConnection {
         clearUncommittedChanges(ontology);
     }
 
-    @Override
     public Set<RemoteOntologyRevisions> getRemoteOntologyList() {
         return server.getOntologyList();
     }
 
-    @Override
     public int getRevision(OWLOntology ontology) {
         return localVersions.get(ontology.getOntologyID().getOntologyIRI());
     }
 
-    @Override
     public OWLOntology pull(IRI ontologyName, Integer revision) throws RemoteOntologyCreationException {
         Set<RemoteOntologyRevisions> ontologyList = getRemoteOntologyList();
         RemoteOntologyRevisions versions = null;
@@ -81,7 +77,6 @@ public class LocalClientConnection extends AbstractClientConnection {
         }
     }
 
-    @Override
     public void update(OWLOntology ontology, Integer revision) throws OWLOntologyChangeException {
         IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
         Integer currentRevision = localVersions.get(ontologyName);
@@ -106,7 +101,6 @@ public class LocalClientConnection extends AbstractClientConnection {
         }
     }
 
-    @Override
     public Set<OWLOntology> getOntologies() {
         Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
         for (IRI ontologyName : localVersions.keySet()) {

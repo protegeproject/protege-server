@@ -35,13 +35,11 @@ public class RestfulClientConnection extends AbstractClientConnection {
         this.httpPrefix = httpPrefix;
     }
     
-    @Override
     public void commit(OWLOntology ontology) throws RemoteOntologyChangeException {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
     public Set<RemoteOntologyRevisions> getRemoteOntologyList() {
         try {
             Set<RemoteOntologyRevisions> result = new HashSet<RemoteOntologyRevisions>();
@@ -86,25 +84,21 @@ public class RestfulClientConnection extends AbstractClientConnection {
         return null;
     }
 
-    @Override
     public int getRevision(OWLOntology ontology) {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    @Override
     public OWLOntology pull(IRI ontologyName, Integer revision) throws RemoteOntologyCreationException {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
     public void update(OWLOntology ontology, Integer revision) throws OWLOntologyChangeException {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
     public Set<OWLOntology> getOntologies() {
         // TODO Auto-generated method stub
         return null;

@@ -60,26 +60,26 @@ public class ChangeToAxiomConverter implements OWLOntologyChangeVisitor {
 		return ontology;
 	}
 
-	@Override
+	
 	public void visit(AddAxiom change) {
 		visitor.setAddAxiom(true);
 		change.getAxiom().accept(visitor);
 		manager.addAxiom(ontology, visitor.getOWLAxiom());
 	}
 
-	@Override
+	
 	public void visit(RemoveAxiom change) {
 		visitor.setAddAxiom(false);
 		change.getAxiom().accept(visitor);
 		manager.addAxiom(ontology, visitor.getOWLAxiom());
 	}
 
-	@Override
+	
 	public void visit(SetOntologyID change) {
 		// SetOntologyId calls are ignored.
 	}
 
-	@Override
+	
 	public void visit(AddImport change) {
 		OWLStringLiteral importAsLiteral = factory.getOWLStringLiteral(change.getImportDeclaration().getIRI().toString());
 		OWLAxiom doImport = factory.getOWLDataPropertyAssertionAxiom(ONTOLOGY_IMPORTS, 
@@ -89,7 +89,7 @@ public class ChangeToAxiomConverter implements OWLOntologyChangeVisitor {
 		manager.addAxiom(ontology, doImport);
 	}
 
-	@Override
+	
 	public void visit(RemoveImport change) {
 		OWLStringLiteral importAsLiteral = factory.getOWLStringLiteral(change.getImportDeclaration().getIRI().toString());
 		OWLAxiom removeImport = factory.getOWLDataPropertyAssertionAxiom(ONTOLOGY_IMPORTS, 
@@ -99,7 +99,7 @@ public class ChangeToAxiomConverter implements OWLOntologyChangeVisitor {
 		manager.addAxiom(ontology, removeImport);	
 	}
 
-	@Override
+	
 	public void visit(AddOntologyAnnotation change) {
 		OWLAnnotation annotation = change.getAnnotation();
 		Set<OWLAnnotation> annotationAnnotations = new HashSet<OWLAnnotation>(annotation.getAnnotations());
@@ -110,7 +110,7 @@ public class ChangeToAxiomConverter implements OWLOntologyChangeVisitor {
 		manager.addAxiom(ontology, axiom);
 	}
 
-	@Override
+	
 	public void visit(RemoveOntologyAnnotation change) {
 		OWLAnnotation annotation = change.getAnnotation();
 		Set<OWLAnnotation> annotationAnnotations = new HashSet<OWLAnnotation>(annotation.getAnnotations());
@@ -133,7 +133,7 @@ public class ChangeToAxiomConverter implements OWLOntologyChangeVisitor {
 			return addAxiom;
 		}
 		
-		@Override
+		
 		protected Set<OWLAnnotation> processAnnotations(Set<OWLAnnotation> axiomAnnotations) {
 			Set<OWLAnnotation> newAxiomAnnotations = new HashSet<OWLAnnotation>(axiomAnnotations);
 			newAxiomAnnotations.add(addAxiom ? ADD_AXIOM_ANNOTATION : REMOVE_AXIOM_ANNOTATION);

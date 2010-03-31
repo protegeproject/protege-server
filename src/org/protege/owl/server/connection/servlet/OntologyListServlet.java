@@ -69,10 +69,14 @@ public class OntologyListServlet extends HttpServlet {
             manager.saveOntology(ontology, response.getOutputStream());
         }
         catch (OWLOntologyCreationException e) {
-            throw new IOException(e);
+            IOException ioe = new IOException(e.getMessage());
+            ioe.initCause(e);
+            throw ioe;
         }
         catch (OWLOntologyStorageException e) {
-            throw new IOException(e);
+            IOException ioe = new IOException(e.getMessage());
+            ioe.initCause(e);
+            throw ioe;
         }
     }
 }

@@ -65,7 +65,9 @@ public class OntologyDeltaServlet extends HttpServlet {
             throw io;
         }
         catch (Throwable t) {
-            throw new IOException(t);
+            IOException ioe = new IOException(t.getMessage());
+            ioe.initCause(t);
+            throw ioe;
         }
     }
 
