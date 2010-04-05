@@ -83,4 +83,6 @@ public interface Server extends OWLOntologySetProvider {
      * @return
      */
     List<OWLOntologyChange> reduceChangeList(Map<IRI, Integer> versions, List<OWLOntologyChange> changes);
+    
+    void dispose();
 }

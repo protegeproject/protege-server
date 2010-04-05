@@ -16,7 +16,7 @@ public interface ClientConnection extends OWLOntologySetProvider {
     
     OWLOntologyManager getOntologyManager();
     
-    Set<RemoteOntologyRevisions> getRemoteOntologyList();
+    Set<RemoteOntologyRevisions> getRemoteOntologyList() throws RemoteOntologyCreationException;
 
     OWLOntology pull(IRI ontologyName, Integer revision) throws RemoteOntologyCreationException;
     

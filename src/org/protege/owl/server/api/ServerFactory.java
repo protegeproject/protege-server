@@ -1,9 +1,10 @@
 package org.protege.owl.server.api;
 
-import org.semanticweb.owlapi.model.OWLOntology;
+import org.protege.owl.server.configuration.ServerConfiguration;
 
 public interface ServerFactory {
-    Server createServer(OWLOntology serverConfiguration);
+	boolean isSuitable(ServerConfiguration serverConfiguration);
+	
+    Server createServer(ServerConfiguration serverConfiguration);
     
-    ServerConnection createServerConnection(OWLOntology serverConfiguration);
 }
