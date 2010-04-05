@@ -20,7 +20,6 @@ import org.protege.owl.server.util.OntologyConstants;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
@@ -33,12 +32,10 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 public class OntologyListServlet extends HttpServlet {
     private static final long serialVersionUID = -3456442049571420576L;
     
-    public static final String PATH="/ontologies/list";
+    public static final String PATH="/ontology/list";
     
     private Server server;
-    
-    private OWLClass remoteOntologyClass;
-    
+        
     public OntologyListServlet(Server server) {
         this.server = server;
     }
