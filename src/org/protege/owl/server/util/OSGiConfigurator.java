@@ -25,12 +25,16 @@ public class OSGiConfigurator extends Configurator {
             else if (event.getType() == ServiceEvent.UNREGISTERING) {
             	ServiceReference reference = event.getServiceReference();
             	Bundle me = context.getBundle();
+            	Object o = context.getService(reference);
                 
-                if (reference.isAssignableTo(me, ServerFactory.class.getCanonicalName())) {
+                if (o instanceof ServerFactory) {
                 	removeServerFactory((ServerFactory) context.getService(reference));
                 }
-                else if (reference.isAssignableTo(me, ServerConnectionFactory.class.getCanonicalName())) {
+                else if (o instanceof ServerConnectionFactory) {
                 	removeServerConnectionFactory((ServerConnectionFactory) context.getService(reference));
+                }
+                else {
+                	context.ungetService(reference);
                 }
             }
         }
@@ -60,11 +64,15 @@ public class OSGiConfigurator extends Configurator {
     }
     
     private void addServiceReference(ServiceReference reference) {
-    	if (reference.isAssignableTo(context.getBundle(), ServerFactory.class.getCanonicalName())) {
-    		addServerFactory((ServerFactory) context.getService(reference));
+    	Object o = context.getService(reference);
+    	if (o instanceof ServerFactory) {
+    		addServerFactory((ServerFactory) o);
     	}
-    	else if (reference.isAssignableTo(context.getBundle(), ServerConnectionFactory.class.getCanonicalName())) {
-    		addServerConnectionFactory((ServerConnectionFactory) context.getService(reference));
+    	else if (o instanceof ServerConnectionFactory) {
+    		addServerConnectionFactory((ServerConnectionFactory) o);
+    	}
+    	else {
+    		context.ungetService(reference);
     	}
     }
 }

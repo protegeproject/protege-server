@@ -54,9 +54,7 @@ public class Configurator {
     public void addServerConnectionFactory(ServerConnectionFactory factory) {
     	if (factory.isSuitable(configuration)) {
     		connectionFactories.add(factory);
-    		if (currentConnectionFactory == factory && connection != null) {
-    			connection.dispose();
-    			connection = null;
+    		if (!isReady()) {
     			rebuild();
     		}
     	}
