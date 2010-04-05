@@ -16,6 +16,7 @@ public class OSGiServletConnection implements ServerConnection {
     private Logger logger = Logger.getLogger(getClass());
     private Server server;
     private BundleContext context;
+    
     private ServiceListener httpServiceListener = new ServiceListener() {
         public void serviceChanged(ServiceEvent event) {
             if (event.getType() == ServiceEvent.REGISTERED
@@ -51,7 +52,7 @@ public class OSGiServletConnection implements ServerConnection {
     }
     
     private void registerServlets(ServiceReference sr) throws IOException {
-        HttpService http = (HttpService) context.getService(sr);
+    	HttpService http = (HttpService) context.getService(sr);
         try {
             http.registerServlet(OntologyListServlet.PATH, new OntologyListServlet(server), null, null);
             logger.info("Registered Servlet at " + OntologyListServlet.PATH);
@@ -74,8 +75,25 @@ public class OSGiServletConnection implements ServerConnection {
     }
 
     public void dispose() {
-        // TODO Auto-generated method stub
-    
+        try {
+            ServiceReference [] srs = context.getServiceReferences(HttpService.class.getCanonicalName(), null);
+            if (srs != null) {
+                for (ServiceReference sr : srs) {
+                	HttpService http = (HttpService) context.getService(sr);
+                	try {
+                		http.unregister(OntologyListServlet.PATH);
+                		http.unregister(MarkedOntologyServlet.PATH);
+                		http.unregister(OntologyDeltaServlet.PATH);
+                	}
+                	finally {
+                		context.ungetService(sr);
+                	}
+                }
+            }
+        }
+        catch (InvalidSyntaxException e) {
+            logger.warn("Programmer error", e);
+        }
     }
 
 }
