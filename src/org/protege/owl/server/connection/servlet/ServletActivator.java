@@ -3,27 +3,28 @@ package org.protege.owl.server.connection.servlet;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerConnection;
-import org.protege.owl.server.api.ServerFactory;
-import org.semanticweb.owlapi.model.OWLOntology;
+import org.protege.owl.server.api.ServerConnectionFactory;
+import org.protege.owl.server.configuration.ServerConfiguration;
 
 public class ServletActivator implements BundleActivator {
     private ServiceRegistration registration;
 
     public void start(final BundleContext context) {
-        ServerFactory factory = new ServerFactory() {
+        ServerConnectionFactory factory = new ServerConnectionFactory() {
+        	
+        	@Override
+        	public boolean isSuitable(ServerConfiguration serverConfiguration) {
+        		return true;
+        	}
 
-            public Server createServer(OWLOntology metaproject) {
-                return null;
-            }
-
-            public ServerConnection createServerConnection(OWLOntology metaproject) {
+        	@Override
+            public ServerConnection createServerConnection(ServerConfiguration metaproject) {
                 return new OSGiServletConnection(context);
             }
             
         };
-        registration = context.registerService(ServerFactory.class.getCanonicalName(), factory, null);
+        registration = context.registerService(ServerConnectionFactory.class.getCanonicalName(), factory, null);
     }
 
     public void stop(BundleContext context) {
