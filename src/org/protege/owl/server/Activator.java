@@ -9,7 +9,6 @@ public class Activator implements BundleActivator {
 
     private BundleActivator servletRegistration;
     
-	@Override
 	public void start(BundleContext context) throws Exception {
         try {
             servletRegistration = (BundleActivator) Class.forName("org.protege.owl.server.connection.servlet.ServletActivator").newInstance();
@@ -20,7 +19,6 @@ public class Activator implements BundleActivator {
         }
 	}
 
-	@Override
 	public void stop(BundleContext context) throws Exception {
         if (servletRegistration != null) {
             servletRegistration.stop(context);

@@ -13,12 +13,10 @@ public class ServletActivator implements BundleActivator {
     public void start(final BundleContext context) {
         ServerConnectionFactory factory = new ServerConnectionFactory() {
         	
-        	@Override
         	public boolean isSuitable(ServerConfiguration serverConfiguration) {
         		return true;
         	}
 
-        	@Override
             public ServerConnection createServerConnection(ServerConfiguration metaproject) {
                 return new OSGiServletConnection(context);
             }
