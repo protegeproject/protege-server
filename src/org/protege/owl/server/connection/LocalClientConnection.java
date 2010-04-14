@@ -39,6 +39,10 @@ public class LocalClientConnection extends AbstractClientConnection {
     public Set<RemoteOntologyRevisions> getRemoteOntologyList() {
         return server.getOntologyList();
     }
+    
+    public Set<RemoteOntologyRevisions> updateRemoteOntologyList() {
+    	return server.getOntologyList();
+    }
 
     public int getRevision(OWLOntology ontology) {
         return localVersions.get(ontology.getOntologyID().getOntologyIRI());
@@ -50,6 +54,7 @@ public class LocalClientConnection extends AbstractClientConnection {
         for (RemoteOntologyRevisions tryMe : ontologyList) {
             if (tryMe.getOntologyName().equals(ontologyName)) {
                 versions = tryMe;
+                ontologyName = versions.getOntologyName();
                 break;
             }
         }
