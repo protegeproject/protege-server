@@ -1,6 +1,6 @@
 package org.protege.owl.server.exception;
 
-public class InvalidRemoteDataException extends RemoteOntologyException {
+public class InvalidRemoteDataException extends RemoteQueryException {
 	private static final long serialVersionUID = -5887132834634417436L;
 
 	public InvalidRemoteDataException() {
