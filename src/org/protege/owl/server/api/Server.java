@@ -3,13 +3,11 @@ package org.protege.owl.server.api;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.protege.owl.server.exception.RemoteOntologyChangeException;
-import org.protege.owl.server.exception.RemoteOntologyCreationException;
 import org.protege.owl.server.exception.RemoteOntologyException;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -38,7 +36,7 @@ public interface Server extends OWLOntologySetProvider {
     
     Set<RemoteOntologyRevisions> getOntologyList();
     
-    InputStream getOntologyStream(IRI ontologyName, int revision) throws RemoteOntologyCreationException;
+    InputStream getOntologyStream(IRI ontologyName, int revision) throws IOException;
     
     void save(OWLOntologyID id, int revision, File location) throws IOException, OWLOntologyStorageException;
     
