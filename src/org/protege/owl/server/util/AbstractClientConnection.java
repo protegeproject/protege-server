@@ -1,5 +1,6 @@
 package org.protege.owl.server.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,12 +58,22 @@ public abstract class AbstractClientConnection implements ClientConnection {
         return versions;
     }
     
-    protected void clearUncommittedChanges(OWLOntology ontology) {
-        ClientOntologyInfo info = ontologyInfoMap.get(ontology);
-        if (info == null) {
-            throw new IllegalArgumentException("Ontology not installed on client: " + ontology);
+    protected List<OWLOntologyChange> getUncommittedChanges(Set<OWLOntology> ontologies) {
+        List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
+        for (OWLOntology ontology : ontologies) {
+            changes.addAll(ontologyInfoMap.get(ontology).getChanges());
         }
-        info.clearChanges();
+        return changes;
+    }
+
+    protected void clearUncommittedChanges(Set<OWLOntology> ontologies) {
+        for (OWLOntology ontology : ontologies) {
+            ClientOntologyInfo info = ontologyInfoMap.get(ontology);
+            if (info == null) {
+                throw new IllegalArgumentException("Ontology not installed on client: " + ontology);
+            }
+            info.clearChanges();
+        }
     }
     
     protected void addOntology(OWLOntology ontology, String shortName, int revision) {

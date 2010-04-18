@@ -76,9 +76,7 @@ public class LocalClientConnection extends AbstractClientConnection {
             versionMap.put(ontologyName, getRevision(ontology));
         }
         server.applyChanges(versionMap, changes);
-        for (OWLOntology ontology : ontologies) {
-            clearUncommittedChanges(ontology);
-        }
-    }
+        clearUncommittedChanges(ontologies);
+    }   
 
 }

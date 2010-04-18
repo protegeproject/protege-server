@@ -1,7 +1,5 @@
 package org.protege.owl.server.connection.servlet;
 
-import static org.protege.owl.server.util.OntologyConstants.NS;
-
 import java.io.IOException;
 import java.util.StringTokenizer;
 
@@ -12,31 +10,24 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.protege.owl.server.api.RemoteOntologyRevisions;
 import org.protege.owl.server.api.Server;
+import org.protege.owl.server.connection.servlet.serialize.Serializer;
+import org.protege.owl.server.connection.servlet.serialize.SerializerFactory;
 import org.protege.owl.server.util.ChangeToAxiomConverter;
-import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
-import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
-import org.semanticweb.owlapi.model.AddAxiom;
-import org.semanticweb.owlapi.model.AddImport;
-import org.semanticweb.owlapi.model.AddOntologyAnnotation;
-import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyChangeVisitor;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.RemoveAxiom;
-import org.semanticweb.owlapi.model.RemoveImport;
-import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
-import org.semanticweb.owlapi.model.SetOntologyID;
 
 public class OntologyDeltaServlet extends HttpServlet {
     private static final long serialVersionUID = 4100741469050997929L;
     public static String PATH = "/ontology/changes";
     
     private Server server;
+    private Serializer serializer;
     
     public OntologyDeltaServlet(Server server) {
         this.server = server;
+        serializer = new SerializerFactory().createSerializer();
     }
     
     @Override
@@ -54,9 +45,7 @@ public class OntologyDeltaServlet extends HttpServlet {
                     	change.accept(visitor);
                     }
                     OWLOntology summary = visitor.getOntology();
-                    OWLOntologyManager manager = summary.getOWLOntologyManager();
-                    manager.setOntologyFormat(summary, new OWLXMLOntologyFormat());  // don't use rdf/xml format - owlapi gforge 2959943
-                    manager.saveOntology(summary, response.getOutputStream());
+                    serializer.serialize(summary, response.getOutputStream());
                     return;
                 }
             }

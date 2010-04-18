@@ -10,7 +10,7 @@ import java.util.Map;
 import org.protege.owl.server.api.ConflictManager;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.connection.LocalClientConnection;
-import org.protege.owl.server.exception.RemoteOntologyChangeException;
+import org.protege.owl.server.exception.OntologyConflictException;
 import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
 import org.semanticweb.owlapi.io.StreamDocumentTarget;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -57,7 +57,7 @@ public abstract class AbstractServer implements Server {
     }
     
     
-    public synchronized void applyChanges(Map<IRI, Integer> versions, List<OWLOntologyChange> changes) throws RemoteOntologyChangeException {
+    public synchronized void applyChanges(Map<IRI, Integer> versions, List<OWLOntologyChange> changes) throws OntologyConflictException {
         changes = reduceChangeList(versions, changes);
         if (conflictManager != null) {
             conflictManager.validateChanges(versions, changes);

@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.protege.owl.server.api.RemoteOntologyRevisions;
 import org.protege.owl.server.api.Server;
+import org.protege.owl.server.connection.servlet.serialize.Serializer;
+import org.protege.owl.server.connection.servlet.serialize.SerializerFactory;
 import org.protege.owl.server.util.OntologyConstants;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
@@ -35,9 +37,11 @@ public class OntologyListServlet extends HttpServlet {
     public static final String PATH="/ontology/list";
     
     private Server server;
+    private Serializer serializer;
         
     public OntologyListServlet(Server server) {
         this.server = server;
+        serializer = new SerializerFactory().createSerializer();
     }
 
     @Override
@@ -63,7 +67,7 @@ public class OntologyListServlet extends HttpServlet {
                     manager.addAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(ONTOLOGY_MARKED_REVISION_PROPERTY, o, markedRevisionAsLiteral));
                 }
             }
-            manager.saveOntology(ontology, response.getOutputStream());
+            serializer.serialize(ontology, response.getOutputStream());
         }
         catch (OWLOntologyCreationException e) {
             IOException ioe = new IOException(e.getMessage());

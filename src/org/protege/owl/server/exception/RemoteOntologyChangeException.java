@@ -1,29 +1,20 @@
 package org.protege.owl.server.exception;
 
-import java.util.List;
-
-import org.semanticweb.owlapi.model.OWLOntologyChange;
-
-
 public class RemoteOntologyChangeException extends RemoteOntologyException {
-    private static final long serialVersionUID = -1046543185411030949L;
-    private List<OWLOntologyChange> rejectedChanges;
-    
-    public RemoteOntologyChangeException(List<OWLOntologyChange> rejectedChanges) {
-        this.rejectedChanges = rejectedChanges;
-    }
-    
-    public RemoteOntologyChangeException(List<OWLOntologyChange> rejectedChanges, Throwable cause) {
-        super(cause);
-        this.rejectedChanges = rejectedChanges; 
-    }
+    private static final long serialVersionUID = 1666055672451705893L;
 
-    public RemoteOntologyChangeException(List<OWLOntologyChange> rejectedChanges, String message, Throwable cause) {
-        super(message, cause);
-        this.rejectedChanges = rejectedChanges; 
+    public RemoteOntologyChangeException() {
     }
     
-    public List<OWLOntologyChange> getRejectedChanges() {
-        return rejectedChanges;
+    public RemoteOntologyChangeException(String message) {
+        super(message);
+    }
+    
+    public RemoteOntologyChangeException(String message, Throwable t) {
+        super(message, t);
+    }
+    
+    public RemoteOntologyChangeException(Throwable t) {
+        super(t);
     }
 }
