@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.protege.owl.server.api.RemoteOntologyRevisions;
+import org.protege.owl.server.api.ServerOntologyInfo;
 import org.protege.owl.server.api.Server;
 
 public class MarkedOntologyServlet extends HttpServlet {
@@ -32,7 +32,7 @@ public class MarkedOntologyServlet extends HttpServlet {
     	StringTokenizer tokenizer = new StringTokenizer(encoded, "/");
     	String shortName = tokenizer.nextToken();
     	Integer revision = Integer.parseInt(tokenizer.nextToken());
-    	for (RemoteOntologyRevisions revisions: server.getOntologyList()) {
+    	for (ServerOntologyInfo revisions: server.getOntologyList()) {
     		if (revisions.getShortName().equals(shortName)) {
     			InputStream in = server.getOntologyStream(revisions.getOntologyName(), revision);
     			in = new BufferedInputStream(in);
