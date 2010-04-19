@@ -48,29 +48,38 @@ public class Configurator {
     public void removeServerFactory(ServerFactory factory)  {
     	serverFactories.remove(factory);
     	boolean needsRebuild = false;
-    	if (!isReady()) {
-    	    return;
-    	}
-    	if (currentServerFactory == factory) {
+    	if (factory == currentServerFactory) {
     		server.dispose();
     		server = null;
     		currentServerFactory = null;
-    		if (connection != null) {
-    			connection.dispose();
-    			connection = null;
-    			currentConnectionFactory = null;
-    		}
-    		if (conflictManager != null) {
-    		    conflictManager = null;
-    		    currentConflictFactory = null;
-    		}
+    		
+    		if (connection != null) connection.dispose();
+    		connection = null;
+    		currentConnectionFactory = null;
+    		
+    		conflictManager = null;
+    		currentConflictFactory = null;
+    		
     		needsRebuild = true;
     	}
-    	if (currentConflictFactory == factory) {
-    	    conflictManager = null;
-    	    currentConflictFactory = null;
-    	    rebuild();
+    	else if (factory == currentConnectionFactory) {
+    		if (connection != null) connection.dispose();
+    		connection = null;
+    		currentConnectionFactory = null;
+    		
+    		conflictManager = null;
+    		currentConflictFactory = null;
+    		
+    		needsRebuild = true;
     	}
+    	else if (factory == currentConflictFactory) {
+    		conflictManager = null;
+    		currentConflictFactory = null;
+    	}
+    	else {
+    		needsRebuild = false;
+    	}
+    	if (needsRebuild) rebuild();
     }
 
 	public void start() {
@@ -95,33 +104,43 @@ public class Configurator {
     		if (server == null) {
     		    for (ServerFactory factory : serverFactories) {
     		        if (factory.hasSuitableServer(configuration)) {
-    		            currentServerFactory = factory;
     		            server = factory.createServer(configuration);
-
-    		            if (server != null) {
-    		                break;
-    		            }
+    		            currentServerFactory = factory;
+    		            break;
     		        }
     			}
     		}
     		if (server != null && connection == null) {
                 for (ServerFactory factory : serverFactories) {
-                    if (factory.hasSuitableConnection(configuration)) {
-                        connection = factory.createServerConnection(configuration);
-                        connection.initialize(server);
-
-                        if (connection != null) {
-                            currentConnectionFactory = factory;
-                            break;
-                        }
-                    }
+                	if (factory.hasSuitableConnection(configuration)) {
+                		connection = factory.createServerConnection(configuration);
+                		connection.initialize(server);
+                		currentConnectionFactory = factory;
+                		break;
+                	}
                 }
+    		}
+    		if (server != null && connection != null && conflictManager == null) {
+    			for (ServerFactory factory : serverFactories) {
+    				if (factory.hasSuitableConflictManager(configuration)) {
+    					conflictManager = factory.createConflictManager(configuration);
+    					conflictManager.initialise(server);
+    					server.setConflictManager(conflictManager);
+    					currentConflictFactory = factory;
+    					break;
+    					
+    				}
+    			}
     		}
     	}
     	catch (Throwable t) {
     		ServerConnection tmp = connection;
-    		connection = null;
     		server = null;
+    		currentServerFactory = null;
+    		connection = null;
+    		currentConnectionFactory = null;
+    		conflictManager = null;
+    		currentConflictFactory = null;
     		logger.warn("Exception caught trying to configure server ", t);
     		if (tmp != null) {
     			tmp.dispose();
