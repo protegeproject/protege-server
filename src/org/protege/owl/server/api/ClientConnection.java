@@ -17,13 +17,13 @@ public interface ClientConnection extends OWLOntologySetProvider {
     
     OWLOntologyManager getOntologyManager();
     
-    Set<RemoteOntologyRevisions> getRemoteOntologyList(boolean forceUpdate) throws RemoteQueryException;
+    Set<ServerOntologyInfo> getRemoteOntologyList(boolean forceUpdate) throws RemoteQueryException;
     
     OWLOntology pull(IRI ontologyName, Integer revision) throws OWLOntologyCreationException, RemoteQueryException;
     
     int getRevision(OWLOntology ontology);
     
-    void commit(Set<OWLOntology> ontologies) throws RemoteOntologyChangeException;
+    void commit(Set<OWLOntology> ontologies) throws RemoteOntologyChangeException, RemoteQueryException;
     
     void update(OWLOntology ontology, Integer revision) throws OWLOntologyChangeException, RemoteQueryException;
     
