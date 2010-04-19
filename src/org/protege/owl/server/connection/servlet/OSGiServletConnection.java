@@ -60,6 +60,8 @@ public class OSGiServletConnection implements ServerConnection {
             logger.info("Resistered Servlet at " + MarkedOntologyServlet.PATH);
             http.registerServlet(OntologyDeltaServlet.PATH, new OntologyDeltaServlet(server), null, null);
             logger.info("Resistered Servlet at " + OntologyDeltaServlet.PATH);
+            http.registerServlet(OntologyCommitServlet.PATH, new OntologyCommitServlet(server), null, null);
+            logger.info("Resistered Servlet at " + OntologyCommitServlet.PATH);
             logger.info("Servlets registered");
         }
         catch (Throwable t) {
@@ -84,6 +86,7 @@ public class OSGiServletConnection implements ServerConnection {
                 		http.unregister(OntologyListServlet.PATH);
                 		http.unregister(MarkedOntologyServlet.PATH);
                 		http.unregister(OntologyDeltaServlet.PATH);
+                		http.unregister(OntologyCommitServlet.PATH);
                 	}
                 	finally {
                 		context.ungetService(sr);
