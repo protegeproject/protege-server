@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.protege.owl.server.api.RemoteOntologyRevisions;
+import org.protege.owl.server.api.ServerOntologyInfo;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
@@ -20,9 +20,9 @@ import org.semanticweb.owlapi.model.SetOntologyID;
 
 public class Utilities {
     
-    public static RemoteOntologyRevisions getRevisionsFromShortName(Set<RemoteOntologyRevisions> revisionSet,
+    public static ServerOntologyInfo getRevisionsFromShortName(Set<ServerOntologyInfo> revisionSet,
                                                                     String shortName) {
-        for (RemoteOntologyRevisions revisions : revisionSet) {
+        for (ServerOntologyInfo revisions : revisionSet) {
             if (revisions.getShortName().equals(shortName)) {
                 return revisions;
             }
@@ -31,9 +31,9 @@ public class Utilities {
     }
     
     
-    public static RemoteOntologyRevisions getRevisionsFromOntologyName(Set<RemoteOntologyRevisions> revisionSet,
+    public static ServerOntologyInfo getRevisionsFromOntologyName(Set<ServerOntologyInfo> revisionSet,
                                                                        IRI ontologyName) {
-        for (RemoteOntologyRevisions revisions : revisionSet) {
+        for (ServerOntologyInfo revisions : revisionSet) {
             if (revisions.getOntologyName().equals(ontologyName)) {
                 return revisions;
             }
