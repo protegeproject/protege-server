@@ -29,6 +29,10 @@ public class Configurator {
     	this.configuration = configuration;
     }
     
+    public Server getCurrentServer() {
+        return server;
+    }
+    
     public void addServerFactory(ServerFactory factory) {
     	if (factory.isSuitable(configuration)) {
     		serverFactories.add(factory);
