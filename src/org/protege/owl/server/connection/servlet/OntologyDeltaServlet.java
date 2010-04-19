@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.protege.owl.server.api.RemoteOntologyRevisions;
+import org.protege.owl.server.api.ServerOntologyInfo;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.connection.servlet.serialize.Serializer;
 import org.protege.owl.server.connection.servlet.serialize.SerializerFactory;
@@ -38,13 +38,13 @@ public class OntologyDeltaServlet extends HttpServlet {
             String shortName = tokenizer.nextToken();
             int revision1 = Integer.parseInt(tokenizer.nextToken());
             int revision2 = Integer.parseInt(tokenizer.nextToken());
-            for (RemoteOntologyRevisions revisions: server.getOntologyList()) {
+            for (ServerOntologyInfo revisions: server.getOntologyList()) {
                 if (revisions.getShortName().equals(shortName)) {
                 	ChangeToAxiomConverter visitor = new ChangeToAxiomConverter();
                     for (OWLOntologyChange change : server.getChanges(revisions.getOntologyName(), revision1, revision2)) {
                     	change.accept(visitor);
                     }
-                    OWLOntology summary = visitor.getOntology();
+                    OWLOntology summary = visitor.getMetaOntology();
                     serializer.serialize(summary, response.getOutputStream());
                     return;
                 }
