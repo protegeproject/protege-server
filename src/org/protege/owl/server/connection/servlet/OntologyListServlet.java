@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.protege.owl.server.api.RemoteOntologyRevisions;
+import org.protege.owl.server.api.ServerOntologyInfo;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.connection.servlet.serialize.Serializer;
 import org.protege.owl.server.connection.servlet.serialize.SerializerFactory;
@@ -53,7 +53,7 @@ public class OntologyListServlet extends HttpServlet {
             OWLOntology ontology = manager.createOntology(IRI.create(NS));
             manager.setOntologyFormat(ontology, new RDFXMLOntologyFormat());
             int counter = 0;
-            for (RemoteOntologyRevisions revisions : server.getOntologyList()) {
+            for (ServerOntologyInfo revisions : server.getOntologyList()) {
                 OWLNamedIndividual o = factory.getOWLNamedIndividual(IRI.create(NS + "#ontology" + (counter++)));
                 manager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(REMOTE_ONTOLOGY_CLASS, o));
                 OWLLiteral name = factory.getOWLStringLiteral(revisions.getOntologyName().toString());
