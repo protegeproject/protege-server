@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.protege.owl.server.api.ClientConnection;
-import org.protege.owl.server.api.RemoteOntologyRevisions;
+import org.protege.owl.server.api.ServerOntologyInfo;
 import org.protege.owl.server.exception.RemoteOntologyException;
 import org.protege.owl.server.exception.RemoteQueryException;
 import org.protege.owl.server.exception.UpdateFailedException;
@@ -23,7 +23,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 public abstract class AbstractClientConnection implements ClientConnection {
     private OWLOntologyManager manager;
 	private Map<OWLOntology, ClientOntologyInfo> ontologyInfoMap = new HashMap<OWLOntology, ClientOntologyInfo>();
-    private Set<RemoteOntologyRevisions> revisions;
+    private Set<ServerOntologyInfo> revisions;
 
     
     private OWLOntologyChangeListener uncommittedChangesListener = new OWLOntologyChangeListener() {
@@ -45,10 +45,10 @@ public abstract class AbstractClientConnection implements ClientConnection {
         manager.addOntologyChangeListener(uncommittedChangesListener);
     }
     
-    protected RemoteOntologyRevisions getRevisionInfo(IRI ontologyName)  throws RemoteQueryException {
-        Set<RemoteOntologyRevisions> ontologyList = getRemoteOntologyList(false);
-        RemoteOntologyRevisions versions = null;
-        for (RemoteOntologyRevisions tryMe : ontologyList) {
+    protected ServerOntologyInfo getRevisionInfo(IRI ontologyName)  throws RemoteQueryException {
+        Set<ServerOntologyInfo> ontologyList = getRemoteOntologyList(false);
+        ServerOntologyInfo versions = null;
+        for (ServerOntologyInfo tryMe : ontologyList) {
             if (tryMe.getOntologyName().equals(ontologyName)) {
                 versions = tryMe;
                 ontologyName = versions.getOntologyName();
@@ -89,7 +89,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
      * Abstract methods.
      */  
     
-    protected abstract Set<RemoteOntologyRevisions> updateRemoteOntologyList() throws RemoteQueryException;
+    protected abstract Set<ServerOntologyInfo> updateRemoteOntologyList() throws RemoteQueryException;
 
     protected abstract OWLOntology pullMarked(IRI ontologyName, String shortName, int revisionToGet) throws OWLOntologyCreationException, RemoteQueryException;
 
@@ -104,7 +104,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
     }
     
     @Override
-    public Set<RemoteOntologyRevisions> getRemoteOntologyList(boolean forceUpdate) throws RemoteQueryException {
+    public Set<ServerOntologyInfo> getRemoteOntologyList(boolean forceUpdate) throws RemoteQueryException {
         if (forceUpdate || revisions == null) {
             revisions = updateRemoteOntologyList();
         }
@@ -123,7 +123,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
     }
 
     public OWLOntology pull(IRI ontologyName, Integer revisionToGet) throws OWLOntologyCreationException, RemoteQueryException {
-        RemoteOntologyRevisions revisions = getRevisionInfo(ontologyName);
+        ServerOntologyInfo revisions = getRevisionInfo(ontologyName);
         if (revisions == null) {
             return null;
         }
