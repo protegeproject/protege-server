@@ -18,7 +18,7 @@ import org.protege.owl.server.api.Server;
 public class MarkedOntologyServlet extends HttpServlet {
     private static final long serialVersionUID = -6826342078353081611L;
     
-    public static final String PATH="/ontology/revision";
+    public static final String PATH="/ontology/download";
     
     private Server server;
 

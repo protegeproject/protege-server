@@ -2,7 +2,9 @@ package org.protege.owl.server.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.protege.owl.server.api.ServerOntologyInfo;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -20,25 +22,21 @@ import org.semanticweb.owlapi.model.SetOntologyID;
 
 public class Utilities {
     
-    public static ServerOntologyInfo getRevisionsFromShortName(Set<ServerOntologyInfo> revisionSet,
-                                                                    String shortName) {
-        for (ServerOntologyInfo revisions : revisionSet) {
-            if (revisions.getShortName().equals(shortName)) {
-                return revisions;
-            }
+    public static Map<String,ServerOntologyInfo> getOntologyInfoByShortName(Set<ServerOntologyInfo> revisionSet) {
+        TreeMap<String, ServerOntologyInfo> map = new TreeMap<String, ServerOntologyInfo>();
+        for (ServerOntologyInfo ontologyInfo : revisionSet) {
+            map.put(ontologyInfo.getShortName(), ontologyInfo);
         }
-        return null;
+        return map;
     }
     
     
-    public static ServerOntologyInfo getRevisionsFromOntologyName(Set<ServerOntologyInfo> revisionSet,
-                                                                       IRI ontologyName) {
-        for (ServerOntologyInfo revisions : revisionSet) {
-            if (revisions.getOntologyName().equals(ontologyName)) {
-                return revisions;
-            }
+    public static Map<IRI, ServerOntologyInfo> getOntologyInfoByOntologyName(Set<ServerOntologyInfo> revisionSet) {
+        TreeMap<IRI, ServerOntologyInfo> map = new TreeMap<IRI, ServerOntologyInfo>();
+        for (ServerOntologyInfo ontologyInfo : revisionSet) {
+            map.put(ontologyInfo.getOntologyName(), ontologyInfo);
         }
-        return null;
+        return map;
     }
 
     /**

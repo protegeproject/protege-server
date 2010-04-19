@@ -13,12 +13,17 @@ public class OntologyConflictException extends RemoteOntologyChangeException {
         this.rejectedChanges = rejectedChanges;
     }
     
-    public OntologyConflictException(List<OWLOntologyChange> rejectedChanges, Throwable cause) {
+    public OntologyConflictException(String message, List<OWLOntologyChange> rejectedChanges) {
+        super(message);
+        this.rejectedChanges = rejectedChanges;
+    }
+    
+    public OntologyConflictException(Throwable cause, List<OWLOntologyChange> rejectedChanges) {
         super(cause);
         this.rejectedChanges = rejectedChanges; 
     }
 
-    public OntologyConflictException(List<OWLOntologyChange> rejectedChanges, String message, Throwable cause) {
+    public OntologyConflictException(String message, Throwable cause, List<OWLOntologyChange> rejectedChanges) {
         super(message, cause);
         this.rejectedChanges = rejectedChanges; 
     }

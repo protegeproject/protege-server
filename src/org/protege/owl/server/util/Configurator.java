@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.protege.owl.server.api.ConflictManager;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerConnection;
-import org.protege.owl.server.api.ServerConnectionFactory;
 import org.protege.owl.server.api.ServerFactory;
 import org.protege.owl.server.configuration.ServerConfiguration;
 
@@ -18,12 +18,13 @@ public class Configurator {
 	private Logger logger = Logger.getLogger(Configurator.class);
     private ServerConfiguration configuration;
     private Set<ServerFactory> serverFactories = new HashSet<ServerFactory>();
-    private Set<ServerConnectionFactory> connectionFactories = new HashSet<ServerConnectionFactory>();
     
     private ServerFactory currentServerFactory;
     private Server server;
-    private ServerConnectionFactory currentConnectionFactory;
+    private ServerFactory currentConnectionFactory;
     private ServerConnection connection;
+    private ConflictManager conflictManager;
+    private ServerFactory currentConflictFactory;
     
     public Configurator(ServerConfiguration configuration) {
     	this.configuration = configuration;
@@ -34,9 +35,11 @@ public class Configurator {
     }
     
     public void addServerFactory(ServerFactory factory) {
-    	if (factory.isSuitable(configuration)) {
+    	if (factory.hasSuitableServer(configuration) || 
+    	        factory.hasSuitableConflictManager(configuration) ||
+    	        factory.hasSuitableConnection(configuration)) {
     		serverFactories.add(factory);
-    		if (!isReady()) {
+    		if (!isReady() || (conflictManager == null && factory.hasSuitableConflictManager(configuration))) {
     			rebuild();
     		}
     	}
@@ -44,35 +47,32 @@ public class Configurator {
 
     public void removeServerFactory(ServerFactory factory)  {
     	serverFactories.remove(factory);
-    	if (currentServerFactory == factory && server != null) {
+    	boolean needsRebuild = false;
+    	if (!isReady()) {
+    	    return;
+    	}
+    	if (currentServerFactory == factory) {
     		server.dispose();
     		server = null;
+    		currentServerFactory = null;
     		if (connection != null) {
     			connection.dispose();
     			connection = null;
+    			currentConnectionFactory = null;
     		}
-    		rebuild();
-    	}
-    }
-    
-    public void addServerConnectionFactory(ServerConnectionFactory factory) {
-    	if (factory.isSuitable(configuration)) {
-    		connectionFactories.add(factory);
-    		if (!isReady()) {
-    			rebuild();
+    		if (conflictManager != null) {
+    		    conflictManager = null;
+    		    currentConflictFactory = null;
     		}
+    		needsRebuild = true;
+    	}
+    	if (currentConflictFactory == factory) {
+    	    conflictManager = null;
+    	    currentConflictFactory = null;
+    	    rebuild();
     	}
     }
-    
-    public void removeServerConnectionFactory(ServerConnectionFactory factory) {
-    	connectionFactories.remove(factory);
-    	if (currentConnectionFactory == factory && connection != null) {
-    		connection.dispose();
-    		connection = null;
-    		rebuild();
-    	}
-    }
-    
+
 	public void start() {
 		rebuild();
 	}
@@ -93,20 +93,29 @@ public class Configurator {
     private void rebuild() {
     	try {
     		if (server == null) {
-    			for (ServerFactory factory : serverFactories) {
-    				currentServerFactory = factory;
-    				server = factory.createServer(configuration);
-    				if (server != null) {
-    					break;
-    				}
+    		    for (ServerFactory factory : serverFactories) {
+    		        if (factory.hasSuitableServer(configuration)) {
+    		            currentServerFactory = factory;
+    		            server = factory.createServer(configuration);
+
+    		            if (server != null) {
+    		                break;
+    		            }
+    		        }
     			}
     		}
     		if (server != null && connection == null) {
-    			for (ServerConnectionFactory factory : connectionFactories) {
-    				currentConnectionFactory = factory;
-    				connection = factory.createServerConnection(configuration);
-    				connection.initialize(server);
-    			}
+                for (ServerFactory factory : serverFactories) {
+                    if (factory.hasSuitableConnection(configuration)) {
+                        connection = factory.createServerConnection(configuration);
+                        connection.initialize(server);
+
+                        if (connection != null) {
+                            currentConnectionFactory = factory;
+                            break;
+                        }
+                    }
+                }
     		}
     	}
     	catch (Throwable t) {

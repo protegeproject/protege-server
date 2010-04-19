@@ -20,7 +20,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class OntologyDeltaServlet extends HttpServlet {
     private static final long serialVersionUID = 4100741469050997929L;
-    public static String PATH = "/ontology/changes";
+    public static String PATH = "/ontology/getChanges";
     
     private Server server;
     private Serializer serializer;

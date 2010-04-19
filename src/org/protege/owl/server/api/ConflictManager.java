@@ -8,5 +8,7 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 public interface ConflictManager {
+    void initialise(Server server);
+    
     void validateChanges(Map<IRI, Integer> versions, List<OWLOntologyChange> changes) throws OntologyConflictException;
 }
