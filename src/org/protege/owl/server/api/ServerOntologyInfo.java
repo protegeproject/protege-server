@@ -9,14 +9,14 @@ import java.util.Set;
 
 import org.semanticweb.owlapi.model.IRI;
 
-public class RemoteOntologyRevisions implements Serializable {
+public class ServerOntologyInfo implements Serializable {
     private static final long serialVersionUID = -3112740928909735463L;
     private int maxRevision;
     private IRI ontologyName;
     private String shortName;
     private Set<Integer> markedRevisions;
     
-    public RemoteOntologyRevisions(IRI ontologyName, String shortName, Set<Integer> markedRevisions, int maxRevision) {
+    public ServerOntologyInfo(IRI ontologyName, String shortName, Set<Integer> markedRevisions, int maxRevision) {
         this.ontologyName = ontologyName;
         this.shortName = shortName;
         this.markedRevisions = markedRevisions;
