@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.protege.owl.server.api.RemoteOntologyRevisions;
+import org.protege.owl.server.api.ServerOntologyInfo;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.exception.RemoteOntologyChangeException;
 import org.protege.owl.server.exception.RemoteOntologyException;
@@ -34,7 +34,7 @@ public class LocalClientConnection extends AbstractClientConnection {
      */
     
     @Override
-    protected Set<RemoteOntologyRevisions> updateRemoteOntologyList() throws RemoteQueryException {
+    protected Set<ServerOntologyInfo> updateRemoteOntologyList() throws RemoteQueryException {
         return server.getOntologyList();
     }
     
