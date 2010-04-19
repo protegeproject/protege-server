@@ -34,7 +34,7 @@ public interface Server extends OWLOntologySetProvider {
     
     void setConflictManager(ConflictManager conflictManager);
     
-    Set<RemoteOntologyRevisions> getOntologyList();
+    Set<ServerOntologyInfo> getOntologyList();
     
     InputStream getOntologyStream(IRI ontologyName, int revision) throws IOException;
     
