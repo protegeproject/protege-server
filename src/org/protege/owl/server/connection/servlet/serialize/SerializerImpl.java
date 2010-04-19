@@ -9,6 +9,7 @@ import org.protege.owl.server.exception.OntologyConflictException;
 import org.protege.owl.server.exception.RemoteQueryException;
 import org.protege.owl.server.exception.RuntimeOntologyConflictException;
 import org.protege.owl.server.exception.RuntimeServerException;
+import org.semanticweb.owlapi.io.OWLOntologyDocumentSource;
 import org.semanticweb.owlapi.io.OWLParserException;
 import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -29,21 +30,28 @@ public class SerializerImpl implements Serializer {
     
     @Override
     public OWLOntology deserialize(OWLOntologyManager manager, URL url) throws IOException, OntologyConflictException, RemoteQueryException  {
+        try {    
+            return deserialize(manager, new ServletDocumentSource(url));
+        }
+        catch (RuntimeServerException e) {
+            throw new RemoteQueryException(e);
+        }
+        catch (RuntimeOntologyConflictException conflict) {
+            throw new OntologyConflictException(conflict.getRejectedChanges());
+        } 
+    }
+    
+    @Override
+    public OWLOntology deserialize(OWLOntologyManager manager, OWLOntologyDocumentSource source) throws IOException, RemoteQueryException  {
         OWLXMLParser parser = new OWLXMLParser();
         parser.setOWLOntologyManager(manager);
         boolean success = false;
         OWLOntology ontology = null;
         try {
             ontology = manager.createOntology();
-            parser.parse(new ServletDocumentSource(url), ontology);
+            parser.parse(source, ontology);
             success = true;
             return ontology;
-        }
-        catch (RuntimeOntologyConflictException conflict) {
-            throw new OntologyConflictException(conflict.getRejectedChanges());
-        }
-        catch (RuntimeServerException e) {
-            throw new RemoteQueryException(e);
         }
         catch (OWLParserException e) {
             throw new RemoteQueryException(e);
@@ -56,12 +64,6 @@ public class SerializerImpl implements Serializer {
                 manager.removeOntology(ontology);
             }
         }
-        
-    }
-
-    @Override
-    public void serializeException(Throwable t) {
-        throw new UnsupportedOperationException("Not implemented yet");
     }
 
 }
