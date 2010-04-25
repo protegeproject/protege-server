@@ -25,7 +25,7 @@ public class StrictConflictManager implements ConflictManager {
 
     @Override
     public void validateChanges(Map<IRI, Integer> versions, List<OWLOntologyChange> changes) throws OntologyConflictException {
-        Map<IRI, ServerOntologyInfo> ontologyInfoMap = Utilities.getOntologyInfoByOntologyName(server.getOntologyList());
+        Map<IRI, ServerOntologyInfo> ontologyInfoMap = server.getOntologyInfoByIRI();
         Set<IRI> rejectedIris = new HashSet<IRI>();
         List<OWLOntologyChange> rejectedChanges = new ArrayList<OWLOntologyChange>();
         for (Entry<IRI, Integer> entry : versions.entrySet()) {
