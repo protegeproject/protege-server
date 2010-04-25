@@ -8,6 +8,7 @@ import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerConnection;
 import org.protege.owl.server.api.ServerFactory;
 import org.protege.owl.server.configuration.ServerConfiguration;
+import org.protege.owl.server.conflict.StrictConflictManager;
 
 public class ServletActivator implements BundleActivator {
     private ServiceRegistration registration;
@@ -36,12 +37,12 @@ public class ServletActivator implements BundleActivator {
 
             @Override
             public boolean hasSuitableConflictManager(ServerConfiguration configuration) {
-            	return false;
+            	return true;
             }
 
             @Override
             public ConflictManager createConflictManager(ServerConfiguration configuration) {
-            	return null;
+            	return new StrictConflictManager();
             }
         };
         registration = context.registerService(ServerFactory.class.getCanonicalName(), factory, null);
