@@ -38,17 +38,15 @@ public class OntologyDeltaServlet extends HttpServlet {
             String shortName = tokenizer.nextToken();
             int revision1 = Integer.parseInt(tokenizer.nextToken());
             int revision2 = Integer.parseInt(tokenizer.nextToken());
-            for (ServerOntologyInfo revisions: server.getOntologyList()) {
-                if (revisions.getShortName().equals(shortName)) {
-                	ChangeToAxiomConverter visitor = new ChangeToAxiomConverter();
-                    for (OWLOntologyChange change : server.getChanges(revisions.getOntologyName(), revision1, revision2)) {
-                    	change.accept(visitor);
-                    }
-                    OWLOntology summary = visitor.getMetaOntology();
-                    serializer.serialize(summary, response.getOutputStream());
-                    return;
-                }
+            ServerOntologyInfo ontologyInfo = server.getOntologyInfoByShortName().get(shortName);
+            ChangeToAxiomConverter visitor = new ChangeToAxiomConverter();
+            for (OWLOntologyChange change : server.getChanges(ontologyInfo.getOntologyName(), revision1, revision2)) {
+                change.accept(visitor);
             }
+            visitor.addRevisionInfo(server.getOntologyManager().getOntology(ontologyInfo.getOntologyName()), revision2);
+            OWLOntology summary = visitor.getMetaOntology();
+            serializer.serialize(summary, response.getOutputStream());
+            return;
         }
         catch (IOException io) {
             throw io;
