@@ -2,6 +2,7 @@ package org.protege.owl.server.connection;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Set;
 
 import org.protege.owl.server.api.ServerOntologyInfo;
 import org.protege.owl.server.api.Server;
+import org.protege.owl.server.connection.servlet.ChangeAndRevisionSummary;
 import org.protege.owl.server.exception.RemoteOntologyChangeException;
 import org.protege.owl.server.exception.RemoteOntologyException;
 import org.protege.owl.server.exception.RemoteQueryException;
@@ -35,7 +37,7 @@ public class LocalClientConnection extends AbstractClientConnection {
     
     @Override
     protected Set<ServerOntologyInfo> updateRemoteOntologyList() throws RemoteQueryException {
-        return server.getOntologyList();
+        throw new IllegalStateException("Shouldn't be called");
     }
     
     @Override
@@ -49,9 +51,12 @@ public class LocalClientConnection extends AbstractClientConnection {
     }
     
     @Override
-    protected List<OWLOntologyChange> getChangesFromServer(OWLOntology ontology, String shortName, int start, int end) throws RemoteQueryException {
+    protected ChangeAndRevisionSummary getChangesFromServer(OWLOntology ontology, String shortName, int start, int end) throws RemoteQueryException {
         try {
-            return server.getChanges(ontology.getOntologyID().getOntologyIRI(), start, end);
+            ChangeAndRevisionSummary summary = new ChangeAndRevisionSummary();
+            summary.setChanges( server.getChanges(ontology.getOntologyID().getOntologyIRI(), start, end));
+            summary.setRevisions(Collections.singletonMap(ontology.getOntologyID().getOntologyIRI(), end));
+            return summary;
         }
         catch (RemoteQueryException e) {
             throw e;
@@ -65,6 +70,15 @@ public class LocalClientConnection extends AbstractClientConnection {
      * Interface implementations.
      */
 
+    @Override
+    public Map<IRI, ServerOntologyInfo> getOntologyInfoByIRI(boolean forceUpdate) throws RemoteQueryException {
+        return server.getOntologyInfoByIRI();
+    }
+    
+    @Override
+    public Map<String, ServerOntologyInfo> getOntologyInfoByShortName(boolean forceUpdate) throws RemoteQueryException {
+        return server.getOntologyInfoByShortName();
+    }
     
     @Override
     public void commit(Set<OWLOntology> ontologies) throws RemoteOntologyChangeException {
