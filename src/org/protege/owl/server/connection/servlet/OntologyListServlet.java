@@ -53,7 +53,7 @@ public class OntologyListServlet extends HttpServlet {
             OWLOntology ontology = manager.createOntology(IRI.create(NS));
             manager.setOntologyFormat(ontology, new RDFXMLOntologyFormat());
             int counter = 0;
-            for (ServerOntologyInfo revisions : server.getOntologyList()) {
+            for (ServerOntologyInfo revisions : server.getOntologyInfoByIRI().values()) {
                 OWLNamedIndividual o = factory.getOWLNamedIndividual(IRI.create(NS + "#ontology" + (counter++)));
                 manager.addAxiom(ontology, factory.getOWLClassAssertionAxiom(REMOTE_ONTOLOGY_CLASS, o));
                 OWLLiteral name = factory.getOWLStringLiteral(revisions.getOntologyName().toString());
