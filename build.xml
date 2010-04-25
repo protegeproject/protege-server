@@ -89,6 +89,9 @@
     </target>
 
 	<target name = "jar" depends = "compile">
+        <copy todir="${classes}/OSGI-INF">
+            <fileset dir="OSGI-INF" includes="*.xml"/>
+        </copy>
 	    <jar jarfile = "${build}/${plugin}.jar"
 	         basedir = "${classes}" 
 	         manifest = "META-INF/MANIFEST.MF"/>

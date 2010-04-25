@@ -20,4 +20,4 @@ Export-Package: org.protege.owl.server.api,
  org.protege.owl.server.util
 Require-Bundle: org.semanticweb.owl.owlapi;bundle-version="3.0.0"
 Bundle-Activator: org.protege.owl.server.Activator
-
+Service-Component: OSGI-INF/configurator.xml

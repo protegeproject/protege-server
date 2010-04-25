@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<component name="configurator">
+	<implementation class="org.protege.owl.server.configuration.ConfiguratorImpl"/>
+	<service>
+		<provide interface="org.protege.owl.server.api.Configurator"/>
+	</service>	
+	<reference name="FACTORY"
+		interface="org.protege.owl.server.api.ServerFactory"
+		bind="addServerFactory"
+		unbind="removeServerFactory"
+		cardinality="0..n"
+		policy="dynamic"/>
+</component>

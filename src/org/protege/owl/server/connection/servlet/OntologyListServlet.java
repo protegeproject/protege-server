@@ -67,6 +67,7 @@ public class OntologyListServlet extends HttpServlet {
                     manager.addAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(ONTOLOGY_MARKED_REVISION_PROPERTY, o, markedRevisionAsLiteral));
                 }
             }
+            response.setContentType("text/xml;charset=UTF-8");
             serializer.serialize(ontology, response.getOutputStream());
         }
         catch (OWLOntologyCreationException e) {

@@ -1,21 +1,21 @@
-package org.protege.owl.server.util;
+package org.protege.owl.server.configuration;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.protege.owl.server.api.Configurator;
 import org.protege.owl.server.api.ConflictManager;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerConnection;
 import org.protege.owl.server.api.ServerFactory;
-import org.protege.owl.server.configuration.ServerConfiguration;
 
 /*
  * This is suitable for declarative services but the junit task uses him also.
  */
 
-public class Configurator {
-	private Logger logger = Logger.getLogger(Configurator.class);
+public class ConfiguratorImpl implements Configurator {
+	private Logger logger = Logger.getLogger(ConfiguratorImpl.class);
     private ServerConfiguration configuration;
     private Set<ServerFactory> serverFactories = new HashSet<ServerFactory>();
     
@@ -26,8 +26,13 @@ public class Configurator {
     private ConflictManager conflictManager;
     private ServerFactory currentConflictFactory;
     
-    public Configurator(ServerConfiguration configuration) {
-    	this.configuration = configuration;
+    public ConfiguratorImpl() {
+    }
+    
+    @Override
+    public void setConfiguration(ServerConfiguration configuration) {
+        this.configuration = configuration;
+        rebuild();
     }
     
     public Server getCurrentServer() {
@@ -35,14 +40,8 @@ public class Configurator {
     }
     
     public void addServerFactory(ServerFactory factory) {
-    	if (factory.hasSuitableServer(configuration) || 
-    	        factory.hasSuitableConflictManager(configuration) ||
-    	        factory.hasSuitableConnection(configuration)) {
-    		serverFactories.add(factory);
-    		if (!isReady() || (conflictManager == null && factory.hasSuitableConflictManager(configuration))) {
-    			rebuild();
-    		}
-    	}
+        serverFactories.add(factory);
+        rebuild();
     }
 
     public void removeServerFactory(ServerFactory factory)  {
@@ -100,6 +99,9 @@ public class Configurator {
     }
     
     private void rebuild() {
+        if (configuration == null) {
+            return;
+        }
     	try {
     		if (server == null) {
     		    for (ServerFactory factory : serverFactories) {
