@@ -34,7 +34,9 @@ public interface Server extends OWLOntologySetProvider {
     
     void setConflictManager(ConflictManager conflictManager);
     
-    Set<ServerOntologyInfo> getOntologyList();
+    Map<IRI, ServerOntologyInfo> getOntologyInfoByIRI();
+    
+    Map<String, ServerOntologyInfo> getOntologyInfoByShortName();
     
     InputStream getOntologyStream(IRI ontologyName, int revision) throws IOException;
     
@@ -73,8 +75,6 @@ public interface Server extends OWLOntologySetProvider {
      * <li> the order of the changes is unimportant</li>
      * <li> the changes can be inverted by replacing "add'' changes with "remove" changes and vice-versa.
      * </ol>
-     * 
-     * 
      * 
      * @param versions
      * @param changes
