@@ -28,23 +28,20 @@ public class MarkedOntologyServlet extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	String encoded = request.getPathInfo();
-    	StringTokenizer tokenizer = new StringTokenizer(encoded, "/");
-    	String shortName = tokenizer.nextToken();
-    	Integer revision = Integer.parseInt(tokenizer.nextToken());
-    	for (ServerOntologyInfo revisions: server.getOntologyList()) {
-    		if (revisions.getShortName().equals(shortName)) {
-    			InputStream in = server.getOntologyStream(revisions.getOntologyName(), revision);
-    			in = new BufferedInputStream(in);
-    			OutputStream out = new BufferedOutputStream(response.getOutputStream());
-    			int c;
-    			while ((c = in.read()) != -1) {
-    				out.write(c);
-    			}
-    			out.flush();
-    			out.close();
-    			return;
-    		}
-    	}
+        String encoded = request.getPathInfo();
+        StringTokenizer tokenizer = new StringTokenizer(encoded, "/");
+        String shortName = tokenizer.nextToken();
+        Integer revision = Integer.parseInt(tokenizer.nextToken());
+        ServerOntologyInfo ontologyInfo = server.getOntologyInfoByShortName().get(shortName);
+        InputStream in = server.getOntologyStream(ontologyInfo.getOntologyName(), revision);
+        in = new BufferedInputStream(in);
+        OutputStream out = new BufferedOutputStream(response.getOutputStream());
+        int c;
+        while ((c = in.read()) != -1) {
+            out.write(c);
+        }
+        out.flush();
+        out.close();
+        return;
     }
 }
