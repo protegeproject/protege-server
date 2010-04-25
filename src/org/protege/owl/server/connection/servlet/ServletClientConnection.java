@@ -11,9 +11,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.protege.owl.server.api.ServerOntologyInfo;
@@ -22,11 +21,11 @@ import org.protege.owl.server.connection.servlet.serialize.SerializerFactory;
 import org.protege.owl.server.exception.OntologyConflictException;
 import org.protege.owl.server.exception.RemoteQueryException;
 import org.protege.owl.server.util.AbstractClientConnection;
-import org.protege.owl.server.util.AxiomToChangeConverter;
 import org.protege.owl.server.util.ChangeToAxiomConverter;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.io.OWLOntologyDocumentSource;
+import org.semanticweb.owlapi.io.StreamDocumentSource;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -89,23 +88,17 @@ public class ServletClientConnection extends AbstractClientConnection {
     }
     
     @Override
-    protected List<OWLOntologyChange> getChangesFromServer(OWLOntology ontology, String shortName, int start, int end) throws RemoteQueryException {
+    protected ChangeAndRevisionSummary getChangesFromServer(OWLOntology ontology, String shortName, int start, int end) throws RemoteQueryException {
         if (start == end) {
-            return Collections.emptyList();
+            ChangeAndRevisionSummary summary = new ChangeAndRevisionSummary();
+            summary.setChanges(new ArrayList<OWLOntologyChange>());
+            summary.setRevisions(new HashMap<IRI, Integer>());
+            return summary;
         }
         try {
             OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
             OWLOntology changeOntology = serializer.deserialize(otherManager, new URL(httpPrefix + OntologyDeltaServlet.PATH + "/" + shortName + "/" + start + "/" + end));
-            AxiomToChangeConverter converter = new AxiomToChangeConverter(changeOntology, Collections.singleton(ontology));
-            List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
-            for (OWLAxiom changeAxiom : changeOntology.getAxioms()) {
-                changeAxiom.accept(converter);
-                OWLOntologyChange change = converter.getChange();
-                if (change != null) {
-                    changes.add(change);
-                }
-            }
-            return changes;
+            return ChangeAndRevisionSummary.getChanges(getOntologies(), changeOntology);
         }
         catch (IOException e) {
             throw new RemoteQueryException("Unexpected IO Exception", e);
@@ -136,11 +129,19 @@ public class ServletClientConnection extends AbstractClientConnection {
 	        OWLOntology metaOntology = converter.getMetaOntology();
 	        serializer.serialize(metaOntology, connection.getOutputStream());
 	        if (((HttpURLConnection) connection).getResponseCode() != HttpURLConnection.HTTP_CONFLICT) {
-	            connection.getInputStream().close();
+	            OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
+	            OWLOntology changeOntology = serializer.deserialize(otherManager, new StreamDocumentSource(connection.getInputStream()));
+	            applyChanges(ChangeAndRevisionSummary.getChanges(getOntologies(), changeOntology));
 	        }
 	        else {
-	            throw new UnsupportedOperationException("Not implemented yet");
+	            OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
+                OWLOntology rejectedOntology = serializer.deserialize(otherManager, new StreamDocumentSource(((HttpURLConnection) connection).getErrorStream()));
+	            ChangeAndRevisionSummary rejectedSummary = ChangeAndRevisionSummary.getChanges(getOntologies(), rejectedOntology);
+	            throw new OntologyConflictException(rejectedSummary.getChanges());
 	        }
+	    }
+	    catch (OntologyConflictException e) {
+	        throw e;
 	    }
 	    catch (Exception e) {
 	        throw new RemoteQueryException(e);
