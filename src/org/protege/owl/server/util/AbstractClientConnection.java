@@ -1,13 +1,16 @@
 package org.protege.owl.server.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.protege.owl.server.api.ClientConnection;
 import org.protege.owl.server.api.ServerOntologyInfo;
+import org.protege.owl.server.connection.servlet.ChangeAndRevisionSummary;
 import org.protege.owl.server.exception.RemoteOntologyException;
 import org.protege.owl.server.exception.RemoteQueryException;
 import org.protege.owl.server.exception.UpdateFailedException;
@@ -23,7 +26,8 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 public abstract class AbstractClientConnection implements ClientConnection {
     private OWLOntologyManager manager;
 	private Map<OWLOntology, ClientOntologyInfo> ontologyInfoMap = new HashMap<OWLOntology, ClientOntologyInfo>();
-    private Set<ServerOntologyInfo> revisions;
+    private Map<IRI, ServerOntologyInfo> serverOntologyInfoByIRI;
+    private Map<String, ServerOntologyInfo> serverOntologyInfoByShortName;
 
     
     private OWLOntologyChangeListener uncommittedChangesListener = new OWLOntologyChangeListener() {
@@ -45,17 +49,8 @@ public abstract class AbstractClientConnection implements ClientConnection {
         manager.addOntologyChangeListener(uncommittedChangesListener);
     }
     
-    protected ServerOntologyInfo getRevisionInfo(IRI ontologyName)  throws RemoteQueryException {
-        Set<ServerOntologyInfo> ontologyList = getRemoteOntologyList(false);
-        ServerOntologyInfo versions = null;
-        for (ServerOntologyInfo tryMe : ontologyList) {
-            if (tryMe.getOntologyName().equals(ontologyName)) {
-                versions = tryMe;
-                ontologyName = versions.getOntologyName();
-                break;
-            }
-        }
-        return versions;
+    protected ServerOntologyInfo getServerOntologyInfo(IRI ontologyName)  throws RemoteQueryException {
+        return getOntologyInfoByIRI(false).get(ontologyName);
     }
     
     protected List<OWLOntologyChange> getUncommittedChanges(Set<OWLOntology> ontologies) {
@@ -84,6 +79,26 @@ public abstract class AbstractClientConnection implements ClientConnection {
         ontologyInfoMap.remove(ontology);
     }
     
+    private void makeOntologyInfoMaps() throws RemoteQueryException {
+        serverOntologyInfoByIRI = new HashMap<IRI, ServerOntologyInfo>();
+        serverOntologyInfoByShortName = new HashMap<String, ServerOntologyInfo>();
+        Set<ServerOntologyInfo> infoSet = updateRemoteOntologyList();
+        for (ServerOntologyInfo info : infoSet) {
+            serverOntologyInfoByIRI.put(info.getOntologyName(), info);
+            serverOntologyInfoByShortName.put(info.getShortName(), info);
+        }
+    }
+    
+    protected void applyChanges(ChangeAndRevisionSummary changeSummary) throws RemoteQueryException {
+        manager.applyChanges(changeSummary.getChanges());
+        for (Entry<IRI, Integer> entry : changeSummary.getRevisions().entrySet()) {
+            IRI ontologyName = entry.getKey();
+            int revision = entry.getValue();
+            String shortName = getServerOntologyInfo(ontologyName).getShortName();
+            addOntology(getOntologyManager().getOntology(ontologyName), shortName, revision);
+        }
+    }
+    
     
     /* *****************************************************************************
      * Abstract methods.
@@ -93,7 +108,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
 
     protected abstract OWLOntology pullMarked(IRI ontologyName, String shortName, int revisionToGet) throws OWLOntologyCreationException, RemoteQueryException;
 
-    protected abstract List<OWLOntologyChange> getChangesFromServer(OWLOntology ontology, String shortName, int start, int end) throws RemoteQueryException;
+    protected abstract ChangeAndRevisionSummary getChangesFromServer(OWLOntology ontology, String shortName, int start, int end) throws RemoteQueryException;
     
     /* *****************************************************************************
      * Interface implementations.
@@ -102,13 +117,21 @@ public abstract class AbstractClientConnection implements ClientConnection {
     public OWLOntologyManager getOntologyManager() {
         return manager;
     }
+   
+    @Override
+    public Map<IRI, ServerOntologyInfo> getOntologyInfoByIRI(boolean forceUpdate) throws RemoteQueryException {
+        if (forceUpdate || serverOntologyInfoByIRI == null) {
+            makeOntologyInfoMaps();
+        }
+        return Collections.unmodifiableMap(serverOntologyInfoByIRI);
+    }
     
     @Override
-    public Set<ServerOntologyInfo> getRemoteOntologyList(boolean forceUpdate) throws RemoteQueryException {
-        if (forceUpdate || revisions == null) {
-            revisions = updateRemoteOntologyList();
+    public Map<String, ServerOntologyInfo> getOntologyInfoByShortName(boolean forceUpdate) throws RemoteQueryException {
+        if (forceUpdate || serverOntologyInfoByIRI == null) {
+            makeOntologyInfoMaps();
         }
-        return revisions;
+        return Collections.unmodifiableMap(serverOntologyInfoByShortName);
     }
     
     @Override
@@ -123,7 +146,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
     }
 
     public OWLOntology pull(IRI ontologyName, Integer revisionToGet) throws OWLOntologyCreationException, RemoteQueryException {
-        ServerOntologyInfo revisions = getRevisionInfo(ontologyName);
+        ServerOntologyInfo revisions = getServerOntologyInfo(ontologyName);
         if (revisions == null) {
             return null;
         }
@@ -136,8 +159,9 @@ public abstract class AbstractClientConnection implements ClientConnection {
         }
         String shortName = revisions.getShortName();
         OWLOntology ontology = pullMarked(ontologyName, shortName, closestRevision);
-        manager.applyChanges(getChangesFromServer(ontology, shortName, closestRevision, revisionToGet));
-        addOntology(ontology, shortName, revisionToGet);
+        addOntology(ontology, shortName, closestRevision);
+        ChangeAndRevisionSummary changeSummary = getChangesFromServer(ontology, shortName, closestRevision, revisionToGet);
+        applyChanges(changeSummary);
         return ontology;
     }
 
@@ -150,11 +174,10 @@ public abstract class AbstractClientConnection implements ClientConnection {
         }
         if (revision == null) {
             IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
-            revision = getRevisionInfo(ontologyName).getMaxRevision();
+            revision = getServerOntologyInfo(ontologyName).getMaxRevision();
         }
         try {
-            getOntologyManager().applyChanges(getChangesFromServer(ontology, clientOntologyInfo.getShortName(), currentRevision, revision));
-            ontologyInfoMap.get(ontology).setRevision(revision);
+            applyChanges(getChangesFromServer(ontology, clientOntologyInfo.getShortName(), currentRevision, revision));
         }
         catch (RemoteOntologyException e) {
             throw new UpdateFailedException(e);
