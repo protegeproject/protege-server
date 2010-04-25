@@ -1,18 +1,16 @@
 package org.protege.owl.server.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
-import org.protege.owl.server.api.ServerOntologyInfo;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
-import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.ImportChange;
 import org.semanticweb.owlapi.model.OWLAxiomChange;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyChangeVisitor;
 import org.semanticweb.owlapi.model.RemoveAxiom;
@@ -21,23 +19,6 @@ import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 import org.semanticweb.owlapi.model.SetOntologyID;
 
 public class Utilities {
-    
-    public static Map<String,ServerOntologyInfo> getOntologyInfoByShortName(Set<ServerOntologyInfo> revisionSet) {
-        TreeMap<String, ServerOntologyInfo> map = new TreeMap<String, ServerOntologyInfo>();
-        for (ServerOntologyInfo ontologyInfo : revisionSet) {
-            map.put(ontologyInfo.getShortName(), ontologyInfo);
-        }
-        return map;
-    }
-    
-    
-    public static Map<IRI, ServerOntologyInfo> getOntologyInfoByOntologyName(Set<ServerOntologyInfo> revisionSet) {
-        TreeMap<IRI, ServerOntologyInfo> map = new TreeMap<IRI, ServerOntologyInfo>();
-        for (ServerOntologyInfo ontologyInfo : revisionSet) {
-            map.put(ontologyInfo.getOntologyName(), ontologyInfo);
-        }
-        return map;
-    }
 
     /**
      * This routine removes all set ontology id changes.  Other than this, the result of this call is to 
@@ -69,7 +50,7 @@ public class Utilities {
         return result;
     }
 
-    private static boolean overlappingChange(OWLOntologyChange change1, OWLOntologyChange change2) {
+    public static boolean overlappingChange(OWLOntologyChange change1, OWLOntologyChange change2) {
         if (change1.getOntology().equals(change2.getOntology())) {
             OverlapVisitor visitor = new OverlapVisitor(change1);
             change2.accept(visitor);
@@ -140,6 +121,14 @@ public class Utilities {
             }
         }
         
+    }
+    
+    public static Set<OWLOntology> getChangedOntologies(List<OWLOntologyChange> changes) {
+        Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
+        for (OWLOntologyChange change : changes) {
+            ontologies.add(change.getOntology());
+        }
+        return ontologies;
     }
 
 }
