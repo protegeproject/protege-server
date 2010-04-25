@@ -34,7 +34,7 @@ import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 
 public class AxiomToChangeConverter extends AxiomAnnotationsVisitor {
 	private Map<OWLAnonymousIndividual, OWLOntology> ontologyMap;
-	private Map<IRI, Integer> currentRevisionMap;
+	private Map<IRI, Integer> revisionMap;
 	private OWLAnonymousIndividual ontologyRepresentative;
 	private OWLOntologyChange change;
 	private boolean isAdd    = false;
@@ -47,7 +47,7 @@ public class AxiomToChangeConverter extends AxiomAnnotationsVisitor {
 	
 	private Map<OWLAnonymousIndividual, OWLOntology> retrieveOntologies(final OWLOntology metaOntology, Set<OWLOntology> ontologies) {
 	    ontologyMap = new HashMap<OWLAnonymousIndividual, OWLOntology>();
-	    currentRevisionMap = new HashMap<IRI, Integer>();
+	    revisionMap = new HashMap<IRI, Integer>();
 	    for (OWLIndividual o : REMOTE_ONTOLOGY_CLASS.getIndividuals(metaOntology)) {
 	        if (o instanceof OWLNamedIndividual) {
 	            continue;
@@ -68,7 +68,7 @@ public class AxiomToChangeConverter extends AxiomAnnotationsVisitor {
 	            if (assertion.getProperty().equals(ONTOLOGY_CURRENT_REVISION_PROPERTY)) {
 	                int revision = Integer.parseInt(assertion.getObject().getLiteral());
 	                OWLOntology ontology = ontologyMap.get(o);
-	                currentRevisionMap.put(ontology.getOntologyID().getOntologyIRI(), revision);
+	                revisionMap.put(ontology.getOntologyID().getOntologyIRI(), revision);
 	            }
 	        }
 	    }
@@ -104,8 +104,8 @@ public class AxiomToChangeConverter extends AxiomAnnotationsVisitor {
 		}
 	}
 
-	public Map<IRI, Integer> getCurrentRevisionMap() {
-        return Collections.unmodifiableMap(currentRevisionMap);
+	public Map<IRI, Integer> getRevisionMap() {
+        return Collections.unmodifiableMap(revisionMap);
     }
 	
 	@Override
