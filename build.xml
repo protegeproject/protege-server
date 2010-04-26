@@ -59,7 +59,6 @@
 	     <path id = "project.classpath">    
 	       <pathelement location="${protege.osgi}"/>
 	       <pathelement location="${owl.lib}"/>
-           <fileset dir="./lib" includes="*.jar"/>
 	       <fileset dir="${genlib}"/>
 	     </path>
 	   </target>

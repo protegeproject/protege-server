@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 
 import org.protege.owl.server.api.ClientConnection;
 import org.protege.owl.server.api.ServerOntologyInfo;
-import org.protege.owl.server.connection.servlet.ChangeAndRevisionSummary;
 import org.protege.owl.server.exception.RemoteOntologyException;
 import org.protege.owl.server.exception.RemoteQueryException;
 import org.protege.owl.server.exception.UpdateFailedException;

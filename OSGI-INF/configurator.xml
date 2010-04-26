@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<component name="configurator">
+<scr:component name="configurator" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
 	<implementation class="org.protege.owl.server.configuration.ConfiguratorImpl"/>
 	<service>
 		<provide interface="org.protege.owl.server.api.Configurator"/>
@@ -10,4 +10,4 @@
 		unbind="removeServerFactory"
 		cardinality="0..n"
 		policy="dynamic"/>
-</component>
+</scr:component>

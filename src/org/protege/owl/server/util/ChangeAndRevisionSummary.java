@@ -1,14 +1,13 @@
 /**
  * 
  */
-package org.protege.owl.server.connection.servlet;
+package org.protege.owl.server.util;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.protege.owl.server.util.AxiomToChangeConverter;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;

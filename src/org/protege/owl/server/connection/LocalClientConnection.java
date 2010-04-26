@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.protege.owl.server.api.ServerOntologyInfo;
 import org.protege.owl.server.api.Server;
-import org.protege.owl.server.connection.servlet.ChangeAndRevisionSummary;
+import org.protege.owl.server.api.ServerOntologyInfo;
 import org.protege.owl.server.exception.RemoteOntologyChangeException;
 import org.protege.owl.server.exception.RemoteOntologyException;
 import org.protege.owl.server.exception.RemoteQueryException;
 import org.protege.owl.server.util.AbstractClientConnection;
+import org.protege.owl.server.util.ChangeAndRevisionSummary;
 import org.protege.owlapi.apibinding.ProtegeOWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
