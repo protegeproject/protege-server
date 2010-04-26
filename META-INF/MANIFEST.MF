@@ -12,6 +12,7 @@ Import-Package:  org.osgi.framework,
 Export-Package: org.protege.owl.server.api,
  org.protege.owl.server.configuration,
  org.protege.owl.server.connection,
+ org.protege.owl.server.connection.servlet,
  org.protege.owl.server.exception,
  org.protege.owl.server.util
 Require-Bundle: org.semanticweb.owl.owlapi;bundle-version="3.0.0"
