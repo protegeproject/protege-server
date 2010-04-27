@@ -13,6 +13,7 @@
 	
 	<property name = "protege.common"    location="${protege.home}/bundles"/>
 	<property name = "protege.plugins"   location="${protege.home}/plugins"/>
+    <property name = "protege.server"    location="${protege.home}/server"/>
 	
     <property name="owl.lib"             location="${protege.plugins}/org.semanticweb.owl.owlapi.jar"/>
     <property name="common.lib"          location="${protege.common}/org.protege.common.jar"/>
@@ -96,6 +97,15 @@
 	         manifest = "META-INF/MANIFEST.MF"/>
 	</target>
 	
+    <target name = "install" depends="jar">
+      <copy todir="${protege.home}">
+        <fileset dir="./OSGi"/>
+      </copy>
+      <copy file="${build}/${plugin}.jar" 
+            todir="${protege.plugins}"
+            overwrite="true"/>
+    </target>
+
 	<target name="clean">
 		<delete dir="${build}"/>
 	</target>
