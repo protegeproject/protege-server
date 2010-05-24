@@ -27,11 +27,17 @@ public abstract class AbstractClientConnection implements ClientConnection {
 	private Map<OWLOntology, ClientOntologyInfo> ontologyInfoMap = new HashMap<OWLOntology, ClientOntologyInfo>();
     private Map<IRI, ServerOntologyInfo> serverOntologyInfoByIRI;
     private Map<String, ServerOntologyInfo> serverOntologyInfoByShortName;
-
+    
+    //ToDo Fix Me!
+    private boolean updateFromServer = false;
     
     private OWLOntologyChangeListener uncommittedChangesListener = new OWLOntologyChangeListener() {
 
         public void ontologiesChanged(List<? extends OWLOntologyChange> changes) throws OWLException {
+            // ToDo proper threading please...
+            if (updateFromServer) {
+                return;
+            }
         	for (OWLOntologyChange change : changes) {
         		OWLOntology ontology = change.getOntology();
         		ClientOntologyInfo info = ontologyInfoMap.get(ontology);
@@ -175,11 +181,15 @@ public abstract class AbstractClientConnection implements ClientConnection {
             IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
             revision = getServerOntologyInfo(ontologyName).getMaxRevision();
         }
+        updateFromServer = true;
         try {
             applyChanges(getChangesFromServer(ontology, clientOntologyInfo.getShortName(), currentRevision, revision));
         }
         catch (RemoteOntologyException e) {
             throw new UpdateFailedException(e);
+        }
+        finally {
+            updateFromServer = false;
         }
     }
 
