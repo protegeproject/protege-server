@@ -129,7 +129,13 @@ public class ServletClientConnection extends AbstractClientConnection {
 	        if (((HttpURLConnection) connection).getResponseCode() != HttpURLConnection.HTTP_CONFLICT) {
 	            OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
 	            OWLOntology changeOntology = serializer.deserialize(otherManager, new StreamDocumentSource(connection.getInputStream()));
-	            applyChanges(ChangeAndRevisionSummary.getChanges(getOntologies(), changeOntology));
+	            try {
+	            	setUpdateFromServer(true);
+	            	applyChanges(ChangeAndRevisionSummary.getChanges(getOntologies(), changeOntology));
+	            }
+	            finally {
+	            	setUpdateFromServer(false);
+	            }
 	        }
 	        else {
 	            OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();

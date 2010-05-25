@@ -41,6 +41,8 @@ public interface ClientConnection extends OWLOntologySetProvider {
     
     List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology);
     
+    boolean isUpdateFromServer();
+    
     void dispose();
 
 }

@@ -35,7 +35,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
 
         public void ontologiesChanged(List<? extends OWLOntologyChange> changes) throws OWLException {
             // ToDo proper threading please...
-            if (updateFromServer) {
+            if (isUpdateFromServer()) {
                 return;
             }
         	for (OWLOntologyChange change : changes) {
@@ -102,6 +102,14 @@ public abstract class AbstractClientConnection implements ClientConnection {
             String shortName = getServerOntologyInfo(ontologyName).getShortName();
             addOntology(getOntologyManager().getOntology(ontologyName), shortName, revision);
         }
+    }
+    
+    protected void setUpdateFromServer(boolean updateFromServer)  {
+    	this.updateFromServer = updateFromServer;
+    }
+    
+    public boolean isUpdateFromServer() {
+    	return updateFromServer;
     }
     
     
@@ -181,7 +189,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
             IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
             revision = getServerOntologyInfo(ontologyName).getMaxRevision();
         }
-        updateFromServer = true;
+        setUpdateFromServer(true);
         try {
             applyChanges(getChangesFromServer(ontology, clientOntologyInfo.getShortName(), currentRevision, revision));
         }
@@ -189,7 +197,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
             throw new UpdateFailedException(e);
         }
         finally {
-            updateFromServer = false;
+            setUpdateFromServer(false);
         }
     }
 
