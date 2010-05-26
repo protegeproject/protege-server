@@ -187,6 +187,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
         }
         if (revision == null) {
             IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
+            getOntologyInfoByIRI(true);
             revision = getServerOntologyInfo(ontologyName).getMaxRevision();
         }
         setUpdateFromServer(true);
