@@ -71,6 +71,12 @@
 	               <include name = "**/log4j.jar"/>
 	           </patternset>
 	       </unjar>
+           <unjar dest="${build}"
+                  src="${owl.lib}">
+               <patternset>
+                   <include name = "**/protege-owlapi-extensions.jar"/>
+               </patternset>
+           </unjar>
 	   </target>
 	
 	<target name="init">
