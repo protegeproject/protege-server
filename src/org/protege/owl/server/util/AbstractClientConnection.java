@@ -98,9 +98,16 @@ public abstract class AbstractClientConnection implements ClientConnection {
         manager.applyChanges(changeSummary.getChanges());
         for (Entry<IRI, Integer> entry : changeSummary.getRevisions().entrySet()) {
             IRI ontologyName = entry.getKey();
+            OWLOntology ontology = getOntologyManager().getOntology(ontologyName);
             int revision = entry.getValue();
-            String shortName = getServerOntologyInfo(ontologyName).getShortName();
-            addOntology(getOntologyManager().getOntology(ontologyName), shortName, revision);
+            ClientOntologyInfo info = ontologyInfoMap.get(ontology);
+            if (info == null) {
+                String shortName = getServerOntologyInfo(ontologyName).getShortName();
+                addOntology(ontology, shortName, revision);
+            }
+            else {
+                info.setRevision(revision);
+            }
         }
     }
     
@@ -174,7 +181,13 @@ public abstract class AbstractClientConnection implements ClientConnection {
         OWLOntology ontology = pullMarked(ontologyName, shortName, closestRevision);
         addOntology(ontology, shortName, closestRevision);
         ChangeAndRevisionSummary changeSummary = getChangesFromServer(ontology, shortName, closestRevision, revisionToGet);
-        applyChanges(changeSummary);
+        setUpdateFromServer(true);
+        try {
+            applyChanges(changeSummary);
+        }
+        finally {
+            setUpdateFromServer(false);
+        }
         return ontology;
     }
 
