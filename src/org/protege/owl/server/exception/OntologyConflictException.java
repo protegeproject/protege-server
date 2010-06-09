@@ -10,6 +10,7 @@ public class OntologyConflictException extends RemoteOntologyChangeException {
     private List<OWLOntologyChange> rejectedChanges;
     
     public OntologyConflictException(List<OWLOntologyChange> rejectedChanges) {
+        super(rejectedChanges.size() == 1 ? "One change rejected" : "" + rejectedChanges.size() + " changes rejected");
         this.rejectedChanges = rejectedChanges;
     }
     
