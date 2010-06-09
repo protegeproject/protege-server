@@ -127,6 +127,7 @@ public class ServletClientConnection extends AbstractClientConnection {
 	        OWLOntology metaOntology = converter.getMetaOntology();
 	        serializer.serialize(metaOntology, connection.getOutputStream());
 	        if (((HttpURLConnection) connection).getResponseCode() != HttpURLConnection.HTTP_CONFLICT) {
+                clearUncommittedChanges(ontologies);
 	            OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
 	            OWLOntology changeOntology = serializer.deserialize(otherManager, new StreamDocumentSource(connection.getInputStream()));
 	            try {
