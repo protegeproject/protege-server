@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Protege Ontology Server
+Bundle-Name: Ontology Server Framework
 Bundle-SymbolicName: org.protege.owl.server
 Bundle-Version: 1.0.0
 Bundle-Vendor: Protege Development Team
