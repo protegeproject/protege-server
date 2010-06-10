@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
+import org.semanticweb.owlapi.io.StringDocumentTarget;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
@@ -13,6 +18,7 @@ import org.semanticweb.owlapi.model.OWLAxiomChange;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyChangeVisitor;
+import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
@@ -164,6 +170,19 @@ public class Utilities {
             ontologies.add(change.getOntology());
         }
         return ontologies;
+    }
+    
+    public static void logOntology(OWLOntology ontology, Logger logger, Level level) {
+        if (logger.isEnabledFor(level)) {
+            StringDocumentTarget out = new StringDocumentTarget();
+            try {
+                ontology.getOWLOntologyManager().saveOntology(ontology, new OWLXMLOntologyFormat(), out);
+            } catch (OWLOntologyStorageException e) {
+                logger.log(level, "Could not display ontology", e);
+            }
+            logger.log(level, out.toString());
+            
+        }
     }
 
 }

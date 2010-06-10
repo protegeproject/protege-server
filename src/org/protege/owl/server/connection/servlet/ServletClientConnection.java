@@ -15,12 +15,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.protege.owl.server.api.ServerOntologyInfo;
 import org.protege.owl.server.exception.OntologyConflictException;
 import org.protege.owl.server.exception.RemoteQueryException;
 import org.protege.owl.server.util.AbstractClientConnection;
 import org.protege.owl.server.util.ChangeAndRevisionSummary;
 import org.protege.owl.server.util.ChangeToAxiomConverter;
+import org.protege.owl.server.util.Utilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.StreamDocumentSource;
 import org.semanticweb.owlapi.model.IRI;
@@ -32,6 +35,8 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class ServletClientConnection extends AbstractClientConnection {
+    private Logger logger = Logger.getLogger(ServletClientConnection.class);
+    
 	private String httpPrefix;
 	private Serializer serializer;
 	
@@ -112,6 +117,9 @@ public class ServletClientConnection extends AbstractClientConnection {
 
 	@Override
 	public void commit(Set<OWLOntology> ontologies) throws OntologyConflictException, RemoteQueryException {
+	    if (logger.isDebugEnabled()) {
+	        logger.debug("Commit started");
+	    }
 	    try {
 	        ChangeToAxiomConverter converter = new ChangeToAxiomConverter();
 	        for (OWLOntology ontology : ontologies) {
@@ -119,17 +127,32 @@ public class ServletClientConnection extends AbstractClientConnection {
 	        }
 	        for (OWLOntologyChange change : getUncommittedChanges(ontologies)) {
 	            change.accept(converter);
+	            if (logger.isDebugEnabled()) {
+	                logger.debug("Attempting to commit: " + change);
+	            }
 	        }
 	        URL servlet = new URL(httpPrefix + Paths.ONTOLOGY_COMMIT_PATH);
 	        URLConnection connection = servlet.openConnection();
 	        connection.setDoOutput(true);
 	        connection.connect();
 	        OWLOntology metaOntology = converter.getMetaOntology();
+	        if (logger.isDebugEnabled()) {
+	            logger.debug("Sending ontology:");
+	            Utilities.logOntology(metaOntology, logger, Level.DEBUG);
+	        }
 	        serializer.serialize(metaOntology, connection.getOutputStream());
-	        if (((HttpURLConnection) connection).getResponseCode() != HttpURLConnection.HTTP_CONFLICT) {
+	        int responseCode = ((HttpURLConnection) connection).getResponseCode();
+	        if (responseCode != HttpURLConnection.HTTP_CONFLICT) {
+	            if (logger.isDebugEnabled()) {
+	                logger.debug("Response code " + responseCode + " deemed successful - clearing uncommitted changes");
+	            }
                 clearUncommittedChanges(ontologies);
 	            OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
 	            OWLOntology changeOntology = serializer.deserialize(otherManager, new StreamDocumentSource(connection.getInputStream()));
+	            if (logger.isDebugEnabled()) {
+	                logger.debug("Receiving ontology:");
+	                Utilities.logOntology(changeOntology, logger, Level.DEBUG);
+	            }
 	            try {
 	            	setUpdateFromServer(true);
 	            	applyChanges(ChangeAndRevisionSummary.getChanges(getOntologies(), changeOntology));
@@ -139,6 +162,9 @@ public class ServletClientConnection extends AbstractClientConnection {
 	            }
 	        }
 	        else {
+	            if (logger.isDebugEnabled()) {
+	                logger.debug("Conflict detected on server");
+	            }
 	            OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
                 OWLOntology rejectedOntology = serializer.deserialize(otherManager, new StreamDocumentSource(((HttpURLConnection) connection).getErrorStream()));
 	            ChangeAndRevisionSummary rejectedSummary = ChangeAndRevisionSummary.getChanges(getOntologies(), rejectedOntology);
