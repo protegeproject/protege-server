@@ -108,7 +108,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
             else {
                 info.setRevision(revision);
             }
-        }
+        }        
     }
     
     protected void setUpdateFromServer(boolean updateFromServer)  {
@@ -203,9 +203,14 @@ public abstract class AbstractClientConnection implements ClientConnection {
             getOntologyInfoByIRI(true);
             revision = getServerOntologyInfo(ontologyName).getMaxRevision();
         }
+
         setUpdateFromServer(true);
         try {
-            applyChanges(getChangesFromServer(ontology, clientOntologyInfo.getShortName(), currentRevision, revision));
+            List<OWLOntologyChange> pendingChanges = clientOntologyInfo.getChanges();
+            ChangeAndRevisionSummary serverChanges = getChangesFromServer(ontology, clientOntologyInfo.getShortName(), currentRevision, revision);
+            applyChanges(serverChanges);
+            pendingChanges = Utilities.swapOrderOfChangeLists(pendingChanges, serverChanges.getChanges());
+            clientOntologyInfo.setChanges(pendingChanges);
         }
         catch (RemoteOntologyException e) {
             throw new UpdateFailedException(e);

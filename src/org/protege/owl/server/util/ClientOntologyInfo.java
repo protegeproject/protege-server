@@ -33,6 +33,9 @@ public class ClientOntologyInfo {
 	public List<OWLOntologyChange> getChanges() {
 		return changes;
 	}
+	public void setChanges(List<OWLOntologyChange> changes) {
+		this.changes = changes;
+	}
 	
 	public void addChange(OWLOntologyChange change) {
 		changes.add(change);

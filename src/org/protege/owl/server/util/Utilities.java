@@ -49,6 +49,30 @@ public class Utilities {
         }
         return result;
     }
+    
+    /**
+     * This routine calculates a minimal set of changes x such that 
+     * <center>
+     *    firstChanges o secondChanges = secondChanges o x
+     * </center>
+     * where composition goes from left to right.
+     * 
+     * @param firstChanges 
+     * @param secondChanges 
+     * @return a minimal set of changes that when applied after secondChanges will result in the same result as if 
+     *      we had first made the changes {@link firstChanges} and then made the changes {@link secondChanges}
+     */
+    public static List<OWLOntologyChange> swapOrderOfChangeLists(List<OWLOntologyChange> firstChanges, List<OWLOntologyChange> secondChanges) {
+    	List<OWLOntologyChange> result = removeRedundantChanges(firstChanges);
+    	List<OWLOntologyChange> toRemove = new ArrayList<OWLOntologyChange>();
+    	for (OWLOntologyChange firstChange : result) {
+			if (overlappingChange(firstChange, secondChanges)) {
+				toRemove.add(firstChange);
+			}
+    	}
+    	result.removeAll(toRemove);
+    	return result;
+    }
 
     public static boolean overlappingChange(OWLOntologyChange change1, OWLOntologyChange change2) {
         if (change1.getOntology().equals(change2.getOntology())) {
@@ -57,6 +81,17 @@ public class Utilities {
             return visitor.isOverlapping();
         }
         return false;
+    }
+    
+    public static boolean overlappingChange(OWLOntologyChange change1, List<OWLOntologyChange> changes) {
+    	boolean overlapping = false;
+    	for (OWLOntologyChange change2 : changes) {
+    		if (overlappingChange(change1, change2)) {
+    			overlapping = true;
+    			break;
+    		}
+    	}
+    	return overlapping;
     }
 
     protected static class OverlapVisitor implements OWLOntologyChangeVisitor {
