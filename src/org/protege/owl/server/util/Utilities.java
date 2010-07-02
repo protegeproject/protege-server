@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -70,6 +69,7 @@ public class Utilities {
      */
     public static List<OWLOntologyChange> swapOrderOfChangeLists(List<OWLOntologyChange> firstChanges, List<OWLOntologyChange> secondChanges) {
     	List<OWLOntologyChange> result = removeRedundantChanges(firstChanges);
+    	secondChanges = removeRedundantChanges(secondChanges);
     	List<OWLOntologyChange> toRemove = new ArrayList<OWLOntologyChange>();
     	for (OWLOntologyChange firstChange : result) {
 			if (overlappingChange(firstChange, secondChanges)) {

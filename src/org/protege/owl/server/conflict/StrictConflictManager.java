@@ -11,7 +11,6 @@ import org.protege.owl.server.api.ConflictManager;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerOntologyInfo;
 import org.protege.owl.server.exception.OntologyConflictException;
-import org.protege.owl.server.util.Utilities;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
