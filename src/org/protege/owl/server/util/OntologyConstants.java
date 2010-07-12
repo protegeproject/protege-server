@@ -6,8 +6,7 @@ import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLStringLiteral;
+import org.semanticweb.owlapi.model.OWLLiteral;
 
 import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
 
@@ -66,11 +65,11 @@ public class OntologyConstants {
 	/**
 	 * An AXIOM_ACTION, AXIOM_ADDED annotation on an axiom means that this axiom should be added to the remote ontology.
 	 */
-	public static final OWLStringLiteral AXIOM_ADDED = factory.getOWLStringLiteral("Axiom Added");
+	public static final OWLLiteral AXIOM_ADDED = factory.getOWLLiteral("Axiom Added");
 	/**
      * An AXIOM_ACTION, AXIOM_ADDED annotation on an axiom means that this axiom should be added to the remote ontology.
      */
-	public static final OWLStringLiteral AXIOM_REMOVED = factory.getOWLStringLiteral("Axiom Removed");
+	public static final OWLLiteral AXIOM_REMOVED = factory.getOWLLiteral("Axiom Removed");
 	
 	/**
 	 * The add axiom annotation.

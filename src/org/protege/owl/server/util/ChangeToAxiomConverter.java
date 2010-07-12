@@ -10,7 +10,6 @@ import static org.protege.owl.server.util.OntologyConstants.REMOTE_ONTOLOGY_CLAS
 import static org.protege.owl.server.util.OntologyConstants.REMOVE_AXIOM_ANNOTATION;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,12 +25,12 @@ import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnonymousIndividual;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyChangeVisitor;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLStringLiteral;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
@@ -108,7 +107,7 @@ public class ChangeToAxiomConverter implements OWLOntologyChangeVisitor {
 
 	
 	public void visit(AddImport change) {
-	    OWLStringLiteral importAsLiteral = factory.getOWLStringLiteral(change.getImportDeclaration().getIRI().toString());
+	    OWLLiteral importAsLiteral = factory.getOWLLiteral(change.getImportDeclaration().getIRI().toString());
 	    Set<OWLAnnotation> importAnnotations = new HashSet<OWLAnnotation>();
 	    importAnnotations.add(REMOVE_AXIOM_ANNOTATION);
 	    importAnnotations.add(getAboutAnnotation(change.getOntology()));
@@ -121,7 +120,7 @@ public class ChangeToAxiomConverter implements OWLOntologyChangeVisitor {
 
 	
 	public void visit(RemoveImport change) {
-		OWLStringLiteral importAsLiteral = factory.getOWLStringLiteral(change.getImportDeclaration().getIRI().toString());
+		OWLLiteral importAsLiteral = factory.getOWLLiteral(change.getImportDeclaration().getIRI().toString());
 		Set<OWLAnnotation> importAnnotations = new HashSet<OWLAnnotation>();
 		importAnnotations.add(REMOVE_AXIOM_ANNOTATION);
 		importAnnotations.add(getAboutAnnotation(change.getOntology()));
