@@ -20,7 +20,7 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
  * it must be able to provide the raw content of `marked' revisions of the ontology and it must be able to
  * provide a set of changes to go from any revision of an ontology to any other revision of that ontology.  
  * Implementations of this class need not concern themselves with the problem of how the server capabilities are
- * made available on the internet - this is done by implementations of the ServerTransport class.
+ * made available on the internet - this is done by implementations of the ServerConnection class.
  * 
  * @author tredmond
  *
