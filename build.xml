@@ -14,7 +14,8 @@
 	<property name = "protege.common"    location="${protege.home}/bundles"/>
 	<property name = "protege.plugins"   location="${protege.home}/plugins"/>
     <property name = "protege.server"    location="${protege.home}/server"/>
-	
+
+    <property name="editor.lib"          location="${protege.plugins}/org.protege.editor.owl.jar"/>	
     <property name="owl.lib"             location="${protege.plugins}/org.semanticweb.owl.owlapi.jar"/>
     <property name="common.lib"          location="${protege.common}/org.protege.common.jar"/>
 
@@ -54,7 +55,8 @@
 	     <condition property="libs.found">
 	       <and>
 	         <available file="${protege.osgi}" type="file"/>
-	         <available file="${owl.lib}" type="file"/>
+             <available file="${editor.lib}"   type="file"/>
+	         <available file="${owl.lib}"      type="file"/>
 	       </and>
 	     </condition>
 	     <path id = "project.classpath">    
@@ -72,7 +74,7 @@
 	           </patternset>
 	       </unjar>
            <unjar dest="${build}"
-                  src="${owl.lib}">
+                  src="${editor.lib}">
                <patternset>
                    <include name = "**/protege-owlapi-extensions.jar"/>
                </patternset>
@@ -110,9 +112,22 @@
       <copy file="${build}/${plugin}.jar" 
             todir="${protege.plugins}"
             overwrite="true"/>
+      <copy file="${genlib}/protege-owlapi-extensions.jar"
+            todir="${protege.server}"
+            overwrite="true"/>
     </target>
 
 	<target name="clean">
 		<delete dir="${build}"/>
 	</target>
+
+    <target name="usage">
+      <echo message="Set the PROTEGE_HOME environment variable to point"/>
+      <echo message="to a Protege distribution"/>
+      <echo message=""/>
+      <echo message="jar - makes the org.protege.server.jar bundle"/>
+      <echo message="install - installs the server to a Protege distribution"/>
+      <echo message="clean - cleans - enough said."/>
+      <echo message="usage - prints this message"/>
+    </target>
 </project>
