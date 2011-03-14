@@ -13,7 +13,6 @@
 	
 	<property name = "protege.common"    location="${protege.home}/bundles"/>
 	<property name = "protege.plugins"   location="${protege.home}/plugins"/>
-    <property name = "protege.server"    location="${protege.home}/server"/>
 
     <property name="editor.lib"          location="${protege.plugins}/org.protege.editor.owl.jar"/>	
     <property name="owl.lib"             location="${protege.plugins}/org.semanticweb.owl.owlapi.jar"/>
@@ -113,7 +112,7 @@
             todir="${protege.plugins}"
             overwrite="true"/>
       <copy file="${genlib}/protege-owlapi-extensions.jar"
-            todir="${protege.server}"
+            todir="${protege.common}"
             overwrite="true"/>
     </target>
 
