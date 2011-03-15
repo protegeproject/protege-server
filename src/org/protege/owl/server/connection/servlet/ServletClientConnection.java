@@ -11,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +24,9 @@ import org.protege.owl.server.exception.RemoteQueryException;
 import org.protege.owl.server.util.AbstractClientConnection;
 import org.protege.owl.server.util.ChangeAndRevisionSummary;
 import org.protege.owl.server.util.ChangeToAxiomConverter;
+import org.protege.owl.server.util.RunnableWithException;
 import org.protege.owl.server.util.Utilities;
+import org.protege.owlapi.model.ProtegeOWLOntologyManager;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.StreamDocumentSource;
 import org.semanticweb.owlapi.model.IRI;
@@ -35,12 +38,12 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class ServletClientConnection extends AbstractClientConnection {
-    private Logger logger = Logger.getLogger(ServletClientConnection.class);
+    public static final Logger LOGGER = Logger.getLogger(ServletClientConnection.class);
     
 	private String httpPrefix;
 	private Serializer serializer;
 	
-	public ServletClientConnection(OWLOntologyManager manager, String host) {
+	public ServletClientConnection(ProtegeOWLOntologyManager manager, String host) {
 		super(manager);
 		httpPrefix = "http://" + host;
 		serializer = new SerializerFactory().createSerializer();
@@ -53,7 +56,7 @@ public class ServletClientConnection extends AbstractClientConnection {
      */
     
 	@Override
-    protected Set<ServerOntologyInfo> updateRemoteOntologyList() throws RemoteQueryException {
+    protected Set<ServerOntologyInfo> getRemoteOntologyList() throws RemoteQueryException {
         Set<ServerOntologyInfo> result = new HashSet<ServerOntologyInfo>();
         try {
             OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
@@ -115,55 +118,42 @@ public class ServletClientConnection extends AbstractClientConnection {
      * Interface implementations.
      */
 
+    // TODO break this into smaller pieces!
 	@Override
 	public void commit(Set<OWLOntology> ontologies) throws OntologyConflictException, RemoteQueryException {
-	    if (logger.isDebugEnabled()) {
-	        logger.debug("Commit started");
+	    if (LOGGER.isDebugEnabled()) {
+	        LOGGER.debug("Commit started");
 	    }
+	    Collection<OWLOntologyChange> changes;
+	    OWLOntology metaOntology;
+	    stateChange(State.COMMIT_IN_PROGRESS);
 	    try {
-	        ChangeToAxiomConverter converter = new ChangeToAxiomConverter();
-	        for (OWLOntology ontology : ontologies) {
-	            converter.addRevisionInfo(ontology, getRevision(ontology));
-	        }
-	        for (OWLOntologyChange change : getUncommittedChanges(ontologies)) {
-	            change.accept(converter);
-	            if (logger.isDebugEnabled()) {
-	                logger.debug("Attempting to commit: " + change);
-	            }
+	        synchronized (this) {
+	            changes = getUncommittedChanges(ontologies);
+	            metaOntology = getRequestCommitOntology(ontologies, changes);
 	        }
 	        URL servlet = new URL(httpPrefix + Paths.ONTOLOGY_COMMIT_PATH);
 	        URLConnection connection = servlet.openConnection();
 	        connection.setDoOutput(true);
 	        connection.connect();
-	        OWLOntology metaOntology = converter.getMetaOntology();
-	        if (logger.isDebugEnabled()) {
-	            logger.debug("Sending ontology:");
-	            Utilities.logOntology(metaOntology, logger, Level.DEBUG);
+	        if (LOGGER.isDebugEnabled()) {
+	            LOGGER.debug("Sending ontology:");
+	            Utilities.logOntology(metaOntology, LOGGER, Level.DEBUG);
 	        }
 	        serializer.serialize(metaOntology, connection.getOutputStream());
 	        int responseCode = ((HttpURLConnection) connection).getResponseCode();
 	        if (responseCode != HttpURLConnection.HTTP_CONFLICT) {
-	            if (logger.isDebugEnabled()) {
-	                logger.debug("Response code " + responseCode + " deemed successful - clearing uncommitted changes");
+	            if (LOGGER.isDebugEnabled()) {
+	                LOGGER.debug("Response code " + responseCode + " deemed successful - clearing uncommitted changes");
 	            }
-                clearUncommittedChanges(ontologies);
+	            clearUncommittedChanges(changes);
 	            OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
 	            OWLOntology changeOntology = serializer.deserialize(otherManager, new StreamDocumentSource(connection.getInputStream()));
-	            if (logger.isDebugEnabled()) {
-	                logger.debug("Receiving ontology:");
-	                Utilities.logOntology(changeOntology, logger, Level.DEBUG);
-	            }
-	            try {
-	            	setUpdateFromServer(true);
-	            	applyChanges(ChangeAndRevisionSummary.getChanges(getOntologies(), changeOntology));
-	            }
-	            finally {
-	            	setUpdateFromServer(false);
-	            }
+	            handleRemoteChanges(changeOntology);
 	        }
 	        else {
-	            if (logger.isDebugEnabled()) {
-	                logger.debug("Conflict detected on server");
+	            if (LOGGER.isDebugEnabled()) {
+	                LOGGER.debug("Conflict detected on server");
 	            }
 	            OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
                 OWLOntology rejectedOntology = serializer.deserialize(otherManager, new StreamDocumentSource(((HttpURLConnection) connection).getErrorStream()));
@@ -177,5 +167,48 @@ public class ServletClientConnection extends AbstractClientConnection {
 	    catch (Exception e) {
 	        throw new RemoteQueryException(e);
 	    }
+	    finally {
+	        stateChange(State.IDLE);
+	    }
+	}
+	
+	private OWLOntology getRequestCommitOntology(Set<OWLOntology> ontologies, Collection<OWLOntologyChange> changes) throws OWLOntologyCreationException {
+        ChangeToAxiomConverter converter = new ChangeToAxiomConverter();
+        for (OWLOntology ontology : ontologies) {
+            converter.addRevisionInfo(ontology, getRevision(ontology));
+        }
+        for (OWLOntologyChange change : changes) {
+            change.accept(converter);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Attempting to commit: " + change);
+            }
+        }
+        return converter.getMetaOntology();
+	}
+	
+	private void handleRemoteChanges(OWLOntology changeOntology) throws RemoteQueryException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Receiving ontology:");
+            Utilities.logOntology(changeOntology, LOGGER, Level.DEBUG);
+        }
+        final ChangeAndRevisionSummary changeSummary = ChangeAndRevisionSummary.getChanges(getOntologies(), changeOntology);
+        
+        RunnableWithException<RemoteQueryException> run = new RunnableWithException<RemoteQueryException>() {
+            @Override
+            public void run() {
+                try {
+                    setUpdateFromServer(true);
+                    applyChanges(changeSummary);
+                }
+                catch (RemoteQueryException rqe) {
+                    setException(rqe);
+                }
+                finally {
+                    setUpdateFromServer(false);
+                }
+            }
+        };
+        getOntologyManager().runWithWriteLock(run);
+        if (run.getException() != null) throw run.getException();
 	}
 }

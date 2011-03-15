@@ -6,12 +6,12 @@ import java.util.Set;
 
 import org.protege.owl.server.exception.RemoteOntologyChangeException;
 import org.protege.owl.server.exception.RemoteQueryException;
+import org.protege.owlapi.model.ProtegeOWLOntologyManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyChangeException;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologySetProvider;
 
 /**
@@ -34,7 +34,7 @@ public interface ClientConnection extends OWLOntologySetProvider {
 	 * 
 	 * @return the OWLOntologyManager for all the ontologies  associated with this ClientConnection.
 	 */
-    OWLOntologyManager getOntologyManager();
+    ProtegeOWLOntologyManager getOntologyManager();
     
     /**
      * This routine retrieves some information about the ontologies held on the server side indexed by their name.

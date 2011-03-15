@@ -36,7 +36,7 @@ public class LocalClientConnection extends AbstractClientConnection {
      */
     
     @Override
-    protected Set<ServerOntologyInfo> updateRemoteOntologyList() throws RemoteQueryException {
+    protected Set<ServerOntologyInfo> getRemoteOntologyList() throws RemoteQueryException {
         throw new IllegalStateException("Shouldn't be called");
     }
     
@@ -90,7 +90,7 @@ public class LocalClientConnection extends AbstractClientConnection {
             versionMap.put(ontologyName, getRevision(ontology));
         }
         server.applyChanges(versionMap, changes);
-        clearUncommittedChanges(ontologies);
+        clearUncommittedChanges(changes);
     }   
 
 }

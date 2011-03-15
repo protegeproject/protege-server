@@ -41,6 +41,10 @@ public class ClientOntologyInfo {
 		changes.add(change);
 	}
 	
+	public void removeChange(OWLOntologyChange change) {
+	    changes.remove(change);
+	}
+	
 	public List<OWLOntologyChange> clearChanges() {
 		List<OWLOntologyChange> oldChanges = changes;
 		changes = new ArrayList<OWLOntologyChange>();
