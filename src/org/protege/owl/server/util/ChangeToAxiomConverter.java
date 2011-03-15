@@ -68,7 +68,7 @@ public class ChangeToAxiomConverter implements OWLOntologyChangeVisitor {
 	        List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
 	        changes.add(new AddAxiom(metaOntology, factory.getOWLClassAssertionAxiom(REMOTE_ONTOLOGY_CLASS, o)));
 	        changes.add(new AddAxiom(metaOntology, 
-	                                 factory.getOWLDataPropertyAssertionAxiom(ONTOLOGY_NAME_PROPERTY, o, factory.getOWLTypedLiteral(ontologyName.toString()))));
+	                                 factory.getOWLDataPropertyAssertionAxiom(ONTOLOGY_NAME_PROPERTY, o, factory.getOWLLiteral(ontologyName.toString()))));
 	        manager.applyChanges(changes);
 	        nameToRemoteOntologyInstanceMap.put(ontologyName, o);
 	    }
@@ -77,7 +77,7 @@ public class ChangeToAxiomConverter implements OWLOntologyChangeVisitor {
 	
 	public void addRevisionInfo(OWLOntology realOntology, int revision) {
 	    OWLAnonymousIndividual o = getOntologyDecl(realOntology);
-        manager.addAxiom(metaOntology, factory.getOWLDataPropertyAssertionAxiom(ONTOLOGY_CURRENT_REVISION_PROPERTY, o, factory.getOWLTypedLiteral(revision)));
+        manager.addAxiom(metaOntology, factory.getOWLDataPropertyAssertionAxiom(ONTOLOGY_CURRENT_REVISION_PROPERTY, o, factory.getOWLLiteral(revision)));
 	}
 	
 	public OWLOntology getMetaOntology() {
