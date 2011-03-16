@@ -8,13 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
 import org.protege.owl.server.api.ClientConnection;
 import org.protege.owl.server.api.ServerOntologyInfo;
-import org.protege.owl.server.exception.RemoteOntologyException;
 import org.protege.owl.server.exception.RemoteQueryException;
-import org.protege.owl.server.exception.UpdateFailedException;
 import org.protege.owlapi.model.ProtegeOWLOntologyManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLException;
@@ -102,34 +101,65 @@ public abstract class AbstractClientConnection implements ClientConnection {
     }
     
     protected void applyChanges(final ChangeAndRevisionSummary changeSummary) throws RemoteQueryException {
-        RunnableWithException<RemoteQueryException> run = new RunnableWithException<RemoteQueryException>() {
-                @Override
-                    public void run() {
-                    try {
-                        manager.applyChanges(changeSummary.getChanges());
-                        synchronized (AbstractClientConnection.this) {
-                            for (Entry<IRI, Integer> entry : changeSummary.getRevisions().entrySet()) {
-                                IRI ontologyName = entry.getKey();
-                                OWLOntology ontology = getOntologyManager().getOntology(ontologyName);
-                                int revision = entry.getValue();
-                                ClientOntologyInfo info = ontologyInfoMap.get(ontology);
-                                if (info == null) {
-                                    String shortName = getServerOntologyInfo(ontologyName).getShortName();
-                                    addOntology(ontology, shortName, revision);
-                                }
-                                else {
-                                    info.setRevision(revision);
-                                }
-                            }    
+        Callable<Boolean> call = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws RemoteQueryException {
+                manager.applyChanges(changeSummary.getChanges());
+                synchronized (AbstractClientConnection.this) {
+                    for (Entry<IRI, Integer> entry : changeSummary.getRevisions().entrySet()) {
+                        IRI ontologyName = entry.getKey();
+                        OWLOntology ontology = getOntologyManager().getOntology(ontologyName);
+                        int revision = entry.getValue();
+                        ClientOntologyInfo info = ontologyInfoMap.get(ontology);
+                        if (info == null) {
+                            String shortName = getServerOntologyInfo(ontologyName).getShortName();
+                            addOntology(ontology, shortName, revision);
                         }
+                        else {
+                            info.setRevision(revision);
+                        }
+                    }    
+                }
+                return true;
+            }
+        };
+        try {
+            manager.callWithWriteLock(call);
+        }
+        catch (Exception e) {
+            throw convertException(e, RemoteQueryException.class);
+        }
+    }
+
+    protected void stateChange(State newState) {
+        switch (newState) {
+        case IDLE:
+            synchronized (this) {
+                state = State.IDLE;
+                this.notifyAll();
+            }
+            break;
+        default:
+            synchronized (this) {
+                while (state != State.IDLE) {
+                    try {
+                        this.wait();
                     }
-                    catch (RemoteQueryException rqe) {
-                        setException(rqe);
+                    catch (InterruptedException ie) {
+                        LOGGER.warn("Strange exception while asleep", ie);
                     }
                 }
-            };
-        manager.runWithWriteLock(run);
-        if (run.getException() != null) throw run.getException();
+            }
+        }
+    }
+
+    private <X extends Exception> X convertException(Exception e, Class<? extends X> clazz) {
+        if (clazz.isAssignableFrom(e.getClass())) {
+            return clazz.cast(e);
+        }
+        else {
+            throw new RuntimeException(e);
+        }
     }
     
     protected void setUpdateFromServer(boolean updateFromServer)  {
@@ -186,6 +216,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
         return info.getRevision();
     }
 
+    @Override
     public OWLOntology pull(IRI ontologyName, Integer revisionToGet) throws OWLOntologyCreationException, RemoteQueryException {
         Integer closestRevision;
         String shortName;
@@ -206,22 +237,24 @@ public abstract class AbstractClientConnection implements ClientConnection {
         OWLOntology ontology = pullMarked(ontologyName, shortName, closestRevision);
         addOntology(ontology, shortName, closestRevision);
         final ChangeAndRevisionSummary changeSummary = getChangesFromServer(ontology, shortName, closestRevision, revisionToGet);
-        RunnableWithException<RemoteQueryException> run = new RunnableWithException<RemoteQueryException>() {
-            public void run() {
+        Callable<Boolean> call = new Callable<Boolean>() {
+            public Boolean call() throws RemoteQueryException {
                 try {
                     setUpdateFromServer(true);
                     applyChanges(changeSummary);
-                }
-                catch (RemoteQueryException rqe) {
-                    setException(rqe);
+                    return true;
                 }
                 finally {
                     setUpdateFromServer(false);
                 }
             }
         };
-        manager.runWithWriteLock(run);
-        if (run.getException() != null) throw run.getException();
+        try {
+            manager.callWithWriteLock(call);
+        }
+        catch (Exception e) {
+            throw convertException(e, RemoteQueryException.class);
+        }
         return ontology;
     }
 
@@ -245,9 +278,9 @@ public abstract class AbstractClientConnection implements ClientConnection {
             }
 
             final ChangeAndRevisionSummary serverChanges = getChangesFromServer(ontology, clientOntologyInfo.getShortName(), currentRevision, revision);
-            RunnableWithException<OWLOntologyChangeException> run = new RunnableWithException<OWLOntologyChangeException>() {
+            Callable<Boolean> call = new Callable<Boolean>() {
                @Override
-                public void run() {
+                public Boolean call() throws RemoteQueryException {
                    try {
                        setUpdateFromServer(true);
                        applyChanges(serverChanges);
@@ -256,17 +289,19 @@ public abstract class AbstractClientConnection implements ClientConnection {
                            pendingChanges = Utilities.swapOrderOfChangeLists(pendingChanges, serverChanges.getChanges());
                            clientOntologyInfo.setChanges(pendingChanges);
                        }
-                   }
-                   catch (RemoteOntologyException e) {
-                       setException(new UpdateFailedException(e));
+                       return true;
                    }
                    finally {
                        setUpdateFromServer(false);
                    }
                 } 
             };
-            manager.runWithWriteLock(run);
-            if (run.getException() != null) throw run.getException();
+            try {
+                manager.callWithWriteLock(call);
+            }
+            catch (Exception e) {
+                throw convertException(e, RemoteQueryException.class);
+            }
         }
         finally {
             stateChange(State.IDLE);
@@ -276,28 +311,6 @@ public abstract class AbstractClientConnection implements ClientConnection {
     @Override
     public synchronized List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology) {
         return ontologyInfoMap.get(ontology).getChanges();
-    }
-    
-    protected void stateChange(State newState) {
-        switch (newState) {
-        case IDLE:
-            synchronized (this) {
-                state = State.IDLE;
-                this.notifyAll();
-            }
-            break;
-        default:
-            synchronized (this) {
-                while (state != State.IDLE) {
-                    try {
-                        this.wait();
-                    }
-                    catch (InterruptedException ie) {
-                        LOGGER.warn("Strange exception while asleep", ie);
-                    }
-                }
-            }
-        }
     }
     
     @Override

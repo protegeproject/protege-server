@@ -172,8 +172,9 @@ public class Utilities {
         return ontologies;
     }
     
-    public static void logOntology(OWLOntology ontology, Logger logger, Level level) {
+    public static void logOntology(String message, OWLOntology ontology, Logger logger, Level level) {
         if (logger.isEnabledFor(level)) {
+            logger.log(level, message);
             StringDocumentTarget out = new StringDocumentTarget();
             try {
                 ontology.getOWLOntologyManager().saveOntology(ontology, new OWLXMLOntologyFormat(), out);

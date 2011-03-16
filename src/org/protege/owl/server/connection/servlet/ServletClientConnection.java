@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -24,7 +25,6 @@ import org.protege.owl.server.exception.RemoteQueryException;
 import org.protege.owl.server.util.AbstractClientConnection;
 import org.protege.owl.server.util.ChangeAndRevisionSummary;
 import org.protege.owl.server.util.ChangeToAxiomConverter;
-import org.protege.owl.server.util.RunnableWithException;
 import org.protege.owl.server.util.Utilities;
 import org.protege.owlapi.model.ProtegeOWLOntologyManager;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -61,14 +61,19 @@ public class ServletClientConnection extends AbstractClientConnection {
         try {
             OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
             OWLOntology response = serializer.deserialize(otherManager, new URL(httpPrefix + Paths.ONTOLOGY_LIST_PATH));
+       
             for (OWLIndividual i : REMOTE_ONTOLOGY_CLASS.getIndividuals(response)) {
                 OWLLiteral ontologyName = i.getDataPropertyValues(ONTOLOGY_NAME_PROPERTY, response).iterator().next();
                 OWLLiteral shortName = i.getDataPropertyValues(ONTOLOGY_SHORT_NAME_PROPERTY, response).iterator().next();
                 Set<Integer> markedRevisions = new HashSet<Integer>();
                 for (OWLLiteral value : i.getDataPropertyValues(ONTOLOGY_MARKED_REVISION_PROPERTY, response)) {
-                    markedRevisions.add(Integer.parseInt(value.getLiteral()));
+                    Integer revision = Integer.parseInt(value.getLiteral());
+                    markedRevisions.add(revision);
                 }
                 OWLLiteral maxRevision = i.getDataPropertyValues(ONTOLOGY_MAX_REVISION_PROPERTY, response).iterator().next();
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Latest revision for " + ontologyName + "(" + shortName + ") = " + Integer.parseInt(maxRevision.getLiteral()));
+                }
                 result.add(new ServerOntologyInfo(IRI.create(ontologyName.getLiteral()), 
                                                        shortName.getLiteral(), 
                                                        markedRevisions, 
@@ -104,6 +109,9 @@ public class ServletClientConnection extends AbstractClientConnection {
         try {
             OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
             OWLOntology changeOntology = serializer.deserialize(otherManager, new URL(httpPrefix + Paths.ONTOLOGY_DELTA_PATH + "/" + shortName + "/" + start + "/" + end));
+            if (LOGGER.isDebugEnabled()) {
+                Utilities.logOntology("Retrieving changes for " + shortName + " from " + start + " to " + end, changeOntology, LOGGER, Level.DEBUG);
+            }
             return ChangeAndRevisionSummary.getChanges(getOntologies(), changeOntology);
         }
         catch (IOException e) {
@@ -136,10 +144,7 @@ public class ServletClientConnection extends AbstractClientConnection {
 	        URLConnection connection = servlet.openConnection();
 	        connection.setDoOutput(true);
 	        connection.connect();
-	        if (LOGGER.isDebugEnabled()) {
-	            LOGGER.debug("Sending ontology:");
-	            Utilities.logOntology(metaOntology, LOGGER, Level.DEBUG);
-	        }
+	        Utilities.logOntology("Sending commit ontology:", metaOntology, LOGGER, Level.DEBUG);
 	        serializer.serialize(metaOntology, connection.getOutputStream());
 	        int responseCode = ((HttpURLConnection) connection).getResponseCode();
 	        if (responseCode != HttpURLConnection.HTTP_CONFLICT) {
@@ -187,28 +192,30 @@ public class ServletClientConnection extends AbstractClientConnection {
 	}
 	
 	private void handleRemoteChanges(OWLOntology changeOntology) throws RemoteQueryException {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Receiving ontology:");
-            Utilities.logOntology(changeOntology, LOGGER, Level.DEBUG);
-        }
+	    Utilities.logOntology("Receiving ontology describing commit results:", changeOntology, LOGGER, Level.DEBUG);
         final ChangeAndRevisionSummary changeSummary = ChangeAndRevisionSummary.getChanges(getOntologies(), changeOntology);
         
-        RunnableWithException<RemoteQueryException> run = new RunnableWithException<RemoteQueryException>() {
+        Callable<Boolean> call = new Callable<Boolean>() {
             @Override
-            public void run() {
+            public Boolean call() throws RemoteQueryException {
                 try {
                     setUpdateFromServer(true);
                     applyChanges(changeSummary);
-                }
-                catch (RemoteQueryException rqe) {
-                    setException(rqe);
+                    return true;
                 }
                 finally {
                     setUpdateFromServer(false);
                 }
             }
         };
-        getOntologyManager().runWithWriteLock(run);
-        if (run.getException() != null) throw run.getException();
+        try {
+            getOntologyManager().callWithWriteLock(call);
+        }
+        catch (RemoteQueryException rqe) {
+            throw rqe;
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 	}
 }
