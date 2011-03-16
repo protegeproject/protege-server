@@ -138,6 +138,7 @@ public class ServletClientConnection extends AbstractClientConnection {
 	    try {
 	        synchronized (this) {
 	            changes = getUncommittedChanges(ontologies);
+	            Utilities.logChanges("Found uncommitted changes to commit", changes, LOGGER, Level.DEBUG);
 	            metaOntology = getRequestCommitOntology(ontologies, changes);
 	        }
 	        URL servlet = new URL(httpPrefix + Paths.ONTOLOGY_COMMIT_PATH);

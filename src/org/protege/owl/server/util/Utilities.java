@@ -1,6 +1,7 @@
 package org.protege.owl.server.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -184,6 +185,63 @@ public class Utilities {
             logger.log(level, out.toString());
             
         }
+    }
+    
+    public static void logChanges(String message, Collection<OWLOntologyChange> changes, Logger logger, Level level) {
+        if (logger.isEnabledFor(level)) {
+            LogChangesVisitor visitor = new LogChangesVisitor(logger, level);
+            logger.log(level, message);
+            for (OWLOntologyChange change : changes) {
+                change.accept(visitor);
+            }
+        }
+    }
+    
+    private static class LogChangesVisitor implements OWLOntologyChangeVisitor {
+        private Logger logger;
+        private Level level;
+
+        public LogChangesVisitor(Logger logger, Level level) {
+            this.logger = logger;
+            this.level = level;
+        }
+
+        @Override
+        public void visit(AddAxiom change) {
+            logger.log(level, "\tAdding " + change.getAxiom());
+        }
+
+        @Override
+        public void visit(RemoveAxiom change) {
+            logger.log(level, "\tRemoving " + change.getAxiom());
+        }
+
+        @Override
+        public void visit(SetOntologyID change) {
+            logger.log(level, "\t" + change);
+        }
+
+        @Override
+        public void visit(AddImport change) {
+            logger.log(level, "\t" + change);
+        }
+
+        @Override
+        public void visit(RemoveImport change) {
+            logger.log(level, "\t" + change);
+
+        }
+
+        @Override
+        public void visit(AddOntologyAnnotation change) {
+            logger.log(level, "\t" + change);
+        }
+
+        @Override
+        public void visit(RemoveOntologyAnnotation change) {
+            logger.log(level, "\t" + change);
+        }
+        
     }
 
 }
