@@ -1,3 +1,5 @@
 #!/bin/sh
 
-java -Dlog4j.configuration=file:log4j-server.xml -Dfelix.config.properties=file:conf/server-config.properties -jar bin/felix.jar
+java -classpath bin/felix.jar:bin/ProtegeLauncher.jar \
+     -Dorg.protege.launch.config=server-config.xml \
+     org.protege.osgi.framework.Launcher

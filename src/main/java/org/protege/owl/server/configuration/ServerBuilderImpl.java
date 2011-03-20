@@ -1,21 +1,28 @@
 package org.protege.owl.server.configuration;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.protege.owl.server.api.Configurator;
+import org.protege.owl.server.api.ServerBuilder;
 import org.protege.owl.server.api.ConflictManager;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerConnection;
 import org.protege.owl.server.api.ServerFactory;
+import org.protege.owl.server.metaproject.MetaProject;
+import org.protege.owl.server.metaproject.Vocabulary;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.OWLIndividual;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /*
  * This is suitable for declarative services but the junit task uses him also.
  */
 
-public class ConfiguratorImpl implements Configurator {
-	private Logger logger = Logger.getLogger(ConfiguratorImpl.class);
+public class ServerBuilderImpl implements ServerBuilder {
+	private Logger logger = Logger.getLogger(ServerBuilderImpl.class);
     private ServerConfiguration configuration;
     private Set<ServerFactory> serverFactories = new HashSet<ServerFactory>();
     
@@ -26,11 +33,7 @@ public class ConfiguratorImpl implements Configurator {
     private ConflictManager conflictManager;
     private ServerFactory currentConflictFactory;
     
-    public ConfiguratorImpl() {
-    }
-    
-    @Override
-    public void setConfiguration(ServerConfiguration configuration) {
+    public ServerBuilderImpl(ServerConfiguration configuration) {
         this.configuration = configuration;
         rebuild();
     }

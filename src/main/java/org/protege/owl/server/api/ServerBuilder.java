@@ -10,8 +10,7 @@ import org.protege.owl.server.configuration.ServerConfiguration;
  * @author tredmond
  *
  */
-public interface Configurator {
-    void setConfiguration(ServerConfiguration configuration);
+public interface ServerBuilder {
 
     Server getCurrentServer();
     
