@@ -89,6 +89,7 @@
 	</target>
 
     <target name="compile" depends="init, buildlibs">
+    	<copy todir="${classes}" file="metaproject.owl"/>
         <javac srcdir="${src}" destdir="${classes}"
     		   debug="true">
         	<classpath refid="project.classpath"/>

@@ -30,7 +30,7 @@ public class CoreServerFactory implements ServerFactory {
 
     @Override
     public boolean hasSuitableConflictManager(ServerConfiguration configuration) {
-        return true;
+        return StrictConflictConfiguration.isSuitable(configuration);
     }
 
     @Override
