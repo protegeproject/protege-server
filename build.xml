@@ -116,6 +116,15 @@
             todir="${protege.common}"
             overwrite="true"/>
     </target>
+	
+	<target name = "generateRDFMetaproject" depends="install">
+		<java classname="org.protege.owl.server.metaproject.SaveRDFMetaProject" fork="true">
+			<classpath>
+				<path refid="project.classpath"/>
+				<pathelement location="${classes}"/>
+			</classpath>
+		</java>
+	</target>
 
 	<target name="clean">
 		<delete dir="${build}"/>
