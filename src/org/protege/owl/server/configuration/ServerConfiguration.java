@@ -30,20 +30,6 @@ public class ServerConfiguration {
 	private OWLIndividual conflictManagerDeclaration;
 	private OWLIndividual connectionManagerDeclaration;
 	
-	public static void addMetaProjectIRIMapper(OWLOntologyManager manager) throws URISyntaxException {
-	    URL metaproject = getMetaProjectURL();
-	    manager.addIRIMapper(new SimpleIRIMapper(IRI.create(Vocabulary.NS), IRI.create(metaproject)));
-	}
-	
-	public static OWLOntology loadMetaProject(OWLOntologyManager manager) throws OWLOntologyCreationException, URISyntaxException {
-	    URL metaproject = getMetaProjectURL();
-	    return manager.loadOntologyFromOntologyDocument(IRI.create(metaproject));
-	}
-	
-	public static URL getMetaProjectURL() {
-	    return ServerConfiguration.class.getResource("/metaproject.owl");
-	}
-	
     public ServerConfiguration(OWLOntology ontology, OWLIndividual serverDeclaration) {
         this.ontology = ontology;
         this.serverDeclaration = serverDeclaration;
