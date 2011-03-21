@@ -4,6 +4,7 @@ Bundle-Name: Ontology Server Framework
 Bundle-SymbolicName: org.protege.owl.server
 Bundle-Version: 1.0.0
 Bundle-Vendor: Protege Development Team
+Bundle-Activator: org.protege.owl.server.Activator
 Import-Package:  org.osgi.framework,
  org.apache.log4j,
  org.protege.owlapi.apibinding,
