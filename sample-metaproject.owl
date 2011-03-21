@@ -12,7 +12,7 @@ Declaration(NamedIndividual(<http://protege.org/ontologies/SampleMetaproject.owl
 ClassAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.owl#RestfulServicesConnectionManager> <http://protege.org/ontologies/SampleMetaproject.owl#connectionManager>)
 Declaration(NamedIndividual(<http://protege.org/ontologies/SampleMetaproject.owl#databaseBackend>))
 ClassAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.owl#DatabaseServerBackend> <http://protege.org/ontologies/SampleMetaproject.owl#databaseBackend>)
-DataPropertyAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.owl#password> <http://protege.org/ontologies/SampleMetaproject.owl#databaseBackend> "troglodtyte"^^xsd:string)
+DataPropertyAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.owl#password> <http://protege.org/ontologies/SampleMetaproject.owl#databaseBackend> "troglodyte"^^xsd:string)
 DataPropertyAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.owl#url> <http://protege.org/ontologies/SampleMetaproject.owl#databaseBackend> "jdbc:postgresql://localhost/protege4"^^xsd:string)
 DataPropertyAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.owl#username> <http://protege.org/ontologies/SampleMetaproject.owl#databaseBackend> "protege"^^xsd:string)
 Declaration(NamedIndividual(<http://protege.org/ontologies/SampleMetaproject.owl#sampleServer>))
