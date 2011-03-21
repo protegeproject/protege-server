@@ -93,5 +93,10 @@ public class ServerConfiguration {
         }
         return values.iterator().next();
     }
+    
+    @Override
+    public String toString() {
+        return getServerDeclaration().toString();
+    }
 
 }
