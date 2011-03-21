@@ -19,7 +19,7 @@ public class Vocabulary {
 
     public static final OWLClass RESTFUL_SERVICES_CONNECTIONMANAGER_CLASS = factory.getOWLClass(IRI.create(NS + "#RestfulServicesConnectionManager"));
 
-    public static final OWLClass SERVER_CLASS = factory.getOWLClass(IRI.create(NS + "#Server"));
+    public static final OWLClass OWL2_SERVER_CLASS = factory.getOWLClass(IRI.create(NS + "#OWL2Server"));
 
     public static final OWLClass STRICT_CONFLICT_MANAGER_CLASS = factory.getOWLClass(IRI.create(NS + "#StrictConflictManager"));
 

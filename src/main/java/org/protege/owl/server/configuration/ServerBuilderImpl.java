@@ -1,21 +1,15 @@
 package org.protege.owl.server.configuration;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.protege.owl.server.api.ServerBuilder;
 import org.protege.owl.server.api.ConflictManager;
 import org.protege.owl.server.api.Server;
+import org.protege.owl.server.api.ServerBuilder;
 import org.protege.owl.server.api.ServerConnection;
 import org.protege.owl.server.api.ServerFactory;
-import org.protege.owl.server.metaproject.MetaProject;
-import org.protege.owl.server.metaproject.Vocabulary;
-import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /*
  * This is suitable for declarative services but the junit task uses him also.
@@ -43,58 +37,47 @@ public class ServerBuilderImpl implements ServerBuilder {
         return server;
     }
     
-    public void addServerFactory(ServerFactory factory) {
+    public synchronized void addServerFactory(ServerFactory factory) {
         serverFactories.add(factory);
         rebuild();
     }
 
-    public void removeServerFactory(ServerFactory factory)  {
+    public synchronized void removeServerFactory(ServerFactory factory)  {
     	serverFactories.remove(factory);
     	boolean needsRebuild = false;
     	if (factory == currentServerFactory) {
-    		server.dispose();
-    		server = null;
-    		currentServerFactory = null;
-    		
-    		if (connection != null) connection.dispose();
-    		connection = null;
-    		currentConnectionFactory = null;
-    		
-    		conflictManager = null;
-    		currentConflictFactory = null;
-    		
-    		needsRebuild = true;
+    	    disableBackend();
+    	    disableConflict();
+    	    disableConnection();
+            needsRebuild = true;
     	}
+        else if (factory == currentConflictFactory) {
+            disableConflict();
+            disableConnection();
+            needsRebuild = true;
+        }
     	else if (factory == currentConnectionFactory) {
-    		if (connection != null) connection.dispose();
-    		connection = null;
-    		currentConnectionFactory = null;
-    		
-    		conflictManager = null;
-    		currentConflictFactory = null;
-    		
+    	    disableConnection();
     		needsRebuild = true;
-    	}
-    	else if (factory == currentConflictFactory) {
-    		conflictManager = null;
-    		currentConflictFactory = null;
     	}
     	else {
     		needsRebuild = false;
     	}
-    	if (needsRebuild) rebuild();
+    	if (needsRebuild) {
+    	    LOGGER.info("Server shutdown.  Awaiting restart.");
+    	    rebuild();
+    	}
     }
+    
 
 	public void start() {
 		rebuild();
 	}
 	
 	public void stop() {
-		if (connection != null) {
-			connection.dispose();
-			connection = null;
-		}
-		server = null;
+	    disableConnection();
+	    disableConflict();
+	    disableBackend();
 	}
 	
     
@@ -108,38 +91,13 @@ public class ServerBuilderImpl implements ServerBuilder {
         }
     	try {
     		if (server == null) {
-    		    for (ServerFactory factory : serverFactories) {
-    		        if (factory.hasSuitableServer(configuration)) {
-    		            server = factory.createServer(configuration);
-    		            currentServerFactory = factory;
-    		            LOGGER.info("Matched " + configuration + " with server backend.");
-    		            break;
-    		        }
-    			}
+                tryToEnableBackend();
     		}
-    		if (server != null && connection == null) {
-                for (ServerFactory factory : serverFactories) {
-                	if (factory.hasSuitableConnection(configuration)) {
-                		connection = factory.createServerConnection(configuration);
-                		connection.initialize(server);
-                		currentConnectionFactory = factory;
-                		LOGGER.info("Matched " + configuration + " with connection manager.");
-                		break;
-                	}
-                }
-    		}
-    		if (server != null && connection != null && conflictManager == null) {
-    			for (ServerFactory factory : serverFactories) {
-    				if (factory.hasSuitableConflictManager(configuration)) {
-    					conflictManager = factory.createConflictManager(configuration);
-    					conflictManager.initialise(server);
-    					server.setConflictManager(conflictManager);
-    					currentConflictFactory = factory;
-    					LOGGER.info("Matched " + configuration + " with conflict manager.");
-    					break;
-    					
-    				}
-    			}
+            if (server != null && conflictManager == null) {
+                tryToEnableConflict();
+            }
+    		if (server != null && conflictManager != null &&  connection == null) {
+                tryToEnableConnection();
     		}
     	}
     	catch (Throwable t) {
@@ -156,4 +114,64 @@ public class ServerBuilderImpl implements ServerBuilder {
     		}
     	}
     }
+
+    private synchronized void tryToEnableBackend() {
+        for (ServerFactory factory : serverFactories) {
+            if (factory.hasSuitableServer(configuration)) {
+                server = factory.createServer(configuration);
+                currentServerFactory = factory;
+                LOGGER.info("Matched " + configuration + " with server backend.");
+                break;
+            }
+        }
+    }
+
+    private void disableBackend() {
+        if (server != null) server.dispose();
+        server = null;
+        currentServerFactory = null;
+    }
+    
+    private synchronized void tryToEnableConflict() {
+        for (ServerFactory factory : serverFactories) {
+            if (factory.hasSuitableConflictManager(configuration)) {
+                conflictManager = factory.createConflictManager(configuration);
+                conflictManager.initialise(server);
+                server.setConflictManager(conflictManager);
+                currentConflictFactory = factory;
+                LOGGER.info("Matched " + configuration + " with conflict manager.");
+                LOGGER.info("Server started.");
+                break;
+                        
+            }
+        }
+    }
+
+    private void disableConflict() {
+        conflictManager = null;
+        currentConflictFactory = null;
+        if (server != null) {
+            server.setConflictManager(null);
+        }
+    }
+
+
+    private synchronized void tryToEnableConnection() throws IOException {
+        for (ServerFactory factory : serverFactories) {
+            if (factory.hasSuitableConnection(configuration)) {
+                connection = factory.createServerConnection(configuration);
+                connection.initialize(server);
+                currentConnectionFactory = factory;
+                LOGGER.info("Matched " + configuration + " with connection manager.");
+                break;
+            }
+        }
+    }
+    
+    private void disableConnection() {
+        if (connection != null) connection.dispose();
+        connection = null;
+        currentConnectionFactory = null;
+    }
+
 }

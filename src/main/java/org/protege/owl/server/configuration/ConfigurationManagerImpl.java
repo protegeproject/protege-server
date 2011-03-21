@@ -21,12 +21,12 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
 
     }
     
-    public void setMetaOntology(OWLOntology ontology) {
+    public synchronized void setMetaOntology(OWLOntology ontology) {
         for (ServerBuilder c : builders) {
             c.stop();
         }
         builders.clear();
-        Set<OWLIndividual> configs = Vocabulary.SERVER_CLASS.getIndividuals(ontology);
+        Set<OWLIndividual> configs = Vocabulary.OWL2_SERVER_CLASS.getIndividuals(ontology);
         for (OWLIndividual config : configs) {
             ServerConfiguration serverConfiguration = new ServerConfiguration(ontology, config);
             builders.add(new ServerBuilderImpl(serverConfiguration));
@@ -44,7 +44,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     }
 
     @Override
-    public void addServerFactory(ServerFactory factory) {
+    public synchronized void addServerFactory(ServerFactory factory) {
         serverFactories.add(factory);
         for (ServerBuilder builder : builders) {
             builder.addServerFactory(factory);
@@ -52,7 +52,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     }
 
     @Override
-    public void removeServerFactory(ServerFactory factory) {
+    public synchronized void removeServerFactory(ServerFactory factory) {
         serverFactories.remove(factory);
         for (ServerBuilder builder : builders) {
             builder.removeServerFactory(factory);

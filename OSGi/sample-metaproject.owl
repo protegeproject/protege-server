@@ -16,7 +16,7 @@ DataPropertyAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.ow
 DataPropertyAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.owl#url> <http://protege.org/ontologies/SampleMetaproject.owl#databaseBackend> "jdbc:postgresql://localhost/protege4"^^xsd:string)
 DataPropertyAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.owl#username> <http://protege.org/ontologies/SampleMetaproject.owl#databaseBackend> "protege"^^xsd:string)
 Declaration(NamedIndividual(<http://protege.org/ontologies/SampleMetaproject.owl#sampleServer>))
-ClassAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.owl#Server> <http://protege.org/ontologies/SampleMetaproject.owl#sampleServer>)
+ClassAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.owl#OWL2Server> <http://protege.org/ontologies/SampleMetaproject.owl#sampleServer>)
 ObjectPropertyAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.owl#conflictManagerComponent> <http://protege.org/ontologies/SampleMetaproject.owl#sampleServer> <http://protege.org/ontologies/SampleMetaproject.owl#strictConflictManager>)
 ObjectPropertyAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.owl#connectionComponent> <http://protege.org/ontologies/SampleMetaproject.owl#sampleServer> <http://protege.org/ontologies/SampleMetaproject.owl#connectionManager>)
 ObjectPropertyAssertion(<http://smi-protege.stanford.edu/ontologies/metaproject.owl#serverBakendComponent> <http://protege.org/ontologies/SampleMetaproject.owl#sampleServer> <http://protege.org/ontologies/SampleMetaproject.owl#databaseBackend>)
