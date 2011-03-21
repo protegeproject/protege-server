@@ -23,7 +23,8 @@
       <bundle name="org.apache.felix.scr-1.4.0.jar"/>
       <bundle name="protege-owlapi-extensions.jar"/>
       <bundle name="org.protege.common.jar"/>
-      <bundle name="org.eclipse.equinox.common.jar"/>
+      <bundle name="org.protege.owl.server.db.jar"/>
+      <bundle name="org.protege.owl.server.servlet.jar"/>
   </bundles>
 
   <bundles dir="plugins">
