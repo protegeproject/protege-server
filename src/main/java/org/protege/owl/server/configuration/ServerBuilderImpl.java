@@ -22,7 +22,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
  */
 
 public class ServerBuilderImpl implements ServerBuilder {
-	private Logger logger = Logger.getLogger(ServerBuilderImpl.class);
+	public static final Logger LOGGER = Logger.getLogger(ServerBuilderImpl.class);
     private ServerConfiguration configuration;
     private Set<ServerFactory> serverFactories = new HashSet<ServerFactory>();
     
@@ -34,6 +34,7 @@ public class ServerBuilderImpl implements ServerBuilder {
     private ServerFactory currentConflictFactory;
     
     public ServerBuilderImpl(ServerConfiguration configuration) {
+        LOGGER.info("Trying to configure server " + configuration);
         this.configuration = configuration;
         rebuild();
     }
@@ -111,6 +112,7 @@ public class ServerBuilderImpl implements ServerBuilder {
     		        if (factory.hasSuitableServer(configuration)) {
     		            server = factory.createServer(configuration);
     		            currentServerFactory = factory;
+    		            LOGGER.info("Matched " + configuration + " with server backend.");
     		            break;
     		        }
     			}
@@ -121,6 +123,7 @@ public class ServerBuilderImpl implements ServerBuilder {
                 		connection = factory.createServerConnection(configuration);
                 		connection.initialize(server);
                 		currentConnectionFactory = factory;
+                		LOGGER.info("Matched " + configuration + " with connection manager.");
                 		break;
                 	}
                 }
@@ -132,6 +135,7 @@ public class ServerBuilderImpl implements ServerBuilder {
     					conflictManager.initialise(server);
     					server.setConflictManager(conflictManager);
     					currentConflictFactory = factory;
+    					LOGGER.info("Matched " + configuration + " with conflict manager.");
     					break;
     					
     				}
@@ -146,7 +150,7 @@ public class ServerBuilderImpl implements ServerBuilder {
     		currentConnectionFactory = null;
     		conflictManager = null;
     		currentConflictFactory = null;
-    		logger.warn("Exception caught trying to configure server ", t);
+    		LOGGER.warn("Exception caught trying to configure server ", t);
     		if (tmp != null) {
     			tmp.dispose();
     		}
