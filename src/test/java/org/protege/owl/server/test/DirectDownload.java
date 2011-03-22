@@ -10,7 +10,11 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 public class DirectDownload {
 	public static void main(String args[]) throws OWLOntologyCreationException, RemoteQueryException {
-		ClientConnection connection = new ServletClientConnection(ProtegeOWLManager.createOWLOntologyManager(), "localhost:8080");
+		ClientConnection connection = new ServletClientConnection(ProtegeOWLManager.createOWLOntologyManager(), 
+		                                                          "smi-tredmond-li.stanford.edu:8080");
+		long startTime = System.currentTimeMillis();
 		OWLOntology ontology = connection.pull(IRI.create("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl"), 1181994);
+		System.out.println("took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds");
+		System.out.println("Ontology has " + ontology.getAxiomCount() + " axioms");
 	}
 }

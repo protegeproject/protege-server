@@ -29,10 +29,24 @@ public abstract class AbstractClientConnection implements ClientConnection {
         IDLE, UPDATE_IN_PROGRESS, COMMIT_IN_PROGRESS;
     };
     private ProtegeOWLOntologyManager manager;
+    
+    /*
+     * Only one thread goes to the server at a time.  This is controlled by the state
+     * logic which is synchronized by this.
+     */
 	protected State state = State.IDLE;
-    private Map<OWLOntology, ClientOntologyInfo> ontologyInfoMap = new HashMap<OWLOntology, ClientOntologyInfo>();
+	
+    private Map<OWLOntology, ClientOntologyInfo> ontologyInfoMap = Collections.synchronizedMap(new HashMap<OWLOntology, ClientOntologyInfo>());
+
+    /*
+     * These variables are assigned but once set the map is not altered.
+     */
     private Map<IRI, ServerOntologyInfo> serverOntologyInfoByIRI;
     private Map<String, ServerOntologyInfo> serverOntologyInfoByShortName;
+    
+    /*
+     * This is only changed during an update in progress.
+     */
     private boolean updateFromServer = false;
     
     private OWLOntologyChangeListener uncommittedChangesListener = new OWLOntologyChangeListener() {
@@ -57,11 +71,11 @@ public abstract class AbstractClientConnection implements ClientConnection {
         manager.addOntologyChangeListener(uncommittedChangesListener);
     }
     
-    protected synchronized ServerOntologyInfo getServerOntologyInfo(IRI ontologyName)  throws RemoteQueryException {
+    protected ServerOntologyInfo getServerOntologyInfo(IRI ontologyName)  throws RemoteQueryException {
         return getOntologyInfoByIRI(false).get(ontologyName);
     }
     
-    protected synchronized List<OWLOntologyChange> getUncommittedChanges(Set<OWLOntology> ontologies) {
+    protected List<OWLOntologyChange> getUncommittedChanges(Set<OWLOntology> ontologies) {
         List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
         for (OWLOntology ontology : ontologies) {
             changes.addAll(ontologyInfoMap.get(ontology).getChanges());
@@ -69,7 +83,11 @@ public abstract class AbstractClientConnection implements ClientConnection {
         return changes;
     }
 
-    protected synchronized void clearUncommittedChanges(Collection<OWLOntologyChange> changes) {
+    /*
+     * Only called during the COMMIT_IN_PROGRESS state so the changes are only made
+     * in one thread.
+     */
+    protected void clearUncommittedChanges(Collection<OWLOntologyChange> changes) {
         for (OWLOntologyChange change : changes) {
             OWLOntology ontology = change.getOntology();
             ClientOntologyInfo info = ontologyInfoMap.get(ontology);
@@ -80,46 +98,49 @@ public abstract class AbstractClientConnection implements ClientConnection {
         }
     }
     
-    protected synchronized void addOntology(OWLOntology ontology, String shortName, int revision) {
+    protected void addOntology(OWLOntology ontology, String shortName, int revision) {
         ontologyInfoMap.put(ontology, new ClientOntologyInfo(shortName, revision));
     }
     
-    protected synchronized void removeOntology(OWLOntology ontology) {
+    protected void removeOntology(OWLOntology ontology) {
         ontologyInfoMap.remove(ontology);
     }
     
     private void makeOntologyInfoMaps() throws RemoteQueryException {
         Set<ServerOntologyInfo> infoSet = getRemoteOntologyList();
-        synchronized (this) {
-            serverOntologyInfoByIRI = new HashMap<IRI, ServerOntologyInfo>();
-            serverOntologyInfoByShortName = new HashMap<String, ServerOntologyInfo>();
-            for (ServerOntologyInfo info : infoSet) {
-                serverOntologyInfoByIRI.put(info.getOntologyName(), info);
-                serverOntologyInfoByShortName.put(info.getShortName(), info);
-            }
+        Map<IRI, ServerOntologyInfo> serverOntologyInfoByIRI = new HashMap<IRI, ServerOntologyInfo>();
+        Map<String, ServerOntologyInfo> serverOntologyInfoByShortName = new HashMap<String, ServerOntologyInfo>();
+        for (ServerOntologyInfo info : infoSet) {
+            serverOntologyInfoByIRI.put(info.getOntologyName(), info);
+            serverOntologyInfoByShortName.put(info.getShortName(), info);
         }
+        this.serverOntologyInfoByIRI = serverOntologyInfoByIRI;
+        this.serverOntologyInfoByShortName = serverOntologyInfoByShortName;
     }
+    
+    /*
+     * Only called from a pull, update or commit.  In each of these cases the change is single threaded
+     * because the state is not idle.
+     */
     
     protected void applyChanges(final ChangeAndRevisionSummary changeSummary) throws RemoteQueryException {
         Callable<Boolean> call = new Callable<Boolean>() {
             @Override
             public Boolean call() throws RemoteQueryException {
                 manager.applyChanges(changeSummary.getChanges());
-                synchronized (AbstractClientConnection.this) {
-                    for (Entry<IRI, Integer> entry : changeSummary.getRevisions().entrySet()) {
-                        IRI ontologyName = entry.getKey();
-                        OWLOntology ontology = getOntologyManager().getOntology(ontologyName);
-                        int revision = entry.getValue();
-                        ClientOntologyInfo info = ontologyInfoMap.get(ontology);
-                        if (info == null) {
-                            String shortName = getServerOntologyInfo(ontologyName).getShortName();
-                            addOntology(ontology, shortName, revision);
-                        }
-                        else {
-                            info.setRevision(revision);
-                        }
-                    }    
-                }
+                for (Entry<IRI, Integer> entry : changeSummary.getRevisions().entrySet()) {
+                    IRI ontologyName = entry.getKey();
+                    OWLOntology ontology = getOntologyManager().getOntology(ontologyName);
+                    int revision = entry.getValue();
+                    ClientOntologyInfo info = ontologyInfoMap.get(ontology);
+                    if (info == null) {
+                        String shortName = getServerOntologyInfo(ontologyName).getShortName();
+                        addOntology(ontology, shortName, revision);
+                    }
+                    else {
+                        info.setRevision(revision);
+                    }
+                }    
                 return true;
             }
         };
@@ -194,15 +215,25 @@ public abstract class AbstractClientConnection implements ClientConnection {
         if (forceUpdate || serverOntologyInfoByIRI == null) {
             makeOntologyInfoMaps();
         }
-        return Collections.unmodifiableMap(serverOntologyInfoByIRI);
+        if (serverOntologyInfoByIRI == null) {
+            return Collections.emptyMap();
+        }
+        else {
+            return Collections.unmodifiableMap(serverOntologyInfoByIRI);
+        }
     }
     
     @Override
     public Map<String, ServerOntologyInfo> getOntologyInfoByShortName(boolean forceUpdate) throws RemoteQueryException {
-        if (forceUpdate || serverOntologyInfoByIRI == null) {
+        if (forceUpdate || serverOntologyInfoByShortName == null) {
             makeOntologyInfoMaps();
         }
-        return Collections.unmodifiableMap(serverOntologyInfoByShortName);
+        if (serverOntologyInfoByShortName == null) {
+            return Collections.emptyMap();
+        }
+        else {
+            return Collections.unmodifiableMap(serverOntologyInfoByShortName);
+        }
     }
     
     @Override
@@ -220,42 +251,46 @@ public abstract class AbstractClientConnection implements ClientConnection {
     public OWLOntology pull(IRI ontologyName, Integer revisionToGet) throws OWLOntologyCreationException, RemoteQueryException {
         Integer closestRevision;
         String shortName;
-        synchronized (this) {
-            ServerOntologyInfo revisions = getServerOntologyInfo(ontologyName);
-            if (revisions == null) {
-                return null;
-            }
-            if (revisionToGet == null) {
-                revisionToGet = revisions.getMaxRevision();
-            }
-            closestRevision = revisions.getLatestMarkedRevision(revisionToGet);
-            if (closestRevision == null) {
-                return null;
-            }
-            shortName = revisions.getShortName();
+        ServerOntologyInfo revisions = getServerOntologyInfo(ontologyName);
+        if (revisions == null) {
+            return null;
         }
-        OWLOntology ontology = pullMarked(ontologyName, shortName, closestRevision);
-        addOntology(ontology, shortName, closestRevision);
-        final ChangeAndRevisionSummary changeSummary = getChangesFromServer(ontology, shortName, closestRevision, revisionToGet);
-        Callable<Boolean> call = new Callable<Boolean>() {
-            public Boolean call() throws RemoteQueryException {
-                try {
-                    setUpdateFromServer(true);
-                    applyChanges(changeSummary);
-                    return true;
-                }
-                finally {
-                    setUpdateFromServer(false);
-                }
-            }
-        };
+        if (revisionToGet == null) {
+            revisionToGet = revisions.getMaxRevision();
+        }
+        closestRevision = revisions.getLatestMarkedRevision(revisionToGet);
+        if (closestRevision == null) {
+            return null;
+        }
+        shortName = revisions.getShortName();
+        stateChange(State.UPDATE_IN_PROGRESS);
         try {
-            manager.callWithWriteLock(call);
+            OWLOntology ontology = pullMarked(ontologyName, shortName, closestRevision);
+            addOntology(ontology, shortName, closestRevision);
+            final ChangeAndRevisionSummary changeSummary = getChangesFromServer(ontology, shortName, closestRevision, revisionToGet);
+            Callable<Boolean> call = new Callable<Boolean>() {
+                public Boolean call() throws RemoteQueryException {
+                    try {
+                        setUpdateFromServer(true);
+                        applyChanges(changeSummary);
+                        return true;
+                    }
+                    finally {
+                        setUpdateFromServer(false);
+                    }
+                }
+            };
+            try {
+                manager.callWithWriteLock(call);
+            }
+            catch (Exception e) {
+                throw convertException(e, RemoteQueryException.class);
+            }
+            return ontology;
         }
-        catch (Exception e) {
-            throw convertException(e, RemoteQueryException.class);
+        finally {
+            stateChange(State.IDLE);
         }
-        return ontology;
     }
 
     @Override
@@ -264,17 +299,15 @@ public abstract class AbstractClientConnection implements ClientConnection {
         Integer currentRevision;
         stateChange(State.UPDATE_IN_PROGRESS);
         try {
-            synchronized (this) {
-                clientOntologyInfo = ontologyInfoMap.get(ontology);
-                currentRevision = clientOntologyInfo.getRevision();
-                if (currentRevision == null) {
-                    return;
-                }
-                if (revision == null) {
-                    IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
-                    getOntologyInfoByIRI(true);
-                    revision = getServerOntologyInfo(ontologyName).getMaxRevision();
-                }
+            clientOntologyInfo = ontologyInfoMap.get(ontology);
+            currentRevision = clientOntologyInfo.getRevision();
+            if (currentRevision == null) {
+                return;
+            }
+            if (revision == null) {
+                IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
+                getOntologyInfoByIRI(true);
+                revision = getServerOntologyInfo(ontologyName).getMaxRevision();
             }
 
             final ChangeAndRevisionSummary serverChanges = getChangesFromServer(ontology, clientOntologyInfo.getShortName(), currentRevision, revision);
@@ -284,11 +317,9 @@ public abstract class AbstractClientConnection implements ClientConnection {
                    try {
                        setUpdateFromServer(true);
                        applyChanges(serverChanges);
-                       synchronized (AbstractClientConnection.this) {
-                           List<OWLOntologyChange> pendingChanges = clientOntologyInfo.getChanges();
-                           pendingChanges = Utilities.swapOrderOfChangeLists(pendingChanges, serverChanges.getChanges());
-                           clientOntologyInfo.setChanges(pendingChanges);
-                       }
+                       List<OWLOntologyChange> pendingChanges = clientOntologyInfo.getChanges();
+                       pendingChanges = Utilities.swapOrderOfChangeLists(pendingChanges, serverChanges.getChanges());
+                       clientOntologyInfo.setChanges(pendingChanges);
                        return true;
                    }
                    finally {
@@ -309,7 +340,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
     }
 
     @Override
-    public synchronized List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology) {
+    public List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology) {
         return ontologyInfoMap.get(ontology).getChanges();
     }
     

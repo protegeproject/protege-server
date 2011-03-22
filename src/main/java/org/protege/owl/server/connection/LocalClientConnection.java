@@ -82,15 +82,21 @@ public class LocalClientConnection extends AbstractClientConnection {
     
     @Override
     public void commit(Set<OWLOntology> ontologies) throws RemoteOntologyChangeException {
-        List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
-        Map<IRI, Integer> versionMap = new HashMap<IRI, Integer>();
-        for (OWLOntology ontology : ontologies) {
-            IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
-            changes.addAll(getUncommittedChanges(ontology));
-            versionMap.put(ontologyName, getRevision(ontology));
+        stateChange(State.COMMIT_IN_PROGRESS);
+        try {
+            List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
+            Map<IRI, Integer> versionMap = new HashMap<IRI, Integer>();
+            for (OWLOntology ontology : ontologies) {
+                IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
+                changes.addAll(getUncommittedChanges(ontology));
+                versionMap.put(ontologyName, getRevision(ontology));
+            }
+            server.applyChanges(versionMap, changes);
+            clearUncommittedChanges(changes);
         }
-        server.applyChanges(versionMap, changes);
-        clearUncommittedChanges(changes);
+        finally {
+            stateChange(State.IDLE);
+        }
     }   
 
 }
