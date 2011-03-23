@@ -86,7 +86,7 @@
 		</dependency>
 	</dependencies>
 
-	<description>DL Query Plugin</description>
+	<description>Core Server Library</description>
 	<organization>
 		<name>The Protege Development Team</name>
 	</organization>
