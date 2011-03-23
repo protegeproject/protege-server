@@ -6,8 +6,8 @@
 	<artifactId>org.protege.owl.server</artifactId>
 	<packaging>bundle</packaging>
 	<name>Core Server Capability</name>
-	<!-- <version>1.0.0.SNAPSHOT</version> -->
-    <version>1.0.0.2011_03_23_0706</version>
+	<version>1.0.0.SNAPSHOT</version>
+    <!-- <version>1.0.0.2011_03_23_0706</version> -->
 
 	<parent>
 		<groupId>protege4</groupId>
