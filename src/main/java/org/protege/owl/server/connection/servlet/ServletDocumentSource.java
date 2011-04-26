@@ -41,11 +41,8 @@ public class ServletDocumentSource implements OWLOntologyDocumentSource {
             if (code == HttpURLConnection.HTTP_OK) {
                 return connection.getInputStream();
             }
-            else if (code == HttpURLConnection.HTTP_CONFLICT) {
-                throw new UnsupportedOperationException("Not implemented yet");
-            }
-            else { //TODO fix me...
-                throw new UnsupportedOperationException("Not implemented yet");
+            else {
+            	throw new UnsupportedOperationException("Received html code = " + code + ". Response to this error not yet implemented");
             }
         }
         catch (IOException ioe) {
