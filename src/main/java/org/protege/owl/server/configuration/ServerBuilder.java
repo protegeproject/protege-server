@@ -7,16 +7,21 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.protege.owl.server.api.ConflictManager;
 import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerBuilder;
 import org.protege.owl.server.api.ServerConnection;
 import org.protege.owl.server.api.ServerFactory;
 
-/*
- * This is suitable for declarative services but the junit task uses him also.
+/**
+ * This class focuses on building exactly one server that meets a specification.  The 
+ * specification in question is given by an OWL individual representing a server in the
+ * metaproject.  The metaproject contains information that constrains how the server 
+ * corresponding to this individual can be built and the Server builder tries to meet these
+ * requirements.
+ * 
+ * @author tredmond
+ *
  */
-
-public class ServerBuilderImpl implements ServerBuilder {
-	public static final Logger LOGGER = Logger.getLogger(ServerBuilderImpl.class);
+public class ServerBuilder {
+	public static final Logger LOGGER = Logger.getLogger(ServerBuilder.class);
     private ServerConfiguration configuration;
     private Set<ServerFactory> serverFactories = new HashSet<ServerFactory>();
     
@@ -27,7 +32,7 @@ public class ServerBuilderImpl implements ServerBuilder {
     private ConflictManager conflictManager;
     private ServerFactory currentConflictFactory;
     
-    public ServerBuilderImpl(ServerConfiguration configuration) {
+    public ServerBuilder(ServerConfiguration configuration) {
         LOGGER.info("Trying to configure server " + configuration);
         this.configuration = configuration;
         rebuild();
