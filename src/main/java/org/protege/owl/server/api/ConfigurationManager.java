@@ -8,8 +8,6 @@ public interface ConfigurationManager {
 
     void setMetaOntology(OWLOntology ontology);
     
-    Set<ServerBuilder> getServerBuilders();
-    
     void addServerFactory(ServerFactory factory);
     
     void removeServerFactory(ServerFactory factory);
