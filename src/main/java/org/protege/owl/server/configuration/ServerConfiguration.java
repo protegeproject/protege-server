@@ -11,6 +11,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
  * This class will specify a single server configuration.  A single jvm may contain several different 
  * servers each of which has a server configuration.  This class will ultimately include things like the type of 
  * conflict management, the style of ServerConnection instance and the set of ontologies to be served up.
+ * 
  * @author tredmond
  *
  */

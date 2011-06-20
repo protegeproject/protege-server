@@ -6,6 +6,13 @@ import org.protege.owl.server.api.ServerConnection;
 import org.protege.owl.server.api.ServerFactory;
 import org.protege.owl.server.conflict.StrictConflictManager;
 
+/**
+ * This factory will supply all the components that are implemented in the core server
+ * api.  Probably over time this will just consist of conflict managers.
+ * 
+ * @author tredmond
+ *
+ */
 public class CoreServerFactory implements ServerFactory {
 
     @Override
