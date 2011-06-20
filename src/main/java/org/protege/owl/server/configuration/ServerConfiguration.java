@@ -1,22 +1,15 @@
 package org.protege.owl.server.configuration;
 
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Set;
 
 import org.protege.owl.server.metaproject.Vocabulary;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyID;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.util.SimpleIRIMapper;
 
 /**
- * This class will specify a server configuration.  It will ultimately include things like the type of 
+ * This class will specify a single server configuration.  A single jvm may contain several different 
+ * servers each of which has a server configuration.  This class will ultimately include things like the type of 
  * conflict management, the style of ServerConnection instance and the set of ontologies to be served up.
  * @author tredmond
  *
