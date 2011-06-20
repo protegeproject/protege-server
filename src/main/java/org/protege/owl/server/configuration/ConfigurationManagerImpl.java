@@ -5,12 +5,19 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.protege.owl.server.api.ConfigurationManager;
-import org.protege.owl.server.api.ServerBuilder;
+import org.protege.owl.server.configuration.ServerBuilder;
 import org.protege.owl.server.api.ServerFactory;
 import org.protege.owl.server.metaproject.Vocabulary;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 
+/**
+ * This class will configure all the servers that are specified in the metaproject.  Each server is specified
+ * by an OWL individual in the metaproject.
+ * 
+ * @author tredmond
+ *
+ */
 public class ConfigurationManagerImpl implements ConfigurationManager {
     public final static Logger LOGGER = Logger.getLogger(ConfigurationManagerImpl.class);
     
@@ -29,18 +36,13 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
         Set<OWLIndividual> configs = Vocabulary.OWL2_SERVER_CLASS.getIndividuals(ontology);
         for (OWLIndividual config : configs) {
             ServerConfiguration serverConfiguration = new ServerConfiguration(ontology, config);
-            builders.add(new ServerBuilderImpl(serverConfiguration));
+            builders.add(new ServerBuilder(serverConfiguration));
         }
         for (ServerBuilder builder : builders) {
             for (ServerFactory factory : serverFactories) {
                 builder.addServerFactory(factory);
             }
         }
-    }
-    
-    @Override
-    public Set<ServerBuilder> getServerBuilders() {
-        return builders;
     }
 
     @Override
