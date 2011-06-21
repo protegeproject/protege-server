@@ -78,7 +78,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
     protected List<OWLOntologyChange> getUncommittedChanges(Set<OWLOntology> ontologies) {
         List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
         for (OWLOntology ontology : ontologies) {
-            changes.addAll(ontologyInfoMap.get(ontology).getChanges());
+            changes.addAll(getUncommittedChanges(ontology));
         }
         return changes;
     }
@@ -242,9 +242,15 @@ public abstract class AbstractClientConnection implements ClientConnection {
     }
     
     @Override
-    public int getRevision(OWLOntology ontology) {
+    public int getClientRevision(OWLOntology ontology) {
         ClientOntologyInfo info = ontologyInfoMap.get(ontology);
         return info.getRevision();
+    }
+    
+    @Override
+    public void setClientRevision(OWLOntology ontology, int revision) throws RemoteQueryException {
+    	ServerOntologyInfo serverInfo = getServerOntologyInfo(ontology.getOntologyID().getOntologyIRI());
+    	addOntology(ontology, serverInfo.getShortName(), revision);
     }
 
     @Override
@@ -318,7 +324,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
                        setUpdateFromServer(true);
                        applyChanges(serverChanges);
                        List<OWLOntologyChange> pendingChanges = clientOntologyInfo.getChanges();
-                       pendingChanges = Utilities.swapOrderOfChangeLists(pendingChanges, serverChanges.getChanges());
+                       pendingChanges = ChangeUtilities.swapOrderOfChangeLists(pendingChanges, serverChanges.getChanges());
                        clientOntologyInfo.setChanges(pendingChanges);
                        return true;
                    }
@@ -341,7 +347,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
 
     @Override
     public List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology) {
-        return ontologyInfoMap.get(ontology).getChanges();
+        return ChangeUtilities.normalizeChangesToBase(ontologyInfoMap.get(ontology).getChanges());
     }
     
     @Override
