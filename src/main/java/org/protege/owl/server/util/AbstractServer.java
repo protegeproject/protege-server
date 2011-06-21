@@ -87,7 +87,7 @@ public abstract class AbstractServer implements Server {
             conflictManager.validateChanges(versions, changes);
         }
         ontologyManager.applyChanges(changes);
-        for (OWLOntology ontology : Utilities.getChangedOntologies(changes)) {
+        for (OWLOntology ontology : ChangeUtilities.getChangedOntologies(changes)) {
             IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
             ServerOntologyInfo original = getOntologyInfoByIRI().get(ontologyName);
             int newRevision = getUpdatedRevision(ontology);
@@ -107,71 +107,30 @@ public abstract class AbstractServer implements Server {
         client.getOntologyManager().saveOntology(ontology, new RDFXMLOntologyFormat(), new StreamDocumentTarget(new FileOutputStream(location)));
     }
     
-    public List<OWLOntologyChange> reduceChangeList(Map<IRI, Integer> versions, List<OWLOntologyChange> changes) {
-        changes = Utilities.removeRedundantChanges(changes);
-        List<OWLOntologyChange> reducedList = new ArrayList<OWLOntologyChange>();
-        AcceptRejectChangeVisitor visitor = new AcceptRejectChangeVisitor(versions);
-        for (OWLOntologyChange change : changes) {
-            change.accept(visitor);
-            if (visitor.isAccepted()) {
-                reducedList.add(change);
-            }
-        }
-        return reducedList;
-    }
-    
-    private class AcceptRejectChangeVisitor implements OWLOntologyChangeVisitor {
-        private boolean accepted;
-        private Map<IRI, Integer> versions;
-        
-        public AcceptRejectChangeVisitor(Map<IRI, Integer> versions) {
-            this.versions = versions;
-        }
-        
-        public boolean isAccepted() {
-            return accepted;
-        }
-
-        public void visit(AddAxiom change) {
-            IRI ontologyName = change.getOntology().getOntologyID().getOntologyIRI();
-            int version = versions.get(ontologyName);
-            accepted = !contains(ontologyName, version, change.getAxiom());
-        }
-
-        public void visit(RemoveAxiom change) {
-            IRI ontologyName = change.getOntology().getOntologyID().getOntologyIRI();
-            int version = versions.get(ontologyName);
-            accepted = contains(ontologyName, version, change.getAxiom());
-        }
-
-        public void visit(SetOntologyID change) {
-            accepted = false;
-        }
-
-        public void visit(AddImport change) {
-            IRI ontologyName = change.getOntology().getOntologyID().getOntologyIRI();
-            int version = versions.get(ontologyName);
-            accepted = !contains(ontologyName, version, change.getImportDeclaration());
-        }
-
-        public void visit(RemoveImport change) {
-            IRI ontologyName = change.getOntology().getOntologyID().getOntologyIRI();
-            int version = versions.get(ontologyName);
-            accepted = contains(ontologyName, version, change.getImportDeclaration());    
-        }
-
-        public void visit(AddOntologyAnnotation change) {
-            IRI ontologyName = change.getOntology().getOntologyID().getOntologyIRI();
-            int version = versions.get(ontologyName);
-            accepted = !contains(ontologyName, version, change.getAnnotation());
-        }
-
-        public void visit(RemoveOntologyAnnotation change) {
-            IRI ontologyName = change.getOntology().getOntologyID().getOntologyIRI();
-            int version = versions.get(ontologyName);
-            accepted = contains(ontologyName, version, change.getAnnotation());
-        }
-        
+    public List<OWLOntologyChange> reduceChangeList(final Map<IRI, Integer> versions, List<OWLOntologyChange> changes) {
+    	return ChangeUtilities.normalizeChangesToBase(changes, new OntologyContainerPredicates() {
+			
+			@Override
+			public boolean contains(OWLOntology ontology, OWLAnnotation annotation) {
+	            IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
+	            int version = versions.get(ontologyName);
+	            return AbstractServer.this.contains(ontologyName, version, annotation);
+			}
+			
+			@Override
+			public boolean contains(OWLOntology ontology, OWLImportsDeclaration owlImport) {
+	            IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
+	            int version = versions.get(ontologyName);
+	            return AbstractServer.this.contains(ontologyName, version, owlImport);
+			}
+			
+			@Override
+			public boolean contains(OWLOntology ontology, OWLAxiom axiom) {
+	            IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
+	            int version = versions.get(ontologyName);
+	            return AbstractServer.this.contains(ontologyName, version, axiom);
+			}
+		});
     }
 
 }
