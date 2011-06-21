@@ -102,6 +102,13 @@ public interface ClientConnection extends OWLOntologySetProvider {
     void commit(Set<OWLOntology> ontologies) throws RemoteOntologyChangeException, RemoteQueryException;
     
     /**
+     * This call is like the call above except that the client also provides a set of changes - not found
+     * in the uncommitted changes to the ontologies - that also need to be committed. 
+     */
+    
+    void commit(Set<OWLOntology> ontologies, List<OWLOntologyChange> changes) throws RemoteOntologyChangeException, RemoteQueryException;
+    
+    /**
      * Updates the client side copy  of the given  ontology to include server side changes at revision.
      * @param ontology An ontology managed by this ClientConnection
      * @param revision the server side revision number to go to.
