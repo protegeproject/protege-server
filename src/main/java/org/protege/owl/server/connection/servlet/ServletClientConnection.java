@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -121,25 +122,18 @@ public class ServletClientConnection extends AbstractClientConnection {
             throw new IllegalStateException("This shouldn't happen", e);
         }
 	}
-	
-    /* *****************************************************************************
-     * Interface implementations.
-     */
 
     // TODO break this into smaller pieces!
 	@Override
-	public void commit(Set<OWLOntology> ontologies) throws OntologyConflictException, RemoteQueryException {
+	protected void internalCommit(Set<OWLOntology> allOntologies, List<OWLOntologyChange> allChanges) throws OntologyConflictException, RemoteQueryException {
 	    if (LOGGER.isDebugEnabled()) {
 	        LOGGER.debug("Commit started");
 	    }
-	    Collection<OWLOntologyChange> changes;
 	    OWLOntology metaOntology;
-	    stateChange(State.COMMIT_IN_PROGRESS);
 	    try {
 	        synchronized (this) {
-	            changes = getUncommittedChanges(ontologies);
-	            ChangeUtilities.logChanges("Found uncommitted changes to commit", changes, LOGGER, Level.DEBUG);
-	            metaOntology = getRequestCommitOntology(ontologies, changes);
+	            ChangeUtilities.logChanges("Found uncommitted changes to commit", allChanges, LOGGER, Level.DEBUG);
+	            metaOntology = getRequestCommitOntology(allOntologies, allChanges);
 	        }
 	        URL servlet = new URL(httpPrefix + Paths.ONTOLOGY_COMMIT_PATH);
 	        URLConnection connection = servlet.openConnection();
@@ -152,7 +146,7 @@ public class ServletClientConnection extends AbstractClientConnection {
 	            if (LOGGER.isDebugEnabled()) {
 	                LOGGER.debug("Response code " + responseCode + " deemed successful - clearing uncommitted changes");
 	            }
-	            clearUncommittedChanges(changes);
+	            clearUncommittedChanges(allChanges);
 	            OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
 	            OWLOntology changeOntology = serializer.deserialize(otherManager, new StreamDocumentSource(connection.getInputStream()));
 	            handleRemoteChanges(changeOntology);
@@ -173,11 +167,14 @@ public class ServletClientConnection extends AbstractClientConnection {
 	    catch (Exception e) {
 	        throw new RemoteQueryException(e);
 	    }
-	    finally {
-	        stateChange(State.IDLE);
-	    }
 	}
 	
+    
+    /* *****************************************************************************
+     * Interface implementations.
+     */
+
+
 	private OWLOntology getRequestCommitOntology(Set<OWLOntology> ontologies, Collection<OWLOntologyChange> changes) throws OWLOntologyCreationException {
         ChangeToAxiomConverter converter = new ChangeToAxiomConverter();
         for (OWLOntology ontology : ontologies) {
