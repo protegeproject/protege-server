@@ -1,12 +1,12 @@
 package org.protege.owl.server.connection;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerOntologyInfo;
@@ -15,6 +15,7 @@ import org.protege.owl.server.exception.RemoteOntologyException;
 import org.protege.owl.server.exception.RemoteQueryException;
 import org.protege.owl.server.util.AbstractClientConnection;
 import org.protege.owl.server.util.ChangeAndRevisionSummary;
+import org.protege.owl.server.util.ChangeUtilities;
 import org.protege.owlapi.apibinding.ProtegeOWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -65,12 +66,23 @@ public class LocalClientConnection extends AbstractClientConnection {
             throw new RemoteQueryException(e);
         }
     }
-    
+
+    @Override
+	protected void internalCommit(Set<OWLOntology> allOntologies, List<OWLOntologyChange> allChanges) throws RemoteOntologyChangeException {
+		Map<IRI, Integer> versionMap = new HashMap<IRI, Integer>();
+		for (OWLOntology ontology : allOntologies) {
+			IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
+			versionMap.put(ontologyName, getClientRevision(ontology));
+		}
+		server.applyChanges(versionMap, allChanges);
+		clearUncommittedChanges(allChanges);
+	}
+
     /* *****************************************************************************
      * Interface implementations.
      */
 
-    @Override
+	@Override
     public Map<IRI, ServerOntologyInfo> getOntologyInfoByIRI(boolean forceUpdate) throws RemoteQueryException {
         return server.getOntologyInfoByIRI();
     }
@@ -78,25 +90,6 @@ public class LocalClientConnection extends AbstractClientConnection {
     @Override
     public Map<String, ServerOntologyInfo> getOntologyInfoByShortName(boolean forceUpdate) throws RemoteQueryException {
         return server.getOntologyInfoByShortName();
-    }
-    
-    @Override
-    public void commit(Set<OWLOntology> ontologies) throws RemoteOntologyChangeException {
-        stateChange(State.COMMIT_IN_PROGRESS);
-        try {
-            List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
-            Map<IRI, Integer> versionMap = new HashMap<IRI, Integer>();
-            for (OWLOntology ontology : ontologies) {
-                IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
-                changes.addAll(getUncommittedChanges(ontology));
-                versionMap.put(ontologyName, getClientRevision(ontology));
-            }
-            server.applyChanges(versionMap, changes);
-            clearUncommittedChanges(changes);
-        }
-        finally {
-            stateChange(State.IDLE);
-        }
     }   
 
 }
