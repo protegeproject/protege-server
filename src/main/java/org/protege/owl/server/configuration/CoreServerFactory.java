@@ -44,5 +44,10 @@ public class CoreServerFactory implements ServerFactory {
     public ConflictManager createConflictManager(ServerConfiguration configuration) {
         return new StrictConflictManager();
     }
+    
+    @Override
+    public String toString() {
+    	return "Core Conflict Managers Factory";
+    }
 
 }
