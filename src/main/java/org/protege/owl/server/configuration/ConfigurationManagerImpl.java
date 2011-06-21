@@ -47,6 +47,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
 
     @Override
     public synchronized void addServerFactory(ServerFactory factory) {
+    	LOGGER.info(factory.toString() + " reporting for duty");
         serverFactories.add(factory);
         for (ServerBuilder builder : builders) {
             builder.addServerFactory(factory);
