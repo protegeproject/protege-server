@@ -73,7 +73,7 @@ public class ConfigurationManagerImpl implements ConfigurationManager {
     public void stop() {
         for (ServerBuilder builder : builders) {
             builder.stop();
-        }   
+        }
     }
 
 }

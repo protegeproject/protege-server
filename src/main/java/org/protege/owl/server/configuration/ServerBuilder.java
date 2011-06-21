@@ -50,6 +50,7 @@ public class ServerBuilder {
     public synchronized void removeServerFactory(ServerFactory factory)  {
     	serverFactories.remove(factory);
     	boolean needsRebuild = false;
+    	boolean serverRunning = isReady();
     	if (factory == currentServerFactory) {
     	    disableBackend();
     	    disableConflict();
@@ -68,7 +69,7 @@ public class ServerBuilder {
     	else {
     		needsRebuild = false;
     	}
-    	if (needsRebuild) {
+    	if (needsRebuild && serverRunning) {
     	    LOGGER.info("Server shutdown.  Awaiting restart.");
     	    rebuild();
     	}
@@ -87,7 +88,7 @@ public class ServerBuilder {
 	
     
     public boolean isReady() {
-        return server != null && connection != null;
+        return connection != null;
     }
     
     private void rebuild() {
@@ -95,17 +96,19 @@ public class ServerBuilder {
             return;
         }
     	try {
-    		if (server == null) {
-                tryToEnableBackend();
-    		}
-            if (server != null && conflictManager == null) {
-                tryToEnableConflict();
-            }
-    		if (conflictManager != null &&  connection == null) {
-                tryToEnableConnection();
-    		}
-    		if (connection != null) {
-                LOGGER.info("Server started.");
+    		if (!isReady()) {
+    			if (server == null) {
+    				tryToEnableBackend();
+    			}
+    			if (server != null && conflictManager == null) {
+    				tryToEnableConflict();
+    			}
+    			if (conflictManager != null &&  connection == null) {
+    				tryToEnableConnection();
+    			}
+    			if (isReady()) {
+    				LOGGER.info("Server started.");
+    			}
     		}
     	}
     	catch (Throwable t) {

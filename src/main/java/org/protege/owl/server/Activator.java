@@ -31,6 +31,10 @@ public class Activator implements BundleActivator {
     public void start(final BundleContext context) throws Exception {
         this.context = context;
         final String metaproject = System.getProperty("command.line.arg.0");
+        
+        LOGGER.info("***********************************************");
+        LOGGER.info("\tAttempting to start server using metaproject " + metaproject);
+        
         this.metaproject = metaproject;
         if (metaproject != null) {
             if (!loadCommandLineMetaproject()) {
@@ -63,6 +67,7 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
+    	LOGGER.info("Uninstalling server...");
     }
 
 }
