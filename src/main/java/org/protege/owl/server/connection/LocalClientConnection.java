@@ -89,7 +89,7 @@ public class LocalClientConnection extends AbstractClientConnection {
             for (OWLOntology ontology : ontologies) {
                 IRI ontologyName = ontology.getOntologyID().getOntologyIRI();
                 changes.addAll(getUncommittedChanges(ontology));
-                versionMap.put(ontologyName, getRevision(ontology));
+                versionMap.put(ontologyName, getClientRevision(ontology));
             }
             server.applyChanges(versionMap, changes);
             clearUncommittedChanges(changes);
