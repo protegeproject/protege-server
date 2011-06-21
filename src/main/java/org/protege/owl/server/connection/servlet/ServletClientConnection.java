@@ -25,7 +25,7 @@ import org.protege.owl.server.exception.RemoteQueryException;
 import org.protege.owl.server.util.AbstractClientConnection;
 import org.protege.owl.server.util.ChangeAndRevisionSummary;
 import org.protege.owl.server.util.ChangeToAxiomConverter;
-import org.protege.owl.server.util.Utilities;
+import org.protege.owl.server.util.ChangeUtilities;
 import org.protege.owlapi.model.ProtegeOWLOntologyManager;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.StreamDocumentSource;
@@ -110,7 +110,7 @@ public class ServletClientConnection extends AbstractClientConnection {
             OWLOntologyManager otherManager = OWLManager.createOWLOntologyManager();
             OWLOntology changeOntology = serializer.deserialize(otherManager, new URL(httpPrefix + Paths.ONTOLOGY_DELTA_PATH + "/" + shortName + "/" + start + "/" + end));
             if (LOGGER.isDebugEnabled()) {
-                Utilities.logOntology("Retrieving changes for " + shortName + " from " + start + " to " + end, changeOntology, LOGGER, Level.DEBUG);
+                ChangeUtilities.logOntology("Retrieving changes for " + shortName + " from " + start + " to " + end, changeOntology, LOGGER, Level.DEBUG);
             }
             return ChangeAndRevisionSummary.getChanges(getOntologies(), changeOntology);
         }
@@ -138,14 +138,14 @@ public class ServletClientConnection extends AbstractClientConnection {
 	    try {
 	        synchronized (this) {
 	            changes = getUncommittedChanges(ontologies);
-	            Utilities.logChanges("Found uncommitted changes to commit", changes, LOGGER, Level.DEBUG);
+	            ChangeUtilities.logChanges("Found uncommitted changes to commit", changes, LOGGER, Level.DEBUG);
 	            metaOntology = getRequestCommitOntology(ontologies, changes);
 	        }
 	        URL servlet = new URL(httpPrefix + Paths.ONTOLOGY_COMMIT_PATH);
 	        URLConnection connection = servlet.openConnection();
 	        connection.setDoOutput(true);
 	        connection.connect();
-	        Utilities.logOntology("Sending commit ontology:", metaOntology, LOGGER, Level.DEBUG);
+	        ChangeUtilities.logOntology("Sending commit ontology:", metaOntology, LOGGER, Level.DEBUG);
 	        serializer.serialize(metaOntology, connection.getOutputStream());
 	        int responseCode = ((HttpURLConnection) connection).getResponseCode();
 	        if (responseCode != HttpURLConnection.HTTP_CONFLICT) {
@@ -181,7 +181,7 @@ public class ServletClientConnection extends AbstractClientConnection {
 	private OWLOntology getRequestCommitOntology(Set<OWLOntology> ontologies, Collection<OWLOntologyChange> changes) throws OWLOntologyCreationException {
         ChangeToAxiomConverter converter = new ChangeToAxiomConverter();
         for (OWLOntology ontology : ontologies) {
-            converter.addRevisionInfo(ontology, getRevision(ontology));
+            converter.addRevisionInfo(ontology, getClientRevision(ontology));
         }
         for (OWLOntologyChange change : changes) {
             change.accept(converter);
@@ -193,7 +193,7 @@ public class ServletClientConnection extends AbstractClientConnection {
 	}
 	
 	private void handleRemoteChanges(OWLOntology changeOntology) throws RemoteQueryException {
-	    Utilities.logOntology("Receiving ontology describing commit results:", changeOntology, LOGGER, Level.DEBUG);
+	    ChangeUtilities.logOntology("Receiving ontology describing commit results:", changeOntology, LOGGER, Level.DEBUG);
         final ChangeAndRevisionSummary changeSummary = ChangeAndRevisionSummary.getChanges(getOntologies(), changeOntology);
         
         Callable<Boolean> call = new Callable<Boolean>() {
