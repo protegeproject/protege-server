@@ -101,8 +101,11 @@ public class ServerBuilder {
             if (server != null && conflictManager == null) {
                 tryToEnableConflict();
             }
-    		if (server != null && conflictManager != null &&  connection == null) {
+    		if (conflictManager != null &&  connection == null) {
                 tryToEnableConnection();
+    		}
+    		if (connection != null) {
+                LOGGER.info("Server started.");
     		}
     	}
     	catch (Throwable t) {
@@ -125,7 +128,7 @@ public class ServerBuilder {
             if (factory.hasSuitableServer(configuration)) {
                 server = factory.createServer(configuration);
                 currentServerFactory = factory;
-                LOGGER.info("Matched " + configuration + " with server backend.");
+                LOGGER.info("Matched " + configuration + " with server backend (" + factory + ").");
                 break;
             }
         }
@@ -144,8 +147,7 @@ public class ServerBuilder {
                 conflictManager.initialise(server);
                 server.setConflictManager(conflictManager);
                 currentConflictFactory = factory;
-                LOGGER.info("Matched " + configuration + " with conflict manager.");
-                LOGGER.info("Server started.");
+                LOGGER.info("Matched " + configuration + " with conflict manager(" + factory + ").");
                 break;
                         
             }
@@ -167,7 +169,7 @@ public class ServerBuilder {
                 connection = factory.createServerConnection(configuration);
                 connection.initialize(server);
                 currentConnectionFactory = factory;
-                LOGGER.info("Matched " + configuration + " with connection manager.");
+                LOGGER.info("Matched " + configuration + " with connection manager (" + factory + ".");
                 break;
             }
         }
