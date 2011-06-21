@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -13,6 +14,8 @@ import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 import org.protege.owl.server.api.ClientConnection;
 import org.protege.owl.server.api.ServerOntologyInfo;
+import org.protege.owl.server.exception.OntologyConflictException;
+import org.protege.owl.server.exception.RemoteOntologyChangeException;
 import org.protege.owl.server.exception.RemoteQueryException;
 import org.protege.owlapi.model.ProtegeOWLOntologyManager;
 import org.semanticweb.owlapi.model.IRI;
@@ -82,7 +85,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
         }
         return changes;
     }
-
+    
     /*
      * Only called during the COMMIT_IN_PROGRESS state so the changes are only made
      * in one thread.
@@ -202,6 +205,8 @@ public abstract class AbstractClientConnection implements ClientConnection {
 
     protected abstract ChangeAndRevisionSummary getChangesFromServer(OWLOntology ontology, String shortName, int start, int end) throws RemoteQueryException;
     
+    protected abstract void internalCommit(Set<OWLOntology> allOntologies, List<OWLOntologyChange> allChanges) throws RemoteOntologyChangeException, RemoteQueryException;
+    
     /* *****************************************************************************
      * Interface implementations.
      */
@@ -298,6 +303,32 @@ public abstract class AbstractClientConnection implements ClientConnection {
             stateChange(State.IDLE);
         }
     }
+    
+    @Override
+    public void commit(Set<OWLOntology> ontologies) throws RemoteOntologyChangeException, RemoteQueryException {
+    	commit(ontologies, new ArrayList<OWLOntologyChange>());
+    }
+    
+    @Override
+    public void commit(Set<OWLOntology> ontologies, List<OWLOntologyChange> otherChanges)
+    		throws RemoteOntologyChangeException, RemoteQueryException {
+    	stateChange(State.COMMIT_IN_PROGRESS);
+    	try {
+            List<OWLOntologyChange> allChanges = getUncommittedChanges(ontologies);
+            if (!otherChanges.isEmpty()) {
+            	allChanges.addAll(otherChanges);
+            	ChangeUtilities.normalizeChangeDelta(allChanges);
+            }
+            Set<OWLOntology> allOntologies = new TreeSet<OWLOntology>(ontologies);
+            for (OWLOntologyChange change : otherChanges) {
+            	allOntologies.add(change.getOntology());
+            }
+            internalCommit(allOntologies, allChanges);
+    	}
+    	finally {
+    		stateChange(State.IDLE);
+    	}
+    }
 
     @Override
     public void update(OWLOntology ontology, Integer revision) throws OWLOntologyChangeException, RemoteQueryException {
@@ -347,7 +378,7 @@ public abstract class AbstractClientConnection implements ClientConnection {
 
     @Override
     public List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology) {
-        return ChangeUtilities.normalizeChangesToBase(ontologyInfoMap.get(ontology).getChanges());
+        return ChangeUtilities.normalizeChangeDelta(ontologyInfoMap.get(ontology).getChanges());
     }
     
     @Override
