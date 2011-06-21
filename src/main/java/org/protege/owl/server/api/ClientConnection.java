@@ -77,7 +77,18 @@ public interface ClientConnection extends OWLOntologySetProvider {
      * @param ontology
      * @return
      */
-    int getRevision(OWLOntology ontology);
+    int getClientRevision(OWLOntology ontology);
+    
+    
+    /**
+     * Set the client side revision of the ontology.  This should be used with care only
+     * when the caller knows that the given ontology corresponds to the server side ontology
+     * at a specific revision number.
+     * @param ontology
+     * @param revision
+     */
+    
+    void setClientRevision(OWLOntology ontology, int revision) throws RemoteQueryException;
     
     /**
      * This call takes the set of local (client-side) changes made to the set of ontologies and commits them on the server.
