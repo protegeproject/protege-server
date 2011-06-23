@@ -1,9 +1,0 @@
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-
-<suite name="OWLApi Database Backend Test Suite" verbose="1">
-
-    <test name="Server Tests">
-        <classes>
-        </classes>
-    </test>
-</suite>
