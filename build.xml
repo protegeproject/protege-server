@@ -2,109 +2,112 @@
 <!-- ====================================================================== 
      Mar 23, 2010 11:32:47 PM                                                        
 
-	Initial build file for the protege owlapi server project.
+    Initial build file for the protege owlapi server project.
                    
      tredmond                                                                
      ====================================================================== -->
 <project name="owl api server" default="jar">
-	<property file="local.properties"/> <property environment="env"/>
+    <property file="local.properties"/> <property environment="env"/>
     <property name = "protege.home" location="${env.PROTEGE_HOME}"/>
     <property file = "${protege.home}/build.properties"/>
-	
-	<property name = "protege.common"    location="${protege.home}/bundles"/>
-	<property name = "protege.plugins"   location="${protege.home}/plugins"/>
+    
+    <property name = "protege.common"    location="${protege.home}/bundles"/>
+    <property name = "protege.plugins"   location="${protege.home}/plugins"/>
 
-    <property name="editor.lib"          location="${protege.plugins}/org.protege.editor.owl.jar"/>	
+    <property name="editor.lib"          location="${protege.plugins}/org.protege.editor.owl.jar"/> 
     <property name="owl.lib"             location="${protege.plugins}/org.semanticweb.owl.owlapi.jar"/>
     <property name="common.lib"          location="${protege.common}/org.protege.common.jar"/>
+    <property name="code.gen.lib"        location="${protege.plugins}/org.protege.editor.owl.codegeneration.jar"/>
 
-	<property name="src"        location="./src/main/java"/>
-	<property name="build"      location="./build"/>
-	<property name="genlib"     location="${build}/lib"/>
-	<property name="classes"    location="${build}/classes"/>
-	<property name="plugin"     value="org.protege.owl.server"/>
+    <property name="src"        location="./src/main/java"/>
+    <property name="build"      location="./build"/>
+    <property name="genlib"     location="${build}/lib"/>
+    <property name="classes"    location="${build}/classes"/>
+    <property name="plugin"     value="org.protege.owl.server"/>
 
-	<!-- ============================================================= -->
-	<!--             Configuring the Compile Classpath                 -->
-	<!-- ============================================================= -->
+    <!-- ============================================================= -->
+    <!--             Configuring the Compile Classpath                 -->
+    <!-- ============================================================= -->
 
 
-	<target name="checkProtegeLibsAndReport" depends="checkProtegeLibs"
-	        unless="libs.found">
-	       <echo message="Missing protege libraries.  You need to set "/>
-	       <echo message="the PROTEGE_HOME environment variable to a"/>
-	       <echo message="protege installation directory where the"/>
-	       <echo message="appropriate plugins have been installed."/>
-	      <echo message="Alternatively set the jar libs in local.properties (protege.lib=...)"/>
-	      <echo message="Use the -v option to ant to see what jars are missing."/>
-	      <fail message = "missing protege libraries"/>
-	    </target>
-
-	   <!-- 
-	        The following target only needs to be modified if the user
-	        needs to change the classpath.  It is preconfigured to use
-	        the common protege 4 jars, the lib directory and the
-	        libraries that have been uncovered in buildlibs. 
-	     -->
-	   <target name = "checkProtegeLibs" depends="init">
-         <echo message="**********************************************************"/>
-	     <echo message="Using Protege Home = ${protege.home}"/>
-         <echo message="Using Java Version = ${ant.java.version}" />
-         <echo message="**********************************************************"/>
-	     <condition property="libs.found">
-	       <and>
-	         <available file="${protege.osgi}" type="file"/>
-             <available file="${editor.lib}"   type="file"/>
-	         <available file="${owl.lib}"      type="file"/>
-	       </and>
-	     </condition>
-	     <path id = "project.classpath">    
-	       <pathelement location="${protege.osgi}"/>
-	       <pathelement location="${owl.lib}"/>
-	       <fileset dir="${genlib}"/>
-	     </path>
-	   </target>
-
-	   <target name = "buildlibs" depends="checkProtegeLibsAndReport">
-	       <unjar dest="${build}"
-	              src="${common.lib}">
-	           <patternset>
-	               <include name = "**/log4j.jar"/>
-	           </patternset>
-	       </unjar>
-           <unjar dest="${build}"
-                  src="${editor.lib}">
-               <patternset>
-                   <include name = "**/protege-owlapi-extensions.jar"/>
-               </patternset>
-           </unjar>
-	   </target>
-	
-	<target name="init">
-		<mkdir dir="${classes}"/>
-		<copy todir="${build}">
-			<fileset file="${common.lib}"/>
-			<fileset file="${owl.lib}"/>
-		</copy>
-	</target>
-
-    <target name="compile" depends="init, buildlibs">
-    	<copy todir="${classes}" file="src/main/resources/metaproject.owl"/>
-        <javac srcdir="${src}" destdir="${classes}"
-    		   debug="true">
-        	<classpath refid="project.classpath"/>
-    	</javac>
+    <target name="checkProtegeLibsAndReport" depends="checkProtegeLibs"
+            unless="libs.found">
+      <echo message="Missing protege libraries.  You need to set "/>
+      <echo message="the PROTEGE_HOME environment variable to a"/>
+      <echo message="protege installation directory where the"/>
+      <echo message="appropriate plugins have been installed."/>
+      <echo message="Alternatively set the jar libs in local.properties (protege.lib=...)"/>
+      <echo message="Use the -v option to ant to see what jars are missing."/>
+      <fail message = "missing protege libraries"/>
     </target>
 
-	<target name = "jar" depends = "compile">
-        <copy todir="${classes}/OSGI-INF">
-            <fileset dir="OSGI-INF" includes="*.xml"/>
-        </copy>
-	    <jar jarfile = "${build}/${plugin}.jar"
-	         basedir = "${classes}" 
-	         manifest = "META-INF/MANIFEST.MF"/>
-	</target>
-	
+    <!-- 
+            The following target only needs to be modified if the user
+            needs to change the classpath.  It is preconfigured to use
+            the common protege 4 jars, the lib directory and the
+            libraries that have been uncovered in buildlibs. 
+         -->
+    <target name = "checkProtegeLibs" depends="init">
+      <echo message="**********************************************************"/>
+      <echo message="Using Protege Home = ${protege.home}"/>
+      <echo message="Using Java Version = ${ant.java.version}" />
+      <echo message="**********************************************************"/>
+      <condition property="libs.found">
+        <and>
+          <available file="${protege.osgi}" type="file"/>
+          <available file="${editor.lib}"   type="file"/>
+          <available file="${owl.lib}"      type="file"/>
+          <available file="${code.gen.lib}" type="file"/>
+        </and>
+      </condition>
+      <path id = "project.classpath">    
+        <pathelement location="${protege.osgi}"/>
+        <pathelement location="${owl.lib}"/>
+        <pathelement location="${code.gen.lib}"/>
+        <fileset dir="${genlib}"/>
+      </path>
+    </target>
+
+    <target name = "buildlibs" depends="checkProtegeLibsAndReport">
+      <unjar dest="${build}"
+             src="${common.lib}">
+        <patternset>
+          <include name = "**/log4j.jar"/>
+        </patternset>
+      </unjar>
+      <unjar dest="${build}"
+             src="${editor.lib}">
+        <patternset>
+          <include name = "**/protege-owlapi-extensions.jar"/>
+        </patternset>
+      </unjar>
+    </target>
+    
+    <target name="init">
+      <mkdir dir="${classes}"/>
+      <copy todir="${build}">
+        <fileset file="${common.lib}"/>
+        <fileset file="${owl.lib}"/>
+      </copy>
+    </target>
+    
+    <target name="compile" depends="init, buildlibs">
+      <copy todir="${classes}" file="src/main/resources/metaproject.owl"/>
+      <javac srcdir="${src}" destdir="${classes}"
+             debug="true">
+        <classpath refid="project.classpath"/>
+      </javac>
+    </target>
+    
+    <target name = "jar" depends = "compile">
+      <copy todir="${classes}/OSGI-INF">
+        <fileset dir="OSGI-INF" includes="*.xml"/>
+      </copy>
+      <jar jarfile = "${build}/${plugin}.jar"
+           basedir = "${classes}" 
+           manifest = "META-INF/MANIFEST.MF"/>
+    </target>
+    
     <target name = "install" depends="jar">
       <copy todir="${protege.home}">
         <fileset dir="./OSGi"/>
@@ -116,20 +119,20 @@
             todir="${protege.common}"
             overwrite="true"/>
     </target>
-	
-	<target name = "generateRDFMetaproject" depends="install">
-		<java classname="org.protege.owl.server.metaproject.SaveRDFMetaProject" fork="true">
-			<classpath>
-				<path refid="project.classpath"/>
-				<pathelement location="${classes}"/>
-			</classpath>
-		</java>
-	</target>
-
-	<target name="clean">
-		<delete dir="${build}"/>
-	</target>
-
+    
+    <target name = "generateRDFMetaproject" depends="install">
+      <java classname="org.protege.owl.server.metaproject.SaveRDFMetaProject" fork="true">
+        <classpath>
+          <path refid="project.classpath"/>
+          <pathelement location="${classes}"/>
+        </classpath>
+      </java>
+    </target>
+    
+    <target name="clean">
+      <delete dir="${build}"/>
+    </target>
+    
     <target name="usage">
       <echo message="Set the PROTEGE_HOME environment variable to point"/>
       <echo message="to a Protege distribution"/>

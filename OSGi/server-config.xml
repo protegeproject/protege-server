@@ -30,6 +30,7 @@
   <bundles dir="plugins">
       <bundle name="org.protege.osgi.jdbc.jar"/>
       <bundle name="org.semanticweb.owl.owlapi.jar"/>
+      <bundle name="org.protege.editor.owl.codegeneration.jar"/>
       <bundle name="org.protege.owl.database.jar"/>
       <bundle name="org.protege.owl.server.jar"/>
   </bundles>
