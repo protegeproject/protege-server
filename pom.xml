@@ -76,7 +76,11 @@
             <artifactId>protege-owlapi-extensions</artifactId>
             <version>3.2.2.2011_03_18_0119</version>
         </dependency>
-
+        <dependency>
+          <groupId>protege4</groupId>
+          <artifactId>org.protege.editor.owl.codegeneration</artifactId>
+          <version>1.0.0.2011_09_29_1149</version>
+        </dependency>
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
@@ -129,6 +133,34 @@
 				<version>2.3.1</version>
 			</plugin>
 		
+            <plugin>  
+                <groupId>org.codehaus.mojo</groupId>  
+                <artifactId>exec-maven-plugin</artifactId>  
+                <version>1.1.1</version>  
+                <executions>  
+                    <execution>  
+                        <phase>generate-sources</phase>  
+                        <goals>  
+                            <goal>exec</goal>  
+                        </goals>  
+                        <configuration> 
+                          <executable>java</executable>
+                          <arguments>
+                            <argument>-classpath</argument>
+                            <classpath/>
+                            <argument>org.protege.owl.codegeneration.main.GenerateSimpleJavaCode</argument>
+                            <argument>--output</argument>
+                            <argument>target/generated-sources</argument>
+                            <argument>--package</argument>
+                            <argument>org.protege.owl.server.metaproject.generated</argument>
+                            <argument>src/main/resources/metaproject.owl</argument>
+                          </arguments>
+                        </configuration>  
+                    </execution>  
+                </executions>  
+            </plugin>  
+
+
 		
 			<!-- Execution of unit tests Generates output for reporting plugin -->
 			<plugin>
