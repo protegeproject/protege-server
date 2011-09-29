@@ -79,7 +79,7 @@
         <dependency>
           <groupId>protege4</groupId>
           <artifactId>org.protege.editor.owl.codegeneration</artifactId>
-          <version>1.0.0.2011_09_29_1149</version>
+          <version>1.0.0.2011_09_29_1229</version>
         </dependency>
 		<dependency>
 			<groupId>org.testng</groupId>
@@ -132,7 +132,26 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.1</version>
 			</plugin>
-		
+		    <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>  
+                            <goal>add-source</goal>  
+                        </goals>  
+                        <configuration>
+                            <sources>
+                                <source>target/generated-sources</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>  
                 <groupId>org.codehaus.mojo</groupId>  
                 <artifactId>exec-maven-plugin</artifactId>  
@@ -160,43 +179,7 @@
                 </executions>  
             </plugin>  
 
-
 		
-			<!-- Execution of unit tests Generates output for reporting plugin -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<!-- We set skip to true. So the unit tests can be explicitly defined 
-						in xml file reference below -->
-					<skip>true</skip>
-                    <systemPropertyVariables>
-                        <log4j.configuration>file:log4j.xml</log4j.configuration>
-                    </systemPropertyVariables>
-				</configuration>
-				<executions>
-					<execution>
-						<id>unit-tests</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<skip>false</skip>
-							<suiteXmlFiles>
-								<suiteXmlFile>src/test/resources/unit-tests.xml</suiteXmlFile>
-							</suiteXmlFiles>
-                            <systemProperties>
-                                <property>
-                                    <name>log4j.configuration</name>
-                                    <value>file:log4j.xml</value>
-                                </property>
-                            </systemProperties>
-				        </configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 			<!-- Compile Java Code -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
