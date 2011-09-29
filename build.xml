@@ -21,6 +21,7 @@
 
     <property name="src"        location="./src/main/java"/>
     <property name="build"      location="./build"/>
+	<property name="gensrc"     location="${build}/src"/>
     <property name="genlib"     location="${build}/lib"/>
     <property name="classes"    location="${build}/classes"/>
     <property name="plugin"     value="org.protege.owl.server"/>
@@ -81,6 +82,12 @@
           <include name = "**/protege-owlapi-extensions.jar"/>
         </patternset>
       </unjar>
+      <unjar dest="${build}"
+    	     src="${code.gen.lib}">
+    	<patternset>
+      		<include name="**/commons-cli*.jar"/>
+    	</patternset>
+      </unjar>
     </target>
     
     <target name="init">
@@ -90,8 +97,28 @@
         <fileset file="${owl.lib}"/>
       </copy>
     </target>
+	
+	<target name="generate.code" depends="init,buildlibs">
+		<java classname="org.protege.owl.codegeneration.main.GenerateSimpleJavaCode"
+		      fork="true"
+			  failonerror="true">
+			<classpath>
+				<path refid="project.classpath"/>
+				<pathelement location="tools/org.semanticweb.HermiT.jar"/>
+			</classpath>
+			<jvmarg value="-Dlog4j.configuration=file:./log4j-dev.xml"/>
+            <arg value="--delete"/>
+            <arg value="--output"/>
+            <arg value="build/src"/>
+            <arg value="--package"/>
+            <arg value="org.protege.owl.server.metaproject.generated"/>
+            <arg value="--reasoner"/>
+            <arg value="org.semanticweb.HermiT.Reasoner$ReasonerFactory"/>
+            <arg value="src/main/resources/metaproject.owl"/>
+		</java>
+	</target>
     
-    <target name="compile" depends="init, buildlibs">
+    <target name="compile" depends="generate.code">
       <copy todir="${classes}" file="src/main/resources/metaproject.owl"/>
       <javac srcdir="${src}" destdir="${classes}"
              debug="true">
