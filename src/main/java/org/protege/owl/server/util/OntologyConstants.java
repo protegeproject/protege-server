@@ -1,5 +1,6 @@
 package org.protege.owl.server.util;
 
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
@@ -11,7 +12,7 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
 
 public class OntologyConstants {
-	public static final OWLDataFactory factory = OWLDataFactoryImpl.getInstance();
+	public static final OWLDataFactory factory = OWLManager.getOWLDataFactory();
 
 	/**
 	 * The name of the fake meta-ontologies created by a server and also the name space or terms used by that ontology.
