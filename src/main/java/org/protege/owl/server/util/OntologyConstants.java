@@ -9,8 +9,6 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLLiteral;
 
-import uk.ac.manchester.cs.owl.owlapi.OWLDataFactoryImpl;
-
 public class OntologyConstants {
 	public static final OWLDataFactory factory = OWLManager.getOWLDataFactory();
 
