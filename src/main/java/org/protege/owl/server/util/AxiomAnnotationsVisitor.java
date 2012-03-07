@@ -2,6 +2,7 @@ package org.protege.owl.server.util;
 
 import java.util.Set;
 
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationPropertyDomainAxiom;
@@ -53,7 +54,7 @@ public abstract class AxiomAnnotationsVisitor implements OWLAxiomVisitor {
     private OWLAxiom result;
 
     protected AxiomAnnotationsVisitor() {
-        this.factory = OWLDataFactoryImpl.getInstance();
+        this.factory = OWLManager.getOWLDataFactory();
     }
 
     protected abstract Set<OWLAnnotation> processAnnotations(Set<OWLAnnotation> axiomAnnotations);
