@@ -14,7 +14,12 @@
     <property name="org.osgi.framework.storage.clean" 
               value="onFirstInit"/>
   </frameworkProperties>
-  <bundles dir="bundles">
+  <bundles>
+      <search path="bundles"/>
+      <bundle name="org.protege.common.jar"/>
+  </bundles>
+  <bundles>
+      <search path="bundles"/>
       <bundle name="org.apache.felix.configadmin-1.2.4.jar"/>
       <bundle name="org.apache.felix.http.api-2.0.4.jar"/>
       <bundle name="org.apache.felix.http.bundle-2.0.4.jar"/>
@@ -22,12 +27,12 @@
       <bundle name="org.apache.felix.log-1.0.0.jar"/>
       <bundle name="org.apache.felix.scr-1.4.0.jar"/>
       <bundle name="protege-owlapi-extensions.jar"/>
-      <bundle name="org.protege.common.jar"/>
       <bundle name="org.protege.owl.server.db.jar"/>
       <bundle name="org.protege.owl.server.servlet.jar"/>
   </bundles>
 
-  <bundles dir="plugins">
+  <bundles>
+      <search path="plugins"/>
       <bundle name="org.protege.osgi.jdbc.jar"/>
       <bundle name="org.semanticweb.owl.owlapi.jar"/>
       <bundle name="org.protege.editor.owl.codegeneration.jar"/>
