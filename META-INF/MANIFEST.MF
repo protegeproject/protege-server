@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OWL Ontology Server
+Bundle-SymbolicName: org.protege.owl.server
+Bundle-Version: 1.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.semanticweb.owl.owlapi;bundle-version="3.2.5"
