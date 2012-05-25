@@ -1,5 +1,5 @@
 package org.protege.owl.server.api;
 
-public class User {
-
+public interface User {
+	String getUserName();
 }
