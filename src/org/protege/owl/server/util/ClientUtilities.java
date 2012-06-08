@@ -69,7 +69,7 @@ public class ClientUtilities {
 		OntologyDocument doc = client.getOntologyDocument(ontologyIRI);
 		ServerRevision revision = client.getServerRevision(ontologyIRI);
 		List<OWLOntologyChange> changes = getUncommittedChanges(ontology, doc, revision);
-		client.commit(doc, revision, factory.createChangeDocument(doc, changes, revision, null));
+		client.commit(doc, revision, factory.createChangeDocument(doc, changes, revision));
 	}
 	
 	public void update(OWLOntology ontology) {

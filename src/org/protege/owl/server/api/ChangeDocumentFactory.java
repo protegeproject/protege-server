@@ -5,5 +5,6 @@ import java.util.List;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 public interface ChangeDocumentFactory {
-	ChangeDocument createChangeDocument(OntologyDocument doc, List<OWLOntologyChange> changes, ServerRevision start, ServerRevision end);
+	
+	ChangeDocument createChangeDocument(OntologyDocument doc, List<OWLOntologyChange> changes, ServerRevision start);
 }

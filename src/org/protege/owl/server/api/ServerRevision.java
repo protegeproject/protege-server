@@ -16,7 +16,15 @@ public class ServerRevision implements Comparable<ServerRevision> {
 	
 	@Override
 	public int compareTo(ServerRevision o) {
-		return 0;
+		if (revision > o.revision) {
+			return 1;
+		}
+		else if (revision < o.revision) {
+			return -1;
+		}
+		else {
+			return 0;
+		}
 	}
 
 }
