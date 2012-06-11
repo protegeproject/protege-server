@@ -18,13 +18,11 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 public interface ChangeDocument extends Serializable {
 	
-	OntologyDocument getOntologyDocument();
+	OntologyDocumentRevision getStartRevision();
 	
-	ServerRevision getStartRevision();
+	OntologyDocumentRevision getEndRevision();
 	
-	ServerRevision getEndRevision();
-	
-	ChangeDocument cropChanges(ServerRevision start, ServerRevision end);
+	ChangeDocument cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end);
 	
 	/**
 	 * Gets the list of changes associated with this document and associates them with the ontology.  

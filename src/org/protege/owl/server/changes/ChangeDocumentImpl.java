@@ -1,158 +1,97 @@
 package org.protege.owl.server.changes;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamException;
+import java.io.OutputStreamWriter;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import org.protege.owl.server.api.ChangeDocument;
-import org.protege.owl.server.api.OntologyDocument;
-import org.protege.owl.server.api.ServerRevision;
-import org.semanticweb.owlapi.model.AddAxiom;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAnnotation;
-import org.semanticweb.owlapi.model.OWLAnnotationValue;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLLiteral;
+import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.io.ReaderDocumentSource;
+import org.semanticweb.owlapi.io.WriterDocumentTarget;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyID;
-import org.semanticweb.owlapi.model.RemoveAxiom;
-import org.semanticweb.owlapi.model.SetOntologyID;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
+/**
+ * 
+ * @author tredmond
+ * @deprecated replace with Matthew's binary serialization format.
+ */
+@Deprecated
 public class ChangeDocumentImpl implements ChangeDocument {
-	private OWLOntology changesOntology;
-	private ServerRevision startRevision;
+	private static final long serialVersionUID = -3842895051205436375L;
+	private OntologyDocumentRevision startRevision;
+	private List<OWLOntologyChange> changes;
 
-	@Override
-	public OntologyDocument getOntologyDocument() {
-		// TODO Auto-generated method stub
-		return null;
+	/*
+	 * 
+	 */
+	public ChangeDocumentImpl(OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes) {
+		this.startRevision = startRevision;
+		this.changes = changes;
 	}
 
 	@Override
-	public ServerRevision getStartRevision() {
+	public OntologyDocumentRevision getStartRevision() {
 		return startRevision;
 	}
 
 	@Override
-	public ServerRevision getEndRevision() {
-		int revision = startRevision.getRevision() + changesOntology.getAxiomCount() + changesOntology.getAnnotations().size();
-		return new ServerRevision(revision);
+	public OntologyDocumentRevision getEndRevision() {
+		int revision = startRevision.getRevision() + changes.size();
+		return new OntologyDocumentRevision(revision);
 	}
 
 	@Override
-	public ChangeDocument cropChanges(ServerRevision start, ServerRevision end) {
-		// TODO Auto-generated method stub
-		return null;
+	public ChangeDocument cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end) {
+		if (start.compareTo(getStartRevision()) < 0 || end.compareTo(getEndRevision()) > 0) {
+			throw new IllegalStateException("Cropping changes out of range");
+		}
+		List<OWLOntologyChange> subChanges = changes.subList(start.getRevision() - getStartRevision().getRevision(), end.getRevision() - getEndRevision().getRevision());
+		return new ChangeDocumentImpl(start, subChanges);
 	}
 
 	@Override
 	public List<OWLOntologyChange> getChanges(OWLOntology ontology) {
-		OntologyToChangesUtil otcu = new OntologyToChangesUtil(ontology);
-		otcu.handleAxioms();
-		otcu.handleAnnotations();
-		return otcu.getChanges();
-	}
-	
-	
-	private class OntologyToChangesUtil {
-		private OWLOntology ontology;
-		private Map<Integer, OWLOntologyChange> changeMap = new TreeMap<Integer, OWLOntologyChange>();
-		
-		
-		private OntologyToChangesUtil(OWLOntology ontology) {
-			this.ontology = ontology;
-		}
-		
-		
-		public void handleAxioms() {
-			for (OWLAxiom axiom : changesOntology.getAxioms()) {
-				Set<OWLAnnotation> annotations = axiom.getAnnotations();
-				OWLAxiom cleanedAxiom = axiom.getAxiomWithoutAnnotations().getAnnotatedAxiom(removeChangeOntologyAnnotations(annotations));
-				int revision = getRevision(annotations);
-				OWLOntologyChange change;
-				if (isAdded(annotations)) {
-					change = new AddAxiom(ontology, cleanedAxiom);
-				}
-				else {
-					change = new RemoveAxiom(ontology, cleanedAxiom);
-				}
-				changeMap.put(revision, change);
-			}
-		}
-		
-		public void handleAnnotations() {
-			for (OWLAnnotation annotation : changesOntology.getAnnotations()) {
-				OWLAnnotationValue rawValue = annotation.getValue();
-				int revision = getRevision(annotation.getAnnotations());
-				OWLOntologyChange change;
-				if (annotation.getProperty().equals(ChangeOntology.SET_ONTOLOGY_ID)) {
-					IRI name = (IRI) rawValue;
-					IRI version = getVersionIRI(annotation.getAnnotations());
-					OWLOntologyID id;
-					if (version == null) {
-						id = new OWLOntologyID(name);
-					}
-					else {
-						id = new OWLOntologyID(name, version);
-					}
-					change = new SetOntologyID(ontology, id);
-				}
-			}
-		}
-		
-		public List<OWLOntologyChange> getChanges() {
-			List<OWLOntologyChange> changeList = new ArrayList<OWLOntologyChange>();
-			OWLOntologyChange change;
-			int revision = startRevision.getRevision();
-			while ((change = changeMap.get(revision++)) != null) {
-				changeList.add(change);
-			}
-			return changeList;
-		}
-		
-		private int getRevision(Set<OWLAnnotation> annotations) {
-			for (OWLAnnotation annotation : annotations) {
-				if (annotation.getProperty().equals(ChangeOntology.REVISION)) {
-					return ((OWLLiteral) annotation.getValue()).parseInteger();
-				}
-			}
-			throw new IllegalStateException("Revision information expected but not found.");
-		}
-		
-		private boolean isAdded(Set<OWLAnnotation> annotations) {
-			for (OWLAnnotation annotation : annotations) {
-				if (annotation.getProperty().equals(ChangeOntology.IS_AXIOM_ADDED)) {
-					return ((OWLLiteral) annotation.getValue()).parseBoolean();
-				}
-			}
-			throw new IllegalStateException("Added/Removed information expected but not found.");
-		}
-
-		private IRI getVersionIRI(Set<OWLAnnotation> annotations) {
-			for (OWLAnnotation annotation : annotations) {
-				if (annotation.getProperty().equals(ChangeOntology.SET_ONTOLOGY_VERSION)) {
-					return (IRI) annotation.getValue();
-				}
-			}
-			return null;
-		}
-		
-		private Set<OWLAnnotation> removeChangeOntologyAnnotations(Set<OWLAnnotation> annotations) {
-			Set<OWLAnnotation> cleanedAnnotations = new TreeSet<OWLAnnotation>(annotations);
-			for (OWLAnnotation annotation : annotations) {
-				if (annotation.getProperty().getIRI().toString().startsWith(ChangeOntology.NS)) {
-					cleanedAnnotations.remove(annotation);
-				}
-			}
-			return cleanedAnnotations;
-		}
-
+		return ReplaceChangedOntologyVisitor.mutate(ontology, changes);
 	}
 
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeObject(startRevision);
+		OWLOntology changesOntology = ChangesToOntologyVisitor.createChangesOntology(startRevision, changes);
+		OWLOntologyManager manager = changesOntology.getOWLOntologyManager();
+		OutputStreamWriter writer = new OutputStreamWriter(out);
+		try {
+			manager.saveOntology(changesOntology, new WriterDocumentTarget(writer));
+		}
+		catch (OWLOntologyStorageException e) {
+			throw new OntologyStorageIOException(e);
+		}
+	}
 	
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		startRevision = (OntologyDocumentRevision) in.readObject();
+		InputStreamReader reader = new InputStreamReader(in);
+		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+		OWLOntology changesOntology;
+		try {
+			changesOntology = manager.loadOntologyFromOntologyDocument(new ReaderDocumentSource(reader));
+		}
+		catch (OWLOntologyCreationException e) {
+			throw new OntologyCreationIOException(e);
+		}
+		changes = OntologyToChangesUtil.getChanges(changesOntology);
+	}
+	
+	private void readObjectNoData() throws ObjectStreamException {
+		throw new IllegalStateException("huh?");
+	}
 
 }

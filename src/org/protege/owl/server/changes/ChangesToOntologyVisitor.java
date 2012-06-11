@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.protege.owl.server.api.ServerRevision;
+import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
@@ -30,15 +30,25 @@ import org.semanticweb.owlapi.model.SetOntologyID;
  */
 @Deprecated
 public class ChangesToOntologyVisitor implements OWLOntologyChangeVisitor {
+	
+	public static OWLOntology createChangesOntology(OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes) {
+		ChangesToOntologyVisitor visitor = new ChangesToOntologyVisitor(startRevision);
+		for (OWLOntologyChange change : changes) {
+			change.accept(visitor);
+		}
+		return visitor.getUpdatedOntology();
+	}
+	
+	
 	private OWLOntology ontology;
 	private OWLOntologyManager manager;
 	private OWLDataFactory factory;
 	private List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
 	
-	private ServerRevision start;
-	private ServerRevision end ;
+	private OntologyDocumentRevision start;
+	private OntologyDocumentRevision end ;
 	
-	public ChangesToOntologyVisitor(ServerRevision revision) {
+	public ChangesToOntologyVisitor(OntologyDocumentRevision revision) {
 		try {
 			manager = OWLManager.createOWLOntologyManager();
 			factory = manager.getOWLDataFactory();
@@ -58,11 +68,11 @@ public class ChangesToOntologyVisitor implements OWLOntologyChangeVisitor {
 		return ontology;
 	}
 	
-	public ServerRevision getStartRevision() {
+	public OntologyDocumentRevision getStartRevision() {
 		return start;
 	}
 	
-	public ServerRevision getEndRevision() {
+	public OntologyDocumentRevision getEndRevision() {
 		return end;
 	}
 
@@ -117,7 +127,7 @@ public class ChangesToOntologyVisitor implements OWLOntologyChangeVisitor {
 	}
 
 	private void incrementEndRevision() {
-		end = new ServerRevision(end.getRevision());
+		end = new OntologyDocumentRevision(end.getRevision());
 	}
 	
 }

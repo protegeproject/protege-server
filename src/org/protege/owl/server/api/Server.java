@@ -6,13 +6,13 @@ import org.semanticweb.owlapi.model.IRI;
 
 public interface Server {
 	
-	ServerPath getServerDocument(User u, IRI serverIRI);
+	ServerDocument getServerDocument(User u, IRI serverIRI);
 	
-	Collection<ServerPath> list(User u, ServerDirectory dir);
+	Collection<ServerDocument> list(User u, ServerDirectory dir);
 		
-	ChangeDocument getChanges(User u, OntologyDocument doc, ServerRevision start, ServerRevision end);
+	OntologyDocument create(User u, String commitComment, IRI serverIRI);
 	
-	OntologyDocument create(User u, String commitComment, OntologyDocument doc);
-	
-	void applyChange(User u, String commitComment, OntologyDocument doc, ServerRevision revision, ChangeDocument changes);
+	ChangeDocument getChanges(User u, OntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end);
+
+	void applyChange(User u, OntologyDocument doc, String commitComment, OntologyDocumentRevision revision, ChangeDocument changes);
 }

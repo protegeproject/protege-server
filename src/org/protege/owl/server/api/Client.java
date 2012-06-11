@@ -6,18 +6,26 @@ import org.semanticweb.owlapi.model.IRI;
 
 public interface Client {
 	
-	ChangeDocumentFactory getChangeDocumentFactory();
+	DocumentFactory getDocumentFactory();
 	
-	OntologyDocument getOntologyDocument(IRI ontologyIRI);
+	ServerDocument getServerDocument(IRI serverIRI);
 	
-	ServerRevision getServerRevision(IRI ontologyIRI);
-	
-	Collection<ServerPath> list(ServerPath path);
+	Collection<ServerDocument> list(ServerDocument path);
+
+	OntologyDocumentRevision getHeadRevision(OntologyDocument doc);
 	
 	void create(String commitComment, OntologyDocument doc);
 		
-	ChangeDocument getChanges(OntologyDocument document, ServerRevision start, ServerRevision end);
+	/**
+	 * If the end revision is null this means get all changes up to the latest.
+	 * 
+	 * @param document
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	ChangeDocument getChanges(OntologyDocument document, OntologyDocumentRevision start, OntologyDocumentRevision end);
 	
-	void commit(OntologyDocument document, ServerRevision revision, ChangeDocument changes);
+	void commit(OntologyDocument document, OntologyDocumentRevision revision, ChangeDocument changes);
 
 }

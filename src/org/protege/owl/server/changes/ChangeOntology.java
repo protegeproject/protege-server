@@ -5,6 +5,12 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 
+/**
+ * 
+ * @author tredmond
+ * @deprecated replace with Matthew's binary serialization format.
+ */
+@Deprecated
 public class ChangeOntology {
 	public static final String NS = "http://protege.org/ontologies/ChangeSerializationOntology.owl";
 	
