@@ -10,7 +10,9 @@ public interface Server {
 	
 	Collection<ServerDocument> list(User u, ServerDirectory dir);
 		
-	OntologyDocument create(User u, String commitComment, IRI serverIRI);
+	OntologyDocument createOntologyDocument(User u, String commitComment, IRI serverIRI);
+	
+	ServerDirectory createServerDirectory(User u, IRI serverIRI);
 	
 	ChangeDocument getChanges(User u, OntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end);
 

@@ -11,6 +11,7 @@ import java.util.List;
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
 import org.semanticweb.owlapi.io.ReaderDocumentSource;
 import org.semanticweb.owlapi.io.WriterDocumentTarget;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -50,6 +51,11 @@ public class ChangeDocumentImpl implements ChangeDocument {
 	}
 
 	@Override
+	public String getComment(OntologyDocumentRevision revision) {
+		throw new IllegalStateException("Not implemented yet");
+	}
+	
+	@Override
 	public ChangeDocument cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end) {
 		if (start.compareTo(getStartRevision()) < 0 || end.compareTo(getEndRevision()) > 0) {
 			throw new IllegalStateException("Cropping changes out of range");
@@ -62,14 +68,38 @@ public class ChangeDocumentImpl implements ChangeDocument {
 	public List<OWLOntologyChange> getChanges(OWLOntology ontology) {
 		return ReplaceChangedOntologyVisitor.mutate(ontology, changes);
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof ChangeDocument)) {
+			return false;
+		}
+		ChangeDocument other = (ChangeDocument) o;
+		try {
+		OWLOntology ontology = OWLManager.createOWLOntologyManager().createOntology();
+		return getStartRevision().equals(other.getStartRevision()) &&
+				getEndRevision().equals(other.getEndRevision()) &&
+				getChanges(ontology).equals(other.getChanges(ontology));
+		}
+		catch (OWLOntologyCreationException e) {
+			throw new IllegalStateException("Could not create empty ontology");
+		}
+	}
+	
+	@Override
+	public String toString() {
+		return "{" + startRevision.getRevision() + " --> " + getEndRevision().getRevision() + ": " + changes + "}";
+	}
+	
 
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeObject(startRevision);
 		OWLOntology changesOntology = ChangesToOntologyVisitor.createChangesOntology(startRevision, changes);
 		OWLOntologyManager manager = changesOntology.getOWLOntologyManager();
-		OutputStreamWriter writer = new OutputStreamWriter(out);
+		OutputStreamWriter writer = new OutputStreamWriter(out, "UTF-8");
 		try {
-			manager.saveOntology(changesOntology, new WriterDocumentTarget(writer));
+			OWLXMLOntologyFormat format = new OWLXMLOntologyFormat();
+			manager.saveOntology(changesOntology, format, new WriterDocumentTarget(writer));
 		}
 		catch (OWLOntologyStorageException e) {
 			throw new OntologyStorageIOException(e);
@@ -78,7 +108,7 @@ public class ChangeDocumentImpl implements ChangeDocument {
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		startRevision = (OntologyDocumentRevision) in.readObject();
-		InputStreamReader reader = new InputStreamReader(in);
+		InputStreamReader reader = new InputStreamReader(in, "UTF-8");
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		OWLOntology changesOntology;
 		try {
@@ -87,7 +117,7 @@ public class ChangeDocumentImpl implements ChangeDocument {
 		catch (OWLOntologyCreationException e) {
 			throw new OntologyCreationIOException(e);
 		}
-		changes = OntologyToChangesUtil.getChanges(changesOntology);
+		changes = OntologyToChangesUtil.getChanges(changesOntology, startRevision);
 	}
 	
 	private void readObjectNoData() throws ObjectStreamException {

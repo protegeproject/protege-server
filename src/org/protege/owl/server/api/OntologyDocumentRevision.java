@@ -29,5 +29,18 @@ public class OntologyDocumentRevision implements Comparable<OntologyDocumentRevi
 			return 0;
 		}
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof OntologyDocumentRevision)) {
+			return false;
+		}
+		return revision == ((OntologyDocumentRevision) other).getRevision();
+	}
+	
+	@Override
+	public String toString() {
+		return "<Revision " + revision + ">";
+	}
 
 }

@@ -79,21 +79,19 @@ public class ChangesToOntologyVisitor implements OWLOntologyChangeVisitor {
 	@Override
 	public void visit(AddAxiom change) {
 		Set<OWLAnnotation> annotations = new TreeSet<OWLAnnotation>();
-		annotations.add(factory.getOWLAnnotation(ChangeOntology.REVISION, factory.getOWLLiteral(end.getRevision())));
-		annotations.add(factory.getOWLAnnotation(ChangeOntology.IS_AXIOM_ADDED, factory.getOWLLiteral(true)));
+		addRevisionAnnotation(annotations);
+		addAddRemoveAnnotation(annotations, true);
 		OWLAxiom axiom = change.getAxiom().getAnnotatedAxiom(annotations);
 		changes.add(new AddAxiom(ontology, axiom));
-		incrementEndRevision();
 	}
 
 	@Override
 	public void visit(RemoveAxiom change) {
 		Set<OWLAnnotation> annotations = new TreeSet<OWLAnnotation>();
-		annotations.add(factory.getOWLAnnotation(ChangeOntology.REVISION, factory.getOWLLiteral(end.getRevision())));
-		annotations.add(factory.getOWLAnnotation(ChangeOntology.IS_AXIOM_ADDED, factory.getOWLLiteral(false)));
+		addRevisionAnnotation(annotations);
+		addAddRemoveAnnotation(annotations, false);
 		OWLAxiom axiom = change.getAxiom().getAnnotatedAxiom(annotations);
 		changes.add(new AddAxiom(ontology, axiom));
-		incrementEndRevision();
 	}
 
 	@Override
@@ -104,30 +102,43 @@ public class ChangesToOntologyVisitor implements OWLOntologyChangeVisitor {
 
 	@Override
 	public void visit(AddImport change) {
-		// TODO Auto-generated method stub
-		
+		Set<OWLAnnotation> metaAnnotations = new TreeSet<OWLAnnotation>();
+		addRevisionAnnotation(metaAnnotations);
+		addAddRemoveAnnotation(metaAnnotations, true);
+		changes.add(new AddOntologyAnnotation(ontology, factory.getOWLAnnotation(ChangeOntology.IMPORTS, change.getImportDeclaration().getIRI(), metaAnnotations)));
 	}
 
 	@Override
 	public void visit(RemoveImport change) {
-		// TODO Auto-generated method stub
-		
+		Set<OWLAnnotation> metaAnnotations = new TreeSet<OWLAnnotation>();
+		addRevisionAnnotation(metaAnnotations);
+		addAddRemoveAnnotation(metaAnnotations, false);
+		changes.add(new AddOntologyAnnotation(ontology, factory.getOWLAnnotation(ChangeOntology.IMPORTS, change.getImportDeclaration().getIRI(), metaAnnotations)));
 	}
 
 	@Override
 	public void visit(AddOntologyAnnotation change) {
-		// TODO Auto-generated method stub
-		
+		Set<OWLAnnotation> annotationAnnotations = new TreeSet<OWLAnnotation>(change.getAnnotation().getAnnotations());
+		addAddRemoveAnnotation(annotationAnnotations, true);
+		addRevisionAnnotation(annotationAnnotations);
+		changes.add(new AddOntologyAnnotation(ontology, change.getAnnotation().getAnnotatedAnnotation(annotationAnnotations)));
 	}
 
 	@Override
 	public void visit(RemoveOntologyAnnotation change) {
-		// TODO Auto-generated method stub
-		
+		Set<OWLAnnotation> annotationAnnotations = new TreeSet<OWLAnnotation>(change.getAnnotation().getAnnotations());
+		addAddRemoveAnnotation(annotationAnnotations, false);
+		addRevisionAnnotation(annotationAnnotations);
+		changes.add(new AddOntologyAnnotation(ontology, change.getAnnotation().getAnnotatedAnnotation(annotationAnnotations)));
 	}
-
-	private void incrementEndRevision() {
-		end = new OntologyDocumentRevision(end.getRevision());
+	
+	private void addAddRemoveAnnotation(Set<OWLAnnotation> annotations, boolean added) {
+		annotations.add(factory.getOWLAnnotation(ChangeOntology.IS_AXIOM_ADDED, factory.getOWLLiteral(added)));
+	}
+	
+	private void addRevisionAnnotation(Set<OWLAnnotation> annotations) {
+		annotations.add(factory.getOWLAnnotation(ChangeOntology.REVISION, factory.getOWLLiteral(end.getRevision())));
+		end = new OntologyDocumentRevision(end.getRevision() + 1);
 	}
 	
 }

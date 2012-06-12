@@ -22,6 +22,8 @@ public interface ChangeDocument extends Serializable {
 	
 	OntologyDocumentRevision getEndRevision();
 	
+	String getComment(OntologyDocumentRevision revision);
+	
 	ChangeDocument cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end);
 	
 	/**

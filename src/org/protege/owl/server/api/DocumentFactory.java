@@ -16,7 +16,9 @@ public interface DocumentFactory {
 	 */
 	ChangeDocument createChangeDocument(List<OWLOntologyChange> changes, OntologyDocumentRevision start);
 	
-	OntologyDocument createOntologyDocument(IRI location);
+	OntologyDocument createOntologyDocument(IRI localDoc, IRI serverAddress);
 	
-	OntologyDocument loadOntologyDocument(IRI location);
+	OntologyDocument loadOntologyDocument(IRI localDoc);
+	
+	OntologyDocument saveOntologyDocument(OntologyDocument doc);
 }

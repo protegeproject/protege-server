@@ -8,16 +8,24 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddAxiom;
+import org.semanticweb.owlapi.model.AddImport;
+import org.semanticweb.owlapi.model.AddOntologyAnnotation;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyID;
 import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.model.RemoveImport;
+import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 import org.semanticweb.owlapi.model.SetOntologyID;
 
 
@@ -28,20 +36,34 @@ import org.semanticweb.owlapi.model.SetOntologyID;
  */
 @Deprecated
 public class OntologyToChangesUtil {
-	public static List<OWLOntologyChange> getChanges(OWLOntology ontology) {
-		return new OntologyToChangesUtil(ontology).getChanges();
+	public static List<OWLOntologyChange> getChanges(OWLOntology changesOntology, OntologyDocumentRevision startRevision) {
+		OntologyToChangesUtil otcu = new OntologyToChangesUtil(changesOntology, startRevision);
+		otcu.initialise();
+		return otcu.getChanges();
 	}
 	
 	private OntologyDocumentRevision startRevision;
 	private OWLOntology changesOntology;
-	private OWLOntology ontology;
+	private OWLOntology fakeOntology;
 	private Map<Integer, OWLOntologyChange> changeMap = new TreeMap<Integer, OWLOntologyChange>();
 	
 	
-	private OntologyToChangesUtil(OWLOntology ontology) {
-		this.ontology = ontology;
+	private OntologyToChangesUtil(OWLOntology changesOntology, OntologyDocumentRevision startRevision) {
+		this.changesOntology = changesOntology;
+		this.startRevision = startRevision;
+		try {
+			this.fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
+		}
+		catch (OWLOntologyCreationException e) {
+			throw new IllegalStateException("Could not create empty ontology", e);
+		}
 	}
 	
+	
+	public void initialise() {
+		handleAxioms();
+		handleAnnotations();
+	}
 	
 	public List<OWLOntologyChange> getChanges() {
 		List<OWLOntologyChange> changeList = new ArrayList<OWLOntologyChange>();
@@ -61,10 +83,10 @@ public class OntologyToChangesUtil {
 			int revision = getRevision(annotations);
 			OWLOntologyChange change;
 			if (isAdded(annotations)) {
-				change = new AddAxiom(ontology, cleanedAxiom);
+				change = new AddAxiom(fakeOntology, cleanedAxiom);
 			}
 			else {
-				change = new RemoveAxiom(ontology, cleanedAxiom);
+				change = new RemoveAxiom(fakeOntology, cleanedAxiom);
 			}
 			changeMap.put(revision, change);
 		}
@@ -85,11 +107,30 @@ public class OntologyToChangesUtil {
 				else {
 					id = new OWLOntologyID(name, version);
 				}
-				change = new SetOntologyID(ontology, id);
+				change = new SetOntologyID(fakeOntology, id);
 			}
 			else if (annotation.getProperty().equals(ChangeOntology.IMPORTS)) {
-				
+				OWLDataFactory dataFactory = fakeOntology.getOWLOntologyManager().getOWLDataFactory();
+				IRI importLocation = (IRI) annotation.getValue();
+				OWLImportsDeclaration decl = dataFactory.getOWLImportsDeclaration(importLocation);
+				if (isAdded(annotation.getAnnotations())) {
+					change = new AddImport(fakeOntology, decl);
+				}
+				else {
+					change = new RemoveImport(fakeOntology, decl);
+				}
 			}
+			else {
+				OWLDataFactory dataFactory = fakeOntology.getOWLOntologyManager().getOWLDataFactory();
+				OWLAnnotation cleanedAnnotation = dataFactory.getOWLAnnotation(annotation.getProperty(), annotation.getValue(), removeChangeOntologyAnnotations(annotation.getAnnotations()));
+				if (isAdded(annotation.getAnnotations())) {
+					change = new AddOntologyAnnotation(fakeOntology, cleanedAnnotation);
+				}
+				else {
+					change = new RemoveOntologyAnnotation(fakeOntology, cleanedAnnotation);
+				}
+			}
+			changeMap.put(revision, change);
 		}
 	}
 	
