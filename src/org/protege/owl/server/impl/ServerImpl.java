@@ -6,7 +6,7 @@ import java.util.Collection;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.OntologyDocument;
+import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
@@ -46,41 +46,44 @@ public class ServerImpl implements Server {
 		throw new IllegalArgumentException();
 	}
 
+	
+	private void sanityCheck(IRI serverIRI) {
+		if (!serverIRI.getScheme().equals(SCHEME)) {
+			throw new IllegalStateException("incorrect scheme for server request");
+		}
+	}
+
 	@Override
 	public Collection<ServerDocument> list(User u, ServerDirectory dir) {
 		throw new IllegalStateException("Not implemented yet");
 
 	}
-	
+
+	@Override
+	public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI) {
+		throw new IllegalStateException("Not implemented yet");
+
+	}
+
 	@Override
 	public ServerDirectory createServerDirectory(User u, IRI serverIRI) {
 		throw new IllegalStateException("Not implemented yet");
-	}
-
-	@Override
-	public OntologyDocument createOntologyDocument(User u, String commitComment, IRI serverIRI) {
-		throw new IllegalStateException("Not implemented yet");
 
 	}
 
 	@Override
-	public ChangeDocument getChanges(User u, OntologyDocument doc,
+	public ChangeDocument getChanges(User u, RemoteOntologyDocument doc,
 			OntologyDocumentRevision start, OntologyDocumentRevision end) {
 		throw new IllegalStateException("Not implemented yet");
 
 	}
 
 	@Override
-	public void applyChange(User u, OntologyDocument doc, String commitComment,
-			OntologyDocumentRevision revision, ChangeDocument changes) {
+	public void applyChange(User u, RemoteOntologyDocument doc,
+			String commitComment, OntologyDocumentRevision revision,
+			ChangeDocument changes) {
 		throw new IllegalStateException("Not implemented yet");
-		
-	}
-	
-	private void sanityCheck(IRI serverIRI) {
-		if (!serverIRI.getScheme().equals(SCHEME)) {
-			throw new IllegalStateException("incorrect scheme for server request");
-		}
+
 	}
 
 

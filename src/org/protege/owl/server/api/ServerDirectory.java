@@ -1,5 +1,11 @@
 package org.protege.owl.server.api;
 
-public interface ServerDirectory extends ServerDocument {
+import org.semanticweb.owlapi.model.IRI;
+
+public class ServerDirectory extends ServerDocument {
+	
+	public ServerDirectory(IRI serverLocation) {
+		super(serverLocation);
+	}
 
 }

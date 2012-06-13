@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.OntologyDocument;
+import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.changes.ChangeDocumentImpl;
 import org.semanticweb.owlapi.model.IRI;
@@ -19,17 +19,17 @@ public class DocumentFactoryImpl implements DocumentFactory {
 	}
 	
 	@Override
-	public OntologyDocument createOntologyDocument(IRI localDoc, IRI serverAddress) {
+	public RemoteOntologyDocument createOntologyDocument(IRI localDoc, IRI serverAddress) {
 		throw new IllegalStateException("Not implemented yet");
 	}
 	
 	@Override
-	public OntologyDocument loadOntologyDocument(IRI localDoc) {
+	public RemoteOntologyDocument loadOntologyDocument(IRI localDoc) {
 		throw new IllegalStateException("Not implemented yet");
 	}
 	
 	@Override
-	public OntologyDocument saveOntologyDocument(OntologyDocument doc) {
+	public RemoteOntologyDocument saveOntologyDocument(RemoteOntologyDocument doc) {
 		throw new IllegalStateException("Not implemented yet");
 	}
 

@@ -1,18 +1,17 @@
-package org.protege.owl.server.api;
+ package org.protege.owl.server.api;
 
 import org.semanticweb.owlapi.model.IRI;
 
 
-public interface ServerDocument {
+public class ServerDocument {
+	private IRI serverLocation;
 	
-	IRI getLocation();
-	
-	boolean isOntologyDocument();
-	
-	OntologyDocument asOntologyDocument();
-	
-	boolean isDirectory();
-	
-	ServerDirectory asServerDirectory();
+	public ServerDocument(IRI serverLocation) {
+		this.serverLocation = serverLocation;
+	}
 
+	public IRI getServerLocation() {
+		return serverLocation;
+	}
+	
 }

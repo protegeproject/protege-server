@@ -1,20 +1,22 @@
 package org.protege.owl.server.api;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.Map;
 
 import org.semanticweb.owlapi.model.IRI;
 
 public interface Server {
 	
-	ServerDocument getServerDocument(User u, IRI serverIRI);
+	ServerDocument getServerDocument(User u, IRI serverIRI) throws DocumentNotFoundException;
 	
-	Collection<ServerDocument> list(User u, ServerDirectory dir);
+	Collection<ServerDocument> list(User u, ServerDirectory dir) throws IOException;
 		
-	OntologyDocument createOntologyDocument(User u, String commitComment, IRI serverIRI);
+	RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings);
 	
 	ServerDirectory createServerDirectory(User u, IRI serverIRI);
 	
-	ChangeDocument getChanges(User u, OntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end);
+	ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end);
 
-	void applyChange(User u, OntologyDocument doc, String commitComment, OntologyDocumentRevision revision, ChangeDocument changes);
+	void applyChange(User u, RemoteOntologyDocument doc, String commitComment, OntologyDocumentRevision revision, ChangeDocument changes);
 }

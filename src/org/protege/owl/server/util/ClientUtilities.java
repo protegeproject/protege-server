@@ -1,5 +1,6 @@
 package org.protege.owl.server.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,10 +9,12 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
-import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.Client;
-import org.protege.owl.server.api.OntologyDocument;
+import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.api.OpenOntologyDocument;
+import org.protege.owl.server.api.RemoteOntologyDocument;
+import org.protege.owl.server.api.SavedOntologyDocument;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
@@ -43,43 +46,47 @@ public class ClientUtilities {
 	 * Calls involving OWLOntology...
 	 */
 	
-	public OntologyDocument getOntologyDocument(OWLOntology ontology) {
+	public SavedOntologyDocument getOntologyDocument(OWLOntology ontology) throws IOException {
 		OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		IRI source = manager.getOntologyDocumentIRI(ontology);
-		return client.getDocumentFactory().loadOntologyDocument(source);
+		return client.getDocumentFactory().getSavedOntologyDocument(source);
 	}
 	
-	public OWLOntology loadOntology(OWLOntologyManager manager, OntologyDocument doc) throws OWLOntologyCreationException {
+	public OWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc) throws OWLOntologyCreationException {
 		ChangeDocument changes = client.getChanges(doc, OntologyDocumentRevision.START_REVISION, null);
 		OWLOntology ontology = manager.createOntology();		
 		manager.applyChanges(changes.getChanges(ontology));
 		return ontology;
 	}
 	
-	public OWLOntology loadOntology(OWLOntologyManager manager, OntologyDocument doc, OntologyDocumentRevision revision) throws OWLOntologyCreationException {
+	public OWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc, OntologyDocumentRevision revision) throws OWLOntologyCreationException {
 		ChangeDocument changes = client.getChanges(doc, OntologyDocumentRevision.START_REVISION, revision);
 		OWLOntology ontology = manager.createOntology();		
 		manager.applyChanges(changes.getChanges(ontology));
 		return ontology;
 	}
 	
-	public void commit(String commitComment, OWLOntology ontology) {
-		OWLOntologyManager manager = ontology.getOWLOntologyManager();
-		IRI ontologyIRI = manager.getOntologyDocumentIRI(ontology);
-		OntologyDocument doc = factory.loadOntologyDocument(ontologyIRI);
-		OntologyDocumentRevision revision = doc.getCurrentRevision();
-		List<OWLOntologyChange> changes = getUncommittedChanges(ontology, doc, revision);
-		client.commit(doc, revision, factory.createChangeDocument(changes, revision));
+	public void commit(String commitComment, OpenOntologyDocument ontologyDoc) {
+		RemoteOntologyDocument serverDoc = ontologyDoc.getServerDocument();
+		OntologyDocumentRevision revision = serverDoc.getRevision();
+		ChangeDocument baseLineChanges = client.getChanges(serverDoc, OntologyDocumentRevision.START_REVISION, revision);
+		OWLOntology ontology = ontologyDoc.getOntology();
+		List<OWLOntologyChange> changes = getUncommittedChanges(ontology, baseLineChanges.getChanges(ontology));
+		List<String> commitComments = new ArrayList<String>();
+		for (@SuppressWarnings("unused") OWLOntologyChange x : changes) {
+			commitComments.add(commitComment);
+		}
+		client.commit(serverDoc, revision, factory.createChangeDocument(changes, commitComments, revision));
 	}
 	
 	public void update(OWLOntology ontology) {
 		update(ontology, null);
 	}
 	
-	public void update(OWLOntology ontology, OntologyDocumentRevision revision) {
+	public void update(OpenOntologyDocument ontologyDoc, OntologyDocumentRevision revision) {
 		OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		IRI ontologyIRI = manager.getOntologyDocumentIRI(ontology);
-		OntologyDocument doc = factory.loadOntologyDocument(ontologyIRI);
+		RemoteOntologyDocument doc = factory.loadOntologyDocument(ontologyIRI);
 		OntologyDocumentRevision startRevision = doc.getCurrentRevision();
 		ChangeDocument changes = client.getChanges(doc, startRevision, revision);
 		manager.applyChanges(changes.getChanges(ontology));
@@ -88,12 +95,12 @@ public class ClientUtilities {
 	public List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology) {
 		OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		IRI ontologyIri = manager.getOntologyDocumentIRI(ontology);
-		OntologyDocument doc = factory.loadOntologyDocument(ontologyIri);
+		RemoteOntologyDocument doc = factory.loadOntologyDocument(ontologyIri);
 		OntologyDocumentRevision revision = doc.getCurrentRevision();
 		return getUncommittedChanges(ontology, doc, revision);
 	}
 	
-	private List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology, OntologyDocument doc, OntologyDocumentRevision revision) {
+	private List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology, List<OWLOntologyChange> toBaseline) {
 		List<OWLOntologyChange> baselineChanges = client.getChanges(doc, OntologyDocumentRevision.START_REVISION, revision).getChanges(ontology);
 		GetUncommittedChangesVisitor visitor = new GetUncommittedChangesVisitor(ontology);
 		for (OWLOntologyChange change : baselineChanges) {

@@ -17,18 +17,48 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
  */
 
 public interface ChangeDocument extends Serializable {
-	
+	/**
+	 * Get the start revision of this collection of changes.
+	 * 
+	 * @return
+	 */
 	OntologyDocumentRevision getStartRevision();
 	
+	/**
+	 * Get the end revision of this collection of changes.
+	 * 
+	 * @return
+	 */
 	OntologyDocumentRevision getEndRevision();
 	
+	/**
+	 * For each revision from the start revision (inclusive) to the end revision (exclusive) there 
+	 * will be a commit comment which represents what the user said about the ontology at that 
+	 * stage of the development.
+	 * 
+	 * @param revision
+	 * @return
+	 */
 	String getComment(OntologyDocumentRevision revision);
 	
+	/**
+	 * This call will return the change document obtained by restricting the set of changes from the 
+	 * start revision to the end revision.
+	 * <p/>
+	 * If the start or the end revision is out of the range of the ChangeDocument then this call can 
+	 * fail with an exception.  A primary use of this call is to handle a collection of changes that have
+	 * been deserialized off of the disk.  The routine that is deserializing the change document may 
+	 * only want a subset of the changes from the ChangeDocument.
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 */
 	ChangeDocument cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end);
 	
 	/**
 	 * Gets the list of changes associated with this document and associates them with the ontology.  
-	 * 
+	 * <p/>
 	 * The changes 
 	 * returned are guaranteed to be minimal.  That is if an axiom is added it will not be added again or removed.
 	 * Similarly for annotations and imports.  The SetOntologyID change can only occur once.

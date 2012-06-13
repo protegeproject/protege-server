@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Master server test suite" verbose="1">
+
+    <test name="Local Tests">
+        <classes>
+            <class name="org.protege.owl.server.changes.SerializationTest"/>
+        </classes>
+    </test>
+
+</suite>
