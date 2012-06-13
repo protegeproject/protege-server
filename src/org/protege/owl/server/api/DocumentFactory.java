@@ -2,6 +2,7 @@ package org.protege.owl.server.api;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -16,7 +17,7 @@ public interface DocumentFactory {
 	 * @param start
 	 * @return
 	 */
-	ChangeDocument createChangeDocument(List<OWLOntologyChange> changes, List<String> commitComments, OntologyDocumentRevision start);
+	ChangeDocument createChangeDocument(List<OWLOntologyChange> changes, Map<OntologyDocumentRevision, String> commitComments, OntologyDocumentRevision start);
 	
 	/**
 	 * Create and write the server metadata associated with a local iri (localIRI).
@@ -27,7 +28,7 @@ public interface DocumentFactory {
 	 * @param serverDocument
 	 * @return
 	 */
-	SavedOntologyDocument createSavedOntologyDocument(IRI localIRI, RemoteOntologyDocument serverDocument) throws IOException;
+	VersionedOntologyDocument createSavedOntologyDocument(IRI localIRI, RemoteOntologyDocument serverDocument) throws IOException;
 	
-	SavedOntologyDocument getSavedOntologyDocument(IRI localIRI) throws IOException;
+	VersionedOntologyDocument getSavedOntologyDocument(IRI localIRI) throws IOException;
 }

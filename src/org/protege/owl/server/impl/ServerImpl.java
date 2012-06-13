@@ -3,6 +3,7 @@ package org.protege.owl.server.impl;
 import java.io.File;
 import java.net.URI;
 import java.util.Collection;
+import java.util.Map;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.DocumentFactory;
@@ -60,9 +61,8 @@ public class ServerImpl implements Server {
 	}
 
 	@Override
-	public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI) {
+	public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) {
 		throw new IllegalStateException("Not implemented yet");
-
 	}
 
 	@Override

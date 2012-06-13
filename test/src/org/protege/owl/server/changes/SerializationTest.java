@@ -57,12 +57,12 @@ public class SerializationTest {
 		List<OWLOntologyChange> changes1 = new ArrayList<OWLOntologyChange>();
 		changes1.add(new AddAxiom(ontology1, TestVocabulary.AXIOM1));
 		OntologyDocumentRevision revision1 = new OntologyDocumentRevision(3);
-		ChangeDocument doc1 = factory.createChangeDocument(changes1, revision1);
+		ChangeDocument doc1 = factory.createChangeDocument(changes1, null, revision1);
 		
 		List<OWLOntologyChange> changes2 = new ArrayList<OWLOntologyChange>();
 		changes2.add(new RemoveAxiom(ontology1, TestVocabulary.AXIOM2));
 		OntologyDocumentRevision revision2 = new OntologyDocumentRevision(4);
-		ChangeDocument doc2 = factory.createChangeDocument(changes2, revision2);
+		ChangeDocument doc2 = factory.createChangeDocument(changes2, null, revision2);
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");
 		logs.info("Using file " + tmp);
@@ -109,7 +109,7 @@ public class SerializationTest {
 	
 	private void verifyRoundTrip(List<OWLOntologyChange> changes) throws IOException, ClassNotFoundException, OWLOntologyCreationException {
 		DocumentFactoryImpl docFactory = new DocumentFactoryImpl();
-		ChangeDocument doc = docFactory.createChangeDocument(changes, new OntologyDocumentRevision(r.nextInt()));
+		ChangeDocument doc = docFactory.createChangeDocument(changes, null, new OntologyDocumentRevision(r.nextInt()));
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");
 		logs.info("Using file " + tmp);
