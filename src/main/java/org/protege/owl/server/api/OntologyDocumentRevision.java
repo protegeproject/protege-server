@@ -17,6 +17,10 @@ public class OntologyDocumentRevision implements Comparable<OntologyDocumentRevi
 		return revision;
 	}
 	
+	public OntologyDocumentRevision next() {
+		return new OntologyDocumentRevision(revision + 1);
+	}
+	
 	@Override
 	public int compareTo(OntologyDocumentRevision o) {
 		if (revision > o.revision) {
