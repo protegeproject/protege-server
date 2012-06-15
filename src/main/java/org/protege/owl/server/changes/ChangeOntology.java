@@ -19,6 +19,7 @@ public class ChangeOntology {
 	public static final OWLAnnotationProperty SET_ONTOLOGY_ID;
 	public static final OWLAnnotationProperty SET_ONTOLOGY_VERSION;
 	public static final OWLAnnotationProperty IMPORTS;
+	public static final OWLAnnotationProperty COMMIT_COMMENT;
 	
 	static {
 		OWLDataFactory factory = OWLManager.getOWLDataFactory();
@@ -27,6 +28,7 @@ public class ChangeOntology {
 		SET_ONTOLOGY_ID      = factory.getOWLAnnotationProperty(IRI.create(NS + "#setOntlogyId"));
 		SET_ONTOLOGY_VERSION = factory.getOWLAnnotationProperty(IRI.create(NS + "#setOntologyVersion"));
 		IMPORTS              = factory.getOWLAnnotationProperty(IRI.create(NS + "#imports"));
+		COMMIT_COMMENT       = factory.getOWLAnnotationProperty(IRI.create(NS + "#commitComment"));
 	}
 	
 	private ChangeOntology() {

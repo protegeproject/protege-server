@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.OutputStreamWriter;
 import java.util.List;
+import java.util.Map;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.OntologyDocumentRevision;
@@ -51,7 +52,7 @@ public class ChangeDocumentImpl implements ChangeDocument {
 	}
 
 	@Override
-	public String getComment(OntologyDocumentRevision revision) {
+	public Map<OntologyDocumentRevision, String> getComments() {
 		throw new IllegalStateException("Not implemented yet");
 	}
 	

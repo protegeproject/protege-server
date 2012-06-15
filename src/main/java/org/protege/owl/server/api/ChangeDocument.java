@@ -2,6 +2,7 @@ package org.protege.owl.server.api;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -39,7 +40,7 @@ public interface ChangeDocument extends Serializable {
 	 * @param revision
 	 * @return
 	 */
-	String getComment(OntologyDocumentRevision revision);
+	Map<OntologyDocumentRevision, String> getComments();
 	
 	/**
 	 * This call will return the change document obtained by restricting the set of changes from the 

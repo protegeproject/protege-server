@@ -6,13 +6,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.DocumentFactory;
@@ -101,11 +104,17 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
 			fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
 		}
 		catch (OWLOntologyCreationException e) {
-			throw new RuntimeException("This shouldn't really happen!", e);
+			throw new RuntimeException("This really shouldn't happen!", e);
 		}
 		List<OWLOntologyChange> changeList = new ArrayList(originalHistory.getChanges(fakeOntology));
 		changeList.addAll(croppedNewChanges.getChanges(fakeOntology));
-		ChangeDocument combinedChanges = factory.createChangeDocument(changes, commitComments, start)
+		Map<OntologyDocumentRevision, String> comments = new TreeMap<OntologyDocumentRevision, String>(originalHistory.getComments());
+		comments.putAll(croppedNewChanges.getComments());
+		ChangeDocument combinedChanges = factory.createChangeDocument(changeList, comments, OntologyDocumentRevision.START_REVISION);
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(historyFile));
+		oos.writeObject(combinedChanges);
+		oos.flush();
+		oos.close();
 	}
 
 	@Override
