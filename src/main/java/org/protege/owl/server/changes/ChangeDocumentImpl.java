@@ -8,6 +8,7 @@ import java.io.ObjectStreamException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.OntologyDocumentRevision;
@@ -29,8 +30,11 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 @Deprecated
 public class ChangeDocumentImpl implements ChangeDocument {
 	private static final long serialVersionUID = -3842895051205436375L;
+	public static final String CHANGE_DOCUMENT_EXTENSION = ".history";
+	
 	private OntologyDocumentRevision startRevision;
 	private List<OWLOntologyChange> changes;
+	private Map<OntologyDocumentRevision, String> commitComments = new TreeMap<OntologyDocumentRevision, String>();
 
 	/*
 	 * 
@@ -53,7 +57,7 @@ public class ChangeDocumentImpl implements ChangeDocument {
 
 	@Override
 	public Map<OntologyDocumentRevision, String> getComments() {
-		throw new IllegalStateException("Not implemented yet");
+		return new TreeMap<OntologyDocumentRevision, String>(commitComments);
 	}
 	
 	@Override
@@ -77,10 +81,11 @@ public class ChangeDocumentImpl implements ChangeDocument {
 		}
 		ChangeDocument other = (ChangeDocument) o;
 		try {
-		OWLOntology ontology = OWLManager.createOWLOntologyManager().createOntology();
-		return getStartRevision().equals(other.getStartRevision()) &&
-				getEndRevision().equals(other.getEndRevision()) &&
-				getChanges(ontology).equals(other.getChanges(ontology));
+			OWLOntology ontology = OWLManager.createOWLOntologyManager().createOntology();
+			return getStartRevision().equals(other.getStartRevision()) &&
+					getEndRevision().equals(other.getEndRevision()) &&
+					getChanges(ontology).equals(other.getChanges(ontology)) &&
+					getComments().equals(other.getComments());
 		}
 		catch (OWLOntologyCreationException e) {
 			throw new IllegalStateException("Could not create empty ontology");
@@ -95,7 +100,7 @@ public class ChangeDocumentImpl implements ChangeDocument {
 
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeObject(startRevision);
-		OWLOntology changesOntology = ChangesToOntologyVisitor.createChangesOntology(startRevision, changes);
+		OWLOntology changesOntology = ChangesToOntologyVisitor.createChangesOntology(startRevision, changes, commitComments);
 		OWLOntologyManager manager = changesOntology.getOWLOntologyManager();
 		OutputStreamWriter writer = new OutputStreamWriter(out, "UTF-8");
 		try {
@@ -118,7 +123,10 @@ public class ChangeDocumentImpl implements ChangeDocument {
 		catch (OWLOntologyCreationException e) {
 			throw new OntologyCreationIOException(e);
 		}
-		changes = OntologyToChangesUtil.getChanges(changesOntology, startRevision);
+		OntologyToChangesUtil otcu = new OntologyToChangesUtil(changesOntology, startRevision);
+		otcu.initialise();
+		changes = otcu.getChanges();
+		commitComments = otcu.getCommitComments();
 	}
 	
 	private void readObjectNoData() throws ObjectStreamException {

@@ -36,19 +36,15 @@ import org.semanticweb.owlapi.model.SetOntologyID;
  */
 @Deprecated
 public class OntologyToChangesUtil {
-	public static List<OWLOntologyChange> getChanges(OWLOntology changesOntology, OntologyDocumentRevision startRevision) {
-		OntologyToChangesUtil otcu = new OntologyToChangesUtil(changesOntology, startRevision);
-		otcu.initialise();
-		return otcu.getChanges();
-	}
 	
 	private OntologyDocumentRevision startRevision;
 	private OWLOntology changesOntology;
 	private OWLOntology fakeOntology;
 	private Map<Integer, OWLOntologyChange> changeMap = new TreeMap<Integer, OWLOntologyChange>();
+	private Map<OntologyDocumentRevision, String> commitComments = new TreeMap<OntologyDocumentRevision, String>();
 	
 	
-	private OntologyToChangesUtil(OWLOntology changesOntology, OntologyDocumentRevision startRevision) {
+	public OntologyToChangesUtil(OWLOntology changesOntology, OntologyDocumentRevision startRevision) {
 		this.changesOntology = changesOntology;
 		this.startRevision = startRevision;
 		try {
@@ -62,7 +58,7 @@ public class OntologyToChangesUtil {
 	
 	public void initialise() {
 		handleAxioms();
-		handleAnnotations();
+		handleOntologyAnnotations();
 	}
 	
 	public List<OWLOntologyChange> getChanges() {
@@ -73,6 +69,10 @@ public class OntologyToChangesUtil {
 			changeList.add(change);
 		}
 		return changeList;
+	}
+	
+	public Map<OntologyDocumentRevision, String> getCommitComments() {
+		return new TreeMap<OntologyDocumentRevision, String>(commitComments);
 	}
 
 
@@ -92,11 +92,11 @@ public class OntologyToChangesUtil {
 		}
 	}
 	
-	public void handleAnnotations() {
+	public void handleOntologyAnnotations() {
 		for (OWLAnnotation annotation : changesOntology.getAnnotations()) {
 			OWLAnnotationValue rawValue = annotation.getValue();
 			int revision = getRevision(annotation.getAnnotations());
-			OWLOntologyChange change;
+			OWLOntologyChange change = null;
 			if (annotation.getProperty().equals(ChangeOntology.SET_ONTOLOGY_ID)) {
 				IRI name = (IRI) rawValue;
 				IRI version = getVersionIRI(annotation.getAnnotations());
@@ -120,6 +120,11 @@ public class OntologyToChangesUtil {
 					change = new RemoveImport(fakeOntology, decl);
 				}
 			}
+			else if (annotation.getProperty().equals(ChangeOntology.COMMIT_COMMENT)) {
+				int revisionInt = getRevision(annotation.getAnnotations());
+				String comment = ((OWLLiteral) annotation.getValue()).getLiteral();
+				commitComments.put(new OntologyDocumentRevision(revisionInt), comment);
+			}
 			else {
 				OWLDataFactory dataFactory = fakeOntology.getOWLOntologyManager().getOWLDataFactory();
 				OWLAnnotation cleanedAnnotation = dataFactory.getOWLAnnotation(annotation.getProperty(), annotation.getValue(), removeChangeOntologyAnnotations(annotation.getAnnotations()));
@@ -130,7 +135,9 @@ public class OntologyToChangesUtil {
 					change = new RemoveOntologyAnnotation(fakeOntology, cleanedAnnotation);
 				}
 			}
-			changeMap.put(revision, change);
+			if (change != null) {
+				changeMap.put(revision, change);
+			}
 		}
 	}
 	

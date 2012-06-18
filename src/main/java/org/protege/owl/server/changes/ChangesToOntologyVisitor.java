@@ -1,7 +1,10 @@
 package org.protege.owl.server.changes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -31,10 +34,13 @@ import org.semanticweb.owlapi.model.SetOntologyID;
 @Deprecated
 public class ChangesToOntologyVisitor implements OWLOntologyChangeVisitor {
 	
-	public static OWLOntology createChangesOntology(OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes) {
+	public static OWLOntology createChangesOntology(OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes, Map<OntologyDocumentRevision, String> commitComments) {
 		ChangesToOntologyVisitor visitor = new ChangesToOntologyVisitor(startRevision);
 		for (OWLOntologyChange change : changes) {
 			change.accept(visitor);
+		}
+		for (Entry<OntologyDocumentRevision, String> commitComment : commitComments.entrySet()) {
+			visitor.addCommitComment(commitComment.getKey(), commitComment.getValue());
 		}
 		return visitor.getUpdatedOntology();
 	}
@@ -130,6 +136,12 @@ public class ChangesToOntologyVisitor implements OWLOntologyChangeVisitor {
 		addAddRemoveAnnotation(annotationAnnotations, false);
 		addRevisionAnnotation(annotationAnnotations);
 		changes.add(new AddOntologyAnnotation(ontology, change.getAnnotation().getAnnotatedAnnotation(annotationAnnotations)));
+	}
+	
+	public void addCommitComment(OntologyDocumentRevision revision, String comment) {
+		Set<OWLAnnotation> revisionAnnotations = Collections.singleton(factory.getOWLAnnotation(ChangeOntology.REVISION, factory.getOWLLiteral(revision.getRevision())));
+		OWLAnnotation commitCommentAnnotation = factory.getOWLAnnotation(ChangeOntology.COMMIT_COMMENT, factory.getOWLLiteral(comment), revisionAnnotations);
+		changes.add(new AddOntologyAnnotation(ontology, commitCommentAnnotation));
 	}
 	
 	private void addAddRemoveAnnotation(Set<OWLAnnotation> annotations, boolean added) {

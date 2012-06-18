@@ -24,15 +24,13 @@ public class DocumentFactoryImpl implements DocumentFactory {
 	}
 
 	@Override
-	public VersionedOntologyDocument createSavedOntologyDocument(IRI localIRI,
-			RemoteOntologyDocument serverDocument) throws IOException {
-		throw new IllegalStateException("Not implemented yet");
+	public VersionedOntologyDocument createSavedOntologyDocument(IRI localIRI, RemoteOntologyDocument serverDocument) throws IOException {
+		return new VersionedOntologyDocumentImpl(this, localIRI, serverDocument.getServerLocation(), serverDocument.getRevision());
 	}
 
 	@Override
-	public VersionedOntologyDocument getSavedOntologyDocument(IRI localIRI)
-			throws IOException {
-		throw new IllegalStateException("Not implemented yet");
+	public VersionedOntologyDocument getSavedOntologyDocument(IRI localIRI)throws IOException {
+		return new VersionedOntologyDocumentImpl(this, localIRI);
 
 	}
 

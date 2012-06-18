@@ -2,19 +2,12 @@ package org.protege.owl.server.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
@@ -22,6 +15,8 @@ import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.VersionedOntologyDocument;
+import org.protege.owl.server.changes.ChangeDocumentImpl;
+import org.protege.owl.server.changes.ChangeDocumentUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -29,46 +24,47 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument {
-	public static final String BACKING_STORE_PROPERTY = "server.location";
-	public static final String VERSION_PROPERTY       = "version";
 	
 	public static File getVersioningPropertiesFile(File ontologyFile) {
 		File versionInfoDir = getVersionInfoDirectory(ontologyFile);
-		return new File(versionInfoDir, ontologyFile.getName() + ".history-properties");		
+		return new File(versionInfoDir, ontologyFile.getName() + RemoteOntologyDocumentFromProperties.HISTORY_PROPERTIES_EXTENSION);		
 	}
 
 	public static File getHistoryFile(File ontologyFile) {
 		File versionInfoDir = getVersionInfoDirectory(ontologyFile);
-		return new File(versionInfoDir, ontologyFile.getName() + ".history");
+		return new File(versionInfoDir, ontologyFile.getName() + ChangeDocumentImpl.CHANGE_DOCUMENT_EXTENSION);
 	}
 
 	public static File getVersionInfoDirectory(File ontologyFile) {
 		File dir = ontologyFile.getParentFile();
-		return new File(".owlserver");
+		return new File(dir, ".owlserver");
 	}
 
 	private DocumentFactory factory;
 	private File localFile;
 	private File historyFile;
-	private IRI backingStore;
-	private OntologyDocumentRevision revision;
+	private RemoteOntologyDocument serverDoc;
 	private ChangeDocument changes;
 	
-	public VersionedOntologyDocumentImpl(DocumentFactory factory, IRI localAddress, IRI backingStore) 
-			throws IOException {
+	public VersionedOntologyDocumentImpl(DocumentFactory factory, IRI localAddress) throws IOException {
+		this.factory = factory;
 		locateSources(localAddress);
+		serverDoc = RemoteOntologyDocumentFromProperties.read(getVersioningPropertiesFile(localFile));
+	}
+	
+	public VersionedOntologyDocumentImpl(DocumentFactory factory, IRI localAddress, IRI serverAddress, OntologyDocumentRevision revision) 
+			throws IOException {
+		this.factory = factory;
+		locateSources(localAddress);
+		serverDoc = RemoteOntologyDocumentFromProperties.create(getVersioningPropertiesFile(localFile), serverAddress, revision);
+		ChangeDocumentUtilities.writeEmptyChanges(factory, historyFile);
 	}
 	
 	private void locateSources(IRI localAddress) throws IOException {
 		localFile = new File(localAddress.toURI());  // TODO improve exception?
 		historyFile = getHistoryFile(localFile);
-		File propertiesFile = getVersioningPropertiesFile(localFile);
-		Properties p = new Properties();
-		Reader reader = new InputStreamReader(new FileInputStream(propertiesFile), "UTF-8");
-		p.load(reader);
-		backingStore = IRI.create(p.getProperty(BACKING_STORE_PROPERTY));
-		revision = new OntologyDocumentRevision(Integer.parseInt(p.getProperty(VERSION_PROPERTY)));
 	}
+	
 	
 	@Override
 	public IRI getLocalAddress() {
@@ -106,36 +102,18 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
 		catch (OWLOntologyCreationException e) {
 			throw new RuntimeException("This really shouldn't happen!", e);
 		}
-		List<OWLOntologyChange> changeList = new ArrayList(originalHistory.getChanges(fakeOntology));
+		List<OWLOntologyChange> changeList = new ArrayList<OWLOntologyChange>(originalHistory.getChanges(fakeOntology));
 		changeList.addAll(croppedNewChanges.getChanges(fakeOntology));
 		Map<OntologyDocumentRevision, String> comments = new TreeMap<OntologyDocumentRevision, String>(originalHistory.getComments());
 		comments.putAll(croppedNewChanges.getComments());
-		ChangeDocument combinedChanges = factory.createChangeDocument(changeList, comments, OntologyDocumentRevision.START_REVISION);
-		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(historyFile));
-		oos.writeObject(combinedChanges);
-		oos.flush();
-		oos.close();
+		changes = factory.createChangeDocument(changeList, comments, OntologyDocumentRevision.START_REVISION);
+		
+		ChangeDocumentUtilities.writeChanges(changes, historyFile);
 	}
 
 	@Override
 	public RemoteOntologyDocument getServerDocument() {
-		return new RemoteOntologyDocument(backingStore, revision) {
-			@Override
-			public void setRevision(OntologyDocumentRevision revision) {
-				Properties p = new Properties();
-				p.setProperty(BACKING_STORE_PROPERTY, backingStore.toString());
-				p.setProperty(VERSION_PROPERTY, new Integer(revision.getRevision()).toString());
-				File propertiesFile = getVersioningPropertiesFile(localFile);
-				try {
-					Writer writer = new OutputStreamWriter(new FileOutputStream(propertiesFile), "UTF-8");
-					p.store(writer, "Properties saved at " + new Date());
-				}
-				catch (IOException e) {
-					throw new RuntimeException("Unexpected exception writing version properties file for ontology " + localFile);
-				}
-				super.setRevision(revision);
-			}
-		};
+		return serverDoc;
 	}
 
 
