@@ -1,8 +1,10 @@
 package org.protege.owl.server.changes;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -29,6 +31,18 @@ public class ChangeDocumentUtilities {
 		finally {
 			oos.close();
 		}
+	}
+	
+	public static ChangeDocument readChanges(File historyFile) throws IOException {
+		ChangeDocument changes;
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(historyFile));
+		try {
+			changes = (ChangeDocument) ois.readObject();
+		}
+		catch (ClassNotFoundException e) {
+			throw new IllegalStateException("Really?!", e);
+		}
+		return changes;
 	}
 
 }

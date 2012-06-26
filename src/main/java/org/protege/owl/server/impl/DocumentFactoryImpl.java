@@ -20,7 +20,7 @@ public class DocumentFactoryImpl implements DocumentFactory {
 	public ChangeDocument createChangeDocument(List<OWLOntologyChange> changes,
 											   Map<OntologyDocumentRevision, String> commitComments, 
 											   OntologyDocumentRevision start) {
-		return new ChangeDocumentImpl(start, changes);
+		return new ChangeDocumentImpl(start, changes, commitComments);
 	}
 
 	@Override

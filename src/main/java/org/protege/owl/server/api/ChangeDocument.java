@@ -57,6 +57,9 @@ public interface ChangeDocument extends Serializable {
 	 */
 	ChangeDocument cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end);
 	
+	
+	ChangeDocument appendChanges(ChangeDocument additionalChanges);
+	
 	/**
 	 * Gets the list of changes associated with this document and associates them with the ontology.  
 	 * <p/>

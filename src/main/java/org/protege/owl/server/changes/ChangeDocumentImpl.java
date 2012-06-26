@@ -6,8 +6,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
@@ -39,7 +41,7 @@ public class ChangeDocumentImpl implements ChangeDocument {
 	/*
 	 * 
 	 */
-	public ChangeDocumentImpl(OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes) {
+	public ChangeDocumentImpl(OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes, Map<OntologyDocumentRevision, String> commitComments) {
 		this.startRevision = startRevision;
 		this.changes = changes;
 	}
@@ -66,7 +68,38 @@ public class ChangeDocumentImpl implements ChangeDocument {
 			throw new IllegalStateException("Cropping changes out of range");
 		}
 		List<OWLOntologyChange> subChanges = changes.subList(start.getRevision() - getStartRevision().getRevision(), end.getRevision() - getEndRevision().getRevision());
-		return new ChangeDocumentImpl(start, subChanges);
+		Map<OntologyDocumentRevision, String> newCommitComments = new TreeMap<OntologyDocumentRevision, String>();
+		for (Entry<OntologyDocumentRevision, String> entry : commitComments.entrySet()) {
+			OntologyDocumentRevision revision = entry.getKey();
+			String comment = entry.getValue();
+			if (start.compareTo(revision) <= 0 && revision.compareTo(end) <= 0) {
+				newCommitComments.put(revision, comment);
+			}
+		}
+		return new ChangeDocumentImpl(start, subChanges, newCommitComments);
+	}
+	
+	@Override
+	public ChangeDocument appendChanges(ChangeDocument additionalChanges) {
+		if (additionalChanges.getEndRevision().compareTo(getEndRevision()) <= 0) {
+			return this;
+		}
+		if (additionalChanges.getStartRevision().compareTo(getEndRevision()) > 0) {
+			throw new IllegalArgumentException("Changes could not be merged because there was a gap in the change histories");
+		}
+		ChangeDocument croppedNewChanges = additionalChanges.cropChanges(getEndRevision().next(), additionalChanges.getEndRevision());
+		OWLOntology fakeOntology;
+		try {
+			fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
+		}
+		catch (OWLOntologyCreationException e) {
+			throw new RuntimeException("This really shouldn't happen!", e);
+		}
+		List<OWLOntologyChange> changeList = new ArrayList<OWLOntologyChange>(getChanges(fakeOntology));
+		changeList.addAll(croppedNewChanges.getChanges(fakeOntology));
+		Map<OntologyDocumentRevision, String> comments = new TreeMap<OntologyDocumentRevision, String>(getComments());
+		comments.putAll(croppedNewChanges.getComments());
+		return new ChangeDocumentImpl(getStartRevision(), changeList, comments);
 	}
 
 	@Override

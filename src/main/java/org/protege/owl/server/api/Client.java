@@ -1,7 +1,9 @@
 package org.protege.owl.server.api;
 
+import java.io.IOException;
 import java.util.Collection;
 
+import org.protege.owl.server.api.exception.DocumentNotFoundException;
 import org.semanticweb.owlapi.model.IRI;
 
 public interface Client {
@@ -32,14 +34,14 @@ public interface Client {
 	 * @param path
 	 * @return
 	 */
-	Collection<ServerDocument> list(ServerDirectory path);
+	Collection<ServerDocument> list(ServerDirectory path) throws IOException;
 	
 	/**
 	 * Allows the user to create a directory on the server.
 	 * 
 	 * @param serverIRI
 	 */
-	ServerDirectory createOntologyDirectory(IRI serverIRI);
+	ServerDirectory createRemoteDirectory(IRI serverIRI) throws IOException;
 	
 	/**
 	 * Allows the user to create an empty ontology document on the server.
@@ -51,15 +53,8 @@ public interface Client {
 	 * @param serverIRI
 	 * @return
 	 */
-	RemoteOntologyDocument createRemoteOntologyDocument(IRI serverIRI);
+	RemoteOntologyDocument createRemoteOntology(IRI serverIRI) throws IOException;
 		
-	/**
-	 * Gets the head revision of the Remote Ontology Document.
-	 * 
-	 * @param doc
-	 * @return
-	 */
-	OntologyDocumentRevision getHeadRevision(RemoteOntologyDocument doc);
 	
 	/**
 	 * Retrieves the list of changes for the RemoteOntology Document from a given start revision
@@ -70,7 +65,7 @@ public interface Client {
 	 * @param end
 	 * @return
 	 */
-	ChangeDocument getChanges(RemoteOntologyDocument document, OntologyDocumentRevision start, OntologyDocumentRevision end);
+	ChangeDocument getChanges(RemoteOntologyDocument document, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException;
 	
 	/**
 	 * Commits a collection of changes to the remote ontology document.
@@ -79,6 +74,6 @@ public interface Client {
 	 * @param revision
 	 * @param changes
 	 */
-	void commit(RemoteOntologyDocument document, OntologyDocumentRevision revision, ChangeDocument changes);
+	void commit(RemoteOntologyDocument document, String commitComment, ChangeDocument changes) throws IOException;
 
 }

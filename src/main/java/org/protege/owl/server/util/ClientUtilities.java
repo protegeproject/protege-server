@@ -12,11 +12,12 @@ import java.util.TreeMap;
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.DocumentNotFoundException;
 import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.VersionedOWLOntology;
 import org.protege.owl.server.api.RemoteOntologyDocument;
+import org.protege.owl.server.api.VersionedOWLOntology;
 import org.protege.owl.server.api.VersionedOntologyDocument;
+import org.protege.owl.server.api.exception.DocumentNotFoundException;
+import org.protege.owl.server.impl.RemoteOntologyDocumentImpl;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
@@ -55,35 +56,35 @@ public class ClientUtilities {
 		return client.getDocumentFactory().getSavedOntologyDocument(source);
 	}
 	
-	public OWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc) throws OWLOntologyCreationException {
+	public OWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc) throws OWLOntologyCreationException, IOException {
 		ChangeDocument changes = client.getChanges(doc, OntologyDocumentRevision.START_REVISION, null);
 		OWLOntology ontology = manager.createOntology();		
 		manager.applyChanges(changes.getChanges(ontology));
 		return ontology;
 	}
 	
-	public OWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc, OntologyDocumentRevision revision) throws OWLOntologyCreationException {
+	public OWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc, OntologyDocumentRevision revision) throws OWLOntologyCreationException, IOException {
 		ChangeDocument changes = client.getChanges(doc, OntologyDocumentRevision.START_REVISION, revision);
 		OWLOntology ontology = manager.createOntology();		
 		manager.applyChanges(changes.getChanges(ontology));
 		return ontology;
 	}
 	
-	public void commit(String commitComment, VersionedOWLOntology ontologyDoc) {
+	public void commit(String commitComment, VersionedOWLOntology ontologyDoc) throws IOException {
 		RemoteOntologyDocument serverDoc = ontologyDoc.getServerDocument();
 		OntologyDocumentRevision revision = serverDoc.getRevision();
 		ChangeDocument baseLineChanges = client.getChanges(serverDoc, OntologyDocumentRevision.START_REVISION, revision);
 		OWLOntology ontology = ontologyDoc.getOntology();
 		List<OWLOntologyChange> changes = getUncommittedChanges(ontologyDoc.getOntology(), baseLineChanges.getChanges(ontology));
 		Map<OntologyDocumentRevision, String> commitComments = Collections.singletonMap(revision, commitComment);
-		client.commit(serverDoc, revision, factory.createChangeDocument(changes, commitComments, revision));
+		client.commit(serverDoc, commitComment, factory.createChangeDocument(changes, commitComments, revision));
 	}
 	
-	public void update(VersionedOWLOntology ontology) {
+	public void update(VersionedOWLOntology ontology) throws IOException {
 		update(ontology, null);
 	}
 	
-	public void update(VersionedOWLOntology openOntology, OntologyDocumentRevision revision) {
+	public void update(VersionedOWLOntology openOntology, OntologyDocumentRevision revision) throws IOException {
 		RemoteOntologyDocument backingStore = openOntology.getServerDocument();
 		OWLOntology localOntology = openOntology.getOntology();
 		OWLOntologyManager manager = localOntology.getOWLOntologyManager();

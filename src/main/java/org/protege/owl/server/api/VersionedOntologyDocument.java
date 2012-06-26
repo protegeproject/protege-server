@@ -2,6 +2,7 @@ package org.protege.owl.server.api;
 
 import java.io.IOException;
 
+import org.protege.owl.server.impl.RemoteOntologyDocumentImpl;
 import org.semanticweb.owlapi.model.IRI;
 /*
  * This class represents an ontology saved in a physical location that has versioning information through 

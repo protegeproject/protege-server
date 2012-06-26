@@ -2,24 +2,33 @@ package org.protege.owl.server.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.CommitWhiteBoard;
 import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.DocumentNotFoundException;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.exception.DocumentAlreadyExistsException;
+import org.protege.owl.server.api.exception.DocumentNotFoundException;
 import org.protege.owl.server.changes.ChangeDocumentImpl;
 import org.protege.owl.server.changes.ChangeDocumentUtilities;
+import org.protege.owl.server.util.ChangeUtilities;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyChange;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 /**
  *  owlserver://hostname.org/path
@@ -28,74 +37,93 @@ import org.semanticweb.owlapi.model.IRI;
  */
 
 public class ServerImpl implements Server {
+	private Logger logger = Logger.getLogger(Server.class.getCanonicalName());
+	
+	public enum ServerObjectStatus {
+		OBJECT_NOT_FOUND {
+			@Override
+			public boolean isStatusOf(File f) {
+				return !f.exists();
+			}
+			
+		},
+		OBJECT_FOUND {
+			@Override
+			public boolean isStatusOf(File f) {
+				return OBJECT_IS_DIRECTORY.isStatusOf(f) || ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT.isStatusOf(f);
+			}
+			
+		},
+		OBJECT_IS_DIRECTORY {
+			@Override
+			public boolean isStatusOf(File f) {
+				return f.isDirectory();
+			}
+
+		},
+		OBJECT_IS_ONTOLOGY_DOCUMENT {
+			@Override
+			public boolean isStatusOf(File f) {
+				return f.isFile() && f.getName().endsWith(ChangeDocumentImpl.CHANGE_DOCUMENT_EXTENSION);
+			}
+
+		};
+		
+		public abstract boolean isStatusOf(File f);
+	}
+	
 	public static final String SCHEME = "owlserver:";
 	
 	private File root;
 	private DocumentFactory factory = new DocumentFactoryImpl();
+	private CommitWhiteBoard commitWhiteBoard;
 	
 	public ServerImpl(File root) {
 		if (!root.isDirectory() || !root.exists()) {
 			throw new IllegalStateException("Server does not have a valid root directory");
 		}
 		this.root = root;
+		commitWhiteBoard = new CommitWhiteBoardImpl(this);
 	}
 
 	@Override
 	public ServerDocument getServerDocument(User u, IRI serverIRI) throws DocumentNotFoundException {
-		File f = parseServerIRI(serverIRI);
-		if (f.isDirectory()) {
-			return new ServerDirectory(serverIRI);
+		File f = parseServerIRI(serverIRI, ServerObjectStatus.OBJECT_FOUND);
+		if (f == null) {
+			throw new DocumentNotFoundException();
+		}
+		else if (f.isDirectory()) {
+			return new ServerDirectoryImpl(serverIRI);
 		}
 		else {
-			return new RemoteOntologyDocument(serverIRI, OntologyDocumentRevision.START_REVISION);
+			return new RemoteOntologyDocumentImpl(serverIRI, OntologyDocumentRevision.START_REVISION);
 		}
 	}
 
 	
-	private File parseServerIRI(IRI serverIRI) throws DocumentNotFoundException {
-		if (!serverIRI.getScheme().equals(SCHEME)) {
-			throw new IllegalStateException("incorrect scheme for server request");
-		}
-		URI uri = serverIRI.toURI();
-		String path =  serverIRI.toURI().getPath();
-		if (path.startsWith("/")) {
-			path = path.substring(1);
-		}
-		File sourceDir = new File(root, path);
-		if (sourceDir.exists()) {
-			return sourceDir;
-		}
-		File historyFile = new File(root, path + ChangeDocumentImpl.CHANGE_DOCUMENT_EXTENSION);
-		if (historyFile.exists()) {
-			return historyFile;
-		}
-		throw new DocumentNotFoundException("Document not found on server at location " + serverIRI);
-	}
-	
-	@SuppressWarnings("deprecation")
-	private IRI buildServerIRI(File f) throws DocumentNotFoundException {
-		String path = f.getPath();
-		if (f.isDirectory()) {
-			return IRI.create(SCHEME + path);
-		}
-		else if (path.endsWith(ChangeDocumentImpl.CHANGE_DOCUMENT_EXTENSION)){
-			String path2 = path.substring(0, path.length() - ChangeDocumentImpl.CHANGE_DOCUMENT_EXTENSION.length());
-			return IRI.create(SCHEME + path2);
-		}
-		throw new DocumentNotFoundException("Document not found on server at location " + path);
-	}
-
 	@Override
 	public Collection<ServerDocument> list(User u, ServerDirectory dir) throws DocumentNotFoundException {
-		File parent = parseServerIRI(dir.getServerLocation());
+		File parent = parseServerIRI(dir.getServerLocation(), ServerObjectStatus.OBJECT_IS_DIRECTORY);
+		if (parent == null) {
+			throw new IllegalStateException("directory " + dir.getServerLocation() + " does not exist on the server");
+		}
 		List<ServerDocument> documents = new ArrayList<ServerDocument>();
 		for (File child : parent.listFiles()) {
-			IRI serverIRI = buildServerIRI(child);
+			IRI serverIRI = null;
+			try {
+				serverIRI = buildServerIRI(child);
+			}
+			catch (DocumentNotFoundException e) {
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("File " + child + " does not correspond to a valid server directory or ontology");
+				}
+				continue;
+			}
 			if (child.isDirectory()) {
-				documents.add(new ServerDirectory(serverIRI));
+				documents.add(new ServerDirectoryImpl(serverIRI));
 			}
 			else {
-				documents.add(new RemoteOntologyDocument(serverIRI, OntologyDocumentRevision.START_REVISION));
+				documents.add(new RemoteOntologyDocumentImpl(serverIRI, OntologyDocumentRevision.START_REVISION));
 			}
 		}
 		return documents;
@@ -103,30 +131,92 @@ public class ServerImpl implements Server {
 
 	@Override
 	public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws IOException {
-		File historyFile = parseServerIRI(serverIRI);
+		File historyFile = parseServerIRI(serverIRI, ServerObjectStatus.OBJECT_NOT_FOUND);
+		if (historyFile == null) {
+			throw new DocumentAlreadyExistsException("Could not create directory at " + serverIRI);
+		}
 		ChangeDocumentUtilities.writeEmptyChanges(factory, historyFile);
-		return new RemoteOntologyDocument(serverIRI, OntologyDocumentRevision.START_REVISION);
+		return new RemoteOntologyDocumentImpl(serverIRI, OntologyDocumentRevision.START_REVISION);
 	}
 
 	@Override
-	public ServerDirectory createServerDirectory(User u, IRI serverIRI) {
-		throw new IllegalStateException("Not implemented yet");
-
+	public ServerDirectory createDirectory(User u, IRI serverIRI) throws IOException  {
+		File serverDirectory = parseServerIRI(serverIRI, ServerObjectStatus.OBJECT_NOT_FOUND);
+		if (serverDirectory == null) {
+			throw new DocumentAlreadyExistsException("Could not create server-side ontology at " + serverIRI);			
+		}
+		serverDirectory.mkdir();
+		return new ServerDirectoryImpl(serverIRI);
 	}
 
 	@Override
 	public ChangeDocument getChanges(User u, RemoteOntologyDocument doc,
-			OntologyDocumentRevision start, OntologyDocumentRevision end) {
-		throw new IllegalStateException("Not implemented yet");
+								     OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException {
+		File historyFile = parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT);
+		if (historyFile == null) {
+			throw new IllegalStateException("Expected to find ontology document at the location " + doc.getServerLocation());
+		}
+		ChangeDocument allChanges = ChangeDocumentUtilities.readChanges(historyFile);
+		if (end == null) {
+			end = allChanges.getEndRevision();
+		}
+		return allChanges.cropChanges(start, end);
+	}
+	
+
+
+	@Override
+	public void commit(User u, RemoteOntologyDocument doc,
+					   String commitComment,
+					   ChangeDocument changes) throws IOException {
+		commitWhiteBoard.init(doc, commitComment, changes);
+		OWLOntology fakeOntology;
+		try {
+			fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
+		}
+		catch (OWLOntologyCreationException e) {
+			throw new IllegalStateException("Why me?");
+		}
+		List<OWLOntologyChange> serverChanges = commitWhiteBoard.getServerChangesSinceCommit().getChanges(fakeOntology);
+		ChangeDocument fullHistory = commitWhiteBoard.getFullChanges();
+		
+		OntologyDocumentRevision latestRevision = fullHistory.getEndRevision();
+		List<OWLOntologyChange> clientChanges = changes.getChanges(fakeOntology);
+		List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);
+		ChangeDocument changeDocumentToAppend = factory.createChangeDocument(changesToCommit, Collections.singletonMap(latestRevision.next(), commitComment), latestRevision.next());
+		ChangeDocument fullHistoryAfterCommit = fullHistory.appendChanges(changeDocumentToAppend);
+		ChangeDocumentUtilities.writeChanges(fullHistoryAfterCommit, parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT));
+	}
+	
+	@Override
+	public CommitWhiteBoard getCommitWhiteBoard() {
+		return commitWhiteBoard;
+	}
+	
+	@Override
+	public void shutdown() {
 
 	}
 
-	@Override
-	public void applyChange(User u, RemoteOntologyDocument doc,
-			String commitComment, OntologyDocumentRevision revision,
-			ChangeDocument changes) {
-		throw new IllegalStateException("Not implemented yet");
+	private File parseServerIRI(IRI serverIRI, ServerObjectStatus expected) throws DocumentNotFoundException {
+		if (!serverIRI.getScheme().equals(SCHEME)) {
+			throw new IllegalStateException("incorrect scheme for server request");
+		}
+		String path =  serverIRI.toURI().getPath();
+		if (path.startsWith("/")) {
+			path = path.substring(1);
+		}
+		File f = new File(root, path);
+		if (expected.isStatusOf(f)) {
+			return f;
+		}
+		return null;
+	}
 
+	@SuppressWarnings("deprecation")
+	private IRI buildServerIRI(File f) throws DocumentNotFoundException {
+		String path = f.getPath();
+		return IRI.create(SCHEME + path);
 	}
 
 

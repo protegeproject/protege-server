@@ -15,7 +15,7 @@ import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.semanticweb.owlapi.model.IRI;
 
-public class RemoteOntologyDocumentFromProperties extends RemoteOntologyDocument {
+public class RemoteOntologyDocumentFromProperties extends RemoteOntologyDocumentImpl {
 	public static final String BACKING_STORE_PROPERTY = "server.location";
 	public static final String VERSION_PROPERTY       = "version";
 	public static final String HISTORY_PROPERTIES_EXTENSION = ".history-properties";
