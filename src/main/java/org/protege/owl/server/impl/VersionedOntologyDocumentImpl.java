@@ -75,6 +75,7 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
 			return;  // don't get angry
 		}
 		changes = changes.appendChanges(newChanges);
+		ChangeDocumentUtilities.writeChanges(changes, historyFile);
 	}
 
 	@Override

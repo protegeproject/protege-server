@@ -56,24 +56,30 @@ public class ClientUtilities {
 		return client.getDocumentFactory().getSavedOntologyDocument(source);
 	}
 	
-	public OWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc) throws OWLOntologyCreationException, IOException {
-		ChangeDocument changes = client.getChanges(doc, OntologyDocumentRevision.START_REVISION, null);
-		OWLOntology ontology = manager.createOntology();		
-		manager.applyChanges(changes.getChanges(ontology));
-		return ontology;
+	public VersionedOWLOntology createServerOntology(IRI serverIRI, String commitComment, OWLOntology ontology) throws IOException {
+		RemoteOntologyDocument doc = client.createRemoteOntology(serverIRI);
+		VersionedOWLOntology versionedOntology = new VersionedOWLOntology(ontology, doc, OntologyDocumentRevision.START_REVISION);
+		commit(commitComment, versionedOntology);
+		update(versionedOntology);
+		return versionedOntology;
+	}
+
+	public VersionedOWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc) throws OWLOntologyCreationException, IOException {
+		return loadOntology(manager, doc, null);
 	}
 	
-	public OWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc, OntologyDocumentRevision revision) throws OWLOntologyCreationException, IOException {
+	public VersionedOWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc, OntologyDocumentRevision revision) throws OWLOntologyCreationException, IOException {
 		ChangeDocument changes = client.getChanges(doc, OntologyDocumentRevision.START_REVISION, revision);
 		OWLOntology ontology = manager.createOntology();		
 		manager.applyChanges(changes.getChanges(ontology));
-		return ontology;
+		VersionedOWLOntology versionedOntology = new VersionedOWLOntology(ontology, doc, changes.getEndRevision());
+		return versionedOntology;
 	}
 	
 	public void commit(String commitComment, VersionedOWLOntology ontologyDoc) throws IOException {
 		RemoteOntologyDocument serverDoc = ontologyDoc.getServerDocument();
 		OntologyDocumentRevision revision = serverDoc.getRevision();
-		ChangeDocument baseLineChanges = client.getChanges(serverDoc, OntologyDocumentRevision.START_REVISION, revision);
+		ChangeDocument baseLineChanges = client.getChanges(serverDoc, OntologyDocumentRevision.START_REVISION, ontologyDoc.getRevision());
 		OWLOntology ontology = ontologyDoc.getOntology();
 		List<OWLOntologyChange> changes = getUncommittedChanges(ontologyDoc.getOntology(), baseLineChanges.getChanges(ontology));
 		Map<OntologyDocumentRevision, String> commitComments = Collections.singletonMap(revision, commitComment);
@@ -105,7 +111,7 @@ public class ClientUtilities {
 		return visitor.getChanges();
 	}
 	
-	public void save(VersionedOWLOntology openOntology) throws IOException, OWLOntologyStorageException {
+	public VersionedOntologyDocument saveLocalHistory(VersionedOWLOntology openOntology) throws IOException, OWLOntologyStorageException {
 		OWLOntology ontology = openOntology.getOntology();
 		OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		IRI savedLocation = manager.getOntologyDocumentIRI(ontology);
@@ -116,8 +122,11 @@ public class ClientUtilities {
 		catch (DocumentNotFoundException e) {
 			saved = factory.createSavedOntologyDocument(savedLocation, openOntology.getServerDocument());
 		}
-		manager.saveOntology(ontology);
-		saved.getServerDocument().setRevision(openOntology.getServerDocument().getRevision());
+		if (openOntology.getRevision().compareTo(saved.getLocalHistory().getEndRevision()) > 0) {
+			ChangeDocument changesToApply = client.getChanges(openOntology.getServerDocument(), saved.getServerDocument().getRevision(), openOntology.getRevision());
+			saved.addToLocalHistory(changesToApply);
+		}
+		return saved;
 	}
 	
 	

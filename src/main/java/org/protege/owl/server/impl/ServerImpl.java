@@ -72,7 +72,7 @@ public class ServerImpl implements Server {
 		public abstract boolean isStatusOf(File f);
 	}
 	
-	public static final String SCHEME = "owlserver:";
+	public static final String SCHEME = "owlserver";
 	
 	private File root;
 	private DocumentFactory factory = new DocumentFactoryImpl();
