@@ -8,6 +8,7 @@ import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.VersionedOWLOntology;
+import org.protege.owl.server.changes.ChangeDocumentImpl;
 import org.protege.owl.server.connect.local.LocalClient;
 import org.protege.owl.server.impl.ServerImpl;
 import org.protege.owl.server.util.ClientUtilities;
@@ -42,19 +43,21 @@ public class LocalServerTest {
 	@Test
 	public void testLoadPizza() throws IOException, OWLOntologyCreationException {
 		VersionedOWLOntology versionedPizza = loadPizza();
+		OWLOntology ontology1 = versionedPizza.getOntology();
 		Client client2 = new LocalClient(null, server);
 		ClientUtilities client2Utilities = new ClientUtilities(client2);
 		VersionedOWLOntology versionedOntology2 = client2Utilities.loadOntology(OWLManager.createOWLOntologyManager(), versionedPizza.getServerDocument());
 		OWLOntology ontology2 = versionedOntology2.getOntology();
-		Assert.assertEquals(versionedPizza.getOntology().getAxioms(), ontology2.getAxioms());
-		Assert.assertEquals(Pizza.CHEESEY_PIZZA.getEquivalentClasses(ontology2).size(), 1);
+		Assert.assertEquals(ontology1.getOntologyID(), ontology2.getOntologyID());
+		Assert.assertEquals(ontology1.getAxioms(), ontology2.getAxioms());
+		Assert.assertEquals(PizzaVocabulary.CHEESEY_PIZZA.getEquivalentClasses(ontology2).size(), 1);
 	}
 
 	
 	public VersionedOWLOntology loadPizza() throws IOException, OWLOntologyCreationException {
-		IRI pizzaLocation = IRI.create(testDirectory.getServerLocation().toString() + "/pizza");
+		IRI pizzaLocation = IRI.create(testDirectory.getServerLocation().toString() + "/pizza" + ChangeDocumentImpl.CHANGE_DOCUMENT_EXTENSION);
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-		OWLOntology ontology = manager.loadOntology(IRI.create(new File(Pizza.PIZZA_LOCATION)));
+		OWLOntology ontology = manager.loadOntology(IRI.create(new File(PizzaVocabulary.PIZZA_LOCATION)));
 		VersionedOWLOntology versionedOntology = clientUtilities.createServerOntology(pizzaLocation, "A tasty pizza", ontology);
 		return versionedOntology;
 	}

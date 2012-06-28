@@ -20,6 +20,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyChangeVisitor;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyID;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
@@ -102,8 +103,14 @@ public class ChangesToOntologyVisitor implements OWLOntologyChangeVisitor {
 
 	@Override
 	public void visit(SetOntologyID change) {
-		// TODO Auto-generated method stub
-		
+		OWLOntologyID id = change.getNewOntologyID();
+
+		Set<OWLAnnotation> metaAnnotations = new TreeSet<OWLAnnotation>();
+		addRevisionAnnotation(metaAnnotations);
+		addAddRemoveAnnotation(metaAnnotations, !id.isAnonymous());
+		if (!id.isAnonymous()) {
+			changes.add(new AddOntologyAnnotation(ontology, factory.getOWLAnnotation(ChangeOntology.SET_ONTOLOGY_ID, id.getOntologyIRI(), metaAnnotations)));
+		}
 	}
 
 	@Override

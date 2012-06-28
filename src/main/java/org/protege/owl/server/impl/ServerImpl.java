@@ -135,6 +135,9 @@ public class ServerImpl implements Server {
 		if (historyFile == null) {
 			throw new DocumentAlreadyExistsException("Could not create directory at " + serverIRI);
 		}
+		if (!historyFile.getName().endsWith(ChangeDocumentImpl.CHANGE_DOCUMENT_EXTENSION)) {
+			throw new IllegalArgumentException("Server side IRI's must have the " + ChangeDocumentImpl.CHANGE_DOCUMENT_EXTENSION + " extension");
+		}
 		ChangeDocumentUtilities.writeEmptyChanges(factory, historyFile);
 		return new RemoteOntologyDocumentImpl(serverIRI, OntologyDocumentRevision.START_REVISION);
 	}
@@ -183,7 +186,7 @@ public class ServerImpl implements Server {
 		OntologyDocumentRevision latestRevision = fullHistory.getEndRevision();
 		List<OWLOntologyChange> clientChanges = changes.getChanges(fakeOntology);
 		List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);
-		ChangeDocument changeDocumentToAppend = factory.createChangeDocument(changesToCommit, Collections.singletonMap(latestRevision.next(), commitComment), latestRevision.next());
+		ChangeDocument changeDocumentToAppend = factory.createChangeDocument(changesToCommit, Collections.singletonMap(latestRevision, commitComment), latestRevision);
 		ChangeDocument fullHistoryAfterCommit = fullHistory.appendChanges(changeDocumentToAppend);
 		ChangeDocumentUtilities.writeChanges(fullHistoryAfterCommit, parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT));
 	}

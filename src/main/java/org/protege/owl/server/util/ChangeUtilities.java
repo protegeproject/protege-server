@@ -42,20 +42,18 @@ public class ChangeUtilities {
     public static List<OWLOntologyChange> normalizeChangeDelta(List<OWLOntologyChange> changes) {
         List<OWLOntologyChange> result = new ArrayList<OWLOntologyChange>();
         for (int i = 0; i < changes.size(); i++) {
-            OWLOntologyChange change1 = changes.get(i);
-            if (!(change1 instanceof SetOntologyID)) {
-                boolean overlap = false;
-                for (int j = i + 1; j < changes.size(); j++) {
-                    OWLOntologyChange change2 = changes.get(j);
-                    if (overlappingChange(change1, change2)) {
-                        overlap = true;
-                        break;
-                    }
-                }
-                if (!overlap) {
-                    result.add(change1);
-                }
-            }
+        	OWLOntologyChange change1 = changes.get(i);
+        	boolean overlap = false;
+        	for (int j = i + 1; j < changes.size(); j++) {
+        		OWLOntologyChange change2 = changes.get(j);
+        		if (overlappingChange(change1, change2)) {
+        			overlap = true;
+        			break;
+        		}
+        	}
+        	if (!overlap) {
+        		result.add(change1);
+        	}
         }
         return result;
     }
