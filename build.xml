@@ -1,0 +1,68 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<project name = "core protege owl editor project" default = "install" basedir = ".">    
+
+   <!-- 
+        To run this build file set the environment variable
+        PROTEGE_HOME to point to a protege distribution and type ant
+        install or jar.
+     -->
+   <property environment="env"/>
+   <property name = "protege.home"      location="${env.PROTEGE_HOME}"/>
+   <property file = "${protege.home}/build.properties"/>
+
+   <property file="local.properties"/>
+   <property file="version.properties"/>
+
+   <property name = "bundlor.home"      location="${env.BUNDLOR_HOME}"/>
+
+   <property name = "plugin"          value = "org.protege.editor.owl"/>
+
+
+   <property name = "src"               location = "./src/main/java"/>
+   <property name = "testng.src"         location = "./src/test/java"/>
+   <property name = "build"             location = "./build"/>
+   <property name = "classes"           location = "${build}/classes"/>
+   <property name = "testng.classes"     location = "${build}/testng.classes"/>
+
+   <target name = "init">
+     <tstamp>
+       <format property="build.time" pattern="yyyy_MM_dd_hhmm"/>
+     </tstamp>
+     <property name="bundle.version" 
+               value="${core.major.version}.${core.minor.version}.${core.micro.version}.b${core.build.number}_${build.time}"/>
+     <mkdir dir = "${build}"/>
+   	 <mkdir dir = "${testng.classes}"/>
+     <mkdir dir = "${classes}"/>
+     <mkdir dir = "${classes}/lib"/>
+     <mkdir dir = "${genlib}"/>
+     <condition property="use.bundlor">
+       <and>
+         <available file="${bundlor.home}"     type = "dir"/>
+         <available file="${manifest.bundlor}" type = "file"/>
+       </and>
+     </condition>
+   </target>  
+
+
+    <target name="checkProtegeLibsAndReport">
+      <check.dependencies>
+        <property name="services" location="${protege.common}/org.apache.felix.scr.jar"/>
+        <property name="owl.lib"  location="${protege.plugins}/org.semanticweb.owl.owlapi.jar"/>
+      </check.dependencies>
+      <echo message = "equinox.common = ${equinox.common}"/>
+      <echo message = "common.lib = ${common.lib}"/>
+      <antcall target="buildlibs"/>
+      <path id = "project.classpath">    
+        <pathelement location="${protege.osgi}"/>
+        <pathelement location="${common.lib}"/>
+        <pathelement location="${protege.lib}"/>
+        <pathelement location="${equinox.common}"/>
+        <pathelement location="${equinox.registry}"/>
+        <pathelement location="${owl.lib}"/>
+        <fileset dir="${lib}"/>
+        <fileset dir="${genlib}"/>
+       </path>
+    </target>
+
+
+</project>
