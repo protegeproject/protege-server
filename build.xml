@@ -1,68 +1,171 @@
 <?xml version = "1.0" encoding = "utf-8"?>
 <project name = "core protege owl editor project" default = "install" basedir = ".">    
 
-   <!-- 
-        To run this build file set the environment variable
-        PROTEGE_HOME to point to a protege distribution and type ant
-        install or jar.
-     -->
-   <property environment="env"/>
-   <property name = "protege.home"      location="${env.PROTEGE_HOME}"/>
-   <property file = "${protege.home}/build.properties"/>
-
-   <property file="local.properties"/>
-   <property file="version.properties"/>
-
-   <property name = "bundlor.home"      location="${env.BUNDLOR_HOME}"/>
-
-   <property name = "plugin"          value = "org.protege.editor.owl"/>
-
-
-   <property name = "src"               location = "./src/main/java"/>
-   <property name = "testng.src"         location = "./src/test/java"/>
-   <property name = "build"             location = "./build"/>
-   <property name = "classes"           location = "${build}/classes"/>
-   <property name = "testng.classes"     location = "${build}/testng.classes"/>
-
-   <target name = "init">
-     <tstamp>
-       <format property="build.time" pattern="yyyy_MM_dd_hhmm"/>
-     </tstamp>
-     <property name="bundle.version" 
-               value="${core.major.version}.${core.minor.version}.${core.micro.version}.b${core.build.number}_${build.time}"/>
-     <mkdir dir = "${build}"/>
-   	 <mkdir dir = "${testng.classes}"/>
-     <mkdir dir = "${classes}"/>
-     <mkdir dir = "${classes}/lib"/>
-     <mkdir dir = "${genlib}"/>
-     <condition property="use.bundlor">
-       <and>
-         <available file="${bundlor.home}"     type = "dir"/>
-         <available file="${manifest.bundlor}" type = "file"/>
-       </and>
-     </condition>
-   </target>  
-
-
-    <target name="checkProtegeLibsAndReport">
-      <check.dependencies>
-        <property name="services" location="${protege.common}/org.apache.felix.scr.jar"/>
-        <property name="owl.lib"  location="${protege.plugins}/org.semanticweb.owl.owlapi.jar"/>
-      </check.dependencies>
-      <echo message = "equinox.common = ${equinox.common}"/>
-      <echo message = "common.lib = ${common.lib}"/>
-      <antcall target="buildlibs"/>
-      <path id = "project.classpath">    
-        <pathelement location="${protege.osgi}"/>
-        <pathelement location="${common.lib}"/>
-        <pathelement location="${protege.lib}"/>
-        <pathelement location="${equinox.common}"/>
-        <pathelement location="${equinox.registry}"/>
-        <pathelement location="${owl.lib}"/>
-        <fileset dir="${lib}"/>
-        <fileset dir="${genlib}"/>
-       </path>
-    </target>
-
-
+  <property environment="env"/>
+  <property name = "protege.home"      location="${env.PROTEGE_HOME}"/>
+  <property file = "${protege.home}/build.properties"/>
+  
+  <property file="local.properties"/>
+  <property file="version.properties"/>
+  
+  <property name = "bundlor.home"      location="${env.BUNDLOR_HOME}"/>
+  
+  <property name = "plugin"          value = "org.protege.editor.owl"/>
+  
+  
+  <property name = "src"               location = "./src/main/java"/>
+  <property name = "testng.src"        location = "./src/test/java"/>
+  <property name = "build"             location = "./build"/>
+  <property name = "classes"           location = "${build}/classes"/>
+  <property name = "testng.classes"    location = "${build}/testng.classes"/>
+  <property name = "manifest"          location = "${build}/manifest.mf"/>
+  
+  <property name = "lib.testng"        location = "./tools/testng-5.14.7.jar"/>
+  <property name = "lib.antlr"         location = "./tools/antlr-3.4-complete-no-antlrv2.jar"/>
+  
+  <taskdef name="check.dependencies"
+  	       classname="org.protege.ant.ProtegeDependencies">
+    <classpath>
+	  <pathelement location="${dev.tools}"/>
+    </classpath>
+  </taskdef>
+  
+  
+  <target name = "init">
+    <tstamp>
+      <format property="build.time" pattern="yyyy_MM_dd_hhmm"/>
+    </tstamp>
+    <property name="bundle.version" 
+              value="${major.version}.${minor.version}.${micro.version}.${build.time}"/>
+    <mkdir dir = "${build}"/>
+   	<mkdir dir = "${testng.classes}"/>
+    <mkdir dir = "${classes}"/>
+    <condition property="use.bundlor">
+      <and>
+        <available file="${bundlor.home}"     type = "dir"/>
+        <available file="${manifest.bundlor}" type = "file"/>
+      </and>
+    </condition>
+  </target>  
+  
+  
+  <target name="checkProtegeLibsAndReport">
+    <check.dependencies>
+      <property name="services" location="${protege.common}/org.apache.felix.scr.jar"/>
+      <property name="owl.lib"  location="${protege.plugins}/org.semanticweb.owl.owlapi.jar"/>
+    </check.dependencies>
+    <path id = "project.classpath">    
+      <pathelement location="${protege.osgi}"/>
+      <pathelement location="${common.lib}"/>
+      <pathelement location="${protege.lib}"/>
+      <pathelement location="${equinox.common}"/>
+      <pathelement location="${equinox.registry}"/>
+      <pathelement location="${owl.lib}"/>
+    </path>
+  </target>
+  
+  
+  <target name = "compile" depends="init,checkProtegeLibsAndReport">
+    <javac srcdir = "${src}"
+           destdir = "${classes}" 
+           debug="on"
+           includeAntRuntime="false">
+      <classpath refid = "project.classpath"/>  
+    </javac>
+  </target>
+  
+  <target name = "testng.compile" depends="init,checkProtegeLibsAndReport">
+    <javac srcdir = "${testng.src}"
+           destdir = "${testng.classes}" 
+           debug="on"
+           includeAntRuntime="false">
+      <classpath>
+        <pathelement path="${classes}"/>
+        <pathelement path="${lib.testng}"/>
+        <path refid="project.classpath"/>
+      </classpath>
+    </javac>
+  </target>
+  
+  
+  <target name="use.existing.manifest" depends="init" unless="use.bundlor">
+    <copy tofile="${manifest}" 
+          file="META-INF/MANIFEST.MF" overwrite="true"/>
+    <manifest file="${manifest}" 
+              mode = "update">
+      <attribute name="Built-By" value = "${user.name}"/>
+      <attribute name="Bundle-Version" value="${bundle.version}"/>
+    </manifest>
+  </target>
+  
+  <target name="bundlor.manifest" depends="compile" if="use.bundlor">
+    <java classname="org.eclipse.virgo.bundlor.commandline.Bundlor"
+          failonerror="true" fork="true">
+      <classpath>
+        <fileset dir="${bundlor.home}/plugins" includes="*.jar"/>
+      </classpath>
+      <jvmarg value="-Dbundle.version=${bundle.version}"/>
+      <jvmarg value="-Duser.name=${user.name}"/>
+      <jvmarg value="-Dplugin=${plugin}"/>
+      <arg value = "-i"/> <arg value="${classes}"/>
+      <arg value = "-m"/> <arg value="./META-INF/manifest.bundlor"/>
+      <arg value = "-o"/> <arg value = "."/>
+    </java>
+    <copy tofile="${manifest}" 
+          file="META-INF/MANIFEST.MF" overwrite="true"/>
+  </target>
+  
+  
+  <target name = "jar" depends = "compile, use.existing.manifest, bundlor.manifest">
+    <jar jarfile = "${build}/${plugin}.jar"
+         basedir = "${classes}" 
+         manifest = "${manifest}"/>
+  </target>
+  
+  <target name = "install" depends = "jar">
+    <!-- flush cache -->
+    <delete dir = "${protege.home}/configuration/org.eclipse.core.runtime"/>
+    <delete dir = "${protege.home}/configuration/org.eclipse.osgi"/>
+    <copy file="${build}/${plugin}.jar" 
+          todir = "${protege.plugins}"
+          overwrite = "true"/>
+  </target>
+  
+  
+  <target name="unit.test" depends="jar,testng.compile">
+    <mkdir dir="${build}/test-output"/>
+    <java classname="org.testng.TestNG"
+          fork = "true">
+      <classpath>
+        <pathelement path="${classes}"/>
+        <pathelement path="${testng.classes}"/>
+        <pathelement path="${lib.testng}"/>
+        <path refid="project.classpath"/>
+      </classpath>
+      <jvmarg value = "-Xmx1G"/>
+      <jvmarg value="-Dlog4j.configuration=file:./log4j-dev.xml"/>
+      <arg    value="src/test/resources/unit-tests.xml"/>
+      <arg    value="-d"/>
+      <arg    value="${build}/test-output"/>
+    </java>
+  </target>
+  
+  <target name="debug.unit.test" depends="jar, testng.compile">
+    <mkdir dir="${build}/test-output"/>
+    <java classname="org.testng.TestNG"
+          fork = "true">
+      <classpath>
+        <pathelement path="${classes}"/>
+        <pathelement path="${lib.testng}"/>
+        <path refid="project.classpath"/>
+      </classpath>
+      <jvmarg value = "-Xmx1G"/>
+      <jvmarg value="-Dlog4j.configuration=file:./log4j-dev.xml"/>
+      <jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8100,server=y,suspend=y"/>
+      <arg    value="src/test/resources/unit-tests.xml"/>
+      <arg    value="-d"/>
+      <arg    value="${build}/test-output"/>
+    </java>
+  </target>
+  
 </project>
