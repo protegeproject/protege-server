@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<scr:component name="configurator" 
+               immediate="true"
+			   xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
+	<implementation class="org.protege.owl.server.configuration.BuilderImpl"/>
+	<service>
+		<provide interface="org.protege.owl.server.api.Builder"/>
+	</service>	
+	<reference name="FACTORY"
+		interface="org.protege.owl.server.api.ServerComponentFactory"
+		bind="addServerComponentFactory"
+		unbind="removeServerComponentFactory"
+		cardinality="0..n"
+		policy="dynamic"/>
+</scr:component>
