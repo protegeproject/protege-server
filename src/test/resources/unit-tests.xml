@@ -6,6 +6,7 @@
         <classes>
             <class name="org.protege.owl.server.changes.SerializationTest"/>
             <class name="org.protege.owl.server.LocalServerTest"/>
+            <class name="org.protege.owl.server.RemoteServerTest"/>
         </classes>
     </test>
 

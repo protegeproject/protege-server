@@ -1,5 +1,5 @@
 <?xml version = "1.0" encoding = "utf-8"?>
-<project name = "core protege owl editor project" default = "install" basedir = ".">    
+<project name = "OWL Ontology Server Project" default = "install" basedir = ".">    
 
   <property environment="env"/>
   <property name = "protege.home"      location="${env.PROTEGE_HOME}"/>
@@ -10,7 +10,7 @@
   
   <property name = "bundlor.home"      location="${env.BUNDLOR_HOME}"/>
   
-  <property name = "plugin"          value = "org.protege.editor.owl"/>
+  <property name = "plugin"          value = "org.protege.owl.server"/>
   
   
   <property name = "src"               location = "./src/main/java"/>
@@ -114,9 +114,18 @@
     <copy tofile="${manifest}" 
           file="META-INF/MANIFEST.MF" overwrite="true"/>
   </target>
+
+  <target name="copy.resources">
+      <copy todir="${classes}/OSGI-INF">
+        <fileset dir="OSGI-INF" includes="*.xml"/>
+      </copy>
+      <copy todir="${classes}">
+        <fileset dir="src/main/resources" includes="*.owl"/>
+      </copy>
+  </target>
   
   
-  <target name = "jar" depends = "compile, use.existing.manifest, bundlor.manifest">
+  <target name = "jar" depends = "compile, use.existing.manifest, bundlor.manifest,copy.resources">
     <jar jarfile = "${build}/${plugin}.jar"
          basedir = "${classes}" 
          manifest = "${manifest}"/>
@@ -129,10 +138,26 @@
     <copy file="${build}/${plugin}.jar" 
           todir = "${protege.plugins}"
           overwrite = "true"/>
+    <copy file="./src/main/resources/server-config.xml"
+          todir="${protege.home}"/>
+    <copy file="./src/main/resources/run-server.sh"
+          todir="${protege.home}"/>
+  </target>
+
+  <target name = "clean">
+    <delete dir="${build}"/>
   </target>
   
+
+  <target name="copy.test.resources">
+    <property name="bundle.dir" location="${build}/bundles"/>
+    <mkdir dir="${bundle.dir}"/>
+    <copy file="${protege.common}/org.apache.felix.configadmin.jar" todir="${bundle.dir}"/>
+    <copy file="${protege.common}/org.apache.felix.scr.jar" todir="${bundle.dir}"/>
+    <copy file="${protege.plugins}/org.semanticweb.owl.owlapi.jar" todir="${bundle.dir}"/>
+  </target>
   
-  <target name="unit.test" depends="jar,testng.compile">
+  <target name="unit.test" depends="jar,testng.compile,copy.test.resources">
     <mkdir dir="${build}/test-output"/>
     <java classname="org.testng.TestNG"
           fork = "true">
@@ -150,7 +175,7 @@
     </java>
   </target>
   
-  <target name="debug.unit.test" depends="jar, testng.compile">
+  <target name="debug.unit.test" depends="jar, testng.compile,copy.test.resources">
     <mkdir dir="${build}/test-output"/>
     <java classname="org.testng.TestNG"
           fork = "true">

@@ -10,7 +10,7 @@ public interface ServerComponentFactory {
 	
 	boolean hasSuitableServerFilter(OWLIndividual i);
 	
-	ServerFilter createServerFilter(OWLIndividual i);
+	ServerFilter createServerFilter(OWLIndividual i, Server server);
 	
 	ServerTransport hasSuitableServerTransport(OWLIndividual i);
 	

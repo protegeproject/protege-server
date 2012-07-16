@@ -27,7 +27,7 @@ public class CoreServerFactory implements ServerComponentFactory {
 	}
 
 	@Override
-	public ServerFilter createServerFilter(OWLIndividual i) {
+	public ServerFilter createServerFilter(OWLIndividual i, Server server) {
 		// TODO Auto-generated method stub
 		return null;
 	}

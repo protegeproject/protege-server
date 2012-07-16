@@ -22,8 +22,6 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 public class LocalServerTest {
-	public static final File ROOT_DIRECTORY = new File("build/server.root");
-
 	private Server server;
 	private Client client;
 	private ClientUtilities clientUtilities;
@@ -31,9 +29,8 @@ public class LocalServerTest {
 	
 	@BeforeTest
 	public void startServer() throws IOException {
-		ROOT_DIRECTORY.delete();
-		ROOT_DIRECTORY.mkdirs();
-		server = new ServerImpl(ROOT_DIRECTORY);
+		TestUtilities.initializeServerRoot();
+		server = new ServerImpl(TestUtilities.ROOT_DIRECTORY);
 		client = new LocalClient(null, server);
 		clientUtilities = new ClientUtilities(client);
 		testDirectory = client.createRemoteDirectory(IRI.create(ServerImpl.SCHEME + "://localhost/" + UUID.randomUUID()));

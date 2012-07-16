@@ -1,0 +1,15 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<launch>
+  <bundles verbose = "true">
+    <search path="build/bundles"/>
+    <bundle name="org.apache.felix.configadmin.jar"/>
+    <bundle name="org.apache.felix.scr.jar"/>
+    <bundle name="org.semanticweb.owl.owlapi.jar"/>
+  </bundles>
+  <bundles verbose = "true">
+    <search path="build"/>
+    <bundle name="org.protege.owl.server.jar"/>
+  </bundles>
+
+</launch>
