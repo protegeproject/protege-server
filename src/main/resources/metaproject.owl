@@ -46,7 +46,6 @@ ObjectPropertyRange(<http://protege.stanford.edu/ontologies/metaproject.owl#hasT
 Declaration(ObjectProperty(<http://protege.stanford.edu/ontologies/metaproject.owl#serverComponent>))
 ObjectPropertyRange(<http://protege.stanford.edu/ontologies/metaproject.owl#serverComponent> <http://protege.stanford.edu/ontologies/metaproject.owl#ServerComponent>)
 Declaration(DataProperty(<http://protege.stanford.edu/ontologies/metaproject.owl#hasHostName>))
-AnnotationAssertion(rdfs:label <http://protege.stanford.edu/ontologies/metaproject.owl#hasHostName> "hostName"^^xsd:string)
 FunctionalDataProperty(<http://protege.stanford.edu/ontologies/metaproject.owl#hasHostName>)
 DataPropertyRange(<http://protege.stanford.edu/ontologies/metaproject.owl#hasHostName> xsd:string)
 Declaration(DataProperty(<http://protege.stanford.edu/ontologies/metaproject.owl#hasHostPort>))

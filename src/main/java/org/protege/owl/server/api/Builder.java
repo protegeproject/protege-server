@@ -8,4 +8,6 @@ public interface Builder {
 	void addServerComponentFactory(ServerComponentFactory factory);
 
 	void removeServerComponentFactory(ServerComponentFactory factory);
+	
+	boolean isUp();
 }
