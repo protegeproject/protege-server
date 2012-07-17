@@ -1,8 +1,11 @@
 package org.protege.owl.server.api;
 
 import org.semanticweb.owlapi.model.OWLIndividual;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 public interface ServerComponentFactory {
+	
+	void setConfiguration(OWLOntology ontology);
 	
 	boolean hasSuitableServer(OWLIndividual i);
 	
@@ -12,7 +15,7 @@ public interface ServerComponentFactory {
 	
 	ServerFilter createServerFilter(OWLIndividual i, Server server);
 	
-	ServerTransport hasSuitableServerTransport(OWLIndividual i);
+	boolean hasSuitableServerTransport(OWLIndividual i);
 	
 	ServerTransport createServerTransport(OWLIndividual i);
 }
