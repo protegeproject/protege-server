@@ -28,7 +28,7 @@ public class RemoteServerTest {
 
 	@Test
 	public void testConnect() throws InterruptedException {
-		Thread.sleep(15000);
+		Thread.sleep(60000);
 	}
 
 }

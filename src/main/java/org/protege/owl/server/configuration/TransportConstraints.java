@@ -1,5 +1,7 @@
 package org.protege.owl.server.configuration;
 
+import java.util.Set;
+
 import org.protege.owl.server.api.ServerComponentFactory;
 import org.protege.owl.server.api.ServerTransport;
 import org.semanticweb.owlapi.model.OWLIndividual;
@@ -11,27 +13,15 @@ public class TransportConstraints {
 	}
 
 	
-	public boolean satisfied() {
+	public boolean satisfied(Set<ServerComponentFactory> factories) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	
-	public ServerTransport build() {
+	public ServerTransport build(Set<ServerComponentFactory> factories) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	
-	public void addServerComponentFactory(ServerComponentFactory factory) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-	public void removeServerComponentFactory(ServerComponentFactory factory) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

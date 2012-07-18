@@ -34,7 +34,7 @@ public class ServerConstraints {
 
 	public boolean satisfied(Set<ServerComponentFactory> factories) {
 		for (TransportConstraints constraint : transportConstraints) {
-			if (!constraint.satisfied()) {
+			if (!constraint.satisfied(factories)) {
 				return false;
 			}
 		}
@@ -50,25 +50,18 @@ public class ServerConstraints {
 	}
 
 
-	public List<ServerTransport> buildServerTransports(Server server) {
-		return null;
+	public List<ServerTransport> buildServerTransports(Set<ServerComponentFactory> factories, Server server) {
+		List<ServerTransport> transports = new ArrayList<ServerTransport>();
+		for (TransportConstraints constraint : transportConstraints) {
+			ServerTransport transport = constraint.build(factories);
+			transports.add(transport);
+			transport.start(server);
+		}
+		return transports;
 	}
 	
 	public Server buildServer() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	public void addServerComponentFactory(ServerComponentFactory factory) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-	public void removeServerComponentFactory(ServerComponentFactory factory) {
-		// TODO Auto-generated method stub
-		
+		return factory.createServer(serverIndividual);
 	}
 	
 

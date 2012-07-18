@@ -82,6 +82,8 @@
       <classpath>
         <pathelement path="${classes}"/>
         <pathelement path="${lib.testng}"/>
+        <pathelement path="${protege.osgi}"/>
+        <pathelement path="${protege.launcher}"/>
         <path refid="project.classpath"/>
       </classpath>
     </javac>
@@ -165,6 +167,8 @@
         <pathelement path="${classes}"/>
         <pathelement path="${testng.classes}"/>
         <pathelement path="${lib.testng}"/>
+        <pathelement path="${protege.osgi}"/>
+        <pathelement path="${protege.launcher}"/>
         <path refid="project.classpath"/>
       </classpath>
       <jvmarg value = "-Xmx1G"/>
@@ -181,7 +185,10 @@
           fork = "true">
       <classpath>
         <pathelement path="${classes}"/>
+        <pathelement path="${testng.classes}"/>
         <pathelement path="${lib.testng}"/>
+        <pathelement path="${protege.osgi}"/>
+        <pathelement path="${protege.launcher}"/>
         <path refid="project.classpath"/>
       </classpath>
       <jvmarg value = "-Xmx1G"/>

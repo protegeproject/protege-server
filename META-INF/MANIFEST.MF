@@ -7,4 +7,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.semanticweb.owl.owlapi;bundle-version="3.2.5"
 Bundle-Vendor: The Protege Development Team
 Service-Component: OSGI-INF/*.xml
+Bundle-Activator: org.protege.owl.server.Activator
+Import-Package: org.osgi.framework;version="1.6.0"
 

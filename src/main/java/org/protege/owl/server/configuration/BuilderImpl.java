@@ -2,9 +2,9 @@ package org.protege.owl.server.configuration;
 
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.STANDARD_SERVER;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.Builder;
@@ -17,7 +17,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 public class BuilderImpl implements Builder {
 	private Logger logger = Logger.getLogger(BuilderImpl.class.getCanonicalName());
 	private OWLOntology configuration;
-	private Set<ServerComponentFactory> factories = new TreeSet<ServerComponentFactory>();
+	private Set<ServerComponentFactory> factories = new HashSet<ServerComponentFactory>();
 	private ServerConstraints serverConstraints;
 	
 	private Server server;
@@ -29,6 +29,7 @@ public class BuilderImpl implements Builder {
 		logger.info("Server configuration found");
 		for (ServerComponentFactory factory : factories) {
 			logger.info("New server component factory: " + factory);
+			factory.setConfiguration(configuration);
 		}
 		setupConstraints();
 		satisfyConstraints();
@@ -36,12 +37,10 @@ public class BuilderImpl implements Builder {
 	
 	@Override
 	public void addServerComponentFactory(ServerComponentFactory factory) {
+		factories.add(factory);
 		if (configuration != null) { // stay silent if we don't know if the server is going to run...
 			logger.info("New server component factory: " + factory);
-		}
-		factory.setConfiguration(configuration);
-		factories.add(factory);
-		if (configuration != null) {
+			factory.setConfiguration(configuration);
 			satisfyConstraints();
 		}
 	}
@@ -80,7 +79,7 @@ public class BuilderImpl implements Builder {
 	private void satisfyConstraints() {
 		if (!isUp() && serverConstraints.satisfied(factories)) {
 			server = serverConstraints.buildServer();
-			serverTransports = serverConstraints.buildServerTransports(server);
+			serverTransports = serverConstraints.buildServerTransports(factories, server);
 			logger.info("Server started");
 		}
 	}
