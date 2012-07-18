@@ -16,10 +16,11 @@
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
      xmlns:xml="http://www.w3.org/XML/1998/namespace"
      ontologyIRI="http://protege.stanford.edu/ontologies/metaproject-001">
-    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
-    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
-    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="" IRI="http://www.w3.org/2002/07/owl#"/>
     <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
     <Import>http://protege.stanford.edu/ontologies/metaproject.owl</Import>
     <Declaration>
         <NamedIndividual IRI="#testRMITransport"/>
@@ -42,8 +43,13 @@
     </ObjectPropertyAssertion>
     <DataPropertyAssertion>
         <DataProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasHostPort"/>
+        <NamedIndividual IRI="#testRMITransport"/>
+        <Literal datatypeIRI="&xsd;integer">5100</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasServerRootPath"/>
         <NamedIndividual IRI="#testServer"/>
-        <Literal datatypeIRI="&xsd;int">5100</Literal>
+        <Literal datatypeIRI="&xsd;string">build/server.root</Literal>
     </DataPropertyAssertion>
 </Ontology>
 

@@ -1,6 +1,6 @@
 package org.protege.owl.server.configuration;
 
-import static org.protege.owl.server.configuration.MetaprojectVocabulary.STANDARD_SERVER;
+import static org.protege.owl.server.configuration.MetaprojectVocabulary.SERVER;
 
 import java.util.HashSet;
 import java.util.List;
@@ -70,17 +70,29 @@ public class BuilderImpl implements Builder {
 	}
 	
 	private void setupConstraints() {
-		for (OWLIndividual individual : STANDARD_SERVER.getIndividuals(configuration)) {
+		for (OWLIndividual individual : MetaprojectVocabulary.getIndividuals(configuration, SERVER)) {
 			serverConstraints = new ServerConstraints(configuration, individual); // assume just one for now...
 			break;
 		}
 	}
 	
 	private void satisfyConstraints() {
-		if (!isUp() && serverConstraints.satisfied(factories)) {
-			server = serverConstraints.buildServer();
-			serverTransports = serverConstraints.buildServerTransports(factories, server);
-			logger.info("Server started");
+		boolean success = false;
+		try {
+			if (!isUp() && serverConstraints.satisfied(factories)) {
+				server = serverConstraints.buildServer(factories);
+				serverTransports = serverConstraints.buildServerTransports(factories, server);
+				logger.info("Server started");
+			}
+			success = true;
+		}
+		finally {
+			if (!success) {
+				server = null;
+				if (serverTransports != null) {
+					serverTransports.clear();
+				}
+			}
 		}
 	}
 }

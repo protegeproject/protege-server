@@ -7,6 +7,7 @@ import static org.protege.owl.server.configuration.MetaprojectVocabulary.STANDAR
 
 import java.io.File;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerComponentFactory;
@@ -21,6 +22,7 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public class CoreServerFactory implements ServerComponentFactory {
+	public static Logger logger = Logger.getLogger(CoreServerFactory.class.getCanonicalName());
 	private OWLOntology ontology;
 	private OWLDataFactory factory;
 	
@@ -33,14 +35,19 @@ public class CoreServerFactory implements ServerComponentFactory {
 	@Override
 	public boolean hasSuitableServer(OWLIndividual i) {
 		OWLAxiom rightType = factory.getOWLClassAssertionAxiom(STANDARD_SERVER, i);
+		boolean hasRightType = ontology.containsAxiom(rightType);
 		Set<OWLLiteral> roots = i.getDataPropertyValues(HAS_ROOT_PATH, ontology);
-		return ontology.containsAxiom(rightType) && roots != null && roots.size() == 1;
+		if (hasRightType && (roots == null || roots.size() != 1)) {
+			logger.warning("OWL Individual, " + i + " has the right type for a standard server plugin but doesn't have its root path configured correctly");
+			return false;
+		}
+		return hasRightType;
 	}
 
 	@Override
 	public Server createServer(OWLIndividual i) {
 		for (OWLLiteral rootPathLiteral : i.getDataPropertyValues(HAS_ROOT_PATH, ontology)) {
-			String rootPath = rootPathLiteral.toString();
+			String rootPath = rootPathLiteral.getLiteral();
 			return new ServerImpl(new File(rootPath));
 		}
 		return null;
@@ -59,15 +66,20 @@ public class CoreServerFactory implements ServerComponentFactory {
 	@Override
 	public boolean hasSuitableServerTransport(OWLIndividual i) {
 		OWLAxiom rightType = factory.getOWLClassAssertionAxiom(RMI_TRANSPORT, i);
-		Set<OWLLiteral> roots = i.getDataPropertyValues(HAS_HOST_PORT, ontology);
-		return ontology.containsAxiom(rightType) && roots != null && roots.size() == 1;
+		boolean hasRightType = ontology.containsAxiom(rightType);
+		Set<OWLLiteral> ports = i.getDataPropertyValues(HAS_HOST_PORT, ontology);
+		if (hasRightType && (ports == null || ports.size() != 1)) {
+			logger.warning("OWL Individual " + i + " has the right type for an rmi transport plugin but doesn't have its ports correctly configured");
+			return false;
+		}
+		return hasRightType;
 	}
 
 	@Override
 	public ServerTransport createServerTransport(OWLIndividual i) {
-		for (OWLLiteral rootPathLiteral : i.getDataPropertyValues(HAS_HOST_PORT, ontology)) {
-			if (rootPathLiteral.isInteger()) {
-				int port = rootPathLiteral.parseInteger();
+		for (OWLLiteral hostPortLiteral : i.getDataPropertyValues(HAS_HOST_PORT, ontology)) {
+			if (hostPortLiteral.isInteger()) {
+				int port = hostPortLiteral.parseInteger();
 				return new RMITransport(port);
 			}
 		}

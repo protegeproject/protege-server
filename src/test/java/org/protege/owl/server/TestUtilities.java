@@ -13,6 +13,17 @@ import org.xml.sax.SAXException;
 public class TestUtilities {
 	
 	public static final File ROOT_DIRECTORY = new File("build/server.root");
+	public static final String PREFIX;
+	static {
+		StringBuffer sb = new StringBuffer();
+		sb.append("src");
+		sb.append(File.separator);
+		sb.append("test");
+		sb.append(File.separator);
+		sb.append("resources");
+		sb.append(File.separator);
+		PREFIX = sb.toString();
+	}
 
 	private TestUtilities() {
 	}
@@ -23,8 +34,9 @@ public class TestUtilities {
 		return ROOT_DIRECTORY;
 	}
 	
-	public static Framework startServer(File configuration) throws IOException, ParserConfigurationException, SAXException, InstantiationException, IllegalAccessException, ClassNotFoundException, BundleException, InterruptedException {
-		Launcher launcher = new Launcher(configuration);
+	public static Framework startServer(String osgiConfiguration, String serverConfiguration) throws IOException, ParserConfigurationException, SAXException, InstantiationException, IllegalAccessException, ClassNotFoundException, BundleException, InterruptedException {
+		System.setProperty(Activator.SERVER_CONFIGURATION_PROPERTY, PREFIX + serverConfiguration);
+		Launcher launcher = new Launcher(new File(PREFIX, osgiConfiguration));
 		launcher.start(false);
 		return launcher.getFramework();
 	}

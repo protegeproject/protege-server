@@ -13,20 +13,16 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public class ServerConstraints {
-	private OWLOntology configuration;
 	private OWLIndividual serverIndividual;
 
 	private List<TransportConstraints> transportConstraints = new ArrayList<TransportConstraints>();
-
-	private ServerComponentFactory factory;
 	
 	public ServerConstraints(OWLOntology configuration, OWLIndividual serverIndividual) {
-		this.configuration = configuration;
 		this.serverIndividual = serverIndividual;
 		Set<OWLIndividual> transports = serverIndividual.getObjectPropertyValues(HAS_TRANSPORT, configuration);
 		if (transports != null) {
 			for (OWLIndividual transport : transports) {
-				transportConstraints.add(new TransportConstraints(transport));
+				transportConstraints.add(new TransportConstraints(configuration, transport));
 			}
 		}
 	}
@@ -39,11 +35,9 @@ public class ServerConstraints {
 			}
 		}
 		
-		if (factory == null) {
-			for (ServerComponentFactory factory : factories) {
-				if (factory.hasSuitableServer(serverIndividual)) {
-					return true;
-				}
+		for (ServerComponentFactory factory : factories) {
+			if (factory.hasSuitableServer(serverIndividual)) {
+				return true;
 			}
 		}
 		return false;
@@ -60,8 +54,13 @@ public class ServerConstraints {
 		return transports;
 	}
 	
-	public Server buildServer() {
-		return factory.createServer(serverIndividual);
+	public Server buildServer(Set<ServerComponentFactory> factories) {
+		for (ServerComponentFactory factory : factories) {
+			if (factory.hasSuitableServer(serverIndividual)) {
+				return factory.createServer(serverIndividual);
+			}
+		}
+		throw new IllegalStateException("Expected to be ready to build the server...");
 	}
 	
 
