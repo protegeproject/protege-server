@@ -22,7 +22,14 @@ public class LocalBasicServerTest extends AbstractBasicServerTest {
 	}
 	
 	@Override
+	protected String getServerRoot() {
+		return LocalClient.SCHEME + "://localhost/";
+	}
+	
+	@Override
 	public Client createClient() {
 		return new LocalClient(null, server);
 	}
+	
+	
 }

@@ -18,6 +18,8 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
  */
 
 public interface ChangeDocument extends Serializable {
+	public static final String CHANGE_DOCUMENT_EXTENSION = ".history";
+
 	/**
 	 * Get the start revision of this collection of changes.
 	 * 

@@ -20,6 +20,8 @@ import org.protege.owl.server.impl.DocumentFactoryImpl;
 import org.semanticweb.owlapi.model.IRI;
 
 public class RMIClient implements Client {
+	public static final String SCHEME = "rmi-owl2-server";
+	
 	private Logger logger = Logger.getLogger(RMIClient.class.getCanonicalName());
 	private String host;
 	private int port;
@@ -34,6 +36,16 @@ public class RMIClient implements Client {
 	public void initialise() throws RemoteException, NotBoundException {
 		Registry registry = LocateRegistry.getRegistry(host, port);
 		server = (RemoteServer) registry.lookup(RMITransport.SERVER_NAME);
+	}
+	
+	@Override
+	public String getScheme() {
+		return SCHEME;
+	}
+	
+	@Override
+	public String getAuthority() {
+		return host;
 	}
 
 	@Override

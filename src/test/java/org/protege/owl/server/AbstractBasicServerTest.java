@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.util.UUID;
 
+import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.VersionedOWLOntology;
-import org.protege.owl.server.changes.ChangeDocumentImpl;
 import org.protege.owl.server.impl.ServerImpl;
 import org.protege.owl.server.util.ClientUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -31,6 +31,8 @@ public abstract class AbstractBasicServerTest {
 	protected abstract void startServer() throws IOException;
 	
 	protected abstract void stopServer() throws IOException;
+	
+	protected abstract String getServerRoot();
 
 	protected abstract Client createClient() throws IOException;
 	
@@ -39,7 +41,7 @@ public abstract class AbstractBasicServerTest {
 		startServer();
 		client = createClient() ;
 		clientUtilities = new ClientUtilities(client);
-		testDirectory = client.createRemoteDirectory(IRI.create(ServerImpl.SCHEME + "://localhost/" + UUID.randomUUID()));
+		testDirectory = client.createRemoteDirectory(IRI.create(getServerRoot() + UUID.randomUUID()));
 	}
 	
 	@AfterMethod
@@ -71,7 +73,7 @@ public abstract class AbstractBasicServerTest {
 
 	
 	public VersionedOWLOntology loadPizza() throws IOException, OWLOntologyCreationException {
-		IRI pizzaLocation = IRI.create(testDirectory.getServerLocation().toString() + "/pizza" + ChangeDocumentImpl.CHANGE_DOCUMENT_EXTENSION);
+		IRI pizzaLocation = IRI.create(testDirectory.getServerLocation().toString() + "/pizza" + ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		OWLOntology ontology = manager.loadOntology(IRI.create(new File(PizzaVocabulary.PIZZA_LOCATION)));
 		VersionedOWLOntology versionedOntology = clientUtilities.createServerOntology(pizzaLocation, "A tasty pizza", ontology);

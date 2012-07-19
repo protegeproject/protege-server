@@ -32,8 +32,6 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 @Deprecated
 public class ChangeDocumentImpl implements ChangeDocument {
 	private static final long serialVersionUID = -3842895051205436375L;
-	public static final String CHANGE_DOCUMENT_EXTENSION = ".history";
-	
 	private OntologyDocumentRevision startRevision;
 	private List<OWLOntologyChange> changes;
 	private Map<OntologyDocumentRevision, String> commitComments = new TreeMap<OntologyDocumentRevision, String>();

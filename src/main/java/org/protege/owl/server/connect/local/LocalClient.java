@@ -19,12 +19,23 @@ import org.protege.owl.server.impl.RemoteOntologyDocumentImpl;
 import org.semanticweb.owlapi.model.IRI;
 
 public class LocalClient implements Client {
+	public static final String SCHEME = "local-owl2-server";
 	private User user;
 	private Server server;
 	
 	public LocalClient(User user, Server server) {
 		this.user = user;
 		this.server = server;
+	}
+	
+	@Override
+	public String getScheme() {
+		return SCHEME;
+	}
+	
+	@Override
+	public String getAuthority() {
+		return "localhost";
 	}
 
 	@Override

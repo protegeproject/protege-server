@@ -8,9 +8,9 @@ import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.VersionedOntologyDocument;
-import org.protege.owl.server.changes.ChangeDocumentImpl;
 import org.protege.owl.server.changes.ChangeDocumentUtilities;
 import org.semanticweb.owlapi.model.IRI;
+
 
 public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument {
 	
@@ -21,7 +21,7 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
 
 	public static File getHistoryFile(File ontologyFile) {
 		File versionInfoDir = getVersionInfoDirectory(ontologyFile);
-		return new File(versionInfoDir, ontologyFile.getName() + ChangeDocumentImpl.CHANGE_DOCUMENT_EXTENSION);
+		return new File(versionInfoDir, ontologyFile.getName() + ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
 	}
 
 	public static File getVersionInfoDirectory(File ontologyFile) {
@@ -29,21 +29,18 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
 		return new File(dir, ".owlserver");
 	}
 
-	private DocumentFactory factory;
 	private File localFile;
 	private File historyFile;
 	private RemoteOntologyDocument serverDoc;
 	private ChangeDocument changes;
 	
 	public VersionedOntologyDocumentImpl(DocumentFactory factory, IRI localAddress) throws IOException {
-		this.factory = factory;
 		locateSources(localAddress);
 		serverDoc = RemoteOntologyDocumentFromProperties.read(getVersioningPropertiesFile(localFile));
 	}
 	
 	public VersionedOntologyDocumentImpl(DocumentFactory factory, IRI localAddress, IRI serverAddress, OntologyDocumentRevision revision) 
 			throws IOException {
-		this.factory = factory;
 		locateSources(localAddress);
 		serverDoc = RemoteOntologyDocumentFromProperties.create(getVersioningPropertiesFile(localFile), serverAddress, revision);
 		ChangeDocumentUtilities.writeEmptyChanges(factory, historyFile);

@@ -2,12 +2,12 @@ package org.protege.owl.server.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.ChangeDocument;
@@ -21,7 +21,6 @@ import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.User;
 import org.protege.owl.server.api.exception.DocumentAlreadyExistsException;
 import org.protege.owl.server.api.exception.DocumentNotFoundException;
-import org.protege.owl.server.changes.ChangeDocumentImpl;
 import org.protege.owl.server.changes.ChangeDocumentUtilities;
 import org.protege.owl.server.util.ChangeUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -37,7 +36,6 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
  */
 
 public class ServerImpl implements Server {
-	private Logger logger = Logger.getLogger(Server.class.getCanonicalName());
 	
 	public enum ServerObjectStatus {
 		OBJECT_NOT_FOUND {
@@ -64,15 +62,13 @@ public class ServerImpl implements Server {
 		OBJECT_IS_ONTOLOGY_DOCUMENT {
 			@Override
 			public boolean isStatusOf(File f) {
-				return f.isFile() && f.getName().endsWith(ChangeDocumentImpl.CHANGE_DOCUMENT_EXTENSION);
+				return f.isFile() && f.getName().endsWith(ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
 			}
 
 		};
 		
 		public abstract boolean isStatusOf(File f);
 	}
-	
-	public static final String SCHEME = "owlserver";
 	
 	private File root;
 	private DocumentFactory factory = new DocumentFactoryImpl();
@@ -110,15 +106,7 @@ public class ServerImpl implements Server {
 		List<ServerDocument> documents = new ArrayList<ServerDocument>();
 		for (File child : parent.listFiles()) {
 			IRI serverIRI = null;
-			try {
-				serverIRI = buildServerIRI(child);
-			}
-			catch (DocumentNotFoundException e) {
-				if (logger.isLoggable(Level.FINE)) {
-					logger.fine("File " + child + " does not correspond to a valid server directory or ontology");
-				}
-				continue;
-			}
+			serverIRI = createIRI(dir.getServerLocation(), child.getPath());
 			if (child.isDirectory()) {
 				documents.add(new ServerDirectoryImpl(serverIRI));
 			}
@@ -135,8 +123,8 @@ public class ServerImpl implements Server {
 		if (historyFile == null) {
 			throw new DocumentAlreadyExistsException("Could not create directory at " + serverIRI);
 		}
-		if (!historyFile.getName().endsWith(ChangeDocumentImpl.CHANGE_DOCUMENT_EXTENSION)) {
-			throw new IllegalArgumentException("Server side IRI's must have the " + ChangeDocumentImpl.CHANGE_DOCUMENT_EXTENSION + " extension");
+		if (!historyFile.getName().endsWith(ChangeDocument.CHANGE_DOCUMENT_EXTENSION)) {
+			throw new IllegalArgumentException("Server side IRI's must have the " + ChangeDocument.CHANGE_DOCUMENT_EXTENSION + " extension");
 		}
 		ChangeDocumentUtilities.writeEmptyChanges(factory, historyFile);
 		return new RemoteOntologyDocumentImpl(serverIRI, OntologyDocumentRevision.START_REVISION);
@@ -202,9 +190,6 @@ public class ServerImpl implements Server {
 	}
 
 	private File parseServerIRI(IRI serverIRI, ServerObjectStatus expected) throws DocumentNotFoundException {
-		if (!serverIRI.getScheme().equals(SCHEME)) {
-			throw new IllegalStateException("incorrect scheme for server request");
-		}
 		String path =  serverIRI.toURI().getPath();
 		if (path.startsWith("/")) {
 			path = path.substring(1);
@@ -215,11 +200,18 @@ public class ServerImpl implements Server {
 		}
 		return null;
 	}
-
-	@SuppressWarnings("deprecation")
-	private IRI buildServerIRI(File f) throws DocumentNotFoundException {
-		String path = f.getPath();
-		return IRI.create(SCHEME + path);
+	
+	private IRI createIRI(IRI model, String path) {
+		URI modelUri = model.toURI();
+		StringBuffer iriBuffer = new StringBuffer();
+		iriBuffer.append(model.getScheme());
+		iriBuffer.append("://");
+		iriBuffer.append(modelUri.getAuthority());
+		if (!path.startsWith("/")) {
+			iriBuffer.append('/');
+		}
+		iriBuffer.append(path);
+		return IRI.create(iriBuffer.toString());
 	}
 
 

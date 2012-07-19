@@ -7,6 +7,10 @@ import org.semanticweb.owlapi.model.IRI;
 
 public interface Client {
 	
+	String getScheme();
+	
+	String getAuthority();
+	
 	/**
 	 * This call gets the document factory.  This factory defines how the Client implements ChangeDocuments and
 	 * how the client retrieves information about a remote server associated with an ontology stored on a local disk.

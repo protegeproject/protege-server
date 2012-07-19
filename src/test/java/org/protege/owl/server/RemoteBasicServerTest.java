@@ -48,7 +48,10 @@ public class RemoteBasicServerTest extends AbstractBasicServerTest {
 		}
 	}
 
-
+	@Override
+	protected String getServerRoot() {
+		return RMIClient.SCHEME + "://localhost:" + rmiPort + "/";
+	}
 	
 	@Override
 	protected Client createClient() throws RemoteException {
