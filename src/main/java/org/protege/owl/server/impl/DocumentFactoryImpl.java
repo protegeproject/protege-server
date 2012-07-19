@@ -33,7 +33,4 @@ public class DocumentFactoryImpl implements DocumentFactory {
 		return new VersionedOntologyDocumentImpl(this, localIRI);
 
 	}
-
-
-
 }
