@@ -10,7 +10,6 @@
   <bundles verbose = "true">
     <search path="build"/>
     <bundle name="org.protege.owl.server.jar"/>
-    <bundle name="org.protege.osgi.debug.jar"/>
   </bundles>
 
 </launch>

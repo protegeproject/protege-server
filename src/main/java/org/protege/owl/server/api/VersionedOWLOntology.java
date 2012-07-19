@@ -9,8 +9,8 @@ public class VersionedOWLOntology {
 	
 	
 	public VersionedOWLOntology(OWLOntology ontology,
-								RemoteOntologyDocument serverDocument,
-								OntologyDocumentRevision revision) {
+								 RemoteOntologyDocument serverDocument,
+								 OntologyDocumentRevision revision) {
 		this.ontology = ontology;
 		this.serverDocument = serverDocument;
 		this.revision = revision;
