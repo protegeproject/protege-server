@@ -2,9 +2,11 @@ package org.protege.owl.server.configuration;
 
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.SERVER;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.Builder;
@@ -32,35 +34,50 @@ public class BuilderImpl implements Builder {
 			factory.setConfiguration(configuration);
 		}
 		setupConstraints();
-		satisfyConstraints();
+		try {
+			satisfyConstraints();
+		}
+		catch (IOException ioe) {
+			logger.log(Level.SEVERE, "Exception caught configuring server", ioe);
+		}		
 	}
 	
 	@Override
 	public void addServerComponentFactory(ServerComponentFactory factory) {
-		factories.add(factory);
-		if (configuration != null) { // stay silent if we don't know if the server is going to run...
-			logger.info("New server component factory: " + factory);
-			factory.setConfiguration(configuration);
-			satisfyConstraints();
+		try {
+			factories.add(factory);
+			if (configuration != null) { // stay silent if we don't know if the server is going to run...
+				logger.info("New server component factory: " + factory);
+				factory.setConfiguration(configuration);
+				satisfyConstraints();
+			}
+		}
+		catch (IOException ioe) {
+			logger.log(Level.SEVERE, "Exception caught configuring server", ioe);
 		}
 	}
 	
 	@Override
 	public void removeServerComponentFactory(ServerComponentFactory factory) {
-		logger.info("Disabling server component factory: " + factory);
-		factories.remove(factory);
-		if (isUp() && configuration != null) {
-			logger.info("Resetting server");
-			server.shutdown();
-			for (ServerTransport serverTransport : serverTransports) {
-				serverTransport.dispose();
+		try {
+			logger.info("Disabling server component factory: " + factory);
+			factories.remove(factory);
+			if (isUp() && configuration != null) {
+				logger.info("Resetting server");
+				server.shutdown();
+				for (ServerTransport serverTransport : serverTransports) {
+					serverTransport.dispose();
+				}
+				server = null;
+				serverTransports.clear();
+				satisfyConstraints();
+				if (!isUp()) {
+					logger.info("Server is down");
+				}
 			}
-			server = null;
-			serverTransports.clear();
-			satisfyConstraints();
-			if (!isUp()) {
-				logger.info("Server is down");
-			}
+		}
+		catch (IOException ioe) {
+			logger.log(Level.SEVERE, "Exception caught while withdrawing server component factory", ioe);
 		}
 	}
 	
@@ -76,7 +93,7 @@ public class BuilderImpl implements Builder {
 		}
 	}
 	
-	private void satisfyConstraints() {
+	private void satisfyConstraints() throws IOException {
 		boolean success = false;
 		try {
 			if (!isUp() && serverConstraints.satisfied(factories)) {

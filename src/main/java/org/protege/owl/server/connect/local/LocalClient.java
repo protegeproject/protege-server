@@ -69,6 +69,9 @@ public class LocalClient implements Client {
 		server.commit(user, document, commitComment, changes);
 	}
 
-
+	@Override
+	public void shutdown() {
+		server.shutdown();
+	}
 
 }

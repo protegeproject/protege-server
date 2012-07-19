@@ -3,7 +3,6 @@ package org.protege.owl.server.api;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.protege.owl.server.api.exception.DocumentNotFoundException;
 import org.semanticweb.owlapi.model.IRI;
 
 public interface Client {
@@ -25,7 +24,7 @@ public interface Client {
 	 * @param serverIRI
 	 * @return
 	 */
-	ServerDocument getServerDocument(IRI serverIRI) throws DocumentNotFoundException;
+	ServerDocument getServerDocument(IRI serverIRI) throws IOException;
 	
 	
 	/**
@@ -75,5 +74,7 @@ public interface Client {
 	 * @param changes
 	 */
 	void commit(RemoteOntologyDocument document, String commitComment, ChangeDocument changes) throws IOException;
+	
+	void shutdown();
 
 }

@@ -72,6 +72,10 @@
            includeAntRuntime="false">
       <classpath refid = "project.classpath"/>  
     </javac>
+    <rmic base="${classes}"
+          classname="org.protege.owl.server.connect.rmi.RemoteServerImpl">
+      <classpath refid = "project.classpath"/>  
+    </rmic>
   </target>
   
   <target name = "testng.compile" depends="init,checkProtegeLibsAndReport">
@@ -173,6 +177,8 @@
       </classpath>
       <jvmarg value = "-Xmx1G"/>
       <jvmarg value="-Dlog4j.configuration=file:./log4j-dev.xml"/>
+      <jvmarg value="-Djava.util.logging.config.file=./logging.properties"/>
+      <jvmarg value="-Djava.util.logging.SimpleFormatter.format=%4$s: %5$s%n"/>
       <arg    value="src/test/resources/unit-tests.xml"/>
       <arg    value="-d"/>
       <arg    value="${build}/test-output"/>

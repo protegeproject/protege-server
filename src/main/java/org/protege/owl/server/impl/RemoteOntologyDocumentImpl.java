@@ -20,6 +20,7 @@ import org.semanticweb.owlapi.model.IRI;
  *
  */
 public class RemoteOntologyDocumentImpl extends ServerDocumentImpl implements RemoteOntologyDocument {
+	private static final long serialVersionUID = 8685750766323114980L;
 	private OntologyDocumentRevision revision;
 	
 	public RemoteOntologyDocumentImpl(IRI backingStore, OntologyDocumentRevision revision) {

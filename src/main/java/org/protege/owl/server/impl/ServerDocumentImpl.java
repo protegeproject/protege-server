@@ -1,10 +1,13 @@
  package org.protege.owl.server.impl;
 
+import java.io.Serializable;
+
 import org.protege.owl.server.api.ServerDocument;
 import org.semanticweb.owlapi.model.IRI;
 
 
-public class ServerDocumentImpl implements ServerDocument {
+public class ServerDocumentImpl implements ServerDocument, Serializable {
+	private static final long serialVersionUID = -3003767122936738208L;
 	private IRI serverLocation;
 	
 	public ServerDocumentImpl(IRI serverLocation) {

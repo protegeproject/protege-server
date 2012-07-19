@@ -2,6 +2,7 @@ package org.protege.owl.server.configuration;
 
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_TRANSPORT;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +45,7 @@ public class ServerConstraints {
 	}
 
 
-	public List<ServerTransport> buildServerTransports(Set<ServerComponentFactory> factories, Server server) {
+	public List<ServerTransport> buildServerTransports(Set<ServerComponentFactory> factories, Server server) throws IOException {
 		List<ServerTransport> transports = new ArrayList<ServerTransport>();
 		for (TransportConstraints constraint : transportConstraints) {
 			ServerTransport transport = constraint.build(factories);
