@@ -2,13 +2,13 @@
 
 <launch>
   <bundles verbose = "true">
-    <search path="build/bundles"/>
+    <search path="build/server/bundles"/>
     <bundle name="org.apache.felix.configadmin.jar"/>
     <bundle name="org.apache.felix.scr.jar"/>
     <bundle name="org.semanticweb.owl.owlapi.jar"/>
   </bundles>
   <bundles verbose = "true">
-    <search path="build"/>
+    <search path="build/server/bundles"/>
     <bundle name="org.protege.owl.server.jar"/>
   </bundles>
 

@@ -10,12 +10,12 @@
 
 
 <Ontology xmlns="http://www.w3.org/2002/07/owl#"
-     xml:base="http://protege.stanford.edu/ontologies/metaproject-001"
+     xml:base="http://protege.stanford.edu/ontologies/test-metaproject-001"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
      xmlns:xml="http://www.w3.org/XML/1998/namespace"
-     ontologyIRI="http://protege.stanford.edu/ontologies/metaproject-001">
+     ontologyIRI="http://protege.stanford.edu/ontologies/test-metaproject-001">
     <Prefix name="" IRI="http://www.w3.org/2002/07/owl#"/>
     <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
     <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
@@ -31,10 +31,6 @@
     <ClassAssertion>
         <Class IRI="http://protege.stanford.edu/ontologies/metaproject.owl#RMI"/>
         <NamedIndividual IRI="#testRMITransport"/>
-    </ClassAssertion>
-    <ClassAssertion>
-        <Class IRI="http://protege.stanford.edu/ontologies/metaproject.owl#StandardOWL2Server"/>
-        <NamedIndividual IRI="#testServer"/>
     </ClassAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasTransport"/>

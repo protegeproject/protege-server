@@ -17,6 +17,8 @@
   <property name = "testng.src"        location = "./src/test/java"/>
   <property name = "build"             location = "./build"/>
   <property name = "classes"           location = "${build}/classes"/>
+  <property name = "server.dir"        location = "${build}/server"/>
+  <property name = "server.bundles"        location = "${server.dir}/bundles"/>
   <property name = "testng.classes"    location = "${build}/testng.classes"/>
   <property name = "manifest"          location = "${build}/manifest.mf"/>
   
@@ -40,6 +42,8 @@
     <mkdir dir = "${build}"/>
    	<mkdir dir = "${testng.classes}"/>
     <mkdir dir = "${classes}"/>
+    <mkdir dir = "${server.dir}"/>
+    <mkdir dir="${server.bundles}"/>
     <condition property="use.bundlor">
       <and>
         <available file="${bundlor.home}"     type = "dir"/>
@@ -121,6 +125,21 @@
           file="META-INF/MANIFEST.MF" overwrite="true"/>
   </target>
 
+
+  <target name="setup.server.framework">
+    <mkdir dir="${server.dir}/lib"/>
+    <mkdir dir="${server.dir}/plugins"/>
+    <mkdir dir="${server.dir}/root"/>
+    <copy file="${protege.osgi}" todir="${server.dir}/lib"/>
+    <copy file="${protege.launcher}" todir="${server.dir}/lib"/>
+    <copy file="${protege.common}/org.apache.felix.configadmin.jar" todir="${server.bundles}"/>
+    <copy file="${protege.common}/org.apache.felix.scr.jar" todir="${server.bundles}"/>
+    <copy file="${protege.plugins}/org.semanticweb.owl.owlapi.jar" todir="${server.bundles}"/>
+    <copy todir="${server.dir}">
+      <fileset dir="./etc/standalone"/>
+    </copy>
+  </target>
+
   <target name="copy.resources">
       <copy todir="${classes}/OSGI-INF">
         <fileset dir="OSGI-INF" includes="*.xml"/>
@@ -132,16 +151,16 @@
   
   
   <target name = "jar" depends = "compile, use.existing.manifest, bundlor.manifest,copy.resources">
-    <jar jarfile = "${build}/${plugin}.jar"
+    <jar jarfile = "${server.bundles}/${plugin}.jar"
          basedir = "${classes}" 
          manifest = "${manifest}"/>
   </target>
   
-  <target name = "install" depends = "jar">
+  <target name = "install" depends = "jar,setup.server.framework">
     <!-- flush cache -->
     <delete dir = "${protege.home}/configuration/org.eclipse.core.runtime"/>
     <delete dir = "${protege.home}/configuration/org.eclipse.osgi"/>
-    <copy file="${build}/${plugin}.jar" 
+    <copy file="${server.bundles}/${plugin}.jar" 
           todir = "${protege.plugins}"
           overwrite = "true"/>
     <copy file="./src/main/resources/server-config.xml"
@@ -155,15 +174,7 @@
   </target>
   
 
-  <target name="copy.test.resources">
-    <property name="bundle.dir" location="${build}/bundles"/>
-    <mkdir dir="${bundle.dir}"/>
-    <copy file="${protege.common}/org.apache.felix.configadmin.jar" todir="${bundle.dir}"/>
-    <copy file="${protege.common}/org.apache.felix.scr.jar" todir="${bundle.dir}"/>
-    <copy file="${protege.plugins}/org.semanticweb.owl.owlapi.jar" todir="${bundle.dir}"/>
-  </target>
-  
-  <target name="unit.test" depends="jar,testng.compile,copy.test.resources">
+  <target name="unit.test" depends="jar,testng.compile">
     <mkdir dir="${build}/test-output"/>
     <java classname="org.testng.TestNG"
           fork = "true">
@@ -184,7 +195,7 @@
     </java>
   </target>
   
-  <target name="debug.unit.test" depends="jar, testng.compile,copy.test.resources">
+  <target name="debug.unit.test" depends="jar, testng.compile">
     <mkdir dir="${build}/test-output"/>
     <java classname="org.testng.TestNG"
           fork = "true">
