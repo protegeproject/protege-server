@@ -32,6 +32,10 @@
         <Class IRI="http://protege.stanford.edu/ontologies/metaproject.owl#RMI"/>
         <NamedIndividual IRI="#testRMITransport"/>
     </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="http://protege.stanford.edu/ontologies/metaproject.owl#StandardOWL2Server"/>
+        <NamedIndividual IRI="#testServer"/>
+    </ClassAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasTransport"/>
         <NamedIndividual IRI="#testServer"/>

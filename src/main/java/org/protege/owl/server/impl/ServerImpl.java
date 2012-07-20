@@ -92,7 +92,7 @@ public class ServerImpl implements Server {
 			return new ServerDirectoryImpl(serverIRI);
 		}
 		else {
-			return new RemoteOntologyDocumentImpl(serverIRI, OntologyDocumentRevision.START_REVISION);
+			return new RemoteOntologyDocumentImpl(serverIRI);
 		}
 	}
 
@@ -111,7 +111,7 @@ public class ServerImpl implements Server {
 				documents.add(new ServerDirectoryImpl(serverIRI));
 			}
 			else {
-				documents.add(new RemoteOntologyDocumentImpl(serverIRI, OntologyDocumentRevision.START_REVISION));
+				documents.add(new RemoteOntologyDocumentImpl(serverIRI));
 			}
 		}
 		return documents;
@@ -127,7 +127,7 @@ public class ServerImpl implements Server {
 			throw new IllegalArgumentException("Server side IRI's must have the " + ChangeDocument.CHANGE_DOCUMENT_EXTENSION + " extension");
 		}
 		ChangeDocumentUtilities.writeEmptyChanges(factory, historyFile);
-		return new RemoteOntologyDocumentImpl(serverIRI, OntologyDocumentRevision.START_REVISION);
+		return new RemoteOntologyDocumentImpl(serverIRI);
 	}
 
 	@Override

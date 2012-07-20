@@ -1,9 +1,11 @@
 package org.protege.owl.server.api;
 
+import java.io.IOException;
+
 import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
- * This is an OWL ontology held by the client with an association to a corresponding server
+ * This is an open OWL ontology held by the client with an association to a corresponding server
  * document at a particular revision.  
  * <p/>
  * There is enough information here that several operations are possible:
@@ -14,41 +16,39 @@ import org.semanticweb.owlapi.model.OWLOntology;
  *     just such a method internally.</li>
  * <li>the changes made on the server since the revision can be merged into the clients copy of the ontology</li>
  * </ul>
- * 
+ * <p/>
+ * This interface also supports the idea of a local cache of the history held on the server.  This cache can be updated
+ * as change data is collected from the server.
  * 
  * @author redmond
  *
  */
-public class VersionedOWLOntology {
-	private OWLOntology ontology;
-	private RemoteOntologyDocument serverDocument;
-	private OntologyDocumentRevision revision;
-	
-	
-	public VersionedOWLOntology(OWLOntology ontology,
-								 RemoteOntologyDocument serverDocument,
-								 OntologyDocumentRevision revision) {
-		this.ontology = ontology;
-		this.serverDocument = serverDocument;
-		this.revision = revision;
-	}
+public interface VersionedOWLOntology {
 
+	 OWLOntology getOntology();
 
-	public OWLOntology getOntology() {
-		return ontology;
-	}
-
-
-	public RemoteOntologyDocument getServerDocument() {
-		return serverDocument;
-	}
+	 RemoteOntologyDocument getServerDocument();
 	
-	public OntologyDocumentRevision getRevision() {
-		return revision;
-	}
+	 ChangeDocument getLocalHistory();
+	 
+	 void appendLocalHistory(ChangeDocument changes);
 	
-	public void setRevision(OntologyDocumentRevision revision) {
-		this.revision = revision;
-	}
+	OntologyDocumentRevision getRevision();
 	
+	void setRevision(OntologyDocumentRevision revision);
+	
+	/**
+	 * This call will save the data about the ontology connection, including the server document IRI, the 
+	 * local revision and the local history, with alongside the ontology document.
+	 * <p/>
+	 * The success of this call depends on where the ontology document resides.  If the ontology is stored in a file in a file system
+	 * then an implementation of this call could save the ontology connection data in some files in some directory near the ontology file.
+	 * However if the ontology is stored somewhere on the web, it is not clear that there will be a way to write this metadata.  But one
+	 * could imagine that some future implementation of this method would use web-dav or something similar to save this data.
+	 * 
+	 * @return true only if it successfully saved the connection data.  It will return false if the location where the 
+	 *  ontology is stored is not suitable for saving meta-data associated with the ontology.
+	 * @throws IOException
+	 */
+	boolean saveMetaData() throws IOException;	
 }

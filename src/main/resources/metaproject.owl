@@ -58,5 +58,4 @@ Declaration(DataProperty(<http://protege.stanford.edu/ontologies/metaproject.owl
 SubDataPropertyOf(<http://protege.stanford.edu/ontologies/metaproject.owl#hasHostPort> owl:topDataProperty)
 Declaration(DataProperty(<http://protege.stanford.edu/ontologies/metaproject.owl#hasServerRootPath>))
 SubDataPropertyOf(<http://protege.stanford.edu/ontologies/metaproject.owl#hasServerRootPath> owl:topDataProperty)
-ClassAssertion(<http://protege.stanford.edu/ontologies/metaproject.owl#StandardOWL2Server> <http://protege.stanford.edu/ontologies/test-metaproject-001#testServer>)
 )

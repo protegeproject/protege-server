@@ -23,19 +23,8 @@ public class RemoteOntologyDocumentImpl extends ServerDocumentImpl implements Re
 	private static final long serialVersionUID = 8685750766323114980L;
 	private OntologyDocumentRevision revision;
 	
-	public RemoteOntologyDocumentImpl(IRI backingStore, OntologyDocumentRevision revision) {
+	public RemoteOntologyDocumentImpl(IRI backingStore) {
 		super(backingStore);
-		this.revision = revision;
-	}
-	
-	@Override
-	public OntologyDocumentRevision getRevision() {
-		return revision;
-	}
-	
-	@Override
-	public void setRevision(OntologyDocumentRevision revision) {
-		this.revision = revision;
 	}
 	
 	@Override
@@ -43,11 +32,7 @@ public class RemoteOntologyDocumentImpl extends ServerDocumentImpl implements Re
 		if (!super.equals(o)) {
 			return false;
 		}
-		if (!(o instanceof RemoteOntologyDocument)) {
-			return false;
-		}
-		RemoteOntologyDocument other = (RemoteOntologyDocument) o;
-		return revision.equals(other.getRevision());
+		return o instanceof RemoteOntologyDocument;
 	}
 
 }

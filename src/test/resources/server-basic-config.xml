@@ -11,5 +11,7 @@
     <search path="build/server/bundles"/>
     <bundle name="org.protege.owl.server.jar"/>
   </bundles>
-
+  <bundles>
+    <search path="build/server/plugins"/>
+  </bundles>
 </launch>

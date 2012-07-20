@@ -41,7 +41,18 @@ public class ChangeDocumentImpl implements ChangeDocument {
 	 */
 	public ChangeDocumentImpl(OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes, Map<OntologyDocumentRevision, String> commitComments) {
 		this.startRevision = startRevision;
-		this.changes = changes;
+		if (changes != null) {
+			this.changes = new ArrayList<OWLOntologyChange>(changes);
+		}
+		else {
+			this.changes = new ArrayList<OWLOntologyChange>();
+		}
+		if (commitComments != null) {
+			this.commitComments = new TreeMap<OntologyDocumentRevision, String>(commitComments);
+		}
+		else {
+			this.commitComments = new TreeMap<OntologyDocumentRevision, String>();
+		}
 	}
 
 	@Override

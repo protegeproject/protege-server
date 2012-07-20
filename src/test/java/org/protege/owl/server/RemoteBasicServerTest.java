@@ -56,9 +56,9 @@ public class RemoteBasicServerTest extends AbstractBasicServerTest {
 	@Override
 	protected Client createClient() throws RemoteException {
 		try {
-		RMIClient client = new RMIClient("localhost", rmiPort);
-		client.initialise();
-		return client;
+			RMIClient client = new RMIClient("localhost", rmiPort);
+			client.initialise();
+			return client;
 		}
 		catch (NotBoundException nbe) {
 			throw new RemoteException(nbe.getMessage(), nbe);
