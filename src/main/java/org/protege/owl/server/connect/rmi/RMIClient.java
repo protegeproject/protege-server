@@ -1,5 +1,6 @@
 package org.protege.owl.server.connect.rmi;
 
+import java.net.URI;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -27,6 +28,15 @@ public class RMIClient implements Client {
 	private int port;
 	private User u = null;
 	private RemoteServer server;
+	
+	public RMIClient(IRI serverLocation) {
+		URI serverURI = serverLocation.toURI();
+		host = serverURI.getHost();
+		port = serverURI.getPort();
+		if (port < 0) {
+			port = Registry.REGISTRY_PORT;
+		}
+	}
 	
 	public RMIClient(String host, int port) {
 		this.host = host;

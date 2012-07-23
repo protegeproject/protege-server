@@ -18,9 +18,10 @@
   <property name = "build"             location = "./build"/>
   <property name = "classes"           location = "${build}/classes"/>
   <property name = "server.dir"        location = "${build}/server"/>
-  <property name = "server.bundles"        location = "${server.dir}/bundles"/>
+  <property name = "server.bundles"    location = "${server.dir}/bundles"/>
   <property name = "testng.classes"    location = "${build}/testng.classes"/>
   <property name = "manifest"          location = "${build}/manifest.mf"/>
+  <property name = "manifest.bundlor"  location = "./META-INF/manifest.bundlor"/>
   
   <property name = "lib.testng"        location = "./tools/testng-5.14.7.jar"/>
   <property name = "lib.antlr"         location = "./tools/antlr-3.4-complete-no-antlrv2.jar"/>
@@ -172,7 +173,8 @@
   <target name = "clean">
     <delete dir="${build}"/>
   </target>
-  
+
+  <!-- Testing -->
 
   <target name="unit.test" depends="jar,testng.compile">
     <mkdir dir="${build}/test-output"/>
@@ -217,4 +219,21 @@
     </java>
   </target>
   
+  <!-- Run -->
+	
+    <target name = "run" depends="init">
+        <java fork = "true" dir = "${server.dir}" 
+              classname = "org.protege.osgi.framework.Launcher">
+            <jvmarg value = "-Xmx1500M"/>
+            <jvmarg value="-Djava.util.logging.SimpleFormatter.format=%4$s: %5$s%n"/>
+        	<jvmarg value="-DentityExpansionLimit=100000000"/>
+        	<jvmarg value="-Dfile.encoding=UTF-8"/>
+        	<jvmarg value="-Dorg.protege.owl.server.configuration=metaproject.owl"/>
+            <classpath>
+              <pathelement path="${protege.osgi}"/>
+              <pathelement path="${protege.launcher}"/>
+            </classpath>
+        </java>
+    </target>
+	
 </project>
