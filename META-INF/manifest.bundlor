@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OWL Ontology Server
-Bundle-SymbolicName: org.protege.owl.server
-Bundle-Version: 2.0.0
+Bundle-Version: ${bundle.version}
+Built-By: ${user.name}
+Bundle-SymbolicName: ${plugin};singleton:=true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.semanticweb.owl.owlapi;bundle-version="3.2.5"
 Bundle-Vendor: The Protege Development Team
 Service-Component: OSGI-INF/*.xml
 Bundle-Activator: org.protege.owl.server.Activator
