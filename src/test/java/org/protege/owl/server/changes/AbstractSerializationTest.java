@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -15,7 +16,6 @@ import org.protege.owl.server.TestVocabulary;
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.impl.DocumentFactoryImpl;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
@@ -30,39 +30,41 @@ import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 import org.testng.Assert;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class SerializationTest {
-	private Logger logs = Logger.getLogger(SerializationTest.class.getCanonicalName());
+public abstract class AbstractSerializationTest {
+	private Logger logs = Logger.getLogger(AbstractSerializationTest.class.getCanonicalName());
 	
 	private OWLOntologyManager manager;
 	private OWLOntology ontology;
-	private OWLDataFactory factory;
+	private OWLDataFactory dataFactory;
 	
 	private Random r = new Random();
+	
+	protected abstract DocumentFactory createDocumentFactory();
 
-	@BeforeTest
+	@BeforeMethod
 	public void makeTestOntology() throws OWLOntologyCreationException {
 		manager = OWLManager.createOWLOntologyManager();
 		ontology = manager.createOntology(IRI.create(TestVocabulary.NS2));
-		factory = manager.getOWLDataFactory();
+		dataFactory = manager.getOWLDataFactory();
 	}
 	
 	@Test
 	public void testConsecutive() throws OWLOntologyCreationException, IOException, ClassNotFoundException {
-		DocumentFactory factory = new DocumentFactoryImpl();
+		DocumentFactory documentFactory = createDocumentFactory();
 		OWLOntology ontology1 = OWLManager.createOWLOntologyManager().createOntology();
 		
 		List<OWLOntologyChange> changes1 = new ArrayList<OWLOntologyChange>();
 		changes1.add(new AddAxiom(ontology1, TestVocabulary.AXIOM1));
 		OntologyDocumentRevision revision1 = new OntologyDocumentRevision(3);
-		ChangeDocument doc1 = factory.createChangeDocument(changes1, null, revision1);
+		ChangeDocument doc1 = documentFactory.createChangeDocument(changes1, null, revision1);
 		
 		List<OWLOntologyChange> changes2 = new ArrayList<OWLOntologyChange>();
 		changes2.add(new RemoveAxiom(ontology1, TestVocabulary.AXIOM2));
 		OntologyDocumentRevision revision2 = new OntologyDocumentRevision(4);
-		ChangeDocument doc2 = factory.createChangeDocument(changes2, null, revision2);
+		ChangeDocument doc2 = documentFactory.createChangeDocument(changes2, null, revision2);
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");
 		logs.info("Using file " + tmp);
@@ -76,8 +78,52 @@ public class SerializationTest {
 		ChangeDocument doc3 = (ChangeDocument) in.readObject();
 		ChangeDocument doc4 = (ChangeDocument) in.readObject();
 		
-		Assert.assertEquals(doc1, doc3);
-		Assert.assertEquals(doc2, doc4);
+		Assert.assertEquals(doc3, doc1);
+		Assert.assertEquals(doc4, doc2);
+		
+	}
+	
+	@Test
+	public void testConsecutiveInterleaved() throws OWLOntologyCreationException, IOException, ClassNotFoundException {
+		DocumentFactory documentFactory = createDocumentFactory();
+		OWLOntology ontology1 = OWLManager.createOWLOntologyManager().createOntology();
+		
+		List<OWLOntologyChange> changes1 = new ArrayList<OWLOntologyChange>();
+		changes1.add(new AddAxiom(ontology1, TestVocabulary.AXIOM1));
+		OntologyDocumentRevision revision1 = new OntologyDocumentRevision(3);
+		ChangeDocument doc2 = documentFactory.createChangeDocument(changes1, null, revision1);
+		
+		List<OWLOntologyChange> changes2 = new ArrayList<OWLOntologyChange>();
+		changes2.add(new RemoveAxiom(ontology1, TestVocabulary.AXIOM2));
+		OntologyDocumentRevision revision2 = new OntologyDocumentRevision(4);
+		ChangeDocument doc4 = documentFactory.createChangeDocument(changes2, null, revision2);
+		
+		File tmp = File.createTempFile("ServerTest", ".ser");
+		logs.info("Using file " + tmp);
+		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(tmp));
+		Integer int1 = new Integer(42);
+		out.writeObject(int1);
+		out.writeObject(doc2);
+		String str3 = "But can you do it?";
+		out.writeObject(str3);
+		out.writeObject(doc4);
+		Date d5 = new Date();
+		out.writeObject(d5);
+		out.flush();
+		out.close();
+		
+		ObjectInputStream in = new ObjectInputStream(new FileInputStream(tmp));
+		Integer int6 = (Integer) in.readObject();
+		ChangeDocument doc7 = (ChangeDocument) in.readObject();
+		String str8 = (String) in.readObject();
+		ChangeDocument doc9 = (ChangeDocument) in.readObject();
+		Date d10 = (Date) in.readObject();
+		
+		Assert.assertEquals(int6, int1);
+		Assert.assertEquals(doc7, doc2);
+		Assert.assertEquals(str8, str3);
+		Assert.assertEquals(doc9, doc4);
+		Assert.assertEquals(d10, d5);
 		
 	}
 	
@@ -92,8 +138,8 @@ public class SerializationTest {
 	@Test
 	public void testOntologyAnnotations() throws OWLOntologyCreationException, IOException, ClassNotFoundException {
 		List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
-		changes.add(new AddOntologyAnnotation(ontology, factory.getOWLAnnotation(factory.getRDFSLabel(), factory.getOWLLiteral("hello world"))));
-		changes.add(new RemoveOntologyAnnotation(ontology, factory.getOWLAnnotation(factory.getRDFSLabel(), factory.getOWLLiteral("that was fun"))));
+		changes.add(new AddOntologyAnnotation(ontology, dataFactory.getOWLAnnotation(dataFactory.getRDFSLabel(), dataFactory.getOWLLiteral("hello world"))));
+		changes.add(new RemoveOntologyAnnotation(ontology, dataFactory.getOWLAnnotation(dataFactory.getRDFSLabel(), dataFactory.getOWLLiteral("that was fun"))));
 		verifyRoundTrip(changes);
 	}
 	
@@ -102,13 +148,13 @@ public class SerializationTest {
 		List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
 		IRI iri1 = IRI.create(TestVocabulary.NS);
 		IRI iri2 = IRI.create(TestVocabulary.NS2);
-		changes.add(new AddImport(ontology, factory.getOWLImportsDeclaration(iri1)));
-		changes.add(new RemoveImport(ontology, factory.getOWLImportsDeclaration(iri2)));
+		changes.add(new AddImport(ontology, dataFactory.getOWLImportsDeclaration(iri1)));
+		changes.add(new RemoveImport(ontology, dataFactory.getOWLImportsDeclaration(iri2)));
 		verifyRoundTrip(changes);
 	}
 	
 	private void verifyRoundTrip(List<OWLOntologyChange> changes) throws IOException, ClassNotFoundException, OWLOntologyCreationException {
-		DocumentFactoryImpl docFactory = new DocumentFactoryImpl();
+		DocumentFactory docFactory = createDocumentFactory();
 		ChangeDocument doc = docFactory.createChangeDocument(changes, null, new OntologyDocumentRevision(r.nextInt()));
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");

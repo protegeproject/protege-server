@@ -23,6 +23,7 @@ import org.protege.owl.server.api.exception.DocumentAlreadyExistsException;
 import org.protege.owl.server.api.exception.DocumentNotFoundException;
 import org.protege.owl.server.changes.ChangeDocumentUtilities;
 import org.protege.owl.server.util.ChangeUtilities;
+import org.protege.owl.server.util.LazyCroppedChangeDocument;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -147,11 +148,7 @@ public class ServerImpl implements Server {
 		if (historyFile == null) {
 			throw new IllegalStateException("Expected to find ontology document at the location " + doc.getServerLocation());
 		}
-		ChangeDocument allChanges = ChangeDocumentUtilities.readChanges(historyFile);
-		if (end == null) {
-			end = allChanges.getEndRevision();
-		}
-		return allChanges.cropChanges(start, end);
+		return new LazyCroppedChangeDocument(historyFile, start, end);
 	}
 	
 

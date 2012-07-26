@@ -176,7 +176,7 @@
 
   <!-- Testing -->
 
-  <target name="unit.test" depends="jar,testng.compile">
+  <target name="unit.test" depends="install,testng.compile">
     <mkdir dir="${build}/test-output"/>
     <java classname="org.testng.TestNG"
           fork = "true">
@@ -197,7 +197,7 @@
     </java>
   </target>
   
-  <target name="debug.unit.test" depends="jar, testng.compile">
+  <target name="debug.unit.test" depends="install, testng.compile">
     <mkdir dir="${build}/test-output"/>
     <java classname="org.testng.TestNG"
           fork = "true">

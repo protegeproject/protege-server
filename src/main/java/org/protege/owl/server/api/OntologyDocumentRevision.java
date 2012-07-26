@@ -43,6 +43,11 @@ public class OntologyDocumentRevision implements Comparable<OntologyDocumentRevi
 	}
 	
 	@Override
+	public int hashCode() {
+		return revision + 42;
+	}
+	
+	@Override
 	public String toString() {
 		return "<Revision " + revision + ">";
 	}

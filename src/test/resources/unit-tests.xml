@@ -5,7 +5,9 @@
 	<parameter name="rmiPort" value="5100"/>
     <test name="Local Tests">
         <classes>
-            <class name="org.protege.owl.server.changes.SerializationTest"/>
+            <class name="org.protege.owl.server.changes.BasicSerializationTest"/>
+            <class name="org.protege.owl.server.changes.LazySerializationTest"/>
+            <class name="org.protege.owl.server.changes.ReallyLazySerializationTest"/>         
             <class name="org.protege.owl.server.LocalBasicServerTest"/>
             <class name="org.protege.owl.server.RemoteBasicServerTest"/>
         </classes>
