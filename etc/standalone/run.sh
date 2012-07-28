@@ -7,6 +7,6 @@ java -Xmx3500M -Xms250M \
      -DentityExpansionLimit=100000000 \
      -Dfile.encoding=UTF-8 \
      -Dorg.protege.owl.server.configuration=metaproject.owl \
-     -Djava.util.logging.SimpleFormatter.format="%4$s: %5$s%n" \
+     -Djava.util.logging.config.file=logging.properties \
      -classpath lib/felix.jar:lib/ProtegeLauncher.jar \
      org.protege.osgi.framework.Launcher
