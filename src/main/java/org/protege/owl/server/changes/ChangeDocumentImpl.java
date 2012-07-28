@@ -1,16 +1,21 @@
 package org.protege.owl.server.changes;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.OntologyDocumentRevision;
@@ -32,6 +37,7 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 @Deprecated
 public class ChangeDocumentImpl implements ChangeDocument {
 	private static final long serialVersionUID = -3842895051205436375L;
+	public static Logger logger = Logger.getLogger(ChangeDocumentImpl.class.getCanonicalName());
 	private OntologyDocumentRevision startRevision;
 	private List<OWLOntologyChange> changes;
 	private Map<OntologyDocumentRevision, String> commitComments = new TreeMap<OntologyDocumentRevision, String>();
@@ -147,7 +153,7 @@ public class ChangeDocumentImpl implements ChangeDocument {
 		out.writeObject(startRevision);
 		OWLOntology changesOntology = ChangesToOntologyVisitor.createChangesOntology(startRevision, changes, commitComments);
 		OWLOntologyManager manager = changesOntology.getOWLOntologyManager();
-		OutputStreamWriter writer = new OutputStreamWriter(out, "UTF-8");
+		Writer writer = new OutputStreamWriter(new BufferedOutputStream(out), "UTF-8");
 		try {
 			OWLXMLOntologyFormat format = new OWLXMLOntologyFormat();
 			manager.saveOntology(changesOntology, format, new WriterDocumentTarget(writer));
@@ -155,23 +161,43 @@ public class ChangeDocumentImpl implements ChangeDocument {
 		catch (OWLOntologyStorageException e) {
 			throw new OntologyStorageIOException(e);
 		}
+		finally {
+			writer.flush();
+		}
 	}
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		startRevision = (OntologyDocumentRevision) in.readObject();
-		InputStreamReader reader = new InputStreamReader(in, "UTF-8");
-		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-		OWLOntology changesOntology;
 		try {
+			startRevision = (OntologyDocumentRevision) in.readObject();
+			InputStreamReader reader = new InputStreamReader(new BufferedInputStream(in), "UTF-8");
+			OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+			OWLOntology changesOntology;
 			changesOntology = manager.loadOntologyFromOntologyDocument(new ReaderDocumentSource(reader));
+			OntologyToChangesUtil otcu = new OntologyToChangesUtil(changesOntology, startRevision);
+			otcu.initialise();
+			changes = otcu.getChanges();
+			commitComments = otcu.getCommitComments();
 		}
 		catch (OWLOntologyCreationException e) {
+			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
 			throw new OntologyCreationIOException(e);
 		}
-		OntologyToChangesUtil otcu = new OntologyToChangesUtil(changesOntology, startRevision);
-		otcu.initialise();
-		changes = otcu.getChanges();
-		commitComments = otcu.getCommitComments();
+		catch (IOException ioe) {
+			logger.log(Level.WARNING, "Exception caught deserializing change document", ioe);
+			throw ioe;
+		}
+		catch (ClassNotFoundException cnfe) {
+			logger.log(Level.WARNING, "Exception caught deserializing change document", cnfe);
+			throw cnfe;
+		}
+		catch (Error e) {
+			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
+			throw e;
+		}
+		catch (RuntimeException e) {
+			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
+			throw e;
+		}
 	}
 	
 	private void readObjectNoData() throws ObjectStreamException {
