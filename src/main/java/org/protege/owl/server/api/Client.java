@@ -11,6 +11,10 @@ public interface Client {
 	
 	String getAuthority();
 	
+	IRI getServerIRI();
+	
+	boolean isCompatible(VersionedOWLOntology versionedOntology);
+	
 	/**
 	 * This call gets the document factory.  This factory defines how the Client implements ChangeDocuments and
 	 * how the client retrieves information about a remote server associated with an ontology stored on a local disk.
