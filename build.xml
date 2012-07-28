@@ -131,6 +131,7 @@
     <mkdir dir="${server.dir}/lib"/>
     <mkdir dir="${server.dir}/plugins"/>
     <mkdir dir="${server.dir}/root"/>
+    <copy file="./logging.properties" todir="${server.dir}"/>
     <copy file="${protege.osgi}" todir="${server.dir}/lib"/>
     <copy file="${protege.launcher}" todir="${server.dir}/lib"/>
     <copy file="${protege.common}/org.apache.felix.configadmin.jar" todir="${server.bundles}"/>
@@ -224,11 +225,27 @@
     <target name = "run" depends="init">
         <java fork = "true" dir = "${server.dir}" 
               classname = "org.protege.osgi.framework.Launcher">
-            <jvmarg value = "-Xmx1500M"/>
-            <jvmarg value="-Djava.util.logging.SimpleFormatter.format=%4$s: %5$s%n"/>
+            <jvmarg value = "-Xmx3000M"/>
+            <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
         	<jvmarg value="-DentityExpansionLimit=100000000"/>
         	<jvmarg value="-Dfile.encoding=UTF-8"/>
         	<jvmarg value="-Dorg.protege.owl.server.configuration=metaproject.owl"/>
+            <classpath>
+              <pathelement path="${protege.osgi}"/>
+              <pathelement path="${protege.launcher}"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name = "debug" depends="init">
+        <java fork = "true" dir = "${server.dir}" 
+              classname = "org.protege.osgi.framework.Launcher">
+            <jvmarg value = "-Xmx3000M"/>
+            <jvmarg value="-Djava.util.logging.config.file=./logging.properties"/>
+        	<jvmarg value="-DentityExpansionLimit=100000000"/>
+        	<jvmarg value="-Dfile.encoding=UTF-8"/>
+        	<jvmarg value="-Dorg.protege.owl.server.configuration=metaproject.owl"/>
+            <jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8100,server=y,suspend=y"/>
             <classpath>
               <pathelement path="${protege.osgi}"/>
               <pathelement path="${protege.launcher}"/>
