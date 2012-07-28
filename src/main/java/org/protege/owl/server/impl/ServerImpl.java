@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.CommitWhiteBoard;
@@ -105,9 +104,10 @@ public class ServerImpl implements Server {
 			throw new IllegalStateException("directory " + dir.getServerLocation() + " does not exist on the server");
 		}
 		List<ServerDocument> documents = new ArrayList<ServerDocument>();
+		URI rootUri = root.toURI();
 		for (File child : parent.listFiles()) {
-			IRI serverIRI = null;
-			serverIRI = createIRI(dir.getServerLocation(), child.getPath());
+			String relativeChildPath = rootUri.relativize(child.toURI()).getPath();
+			IRI serverIRI = createIRI(dir.getServerLocation(), relativeChildPath);
 			if (child.isDirectory()) {
 				documents.add(new ServerDirectoryImpl(serverIRI));
 			}
