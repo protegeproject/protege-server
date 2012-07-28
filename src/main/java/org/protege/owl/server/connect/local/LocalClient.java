@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
-import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
@@ -15,10 +14,10 @@ import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.User;
 import org.protege.owl.server.api.exception.DocumentNotFoundException;
 import org.protege.owl.server.impl.DocumentFactoryImpl;
-import org.protege.owl.server.impl.RemoteOntologyDocumentImpl;
+import org.protege.owl.server.util.AbstractClient;
 import org.semanticweb.owlapi.model.IRI;
 
-public class LocalClient implements Client {
+public class LocalClient extends AbstractClient {
 	public static final String SCHEME = "local-owl2-server";
 	private User user;
 	private Server server;

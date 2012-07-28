@@ -10,7 +10,6 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.ChangeDocument;
-import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
@@ -18,9 +17,10 @@ import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.User;
 import org.protege.owl.server.impl.DocumentFactoryImpl;
+import org.protege.owl.server.util.AbstractClient;
 import org.semanticweb.owlapi.model.IRI;
 
-public class RMIClient implements Client {
+public class RMIClient extends AbstractClient {
 	public static final String SCHEME = "rmi-owl2-server";
 	
 	private Logger logger = Logger.getLogger(RMIClient.class.getCanonicalName());
@@ -57,7 +57,7 @@ public class RMIClient implements Client {
 	public String getAuthority() {
 		return host;
 	}
-
+	
 	@Override
 	public DocumentFactory getDocumentFactory() {
 		return new DocumentFactoryImpl();
