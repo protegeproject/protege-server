@@ -20,6 +20,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 public class LazyChangeDocument implements ChangeDocument {
 	private static final long serialVersionUID = -2372361709521265014L;
+	private boolean isHistoryFileTemporary = false;
 	private transient File historyFile;
 	private ChangeDocument delegate;
 	
@@ -148,7 +149,16 @@ public class LazyChangeDocument implements ChangeDocument {
 				os.close();
 			}
 			historyFile = tmpFile;
+			isHistoryFileTemporary = true;
 		}
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		if (isHistoryFileTemporary) {
+			historyFile.delete();
+		}
+		super.finalize();
 	}
 	
 }
