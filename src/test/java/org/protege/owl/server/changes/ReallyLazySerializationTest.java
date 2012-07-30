@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.impl.DocumentFactoryImpl;
@@ -20,7 +21,7 @@ public class ReallyLazySerializationTest extends AbstractSerializationTest {
 			@Override
 			public ChangeDocument createChangeDocument(
 					List<OWLOntologyChange> changes,
-					Map<OntologyDocumentRevision, String> commitComments,
+					Map<OntologyDocumentRevision, ChangeMetaData> commitComments,
 					OntologyDocumentRevision start) {
 				try {
 					ChangeDocument changeDoc = super.createChangeDocument(changes, commitComments, start);
