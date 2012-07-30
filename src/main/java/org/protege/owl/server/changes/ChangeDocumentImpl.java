@@ -3,6 +3,7 @@ package org.protege.owl.server.changes;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -80,13 +81,16 @@ public class ChangeDocumentImpl implements ChangeDocument {
 	
 	@Override
 	public ChangeDocument cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end) {
+		if (start == null) {
+			start = getStartRevision();
+		}
 		if (end == null) {
 			end = getEndRevision();
 		}
 		if (start.compareTo(getStartRevision()) < 0 || end.compareTo(getEndRevision()) > 0) {
 			throw new IllegalStateException("Cropping changes out of range");
 		}
-		List<OWLOntologyChange> subChanges = changes.subList(start.getRevision(), end.getRevision());
+		List<OWLOntologyChange> subChanges = changes.subList(start.getRevision() - startRevision.getRevision(), end.getRevision() - startRevision.getRevision());
 		Map<OntologyDocumentRevision, ChangeMetaData> newCommitComments = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
 		for (Entry<OntologyDocumentRevision, ChangeMetaData> entry : metaData.entrySet()) {
 			OntologyDocumentRevision revision = entry.getKey();
@@ -172,10 +176,10 @@ public class ChangeDocumentImpl implements ChangeDocument {
 		try {
 			startRevision = (OntologyDocumentRevision) in.readObject();
 			metaData = (Map<OntologyDocumentRevision, ChangeMetaData>) in.readObject();
-			InputStreamReader reader = new InputStreamReader(new BufferedInputStream(in), "UTF-8");
+			InputStream is = new BufferedInputStream(in);
 			OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 			OWLOntology changesOntology;
-			changesOntology = manager.loadOntologyFromOntologyDocument(new ReaderDocumentSource(reader));
+			changesOntology = manager.loadOntologyFromOntologyDocument(is);
 			OntologyToChangesUtil otcu = new OntologyToChangesUtil(changesOntology, startRevision);
 			otcu.initialise();
 			changes = otcu.getChanges();
