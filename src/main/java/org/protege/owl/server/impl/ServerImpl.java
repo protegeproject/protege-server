@@ -23,12 +23,19 @@ import org.protege.owl.server.api.exception.DocumentAlreadyExistsException;
 import org.protege.owl.server.api.exception.DocumentNotFoundException;
 import org.protege.owl.server.changes.ChangeDocumentUtilities;
 import org.protege.owl.server.util.ChangeUtilities;
-import org.protege.owl.server.util.LazyCroppedChangeDocument;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+
+
+/*
+ * ToDo Waiting for Matthew's change document work to be committed.  It is probably relevant in either case that 
+ * the format of the saved changes document does not have to be identical to the serialization of the object. 
+ * Using a different format and perhaps using multiple files will allow us to optimize - particularly the commit and getChanges calls.
+ */
+
 
 /**
  *  owlserver://hostname.org/path
@@ -149,7 +156,7 @@ public class ServerImpl implements Server {
 		if (historyFile == null) {
 			throw new IllegalStateException("Expected to find ontology document at the location " + doc.getServerLocation());
 		}
-		return new LazyCroppedChangeDocument(historyFile, start, end);
+		return ChangeDocumentUtilities.readChanges(historyFile).cropChanges(start, end);
 	}
 	
 
