@@ -1,5 +1,6 @@
 package org.protege.owl.server.util;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -135,7 +136,7 @@ public class LazyChangeDocument implements ChangeDocument {
 		else {
 			File tmpFile = File.createTempFile("LazyChangeDoc", ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
 			tmpFile.deleteOnExit();
-			OutputStream os = new FileOutputStream(tmpFile);
+			OutputStream os = new BufferedOutputStream(new FileOutputStream(tmpFile));
 			try {
 				int b;
 				while ((b = in.read()) >= 0) {
