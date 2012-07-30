@@ -1,6 +1,7 @@
 package org.protege.owl.server.util;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,16 +21,15 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 public class LazyChangeDocument implements ChangeDocument {
 	private static final long serialVersionUID = -2372361709521265014L;
-	private boolean isHistoryFileTemporary = false;
+	private OntologyDocumentRevision startRevision;
+	private OntologyDocumentRevision endRevision;
 	private transient File historyFile;
 	private ChangeDocument delegate;
 	
 	public LazyChangeDocument(ChangeDocument delegate) {
 		this.delegate = delegate;
-	}
-	
-	public LazyChangeDocument(File historyFile) {
-		this.historyFile = historyFile;
+		this.startRevision = delegate.getStartRevision();
+		this.endRevision = delegate.getEndRevision();
 	}
 	
 	public ChangeDocument getDelegate() {
@@ -57,19 +57,18 @@ public class LazyChangeDocument implements ChangeDocument {
 			catch (ClassNotFoundException cnfe) {
 				throw new RuntimeException(cnfe);
 			}
+			historyFile.delete();
 		}
 	}
 
 	@Override
 	public OntologyDocumentRevision getStartRevision() {
-		ensureDelegateLoaded();
-		return delegate.getStartRevision();
+		return startRevision;
 	}
 
 	@Override
 	public OntologyDocumentRevision getEndRevision() {
-		ensureDelegateLoaded();
-		return delegate.getEndRevision();
+		return endRevision;
 	}
 
 	@Override
@@ -110,9 +109,24 @@ public class LazyChangeDocument implements ChangeDocument {
 	}
 
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeObject(new Boolean(delegate != null));
+		out.writeObject(startRevision);
+		out.writeObject(endRevision);
 		if (delegate != null) {
-			out.writeObject(delegate);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream delegateStream = new ObjectOutputStream(baos);
+			try {
+				delegateStream.writeObject(delegate);
+			}
+			finally {
+				delegateStream.flush();
+				delegateStream.close();
+			}
+			try {
+				out.write(baos.toByteArray());
+			}
+			finally {
+				out.flush();
+			}
 		}
 		else {
 			InputStream fin = new FileInputStream(historyFile);
@@ -130,35 +144,27 @@ public class LazyChangeDocument implements ChangeDocument {
 	}
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		boolean hasDelegate = (Boolean) in.readObject();
-		if (hasDelegate) {
-			delegate = (ChangeDocument) in.readObject();
-		}
-		else {
-			File tmpFile = File.createTempFile("LazyChangeDoc", ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
-			tmpFile.deleteOnExit();
-			OutputStream os = new BufferedOutputStream(new FileOutputStream(tmpFile));
-			try {
-				int b;
-				while ((b = in.read()) >= 0) {
-					os.write(b);
-				}
+		startRevision = (OntologyDocumentRevision) in.readObject();
+		endRevision = (OntologyDocumentRevision) in.readObject();
+		File tmpFile = File.createTempFile("LazyChangeDoc", ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
+		tmpFile.deleteOnExit();
+		OutputStream os = new BufferedOutputStream(new FileOutputStream(tmpFile));
+		try {
+			int b;
+			while ((b = in.read()) >= 0) {
+				os.write(b);
 			}
-			finally {
-				os.flush();
-				os.close();
-			}
-			historyFile = tmpFile;
-			isHistoryFileTemporary = true;
 		}
+		finally {
+			os.flush();
+			os.close();
+		}
+		historyFile = tmpFile;
 	}
 	
 	@Override
 	protected void finalize() throws Throwable {
-		if (isHistoryFileTemporary) {
-			historyFile.delete();
-		}
-		super.finalize();
+		historyFile.delete();
 	}
 	
 }
