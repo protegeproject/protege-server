@@ -25,9 +25,10 @@ public class ReallyLazySerializationTest extends AbstractSerializationTest {
 					OntologyDocumentRevision start) {
 				try {
 					ChangeDocument changeDoc = super.createChangeDocument(changes, commitComments, start);
+					LazyChangeDocument lazyDoc = new LazyChangeDocument(changeDoc);
 					File historyFile = File.createTempFile("Serialization", ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
-					ChangeDocumentUtilities.writeChanges(changeDoc, historyFile);
-					return new LazyChangeDocument(historyFile);
+					ChangeDocumentUtilities.writeChanges(lazyDoc, historyFile);
+					return ChangeDocumentUtilities.readChanges(historyFile);
 				}
 				catch (IOException ioe) {
 					throw new RuntimeException(ioe);
