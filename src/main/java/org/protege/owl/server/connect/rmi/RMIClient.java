@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
@@ -94,9 +95,9 @@ public class RMIClient extends AbstractClient {
 
 	@Override
 	public void commit(RemoteOntologyDocument doc,
-			String commitComment, ChangeDocument changes)
+			            ChangeMetaData metaData, ChangeDocument changes)
 			throws RemoteException {
-		server.commit(u, doc, commitComment, changes);
+		server.commit(u, doc, metaData, changes);
 	}
 
 	@Override

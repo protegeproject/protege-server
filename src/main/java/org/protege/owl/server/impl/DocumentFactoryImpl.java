@@ -10,6 +10,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
@@ -25,9 +26,9 @@ public class DocumentFactoryImpl implements DocumentFactory {
 	@SuppressWarnings("deprecation")
 	@Override
 	public ChangeDocument createChangeDocument(List<OWLOntologyChange> changes,
-											   Map<OntologyDocumentRevision, String> commitComments, 
+											   Map<OntologyDocumentRevision, ChangeMetaData> metaData, 
 											   OntologyDocumentRevision start) {
-		return new ChangeDocumentImpl(start, changes, commitComments);
+		return new ChangeDocumentImpl(start, changes, metaData);
 	}
 	
 	@Override
@@ -73,7 +74,7 @@ public class DocumentFactoryImpl implements DocumentFactory {
 	
 	@SuppressWarnings("deprecation")
 	private ChangeDocument emptyChangeDocument() {
-		return new ChangeDocumentImpl(OntologyDocumentRevision.START_REVISION, new ArrayList<OWLOntologyChange>(), new TreeMap<OntologyDocumentRevision, String>());
+		return new ChangeDocumentImpl(OntologyDocumentRevision.START_REVISION, new ArrayList<OWLOntologyChange>(), new TreeMap<OntologyDocumentRevision, ChangeMetaData>());
 	}
 
 }

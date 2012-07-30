@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
@@ -73,10 +74,10 @@ public class LocalClient extends AbstractClient {
 	}
 
 	@Override
-	public void commit(RemoteOntologyDocument document, String commitComment,
+	public void commit(RemoteOntologyDocument document, ChangeMetaData metaData,
 					   ChangeDocument changes)
 			throws IOException {
-		server.commit(user, document, commitComment, changes);
+		server.commit(user, document, metaData, changes);
 	}
 
 	@Override

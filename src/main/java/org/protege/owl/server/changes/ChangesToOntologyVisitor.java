@@ -35,13 +35,10 @@ import org.semanticweb.owlapi.model.SetOntologyID;
 @Deprecated
 public class ChangesToOntologyVisitor implements OWLOntologyChangeVisitor {
 	
-	public static OWLOntology createChangesOntology(OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes, Map<OntologyDocumentRevision, String> commitComments) {
+	public static OWLOntology createChangesOntology(OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes) {
 		ChangesToOntologyVisitor visitor = new ChangesToOntologyVisitor(startRevision);
 		for (OWLOntologyChange change : changes) {
 			change.accept(visitor);
-		}
-		for (Entry<OntologyDocumentRevision, String> commitComment : commitComments.entrySet()) {
-			visitor.addCommitComment(commitComment.getKey(), commitComment.getValue());
 		}
 		return visitor.getUpdatedOntology();
 	}
@@ -143,12 +140,6 @@ public class ChangesToOntologyVisitor implements OWLOntologyChangeVisitor {
 		addAddRemoveAnnotation(annotationAnnotations, false);
 		addRevisionAnnotation(annotationAnnotations);
 		changes.add(new AddOntologyAnnotation(ontology, change.getAnnotation().getAnnotatedAnnotation(annotationAnnotations)));
-	}
-	
-	public void addCommitComment(OntologyDocumentRevision revision, String comment) {
-		Set<OWLAnnotation> revisionAnnotations = Collections.singleton(factory.getOWLAnnotation(ChangeOntology.REVISION, factory.getOWLLiteral(revision.getRevision())));
-		OWLAnnotation commitCommentAnnotation = factory.getOWLAnnotation(ChangeOntology.COMMIT_COMMENT, factory.getOWLLiteral(comment), revisionAnnotations);
-		changes.add(new AddOntologyAnnotation(ontology, commitCommentAnnotation));
 	}
 	
 	private void addAddRemoveAnnotation(Set<OWLAnnotation> annotations, boolean added) {

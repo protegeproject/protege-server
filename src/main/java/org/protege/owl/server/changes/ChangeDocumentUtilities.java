@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -17,7 +18,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 public class ChangeDocumentUtilities {
 	
 	public static void writeEmptyChanges(DocumentFactory factory, File historyFile) throws IOException {
-		ChangeDocument changes = factory.createChangeDocument(new ArrayList<OWLOntologyChange>(), new TreeMap<OntologyDocumentRevision, String>(), OntologyDocumentRevision.START_REVISION);
+		ChangeDocument changes = factory.createChangeDocument(new ArrayList<OWLOntologyChange>(), new TreeMap<OntologyDocumentRevision, ChangeMetaData>(), OntologyDocumentRevision.START_REVISION);
 		ChangeDocumentUtilities.writeChanges(changes, historyFile);
 	}
 

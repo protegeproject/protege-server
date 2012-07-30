@@ -41,7 +41,6 @@ public class OntologyToChangesUtil {
 	private OWLOntology changesOntology;
 	private OWLOntology fakeOntology;
 	private Map<Integer, OWLOntologyChange> changeMap = new TreeMap<Integer, OWLOntologyChange>();
-	private Map<OntologyDocumentRevision, String> commitComments = new TreeMap<OntologyDocumentRevision, String>();
 	
 	
 	public OntologyToChangesUtil(OWLOntology changesOntology, OntologyDocumentRevision startRevision) {
@@ -70,11 +69,6 @@ public class OntologyToChangesUtil {
 		}
 		return changeList;
 	}
-	
-	public Map<OntologyDocumentRevision, String> getCommitComments() {
-		return new TreeMap<OntologyDocumentRevision, String>(commitComments);
-	}
-
 
 	public void handleAxioms() {
 		for (OWLAxiom axiom : changesOntology.getAxioms()) {
@@ -119,11 +113,6 @@ public class OntologyToChangesUtil {
 				else {
 					change = new RemoveImport(fakeOntology, decl);
 				}
-			}
-			else if (annotation.getProperty().equals(ChangeOntology.COMMIT_COMMENT)) {
-				int revisionInt = getRevision(annotation.getAnnotations());
-				String comment = ((OWLLiteral) annotation.getValue()).getLiteral();
-				commitComments.put(new OntologyDocumentRevision(revisionInt), comment);
 			}
 			else {
 				OWLDataFactory dataFactory = fakeOntology.getOWLOntologyManager().getOWLDataFactory();

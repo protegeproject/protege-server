@@ -3,6 +3,7 @@ package org.protege.owl.server.impl;
 import java.io.IOException;
 
 import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.CommitWhiteBoard;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
@@ -22,8 +23,8 @@ public class CommitWhiteBoardImpl implements CommitWhiteBoard {
 	}
 
 	@Override
-	public void init(RemoteOntologyDocument doc, String commitComment,
-					 ChangeDocument changes) {
+	public void init(RemoteOntologyDocument doc, ChangeMetaData metaData,
+					  ChangeDocument changes) {
 		if (!doc.equals(workingDocument) || !changes.equals(workingClientSideChanges)) {
 			workingDocument = doc;
 			workingClientSideChanges = changes;

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -49,9 +50,9 @@ public class LazyCroppedChangeDocument implements ChangeDocument {
 		ensureDelegateExists();
 		return delegate.getEndRevision();
 	}
-	public Map<OntologyDocumentRevision, String> getComments() {
+	public Map<OntologyDocumentRevision, ChangeMetaData> getMetaData() {
 		ensureDelegateExists();
-		return delegate.getComments();
+		return delegate.getMetaData();
 	}
 	public ChangeDocument cropChanges(OntologyDocumentRevision start,
 			OntologyDocumentRevision end) {

@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.changes.ChangeDocumentUtilities;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
@@ -71,9 +71,9 @@ public class LazyChangeDocument implements ChangeDocument {
 	}
 
 	@Override
-	public Map<OntologyDocumentRevision, String> getComments() {
+	public Map<OntologyDocumentRevision, ChangeMetaData> getMetaData() {
 		ensureDelegateLoaded();
-		return delegate.getComments();
+		return delegate.getMetaData();
 	}
 
 	@Override
@@ -134,23 +134,19 @@ public class LazyChangeDocument implements ChangeDocument {
 		}
 		else {
 			File tmpFile = File.createTempFile("LazyChangeDoc", ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
+			tmpFile.deleteOnExit();
+			OutputStream os = new FileOutputStream(tmpFile);
 			try {
-				OutputStream os = new FileOutputStream(tmpFile);
-				try {
-					int b;
-					while ((b = in.read()) >= 0) {
-						os.write(b);
-					}
+				int b;
+				while ((b = in.read()) >= 0) {
+					os.write(b);
 				}
-				finally {
-					os.flush();
-					os.close();
-				}
-				delegate = ChangeDocumentUtilities.readChanges(tmpFile);
 			}
 			finally {
-				tmpFile.delete();
+				os.flush();
+				os.close();
 			}
+			historyFile = tmpFile;
 		}
 	}
 	

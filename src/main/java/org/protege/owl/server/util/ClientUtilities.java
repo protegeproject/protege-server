@@ -10,12 +10,12 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.VersionedOWLOntology;
-import org.protege.owl.server.api.exception.DocumentNotFoundException;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
@@ -29,7 +29,6 @@ import org.semanticweb.owlapi.model.OWLOntologyChangeVisitor;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyID;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
@@ -49,10 +48,10 @@ public class ClientUtilities {
 	 */
 	
 	
-	public VersionedOWLOntology createServerOntology(IRI serverIRI, String commitComment, OWLOntology ontology) throws IOException {
+	public VersionedOWLOntology createServerOntology(IRI serverIRI, ChangeMetaData metaData, OWLOntology ontology) throws IOException {
 		RemoteOntologyDocument doc = client.createRemoteOntology(serverIRI);
 		VersionedOWLOntology versionedOntology = factory.createVersionedOntology(ontology, doc, OntologyDocumentRevision.START_REVISION);
-		commit(commitComment, versionedOntology);
+		commit(metaData, versionedOntology);
 		update(versionedOntology);
 		return versionedOntology;
 	}
@@ -70,14 +69,14 @@ public class ClientUtilities {
 		return versionedOntology;
 	}
 	
-	public void commit(String commitComment, VersionedOWLOntology ontologyDoc) throws IOException {
+	public void commit(ChangeMetaData metaData, VersionedOWLOntology ontologyDoc) throws IOException {
 		RemoteOntologyDocument serverDoc = ontologyDoc.getServerDocument();
 		OntologyDocumentRevision revision = ontologyDoc.getRevision();
 		ChangeDocument baseLineChanges = getChanges(ontologyDoc, OntologyDocumentRevision.START_REVISION, ontologyDoc.getRevision());
 		OWLOntology ontology = ontologyDoc.getOntology();
 		List<OWLOntologyChange> changes = getUncommittedChanges(ontologyDoc.getOntology(), baseLineChanges.getChanges(ontology));
-		Map<OntologyDocumentRevision, String> commitComments = Collections.singletonMap(revision, commitComment);
-		client.commit(serverDoc, commitComment, factory.createChangeDocument(changes, commitComments, revision));
+		Map<OntologyDocumentRevision, ChangeMetaData> metaDataMap = Collections.singletonMap(revision, metaData);
+		client.commit(serverDoc, metaData, factory.createChangeDocument(changes, metaDataMap, revision));
 	}
 	
 	public void update(VersionedOWLOntology ontology) throws IOException {

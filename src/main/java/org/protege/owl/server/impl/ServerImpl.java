@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.CommitWhiteBoard;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
@@ -155,9 +156,9 @@ public class ServerImpl implements Server {
 
 	@Override
 	public void commit(User u, RemoteOntologyDocument doc,
-					   String commitComment,
-					   ChangeDocument changes) throws IOException {
-		commitWhiteBoard.init(doc, commitComment, changes);
+					    ChangeMetaData metaData,
+					    ChangeDocument changes) throws IOException {
+		commitWhiteBoard.init(doc, metaData, changes);
 		OWLOntology fakeOntology;
 		try {
 			fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
@@ -171,7 +172,7 @@ public class ServerImpl implements Server {
 		OntologyDocumentRevision latestRevision = fullHistory.getEndRevision();
 		List<OWLOntologyChange> clientChanges = changes.getChanges(fakeOntology);
 		List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);
-		ChangeDocument changeDocumentToAppend = factory.createChangeDocument(changesToCommit, Collections.singletonMap(latestRevision, commitComment), latestRevision);
+		ChangeDocument changeDocumentToAppend = factory.createChangeDocument(changesToCommit, Collections.singletonMap(latestRevision, metaData), latestRevision);
 		ChangeDocument fullHistoryAfterCommit = fullHistory.appendChanges(changeDocumentToAppend);
 		ChangeDocumentUtilities.writeChanges(fullHistoryAfterCommit, parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT));
 	}
