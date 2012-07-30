@@ -81,7 +81,7 @@ public interface Client {
 	 * @param revision
 	 * @param changes
 	 */
-	void commit(RemoteOntologyDocument document, String commitComment, ChangeDocument changes) throws IOException;
+	void commit(RemoteOntologyDocument document, ChangeMetaData commitComment, ChangeDocument changes) throws IOException;
 	
 	void shutdown();
 

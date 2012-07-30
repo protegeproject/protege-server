@@ -20,7 +20,7 @@ public interface Server {
 	
 	ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException;
 
-	void commit(User u, RemoteOntologyDocument doc, String commitComment, ChangeDocument changes) throws IOException;
+	void commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes) throws IOException;
 	
 	CommitWhiteBoard getCommitWhiteBoard();
 	

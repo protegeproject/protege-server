@@ -17,7 +17,7 @@ public interface DocumentFactory {
 	 * @param start
 	 * @return
 	 */
-	ChangeDocument createChangeDocument(List<OWLOntologyChange> changes, Map<OntologyDocumentRevision, String> commitComments, OntologyDocumentRevision start);
+	ChangeDocument createChangeDocument(List<OWLOntologyChange> changes, Map<OntologyDocumentRevision, ChangeMetaData> metaData, OntologyDocumentRevision start);
 	
 	boolean hasServerMetadata(OWLOntology ontology);
 

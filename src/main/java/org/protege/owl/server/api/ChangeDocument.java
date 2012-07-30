@@ -42,7 +42,7 @@ public interface ChangeDocument extends Serializable {
 	 * @param revision
 	 * @return
 	 */
-	Map<OntologyDocumentRevision, String> getComments();
+	Map<OntologyDocumentRevision, ChangeMetaData> getMetaData();
 	
 	/**
 	 * This call will return the change document obtained by restricting the set of changes from the 
