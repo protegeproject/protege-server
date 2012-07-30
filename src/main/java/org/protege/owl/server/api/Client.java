@@ -55,8 +55,7 @@ public interface Client {
 	 * <p/>
 	 * A typical pattern will be for the user to create a remote ontology document with this call and 
 	 * then commit a collection of changes filling in the remote content with the commit call.
-	 * 
-	 * @param commitComment
+	 *
 	 * @param serverIRI
 	 * @return
 	 */
