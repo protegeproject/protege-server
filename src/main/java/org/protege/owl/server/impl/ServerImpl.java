@@ -156,7 +156,7 @@ public class ServerImpl implements Server {
 		if (historyFile == null) {
 			throw new IllegalStateException("Expected to find ontology document at the location " + doc.getServerLocation());
 		}
-		return ChangeDocumentUtilities.readChanges(historyFile).cropChanges(start, end);
+		return ChangeDocumentUtilities.readChanges(factory, historyFile, start, end);
 	}
 	
 

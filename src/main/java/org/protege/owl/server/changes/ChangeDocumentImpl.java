@@ -4,10 +4,10 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -20,10 +20,10 @@ import java.util.logging.Logger;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
+import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
-import org.semanticweb.owlapi.io.ReaderDocumentSource;
 import org.semanticweb.owlapi.io.WriterDocumentTarget;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -43,11 +43,12 @@ public class ChangeDocumentImpl implements ChangeDocument {
 	private OntologyDocumentRevision startRevision;
 	private List<OWLOntologyChange> changes;
 	private Map<OntologyDocumentRevision, ChangeMetaData> metaData = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
+	private DocumentFactory documentFactory;
 
 	/*
 	 * 
 	 */
-	public ChangeDocumentImpl(OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes, Map<OntologyDocumentRevision, ChangeMetaData> metaData) {
+	public ChangeDocumentImpl(DocumentFactory documentFactory, OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes, Map<OntologyDocumentRevision, ChangeMetaData> metaData) {
 		this.startRevision = startRevision;
 		if (changes != null) {
 			this.changes = new ArrayList<OWLOntologyChange>(changes);
@@ -61,8 +62,14 @@ public class ChangeDocumentImpl implements ChangeDocument {
 		else {
 			this.metaData = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
 		}
+		this.documentFactory = documentFactory;
 	}
 
+	@Override
+	public DocumentFactory getDocumentFactory() {
+		return documentFactory;
+	}
+	
 	@Override
 	public OntologyDocumentRevision getStartRevision() {
 		return startRevision;
@@ -99,7 +106,7 @@ public class ChangeDocumentImpl implements ChangeDocument {
 				newCommitComments.put(revision, metaDataEntry);
 			}
 		}
-		return new ChangeDocumentImpl(start, subChanges, newCommitComments);
+		return new ChangeDocumentImpl(documentFactory, start, subChanges, newCommitComments);
 	}
 	
 	@Override
@@ -122,7 +129,7 @@ public class ChangeDocumentImpl implements ChangeDocument {
 		changeList.addAll(croppedNewChanges.getChanges(fakeOntology));
 		Map<OntologyDocumentRevision, ChangeMetaData> comments = new TreeMap<OntologyDocumentRevision, ChangeMetaData>(getMetaData());
 		comments.putAll(croppedNewChanges.getMetaData());
-		return new ChangeDocumentImpl(getStartRevision(), changeList, comments);
+		return new ChangeDocumentImpl(documentFactory, getStartRevision(), changeList, comments);
 	}
 
 	@Override
@@ -149,17 +156,19 @@ public class ChangeDocumentImpl implements ChangeDocument {
 	}
 	
 	@Override
-	public String toString() {
-		return "{" + startRevision.getRevision() + " --> " + getEndRevision().getRevision() + ": " + changes + "}";
-	}
-	
-
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeObject(startRevision);
-		out.writeObject(metaData);
+	public void writeChangeDocument(OutputStream out) throws IOException {
+		ObjectOutputStream oos;
+		if (out instanceof ObjectOutputStream) {
+			oos = (ObjectOutputStream) out;
+		}
+		else {
+			oos = new ObjectOutputStream(out);
+		}
+		oos.writeObject(startRevision);
+		oos.writeObject(metaData);
 		OWLOntology changesOntology = ChangesToOntologyVisitor.createChangesOntology(startRevision, changes);
 		OWLOntologyManager manager = changesOntology.getOWLOntologyManager();
-		Writer writer = new OutputStreamWriter(new BufferedOutputStream(out), "UTF-8");
+		Writer writer = new OutputStreamWriter(new BufferedOutputStream(oos), "UTF-8");
 		try {
 			OWLXMLOntologyFormat format = new OWLXMLOntologyFormat();
 			manager.saveOntology(changesOntology, format, new WriterDocumentTarget(writer));
@@ -172,38 +181,23 @@ public class ChangeDocumentImpl implements ChangeDocument {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return "{" + startRevision.getRevision() + " --> " + getEndRevision().getRevision() + ": " + changes + "}";
+	}
+	
+	
+	
+
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		writeChangeDocument(out);
+	}
+	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		try {
-			startRevision = (OntologyDocumentRevision) in.readObject();
-			metaData = (Map<OntologyDocumentRevision, ChangeMetaData>) in.readObject();
-			InputStream is = new BufferedInputStream(in);
-			OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-			OWLOntology changesOntology;
-			changesOntology = manager.loadOntologyFromOntologyDocument(is);
-			OntologyToChangesUtil otcu = new OntologyToChangesUtil(changesOntology, startRevision);
-			otcu.initialise();
-			changes = otcu.getChanges();
-		}
-		catch (OWLOntologyCreationException e) {
-			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
-			throw new OntologyCreationIOException(e);
-		}
-		catch (IOException ioe) {
-			logger.log(Level.WARNING, "Exception caught deserializing change document", ioe);
-			throw ioe;
-		}
-		catch (ClassNotFoundException cnfe) {
-			logger.log(Level.WARNING, "Exception caught deserializing change document", cnfe);
-			throw cnfe;
-		}
-		catch (Error e) {
-			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
-			throw e;
-		}
-		catch (RuntimeException e) {
-			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
-			throw e;
-		}
+	    ChangeDocumentImpl doc = (ChangeDocumentImpl) documentFactory.readChangeDocument(in, null, null);
+	    startRevision = doc.getStartRevision();
+	    changes = doc.changes;
+	    metaData = doc.metaData;
 	}
 	
 	private void readObjectNoData() throws ObjectStreamException {

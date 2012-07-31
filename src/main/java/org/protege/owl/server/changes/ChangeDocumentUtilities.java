@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -24,26 +22,24 @@ public class ChangeDocumentUtilities {
 
 
 	public static void writeChanges(ChangeDocument changes, File historyFile) throws IOException {
-		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(historyFile));
+		FileOutputStream fos = new FileOutputStream(historyFile);
 		try {
-			oos.writeObject(changes);
-			oos.flush();
+			changes.writeChangeDocument(fos);
 		}
 		finally {
-			oos.close();
+			fos.flush();
+			fos.close();
 		}
 	}
 	
-	public static ChangeDocument readChanges(File historyFile) throws IOException {
-		ChangeDocument changes;
-		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(historyFile));
+	public static ChangeDocument readChanges(DocumentFactory factory, File historyFile, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException {
+		FileInputStream fis = new FileInputStream(historyFile);
 		try {
-			changes = (ChangeDocument) ois.readObject();
+			return factory.readChangeDocument(fis, start, end);
 		}
-		catch (ClassNotFoundException e) {
-			throw new IllegalStateException("Really?!", e);
+		finally {
+			fis.close();
 		}
-		return changes;
 	}
 
 }

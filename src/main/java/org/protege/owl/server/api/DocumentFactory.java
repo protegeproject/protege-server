@@ -1,6 +1,7 @@
 package org.protege.owl.server.api;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,8 @@ public interface DocumentFactory {
 	 * @return
 	 */
 	ChangeDocument createChangeDocument(List<OWLOntologyChange> changes, Map<OntologyDocumentRevision, ChangeMetaData> metaData, OntologyDocumentRevision start);
+	
+	ChangeDocument readChangeDocument(InputStream in, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException;
 	
 	boolean hasServerMetadata(OWLOntology ontology);
 

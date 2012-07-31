@@ -1,5 +1,7 @@
 package org.protege.owl.server.api;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,8 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 public interface ChangeDocument extends Serializable {
 	public static final String CHANGE_DOCUMENT_EXTENSION = ".history";
+	
+	DocumentFactory getDocumentFactory();
 
 	/**
 	 * Get the start revision of this collection of changes.
@@ -76,4 +80,7 @@ public interface ChangeDocument extends Serializable {
 	 * @return
 	 */
 	List<OWLOntologyChange> getChanges(OWLOntology ontology);
+	
+	
+	void writeChangeDocument(OutputStream out) throws IOException;
 }
