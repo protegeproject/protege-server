@@ -22,6 +22,7 @@ import org.protege.owl.server.api.User;
 import org.protege.owl.server.api.exception.DocumentAlreadyExistsException;
 import org.protege.owl.server.api.exception.DocumentNotFoundException;
 import org.protege.owl.server.changes.ChangeDocumentUtilities;
+import org.protege.owl.server.changes.DocumentFactoryImpl;
 import org.protege.owl.server.util.ChangeUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
