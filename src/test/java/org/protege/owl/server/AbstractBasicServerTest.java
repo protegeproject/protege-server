@@ -74,8 +74,7 @@ public abstract class AbstractBasicServerTest {
 	
 	public VersionedOWLOntology loadPizza() throws IOException, OWLOntologyCreationException {
 		IRI pizzaLocation = IRI.create(testDirectory.getServerLocation().toString() + "/pizza" + ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
-		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-		OWLOntology ontology = manager.loadOntology(IRI.create(new File(PizzaVocabulary.PIZZA_LOCATION)));
+		OWLOntology ontology = PizzaVocabulary.loadPizza();
 		VersionedOWLOntology versionedOntology = clientUtilities.createServerOntology(pizzaLocation, new ChangeMetaData("A tasty pizza"), ontology);
 		return versionedOntology;
 	}

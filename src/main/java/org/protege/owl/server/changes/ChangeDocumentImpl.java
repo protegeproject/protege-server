@@ -86,14 +86,14 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	
 	@Override
 	public ChangeDocument cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end) {
-		if (start == null) {
+		if (start == null || start.compareTo(getStartRevision()) < 0) {
 			start = getStartRevision();
 		}
-		if (end == null) {
+		if (end == null || end.compareTo(getEndRevision()) > 0) {
 			end = getEndRevision();
 		}
-		if (start.compareTo(getStartRevision()) < 0 || end.compareTo(getEndRevision()) > 0) {
-			throw new IllegalStateException("Cropping changes out of range");
+		if (start.equals(getStartRevision()) && end.equals(getEndRevision())) {
+		    return this;
 		}
 		List<OWLOntologyChange> subChanges = changes.subList(start.getRevision() - startRevision.getRevision(), end.getRevision() - startRevision.getRevision());
 		Map<OntologyDocumentRevision, ChangeMetaData> newCommitComments = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();

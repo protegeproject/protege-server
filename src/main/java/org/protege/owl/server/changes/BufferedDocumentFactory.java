@@ -62,7 +62,8 @@ public class BufferedDocumentFactory implements DocumentFactory, Serializable {
 	                continue;
 	            }
 	            if (end != null && windowStart.compareTo(end) >= 0) {
-	                break;
+	                ois.readObject();
+	                continue;
 	            }
 	            if (windowStart.compareTo(endRevision) >= 0) {
 	                break;
@@ -74,7 +75,7 @@ public class BufferedDocumentFactory implements DocumentFactory, Serializable {
 	                doc = newChangeDoc;
 	            }
 	            else {
-	                doc.appendChanges(newChangeDoc);
+	                doc = doc.appendChanges(newChangeDoc);
 	            }
 	            windowStart = windowEnd;
 	        }
@@ -82,7 +83,13 @@ public class BufferedDocumentFactory implements DocumentFactory, Serializable {
 	    catch (ClassNotFoundException cnfe) {
 	        throw new IOException(cnfe);
 	    }
-	    return new BufferedChangeDocument(this, doc);
+	    if (start == null) {
+	        start = doc.getStartRevision();
+	    }
+	    if (end == null) {
+	        end = doc.getEndRevision();
+	    }
+	    return new BufferedChangeDocument(this, doc.cropChanges(start, end));
 	}
 
 	public boolean hasServerMetadata(OWLOntology ontology) {

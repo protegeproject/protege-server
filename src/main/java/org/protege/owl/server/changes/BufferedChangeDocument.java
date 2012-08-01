@@ -91,6 +91,11 @@ public class BufferedChangeDocument implements ChangeDocument, Serializable {
 	    return delegate.hashCode();
 	}
 	
+	@Override
+	public String toString() {
+	    return delegate.toString();
+	}
+	
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeObject(getDocumentFactory());
         writeChangeDocument(out);

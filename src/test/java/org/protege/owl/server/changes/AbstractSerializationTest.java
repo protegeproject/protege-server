@@ -10,10 +10,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
+import org.protege.owl.server.PizzaVocabulary;
 import org.protege.owl.server.TestVocabulary;
 import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -21,6 +24,7 @@ import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -153,6 +157,12 @@ public abstract class AbstractSerializationTest {
 		verifyRoundTrip(changes);
 	}
 	
+	@Test
+	public void testRollingCropped() throws OWLOntologyCreationException, IOException {
+	    DocumentFactory factory = createDocumentFactory();
+	    testRollingCropped(factory, 100);
+	}
+	
 	private void verifyRoundTrip(List<OWLOntologyChange> changes) throws IOException, ClassNotFoundException, OWLOntologyCreationException {
 		DocumentFactory docFactory = createDocumentFactory();
 		ChangeDocument doc = docFactory.createChangeDocument(changes, null, new OntologyDocumentRevision(r.nextInt()));
@@ -170,5 +180,37 @@ public abstract class AbstractSerializationTest {
 		Assert.assertEquals(doc, doc2);
 	}
 
+	
+    protected void testRollingCropped(DocumentFactory factory, int interval) throws OWLOntologyCreationException, IOException {
+        ChangeDocument doc = getPizzaChanges(factory);
+        OntologyDocumentRevision windowEnd;
+        for (OntologyDocumentRevision windowStart = doc.getStartRevision();
+                windowStart.compareTo(doc.getEndRevision()) < 0;
+                windowStart = windowEnd) {
+            windowEnd = windowStart.add(interval);
+            testCroppedRoundTrip(doc, windowStart, windowEnd);
+        }
+    }
+    
+    protected void testCroppedRoundTrip(ChangeDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException {
+        DocumentFactory factory = doc.getDocumentFactory();
+        File testFile = File.createTempFile("AlignmentRT", ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
+        FileOutputStream fos = new FileOutputStream(testFile);
+        doc.writeChangeDocument(fos);
+        fos.flush();
+        fos.close();
+        FileInputStream fin = new FileInputStream(testFile);
+        ChangeDocument doc2 = factory.readChangeDocument(fin, start, end);
+        Assert.assertEquals(doc2, doc.cropChanges(start, end));
+    }
+
+    protected ChangeDocument getPizzaChanges(DocumentFactory factory) throws OWLOntologyCreationException {
+        OWLOntology pizzaOntology = PizzaVocabulary.loadPizza();
+        List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
+        for (OWLAxiom axiom : pizzaOntology.getAxioms()) {
+            changes.add(new AddAxiom(pizzaOntology, axiom));
+        }
+        return factory.createChangeDocument(changes, new TreeMap<OntologyDocumentRevision, ChangeMetaData>(), OntologyDocumentRevision.START_REVISION);
+    }
 
 }

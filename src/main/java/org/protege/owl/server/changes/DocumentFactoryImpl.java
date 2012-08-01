@@ -114,7 +114,14 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 			OntologyToChangesUtil otcu = new OntologyToChangesUtil(changesOntology, startRevision);
 			otcu.initialise();
 			List<OWLOntologyChange> changes = otcu.getChanges();
-			return new ChangeDocumentImpl(this, startRevision, changes, metaData);
+			ChangeDocument fullDoc = new ChangeDocumentImpl(this, startRevision, changes, metaData);
+			if (start == null) {
+			    start = fullDoc.getStartRevision();
+			}
+			if (end == null) {
+			    end = fullDoc.getEndRevision();
+			}
+			return fullDoc.cropChanges(start, end)    ;
 		}
 		catch (OWLOntologyCreationException e) {
 			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
