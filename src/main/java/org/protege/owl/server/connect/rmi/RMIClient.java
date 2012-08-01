@@ -17,7 +17,7 @@ import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.User;
-import org.protege.owl.server.impl.DocumentFactoryImpl;
+import org.protege.owl.server.changes.DocumentFactoryImpl;
 import org.protege.owl.server.util.AbstractClient;
 import org.semanticweb.owlapi.model.IRI;
 
