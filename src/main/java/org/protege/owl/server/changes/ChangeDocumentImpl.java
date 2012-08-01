@@ -1,21 +1,19 @@
 package org.protege.owl.server.changes;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.ChangeDocument;
@@ -37,7 +35,7 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
  * @deprecated replace with Matthew's binary serialization format.
  */
 @Deprecated
-public class ChangeDocumentImpl implements ChangeDocument {
+public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	private static final long serialVersionUID = -3842895051205436375L;
 	public static Logger logger = Logger.getLogger(ChangeDocumentImpl.class.getCanonicalName());
 	private OntologyDocumentRevision startRevision;
@@ -190,10 +188,12 @@ public class ChangeDocumentImpl implements ChangeDocument {
 	
 
 	private void writeObject(ObjectOutputStream out) throws IOException {
+	    out.writeObject(getDocumentFactory());
 		writeChangeDocument(out);
 	}
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+	    documentFactory = (DocumentFactory) in.readObject();
 	    ChangeDocumentImpl doc = (ChangeDocumentImpl) documentFactory.readChangeDocument(in, null, null);
 	    startRevision = doc.getStartRevision();
 	    changes = doc.changes;
