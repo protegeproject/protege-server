@@ -2,8 +2,11 @@ package org.protege.owl.server.changes;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamException;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -13,8 +16,9 @@ import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
-public class BufferedChangeDocument implements ChangeDocument {
-	private ChangeDocument delegate;
+public class BufferedChangeDocument implements ChangeDocument, Serializable {
+    private static final long serialVersionUID = 1345665898488726397L;
+    private transient ChangeDocument delegate;
 	private BufferedDocumentFactory factory;
 	
 	public BufferedChangeDocument(BufferedDocumentFactory factory, ChangeDocument delegate) {
@@ -73,6 +77,20 @@ public class BufferedChangeDocument implements ChangeDocument {
 	    }
 	}
 	
-	
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.writeObject(getDocumentFactory());
+        writeChangeDocument(out);
+    }
+    
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        factory = (BufferedDocumentFactory) in.readObject();
+        BufferedChangeDocument doc = (BufferedChangeDocument) factory.readChangeDocument(in, null, null);
+        delegate = doc.delegate;
+    }
+    
+    @SuppressWarnings("unused")
+    private void readObjectNoData() throws ObjectStreamException {
+        throw new IllegalStateException("huh?");
+    }
 
 }
