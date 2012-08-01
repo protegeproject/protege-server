@@ -34,7 +34,7 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 		return new File(dir, ".owlserver");
 	}
 	
-    static File getBackingStore(OWLOntology ontology) {
+    static public File getBackingStore(OWLOntology ontology) {
 		OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		IRI documentLocation = manager.getOntologyDocumentIRI(ontology);
 		if (documentLocation.getScheme().equals("file")) {
