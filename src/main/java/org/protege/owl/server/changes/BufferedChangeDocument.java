@@ -79,6 +79,7 @@ public class BufferedChangeDocument implements ChangeDocument, Serializable {
 	        cropChanges(windowStart, windowEnd).writeChangeDocument(baos);
 	        oos.writeObject(baos.toByteArray());
 	    }
+	    oos.flush();
 	}
 	
 	@Override

@@ -32,7 +32,7 @@ public class BufferedSerializationTest extends AbstractSerializationTest {
     
     // I have some additional tests to add for the BufferedDocumentFactory...
     
-    @Test
+
     public void testTestConfiguration() throws OWLOntologyCreationException {
         ChangeDocument doc = getPizzaChanges(createDocumentFactory());
         Assert.assertTrue(doc.getEndRevision().getRevision() - doc.getStartRevision().getRevision() > 3 * prime1 * prime2);
