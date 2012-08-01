@@ -108,9 +108,9 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 			OntologyDocumentRevision startRevision = (OntologyDocumentRevision) ois.readObject();
 			@SuppressWarnings("unchecked")
 			Map<OntologyDocumentRevision, ChangeMetaData> metaData = (Map<OntologyDocumentRevision, ChangeMetaData>) ois.readObject();
-			InputStream is = new BufferedInputStream(ois);
-			OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-			OWLOntology changesOntology = manager.loadOntologyFromOntologyDocument(is);
+			
+
+			OWLOntology changesOntology = readOntology(ois);
 			OntologyToChangesUtil otcu = new OntologyToChangesUtil(changesOntology, startRevision);
 			otcu.initialise();
 			List<OWLOntologyChange> changes = otcu.getChanges();
@@ -124,18 +124,30 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 			logger.log(Level.WARNING, "Exception caught deserializing change document", ioe);
 			throw ioe;
 		}
-		catch (ClassNotFoundException cnfe) {
-			logger.log(Level.WARNING, "Exception caught deserializing change document", cnfe);
-			throw new IOException(cnfe);
+		catch (Exception e) {
+			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
+			throw new IOException(e);
 		}
 		catch (Error e) {
 			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
 			throw e;
 		}
-		catch (RuntimeException e) {
-			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
-			throw e;
-		}
+	}
+	
+	/*
+	 * The reason that the parser is getting wired in here is that the default implementation copies the stream to memory.
+	 * We have run out of memory doing this even for the NCI Thesaurus.
+	 */
+	private OWLOntology readOntology(InputStream providedInputStream) throws OWLOntologyCreationException, ParserConfigurationException, SAXException, IOException {
+        InputStream is = new UncloseableInputStream(new BufferedInputStream(providedInputStream));
+        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+        OWLOntology changesOntology = manager.createOntology();
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        SAXParser parser = factory.newSAXParser();
+        OWLXMLParserHandler handler = new OWLXMLParserHandler(changesOntology, new OWLOntologyLoaderConfiguration());
+        parser.parse(is, handler);
+        return changesOntology;
 	}
 	
 	@SuppressWarnings("deprecation")
