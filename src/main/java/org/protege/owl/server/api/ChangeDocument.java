@@ -19,7 +19,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
  *
  */
 
-public interface ChangeDocument extends Serializable {
+public interface ChangeDocument {
 	public static final String CHANGE_DOCUMENT_EXTENSION = ".history";
 	
 	DocumentFactory getDocumentFactory();
