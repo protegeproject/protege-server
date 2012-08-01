@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +17,9 @@ import org.protege.owl.server.api.VersionedOWLOntology;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
-public class BufferedDocumentFactory implements DocumentFactory {
-	private int bufferSize = 1000;
+public class BufferedDocumentFactory implements DocumentFactory, Serializable {
+    private static final long serialVersionUID = -416185075845956547L;
+    private int bufferSize = 1000;
 	private DocumentFactory factory;
 	
 	public BufferedDocumentFactory(DocumentFactory factory) {
@@ -38,8 +40,8 @@ public class BufferedDocumentFactory implements DocumentFactory {
 		return new BufferedChangeDocument(this, factory.createChangeDocument(changes, metaData, start));
 	}
 
-	public ChangeDocument readChangeDocument(InputStream in,
-	                                         OntologyDocumentRevision start, OntologyDocumentRevision end)
+	public BufferedChangeDocument readChangeDocument(InputStream in,
+	                                                  OntologyDocumentRevision start, OntologyDocumentRevision end)
 	                                                 throws IOException {
         ChangeDocument doc = null;
 	    try {
@@ -75,7 +77,7 @@ public class BufferedDocumentFactory implements DocumentFactory {
 	    catch (ClassNotFoundException cnfe) {
 	        throw new IOException(cnfe);
 	    }
-	    return doc;
+	    return new BufferedChangeDocument(this, doc);
 	}
 
 	public boolean hasServerMetadata(OWLOntology ontology) {
@@ -95,8 +97,6 @@ public class BufferedDocumentFactory implements DocumentFactory {
 				                                                             serverDocument,
 	          	 									                         revision));
 	}
-	
-	
 	
 	
 }
