@@ -65,16 +65,30 @@ public class BufferedChangeDocument implements ChangeDocument, Serializable {
 	        oos = new ObjectOutputStream(out);
 	    }
 	    oos.writeObject(delegate.getStartRevision());
+	    oos.writeObject(delegate.getEndRevision());
 	    oos.writeInt(factory.getBufferSize());
 	    OntologyDocumentRevision windowEnd;
 	    for (OntologyDocumentRevision windowStart = delegate.getStartRevision();
 	            windowStart.compareTo(delegate.getEndRevision()) < 0;
 	            windowStart = windowEnd) {
 	        windowEnd = windowStart.add(factory.getBufferSize());
+	        if (windowEnd.compareTo(getEndRevision()) > 0) {
+	            windowEnd = getEndRevision();
+	        }
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        cropChanges(windowStart, windowEnd).writeChangeDocument(baos);
 	        oos.writeObject(baos.toByteArray());
 	    }
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+	    return delegate.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+	    return delegate.hashCode();
 	}
 	
     private void writeObject(ObjectOutputStream out) throws IOException {

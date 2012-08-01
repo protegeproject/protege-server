@@ -53,14 +53,18 @@ public class BufferedDocumentFactory implements DocumentFactory, Serializable {
 	            ois = new ObjectInputStream(in);
 	        }
 	        OntologyDocumentRevision windowStart = (OntologyDocumentRevision) ois.readObject();
+	        OntologyDocumentRevision endRevision = (OntologyDocumentRevision) ois.readObject();
 	        int myBufferSize = ois.readInt();
 	        while (true) {
 	            OntologyDocumentRevision windowEnd = windowStart.add(myBufferSize);
-	            if (start != null || windowEnd.compareTo(start) <= 0) {
+	            if (start != null && windowEnd.compareTo(start) <= 0) {
 	                ois.readObject();
 	                continue;
 	            }
-	            if (end != null || windowStart.compareTo(end) >= 0) {
+	            if (end != null && windowStart.compareTo(end) >= 0) {
+	                break;
+	            }
+	            if (windowStart.compareTo(endRevision) >= 0) {
 	                break;
 	            }
 	            byte[] array = (byte[]) ois.readObject();
@@ -72,6 +76,7 @@ public class BufferedDocumentFactory implements DocumentFactory, Serializable {
 	            else {
 	                doc.appendChanges(newChangeDoc);
 	            }
+	            windowStart = windowEnd;
 	        }
 	    }
 	    catch (ClassNotFoundException cnfe) {
