@@ -77,7 +77,8 @@ public class BufferedChangeDocument implements ChangeDocument, Serializable {
 	        }
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	        cropChanges(windowStart, windowEnd).writeChangeDocument(baos);
-	        oos.writeObject(baos.toByteArray());
+	        oos.writeObject((Integer) baos.toByteArray().length);
+	        oos.write(baos.toByteArray());
 	    }
 	    oos.flush();
 	}
