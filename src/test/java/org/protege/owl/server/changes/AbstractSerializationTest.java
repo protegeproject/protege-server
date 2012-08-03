@@ -165,7 +165,7 @@ public abstract class AbstractSerializationTest {
 	
 	private void verifyRoundTrip(List<OWLOntologyChange> changes) throws IOException, ClassNotFoundException, OWLOntologyCreationException {
 		DocumentFactory docFactory = createDocumentFactory();
-		ChangeDocument doc = docFactory.createChangeDocument(changes, null, new OntologyDocumentRevision(r.nextInt()));
+		ChangeDocument doc = docFactory.createChangeDocument(changes, null, new OntologyDocumentRevision(r.nextInt(500)));
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");
 		logs.info("Using file " + tmp);
