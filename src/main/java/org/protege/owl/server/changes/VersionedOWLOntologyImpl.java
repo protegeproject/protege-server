@@ -46,16 +46,19 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 	private RemoteOntologyDocument serverDocument;
 	private OntologyDocumentRevision revision;
 	private ChangeDocument localHistory;
+	private ChangeDocument committedChanges;
 	
 	
 	public VersionedOWLOntologyImpl(OWLOntology ontology,
 								    RemoteOntologyDocument serverDocument,
 								    OntologyDocumentRevision revision,
-								    ChangeDocument localHistory) {
+								    ChangeDocument localHistory,
+								    ChangeDocument committedChanges) {
 		this.ontology = ontology;
 		this.serverDocument = serverDocument;
 		this.revision = revision;
 		this.localHistory = localHistory;
+		this.committedChanges = committedChanges;
 	}
 
 	@Override
@@ -77,6 +80,16 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 	@Override
 	public void appendLocalHistory(ChangeDocument changes) {
 		localHistory = localHistory.appendChanges(changes);
+	}
+	
+	@Override
+	public ChangeDocument getCommittedChanges() {
+	    return committedChanges;
+	}
+	
+	@Override
+	public void setCommittedChanges(ChangeDocument commits) {
+	    this.committedChanges = commits;
 	}
 	
 	@Override

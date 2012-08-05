@@ -40,6 +40,12 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
     private static final long serialVersionUID = -4952738108103836430L;
     public static Logger logger = Logger.getLogger(DocumentFactoryImpl.class.getCanonicalName());
 	
+    @Override
+    @SuppressWarnings("deprecation")
+    public ChangeDocument createEmptyChangeDocument(OntologyDocumentRevision revision) {
+        return new ChangeDocumentImpl(this, revision, new ArrayList<OWLOntologyChange>(), new TreeMap<OntologyDocumentRevision, ChangeMetaData>());
+    }
+    
 	@SuppressWarnings("deprecation")
 	@Override
 	public ChangeDocument createChangeDocument(List<OWLOntologyChange> changes,
@@ -52,8 +58,8 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	public VersionedOWLOntology createVersionedOntology(OWLOntology ontology,
 													    RemoteOntologyDocument serverDocument,
 													    OntologyDocumentRevision revision) {
-		ChangeDocument localChanges = emptyChangeDocument();
-		return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges);
+		ChangeDocument localChanges = createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION);
+		return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges, createEmptyChangeDocument(revision));
 	}
 	
 	@Override
@@ -84,9 +90,9 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 			localChanges = ChangeDocumentUtilities.readChanges(this, historyFile, null, null);
 		}
 		else {
-			localChanges = emptyChangeDocument();
+			localChanges = createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION);
 		}
-		return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges);
+		return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges, createEmptyChangeDocument(revision));
 	}
 	
 	/*
@@ -156,9 +162,6 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
         return changesOntology;
 	}
 	
-	@SuppressWarnings("deprecation")
-	private ChangeDocument emptyChangeDocument() {
-		return new ChangeDocumentImpl(this, OntologyDocumentRevision.START_REVISION, new ArrayList<OWLOntologyChange>(), new TreeMap<OntologyDocumentRevision, ChangeMetaData>());
-	}
+
 
 }

@@ -9,6 +9,8 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 public interface DocumentFactory {
+    
+    ChangeDocument createEmptyChangeDocument(OntologyDocumentRevision revision);
 	
 	/**
 	 * Create a change document for the list of changes and the commit comments.

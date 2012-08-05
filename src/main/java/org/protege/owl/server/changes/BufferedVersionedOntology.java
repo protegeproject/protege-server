@@ -21,16 +21,29 @@ public class BufferedVersionedOntology implements VersionedOWLOntology {
 		return vont.getOntology();
 	}
 
+    @Override
 	public RemoteOntologyDocument getServerDocument() {
 		return vont.getServerDocument();
 	}
 
+    @Override
 	public ChangeDocument getLocalHistory() {
 		return new BufferedChangeDocument(factory, vont.getLocalHistory());
 	}
 
+    @Override
 	public void appendLocalHistory(ChangeDocument changes) {
 		vont.appendLocalHistory(changes);
+	}
+	
+	@Override
+	public ChangeDocument getCommittedChanges() {
+	    return vont.getCommittedChanges();
+	}
+	
+	@Override
+	public void setCommittedChanges(ChangeDocument commits) {
+	    vont.setCommittedChanges(commits);
 	}
 
 	public OntologyDocumentRevision getRevision() {

@@ -37,6 +37,11 @@ public class BufferedDocumentFactory implements DocumentFactory, Serializable {
 	public void setBufferSize(int bufferSize) {
 		this.bufferSize = bufferSize;
 	}
+	
+	@Override
+	public ChangeDocument createEmptyChangeDocument(OntologyDocumentRevision revision) {
+	    return new BufferedChangeDocument(this, factory.createEmptyChangeDocument(revision));
+	}
 
 	public ChangeDocument createChangeDocument(List<OWLOntologyChange> changes,
 											   Map<OntologyDocumentRevision, ChangeMetaData> metaData,
