@@ -27,7 +27,6 @@ import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.VersionedOWLOntology;
 import org.protege.owl.server.impl.RemoteOntologyDocumentImpl;
-import org.protege.owl.server.impl.VersionedOWLOntologyImpl;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
