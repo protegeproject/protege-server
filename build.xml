@@ -218,7 +218,7 @@
       <jvmarg value="-Djava.util.logging.config.file=./logging.properties"/>
       <jvmarg value="-Djava.util.logging.SimpleFormatter.format=%4$s: %5$s%n"/>
       <jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8100,server=y,suspend=y"/>
-      <arg    value="src/test/resources/unit-tests.xml"/>
+      <arg    value="src/test/resources/debug-unit-tests.xml"/>
       <arg    value="-d"/>
       <arg    value="${build}/test-output"/>
     </java>

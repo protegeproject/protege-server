@@ -32,7 +32,7 @@ public class PizzaVocabulary {
 		CHEESE_TOPPING = factory.getOWLClass(IRI.create(PIZZA_NS + "#CheeseTopping"));
 		CHEESEY_PIZZA = factory.getOWLClass(IRI.create(PIZZA_NS + "#CheeseyPizza"));
 		PIZZA = factory.getOWLClass(IRI.create(PIZZA_NS + "#Pizza"));
-		TOMATO_TOPPING = factory.getOWLClass(IRI.create(PIZZA_NS + "TomatoTopping"));
+		TOMATO_TOPPING = factory.getOWLClass(IRI.create(PIZZA_NS + "#TomatoTopping"));
 		
 		HAS_TOPPING = factory.getOWLObjectProperty(IRI.create(PIZZA_NS + "#hasTopping"));
 		

@@ -74,8 +74,47 @@ public abstract class AbstractBasicServerTest {
 		Assert.assertEquals(PizzaVocabulary.CHEESEY_PIZZA.getEquivalentClasses(ontology2).size(), 1);
 	}
 	
+	   @Test
+	    public void testBackAndForthNoUpdate() throws IOException, OWLOntologyCreationException {
+	        VersionedOWLOntology versionedPizza1 = loadPizza();
+	        OWLOntology ontology1 = versionedPizza1.getOntology();
+	        
+	        Client client2 = createClient();
+	        ClientUtilities client2Utilities = new ClientUtilities(client2);
+	        VersionedOWLOntology versionedPizza2 = client2Utilities.loadOntology(OWLManager.createOWLOntologyManager(), versionedPizza1.getServerDocument());
+	        OWLOntology ontology2 = versionedPizza2.getOntology();
+	        
+	        Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
+	        Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
+	        
+	        List<OWLOntologyChange> changes1 = new ArrayList<OWLOntologyChange>();
+	        changes1.add(new RemoveAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
+	        changes1.add(new AddAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
+	        ontology1.getOWLOntologyManager().applyChanges(changes1);
+	        clientUtilities.commit(new ChangeMetaData("back"), versionedPizza1);
+	        Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 1);
+	        Assert.assertEquals(versionedPizza1.getCommittedChanges().get(0).size(), 2);
+	        
+	        client2Utilities.update(versionedPizza2);
+	        Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
+	        Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
+
+	        Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 1);
+	        List<OWLOntologyChange> changes2 = new ArrayList<OWLOntologyChange>();
+	        changes2.add(new RemoveAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
+	        changes2.add(new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
+	        ontology1.getOWLOntologyManager().applyChanges(changes2);
+	        clientUtilities.commit(new ChangeMetaData("forth"), versionedPizza1);
+	        Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 2);
+	        Assert.assertEquals(versionedPizza1.getCommittedChanges().get(1).size(), 2);
+	        
+	        client2Utilities.update(versionedPizza2);
+	        Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
+	        Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));      
+	    }
+	
 	@Test
-	public void testBackAndForth() throws IOException, OWLOntologyCreationException {
+	public void testBackAndForthWithUpdate() throws IOException, OWLOntologyCreationException {
 	    VersionedOWLOntology versionedPizza1 = loadPizza();
 	    OWLOntology ontology1 = versionedPizza1.getOntology();
 	    
@@ -92,7 +131,8 @@ public abstract class AbstractBasicServerTest {
 	    changes1.add(new AddAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 	    ontology1.getOWLOntologyManager().applyChanges(changes1);
 	    clientUtilities.commit(new ChangeMetaData("back"), versionedPizza1);
-	    Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 2);
+	    Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 1);
+        Assert.assertEquals(versionedPizza1.getCommittedChanges().get(0).size(), 2);
 	    
 	    client2Utilities.update(versionedPizza2);
 	    Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
@@ -105,6 +145,7 @@ public abstract class AbstractBasicServerTest {
 	    changes2.add(new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	    ontology1.getOWLOntologyManager().applyChanges(changes2);
 	    clientUtilities.commit(new ChangeMetaData("forth"), versionedPizza1);
+	    Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 1);
 	    
 	    client2Utilities.update(versionedPizza2);
         Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));

@@ -75,7 +75,7 @@ public class ClientUtilities {
 	public void commit(ChangeMetaData metaData, VersionedOWLOntology ontologyDoc) throws IOException {
 		RemoteOntologyDocument serverDoc = ontologyDoc.getServerDocument();
 		OntologyDocumentRevision revision = ontologyDoc.getRevision();
-		ChangeDocument serverHistory = getChanges(ontologyDoc, OntologyDocumentRevision.START_REVISION, ontologyDoc.getRevision());
+		ChangeDocument serverHistory = getChanges(ontologyDoc, OntologyDocumentRevision.START_REVISION, revision);
         OWLOntology ontology = ontologyDoc.getOntology();
 		List<OWLOntologyChange> baselineHistory = serverHistory.getChanges(ontology);
 		for (ChangeDocument alreadyCommitted : ontologyDoc.getCommittedChanges()) {
@@ -115,7 +115,7 @@ public class ClientUtilities {
 		openOntology.setRevision(updates.getEndRevision());
 		List<ChangeDocument> committedChanges = new ArrayList<ChangeDocument>();
 		for (ChangeDocument committedChange : openOntology.getCommittedChanges()) {
-		    if (committedChange.getEndRevision().compareTo(updates.getEndRevision()) >= 0) {
+		    if (committedChange.getEndRevision().compareTo(updates.getEndRevision()) > 0) {
 		        committedChanges.add(committedChange.cropChanges(updates.getEndRevision(), null));
 		    }
 		}

@@ -118,7 +118,6 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 		if (additionalChanges.getStartRevision().compareTo(getEndRevision()) > 0) {
 			throw new IllegalArgumentException("Changes could not be merged because there was a gap in the change histories");
 		}
-		ChangeDocument croppedNewChanges = additionalChanges.cropChanges(getEndRevision(), additionalChanges.getEndRevision());
 		OWLOntology fakeOntology;
 		try {
 			fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
@@ -126,12 +125,19 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 		catch (OWLOntologyCreationException e) {
 			throw new RuntimeException("This really shouldn't happen!", e);
 		}
-		List<OWLOntologyChange> changeList = new ArrayList<OWLOntologyChange>(getChanges(fakeOntology));
-		changeList.addAll(croppedNewChanges.getChanges(fakeOntology));
-		Map<OntologyDocumentRevision, ChangeMetaData> comments = new TreeMap<OntologyDocumentRevision, ChangeMetaData>(getMetaData());
-		comments.putAll(croppedNewChanges.getMetaData());
-		return new ChangeDocumentImpl(documentFactory, getStartRevision(), changeList, comments);
+		ChangeDocumentImpl newDoc = new ChangeDocumentImpl(documentFactory, startRevision, changes, metaData);
+		SortedMap<OntologyDocumentRevision, ChangeMetaData> additionalMetaData = additionalChanges.getMetaData();
+		for (OntologyDocumentRevision revision = newDoc.getEndRevision();
+		        additionalChanges.getEndRevision().compareTo(revision) > 0;
+		        revision = revision.next()) {
+		    if (additionalMetaData.containsKey(revision)) {
+		        newDoc.metaData.put(revision, additionalMetaData.get(revision));
+		    }
+		    newDoc.changes.addAll(additionalChanges.cropChanges(revision, revision.next()).getChanges(fakeOntology));
+		}
+		return newDoc;
 	}
+
 
 	@Override
 	public List<OWLOntologyChange> getChanges(OWLOntology ontology) {
