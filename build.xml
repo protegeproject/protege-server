@@ -1,172 +1,260 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- ====================================================================== 
-     Mar 23, 2010 11:32:47 PM                                                        
+<?xml version = "1.0" encoding = "utf-8"?>
+<project name = "OWL Ontology Server Project" default = "install" basedir = ".">    
 
-    Initial build file for the protege owlapi server project.
-                   
-     tredmond                                                                
-     ====================================================================== -->
-<project name="owl api server" default="jar">
-    <property file="local.properties"/> <property environment="env"/>
-    <property name = "protege.home" location="${env.PROTEGE_HOME}"/>
-    <property file = "${protege.home}/build.properties"/>
-    
-    <property name = "protege.common"    location="${protege.home}/bundles"/>
-    <property name = "protege.plugins"   location="${protege.home}/plugins"/>
+  <property environment="env"/>
+  <property name = "protege.home"      location="${env.PROTEGE_HOME}"/>
+  <property file = "${protege.home}/build.properties"/>
+  
+  <property file="local.properties"/>
+  <property file="version.properties"/>
+  
+  <property name = "bundlor.home"      location="${env.BUNDLOR_HOME}"/>
+  
+  <property name = "plugin"          value = "org.protege.owl.server"/>
+  
+  
+  <property name = "src"               location = "./src/main/java"/>
+  <property name = "testng.src"        location = "./src/test/java"/>
+  <property name = "build"             location = "./build"/>
+  <property name = "classes"           location = "${build}/classes"/>
+  <property name = "server.dir"        location = "${build}/server"/>
+  <property name = "server.bundles"    location = "${server.dir}/bundles"/>
+  <property name = "testng.classes"    location = "${build}/testng.classes"/>
+  <property name = "manifest"          location = "${build}/manifest.mf"/>
+  <property name = "manifest.bundlor"  location = "./META-INF/manifest.bundlor"/>
+  
+  <property name = "lib.testng"        location = "./tools/testng-5.14.7.jar"/>
+  <property name = "lib.antlr"         location = "./tools/antlr-3.4-complete-no-antlrv2.jar"/>
+  
+  <taskdef name="check.dependencies"
+  	       classname="org.protege.ant.ProtegeDependencies">
+    <classpath>
+	  <pathelement location="${dev.tools}"/>
+    </classpath>
+  </taskdef>
+  
+  
+  <target name = "init">
+    <echo message="**********************************************************"/>
+	   <echo message="Using Protege Home = ${protege.home}"/>
+    <echo message="Using Java Version = ${ant.java.version}" />
+    <echo message="**********************************************************"/>
+    <tstamp>
+      <format property="build.time" pattern="yyyy_MM_dd_hhmm"/>
+    </tstamp>
+    <property name="bundle.version" 
+              value="${major.version}.${minor.version}.${micro.version}.${build.time}"/>
+    <mkdir dir = "${build}"/>
+   	<mkdir dir = "${testng.classes}"/>
+    <mkdir dir = "${classes}"/>
+    <mkdir dir = "${server.dir}"/>
+    <mkdir dir="${server.bundles}"/>
+    <condition property="use.bundlor">
+      <and>
+        <available file="${bundlor.home}"     type = "dir"/>
+        <available file="${manifest.bundlor}" type = "file"/>
+      </and>
+    </condition>
+  </target>  
+  
+  
+  <target name="checkProtegeLibsAndReport">
+    <check.dependencies>
+      <property name="services" location="${protege.common}/org.apache.felix.scr.jar"/>
+      <property name="owl.lib"  location="${protege.plugins}/org.semanticweb.owl.owlapi.jar"/>
+    </check.dependencies>
+    <path id = "project.classpath">    
+      <pathelement location="${protege.osgi}"/>
+      <pathelement location="${common.lib}"/>
+      <pathelement location="${protege.lib}"/>
+      <pathelement location="${equinox.common}"/>
+      <pathelement location="${equinox.registry}"/>
+      <pathelement location="${owl.lib}"/>
+    </path>
+  </target>
+  
+  
+  <target name = "compile" depends="init,checkProtegeLibsAndReport">
+    <javac srcdir = "${src}"
+           destdir = "${classes}" 
+           debug="on"
+           includeAntRuntime="false">
+      <classpath refid = "project.classpath"/>  
+    </javac>
+    <rmic base="${classes}"
+          classname="org.protege.owl.server.connect.rmi.RemoteServerImpl">
+      <classpath refid = "project.classpath"/>  
+    </rmic>
+  </target>
+  
+  <target name = "testng.compile" depends="init,checkProtegeLibsAndReport">
+    <javac srcdir = "${testng.src}"
+           destdir = "${testng.classes}" 
+           debug="on"
+           includeAntRuntime="false">
+      <classpath>
+        <pathelement path="${classes}"/>
+        <pathelement path="${lib.testng}"/>
+        <pathelement path="${protege.osgi}"/>
+        <pathelement path="${protege.launcher}"/>
+        <path refid="project.classpath"/>
+      </classpath>
+    </javac>
+  </target>
+  
+  
+  <target name="use.existing.manifest" depends="init" unless="use.bundlor">
+    <copy tofile="${manifest}" 
+          file="META-INF/MANIFEST.MF" overwrite="true"/>
+    <manifest file="${manifest}" 
+              mode = "update">
+      <attribute name="Built-By" value = "${user.name}"/>
+      <attribute name="Bundle-Version" value="${bundle.version}"/>
+    </manifest>
+  </target>
+  
+  <target name="bundlor.manifest" depends="compile" if="use.bundlor">
+    <java classname="org.eclipse.virgo.bundlor.commandline.Bundlor"
+          failonerror="true" fork="true">
+      <classpath>
+        <fileset dir="${bundlor.home}/plugins" includes="*.jar"/>
+      </classpath>
+      <jvmarg value="-Dbundle.version=${bundle.version}"/>
+      <jvmarg value="-Duser.name=${user.name}"/>
+      <jvmarg value="-Dplugin=${plugin}"/>
+      <arg value = "-i"/> <arg value="${classes}"/>
+      <arg value = "-m"/> <arg value="./META-INF/manifest.bundlor"/>
+      <arg value = "-o"/> <arg value = "."/>
+    </java>
+    <copy tofile="${manifest}" 
+          file="META-INF/MANIFEST.MF" overwrite="true"/>
+  </target>
 
-    <property name="editor.lib"          location="${protege.plugins}/org.protege.editor.owl.jar"/> 
-    <property name="owl.lib"             location="${protege.plugins}/org.semanticweb.owl.owlapi.jar"/>
-    <property name="common.lib"          location="${protege.common}/org.protege.common.jar"/>
-    <property name="code.gen.lib"        location="${protege.plugins}/org.protege.editor.owl.codegeneration.jar"/>
 
-    <property name="src"        location="./src/main/java"/>
-    <property name="build"      location="./build"/>
-	<property name="gensrc"     location="${build}/src"/>
-    <property name="genlib"     location="${build}/lib"/>
-    <property name="classes"    location="${build}/classes"/>
-    <property name="plugin"     value="org.protege.owl.server"/>
+  <target name="setup.server.framework">
+    <mkdir dir="${server.dir}/lib"/>
+    <mkdir dir="${server.dir}/plugins"/>
+    <mkdir dir="${server.dir}/root"/>
+    <copy file="./logging.properties" todir="${server.dir}"/>
+    <copy file="${protege.osgi}" todir="${server.dir}/lib"/>
+    <copy file="${protege.launcher}" todir="${server.dir}/lib"/>
+    <copy file="${protege.common}/org.apache.felix.configadmin.jar" todir="${server.bundles}"/>
+    <copy file="${protege.common}/org.apache.felix.scr.jar" todir="${server.bundles}"/>
+    <copy file="${protege.plugins}/org.semanticweb.owl.owlapi.jar" todir="${server.bundles}"/>
+    <copy todir="${server.dir}">
+      <fileset dir="./etc/standalone"/>
+    </copy>
+  </target>
 
-    <!-- ============================================================= -->
-    <!--             Configuring the Compile Classpath                 -->
-    <!-- ============================================================= -->
-
-
-    <target name="checkProtegeLibsAndReport" depends="checkProtegeLibs"
-            unless="libs.found">
-      <echo message="Missing protege libraries.  You need to set "/>
-      <echo message="the PROTEGE_HOME environment variable to a"/>
-      <echo message="protege installation directory where the"/>
-      <echo message="appropriate plugins have been installed."/>
-      <echo message="Alternatively set the jar libs in local.properties (protege.lib=...)"/>
-      <echo message="Use the -v option to ant to see what jars are missing."/>
-      <fail message = "missing protege libraries"/>
-    </target>
-
-    <!-- 
-            The following target only needs to be modified if the user
-            needs to change the classpath.  It is preconfigured to use
-            the common protege 4 jars, the lib directory and the
-            libraries that have been uncovered in buildlibs. 
-         -->
-    <target name = "checkProtegeLibs" depends="init">
-      <echo message="**********************************************************"/>
-      <echo message="Using Protege Home = ${protege.home}"/>
-      <echo message="Using Java Version = ${ant.java.version}" />
-      <echo message="**********************************************************"/>
-      <condition property="libs.found">
-        <and>
-          <available file="${protege.osgi}" type="file"/>
-          <available file="${editor.lib}"   type="file"/>
-          <available file="${owl.lib}"      type="file"/>
-          <available file="${code.gen.lib}" type="file"/>
-        </and>
-      </condition>
-      <path id = "project.classpath">    
-        <pathelement location="${protege.osgi}"/>
-        <pathelement location="${owl.lib}"/>
-        <pathelement location="${code.gen.lib}"/>
-        <fileset dir="${genlib}"/>
-      </path>
-    </target>
-
-    <target name = "buildlibs" depends="checkProtegeLibsAndReport">
-      <unjar dest="${build}"
-             src="${common.lib}">
-        <patternset>
-          <include name = "**/log4j.jar"/>
-        </patternset>
-      </unjar>
-      <unjar dest="${build}"
-             src="${editor.lib}">
-        <patternset>
-          <include name = "**/protege-owlapi-extensions.jar"/>
-        </patternset>
-      </unjar>
-      <unjar dest="${build}"
-    	     src="${code.gen.lib}">
-    	<patternset>
-      		<include name="**/commons-cli*.jar"/>
-    	</patternset>
-      </unjar>
-    </target>
-    
-    <target name="init">
-      <mkdir dir="${classes}"/>
-      <copy todir="${build}">
-        <fileset file="${common.lib}"/>
-        <fileset file="${owl.lib}"/>
-      </copy>
-    </target>
-	
-	<target name="generate.code" depends="init,buildlibs">
-		<java classname="org.protege.owl.codegeneration.main.GenerateSimpleJavaCode"
-		      fork="true"
-			  failonerror="true">
-			<classpath>
-				<path refid="project.classpath"/>
-				<pathelement location="tools/org.semanticweb.HermiT.jar"/>
-			</classpath>
-			<jvmarg value="-Dlog4j.configuration=file:./log4j-dev.xml"/>
-            <arg value="--delete"/>
-            <arg value="--output"/>
-            <arg value="build/src"/>
-            <arg value="--package"/>
-            <arg value="org.protege.owl.server.metaproject.generated"/>
-            <arg value="--reasoner"/>
-            <arg value="org.semanticweb.HermiT.Reasoner$ReasonerFactory"/>
-            <arg value="src/main/resources/metaproject.owl"/>
-		</java>
-	</target>
-    
-    <target name="compile" depends="generate.code">
-      <copy todir="${classes}" file="src/main/resources/metaproject.owl"/>
-      <javac srcdir="${src}" destdir="${classes}"
-             debug="true">
-        <classpath refid="project.classpath"/>
-      </javac>
-    </target>
-    
-    <target name = "jar" depends = "compile">
+  <target name="copy.resources">
       <copy todir="${classes}/OSGI-INF">
         <fileset dir="OSGI-INF" includes="*.xml"/>
       </copy>
-      <jar jarfile = "${build}/${plugin}.jar"
-           basedir = "${classes}" 
-           manifest = "META-INF/MANIFEST.MF"/>
-    </target>
-    
-    <target name = "install" depends="jar">
-      <copy todir="${protege.home}">
-        <fileset dir="./OSGi"/>
+      <copy todir="${classes}">
+        <fileset dir="src/main/resources" includes="*.owl"/>
       </copy>
-      <copy file="${build}/${plugin}.jar" 
-            todir="${protege.plugins}"
-            overwrite="true"/>
-      <copy file="${genlib}/protege-owlapi-extensions.jar"
-            todir="${protege.common}"
-            overwrite="true"/>
+  </target>
+  
+  
+  <target name = "jar" depends = "compile, use.existing.manifest, bundlor.manifest,copy.resources">
+    <jar jarfile = "${server.bundles}/${plugin}.jar"
+         basedir = "${classes}" 
+         manifest = "${manifest}"/>
+  </target>
+  
+  <target name = "install" depends = "jar,setup.server.framework">
+    <!-- flush cache -->
+    <delete dir = "${protege.home}/configuration/org.eclipse.core.runtime"/>
+    <delete dir = "${protege.home}/configuration/org.eclipse.osgi"/>
+    <copy file="${server.bundles}/${plugin}.jar" 
+          todir = "${protege.plugins}"
+          overwrite = "true"/>
+    <copy file="./src/main/resources/server-config.xml"
+          todir="${protege.home}"/>
+    <copy file="./src/main/resources/run-server.sh"
+          todir="${protege.home}"/>
+  </target>
+
+  <target name = "clean">
+    <delete dir="${build}"/>
+  </target>
+
+  <!-- Testing -->
+
+  <target name="unit.test" depends="install,testng.compile">
+    <mkdir dir="${build}/test-output"/>
+    <java classname="org.testng.TestNG"
+          fork = "true">
+      <classpath>
+        <pathelement path="${classes}"/>
+        <pathelement path="${testng.classes}"/>
+        <pathelement path="${lib.testng}"/>
+        <pathelement path="${protege.osgi}"/>
+        <pathelement path="${protege.launcher}"/>
+        <path refid="project.classpath"/>
+      </classpath>
+      <jvmarg value = "-Xmx1G"/>
+      <jvmarg value="-Djava.util.logging.config.file=./logging.properties"/>
+      <jvmarg value="-Djava.util.logging.SimpleFormatter.format=%4$s: %5$s%n"/>
+      <arg    value="src/test/resources/unit-tests.xml"/>
+      <arg    value="-d"/>
+      <arg    value="${build}/test-output"/>
+    </java>
+  </target>
+  
+  <target name="debug.unit.test" depends="install, testng.compile">
+    <mkdir dir="${build}/test-output"/>
+    <java classname="org.testng.TestNG"
+          fork = "true">
+      <classpath>
+        <pathelement path="${classes}"/>
+        <pathelement path="${testng.classes}"/>
+        <pathelement path="${lib.testng}"/>
+        <pathelement path="${protege.osgi}"/>
+        <pathelement path="${protege.launcher}"/>
+        <path refid="project.classpath"/>
+      </classpath>
+      <jvmarg value = "-Xmx1G"/>
+      <jvmarg value="-Djava.util.logging.config.file=./logging.properties"/>
+      <jvmarg value="-Djava.util.logging.SimpleFormatter.format=%4$s: %5$s%n"/>
+      <jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8100,server=y,suspend=y"/>
+      <arg    value="src/test/resources/debug-unit-tests.xml"/>
+      <arg    value="-d"/>
+      <arg    value="${build}/test-output"/>
+    </java>
+  </target>
+  
+  <!-- Run -->
+	
+    <target name = "run" depends="init">
+        <java fork = "true" dir = "${server.dir}" 
+              classname = "org.protege.osgi.framework.Launcher">
+            <jvmarg value = "-Xmx3000M"/>
+            <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
+        	<jvmarg value="-DentityExpansionLimit=100000000"/>
+        	<jvmarg value="-Dfile.encoding=UTF-8"/>
+        	<jvmarg value="-Dorg.protege.owl.server.configuration=metaproject.owl"/>
+            <classpath>
+              <pathelement path="${protege.osgi}"/>
+              <pathelement path="${protege.launcher}"/>
+            </classpath>
+        </java>
     </target>
-    
-    <target name = "generateRDFMetaproject" depends="install">
-      <java classname="org.protege.owl.server.metaproject.SaveRDFMetaProject" fork="true">
-        <classpath>
-          <path refid="project.classpath"/>
-          <pathelement location="${classes}"/>
-        </classpath>
-      </java>
+
+    <target name = "debug" depends="init">
+        <java fork = "true" dir = "${server.dir}" 
+              classname = "org.protege.osgi.framework.Launcher">
+            <jvmarg value = "-Xmx3000M"/>
+            <jvmarg value="-Djava.util.logging.config.file=./logging.properties"/>
+        	<jvmarg value="-DentityExpansionLimit=100000000"/>
+        	<jvmarg value="-Dfile.encoding=UTF-8"/>
+        	<jvmarg value="-Dorg.protege.owl.server.configuration=metaproject.owl"/>
+            <jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8100,server=y,suspend=y"/>
+            <classpath>
+              <pathelement path="${protege.osgi}"/>
+              <pathelement path="${protege.launcher}"/>
+            </classpath>
+        </java>
     </target>
-    
-    <target name="clean">
-      <delete dir="${build}"/>
-    </target>
-    
-    <target name="usage">
-      <echo message="Set the PROTEGE_HOME environment variable to point"/>
-      <echo message="to a Protege distribution"/>
-      <echo message=""/>
-      <echo message="jar - makes the org.protege.server.jar bundle"/>
-      <echo message="install - installs the server to a Protege distribution"/>
-      <echo message="clean - cleans - enough said."/>
-      <echo message="usage - prints this message"/>
-    </target>
+	
 </project>
