@@ -48,6 +48,7 @@ public class ChangeUtilities {
      */
     public static List<OWLOntologyChange> normalizeChangeDelta(List<OWLOntologyChange> changes) {
         List<OWLOntologyChange> result = new ArrayList<OWLOntologyChange>();
+        // ToDo - this is an O(N^2) algorithm - I think it can be linear time - this is important.
         for (int i = 0; i < changes.size(); i++) {
         	OWLOntologyChange change1 = changes.get(i);
         	boolean overlap = false;

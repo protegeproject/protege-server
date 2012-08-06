@@ -2,9 +2,9 @@ package org.protege.owl.server.api;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -46,7 +46,7 @@ public interface ChangeDocument {
 	 * @param revision
 	 * @return
 	 */
-	Map<OntologyDocumentRevision, ChangeMetaData> getMetaData();
+	SortedMap<OntologyDocumentRevision, ChangeMetaData> getMetaData();
 	
 	/**
 	 * This call will return the change document obtained by restricting the set of changes from the 
@@ -80,6 +80,8 @@ public interface ChangeDocument {
 	 * @return
 	 */
 	List<OWLOntologyChange> getChanges(OWLOntology ontology);
+	
+	List<OWLOntologyChange> getChanges(OWLOntology ontology, Set<OntologyDocumentRevision> toIgnore);
 	
 	int size();
 	

@@ -7,7 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
@@ -43,8 +43,9 @@ public class BufferedDocumentFactory implements DocumentFactory, Serializable {
 	    return new BufferedChangeDocument(this, factory.createEmptyChangeDocument(revision));
 	}
 
+    @Override
 	public ChangeDocument createChangeDocument(List<OWLOntologyChange> changes,
-											   Map<OntologyDocumentRevision, ChangeMetaData> metaData,
+											    SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData,
 			                                   OntologyDocumentRevision start) {
 		return new BufferedChangeDocument(this, factory.createChangeDocument(changes, metaData, start));
 	}
@@ -116,7 +117,7 @@ public class BufferedDocumentFactory implements DocumentFactory, Serializable {
 	private ChangeDocument combineBuffers(List<ChangeDocument> buffers) throws OWLOntologyCreationException {
 	    OntologyDocumentRevision startRevision = buffers.get(0).getStartRevision();
 	    List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
-	    Map<OntologyDocumentRevision, ChangeMetaData> metaData = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
+	    SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
 	    OWLOntology fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
 	    for (ChangeDocument buffer : buffers) {
 	        changes.addAll(buffer.getChanges(fakeOntology));

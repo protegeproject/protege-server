@@ -1,6 +1,7 @@
 package org.protege.owl.server.api;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -66,7 +67,7 @@ public interface VersionedOWLOntology {
 	  * 
 	  * @return
 	  */
-	 ChangeDocument getCommittedChanges();
+	 List<ChangeDocument> getCommittedChanges();
 	 
 	 /**
 	  * This call allows us to set the committed changes.
@@ -74,7 +75,7 @@ public interface VersionedOWLOntology {
 	  * 
 	  * @param commits
 	  */
-	 void setCommittedChanges(ChangeDocument commits);
+	 void setCommittedChanges(List<ChangeDocument> commits);
 	 
 
 	

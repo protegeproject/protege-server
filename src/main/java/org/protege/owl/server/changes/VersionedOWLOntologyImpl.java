@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.OntologyDocumentRevision;
@@ -41,14 +44,14 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 	private RemoteOntologyDocument serverDocument;
 	private OntologyDocumentRevision revision;
 	private ChangeDocument localHistory;
-	private ChangeDocument committedChanges;
+	private List<ChangeDocument> committedChanges;
 	
 	
 	public VersionedOWLOntologyImpl(OWLOntology ontology,
 								    RemoteOntologyDocument serverDocument,
 								    OntologyDocumentRevision revision,
 								    ChangeDocument localHistory,
-								    ChangeDocument committedChanges) {
+								    List<ChangeDocument> committedChanges) {
 		this.ontology = ontology;
 		this.serverDocument = serverDocument;
 		this.revision = revision;
@@ -78,13 +81,13 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 	}
 	
 	@Override
-	public ChangeDocument getCommittedChanges() {
-	    return committedChanges;
+	public List<ChangeDocument> getCommittedChanges() {
+	    return new ArrayList<ChangeDocument>(committedChanges);
 	}
 	
 	@Override
-	public void setCommittedChanges(ChangeDocument commits) {
-	    this.committedChanges = commits;
+	public void setCommittedChanges(List<ChangeDocument> commits) {
+	    this.committedChanges = new ArrayList<ChangeDocument>(commits);
 	}
 	
 	@Override

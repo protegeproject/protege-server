@@ -8,6 +8,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
@@ -163,9 +166,10 @@ public class ServerImpl implements Server {
 
 
 	@Override
-	public void commit(User u, RemoteOntologyDocument doc,
-					    ChangeMetaData metaData,
-					    ChangeDocument changes) throws IOException {
+	public ChangeDocument commit(User u, RemoteOntologyDocument doc,
+	                             ChangeMetaData metaData,
+	                             ChangeDocument changes, 
+	                             SortedSet<OntologyDocumentRevision> previousCommits) throws IOException {
 		commitWhiteBoard.init(doc, metaData, changes);
 		OWLOntology fakeOntology;
 		try {
@@ -174,15 +178,18 @@ public class ServerImpl implements Server {
 		catch (OWLOntologyCreationException e) {
 			throw new IllegalStateException("Why me?", e);
 		}
-		List<OWLOntologyChange> serverChanges = commitWhiteBoard.getServerChangesSinceCommit().getChanges(fakeOntology);
+		List<OWLOntologyChange> serverChanges = commitWhiteBoard.getServerChangesSinceCommit().getChanges(fakeOntology, previousCommits);
 		ChangeDocument fullHistory = commitWhiteBoard.getFullChanges();
 		
 		OntologyDocumentRevision latestRevision = fullHistory.getEndRevision();
 		List<OWLOntologyChange> clientChanges = changes.getChanges(fakeOntology);
 		List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);
-		ChangeDocument changeDocumentToAppend = factory.createChangeDocument(changesToCommit, Collections.singletonMap(latestRevision, metaData), latestRevision);
+		SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
+		metaDataMap.put(latestRevision, metaData);
+		ChangeDocument changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaDataMap, latestRevision);
 		ChangeDocument fullHistoryAfterCommit = fullHistory.appendChanges(changeDocumentToAppend);
 		ChangeDocumentUtilities.writeChanges(fullHistoryAfterCommit, parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT));
+		return factory.createChangeDocument(changesToCommit, new TreeMap<OntologyDocumentRevision, ChangeMetaData>(), fullHistory.getEndRevision());
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package org.protege.owl.server.changes;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.OntologyDocumentRevision;
@@ -37,12 +38,12 @@ public class BufferedVersionedOntology implements VersionedOWLOntology {
 	}
 	
 	@Override
-	public ChangeDocument getCommittedChanges() {
+	public List<ChangeDocument> getCommittedChanges() {
 	    return vont.getCommittedChanges();
 	}
 	
 	@Override
-	public void setCommittedChanges(ChangeDocument commits) {
+	public void setCommittedChanges(List<ChangeDocument> commits) {
 	    vont.setCommittedChanges(commits);
 	}
 

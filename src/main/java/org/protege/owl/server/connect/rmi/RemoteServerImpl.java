@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.SortedSet;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
@@ -78,11 +79,11 @@ public class RemoteServerImpl implements RemoteServer {
 	}
 
 	@Override
-	public void commit(User u, RemoteOntologyDocument doc,
-			            ChangeMetaData metaData, ChangeDocument changes)
+	public ChangeDocument commit(User u, RemoteOntologyDocument doc,
+			                     ChangeMetaData metaData, ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits)
 			throws RemoteException {
 		try {
-			server.commit(u, doc, metaData, changes);
+			return server.commit(u, doc, metaData, changes, previousCommits);
 		}
 		catch (IOException ioe) {
 			throw new RemoteException(ioe.getMessage(), ioe);

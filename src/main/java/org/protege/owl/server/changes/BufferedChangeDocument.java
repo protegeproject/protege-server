@@ -8,7 +8,8 @@ import java.io.ObjectStreamException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
@@ -31,36 +32,48 @@ public class BufferedChangeDocument implements ChangeDocument, Serializable {
 		return factory;
 	}
 
+	@Override
 	public OntologyDocumentRevision getStartRevision() {
 		return delegate.getStartRevision();
 	}
 
+	@Override
 	public OntologyDocumentRevision getEndRevision() {
 		return delegate.getEndRevision();
 	}
 
-	public Map<OntologyDocumentRevision, ChangeMetaData> getMetaData() {
+	@Override
+	public SortedMap<OntologyDocumentRevision, ChangeMetaData> getMetaData() {
 		return delegate.getMetaData();
 	}
 
+	@Override
 	public ChangeDocument cropChanges(OntologyDocumentRevision start,
 			OntologyDocumentRevision end) {
 		return delegate.cropChanges(start, end);
 	}
 
+    @Override
 	public ChangeDocument appendChanges(ChangeDocument additionalChanges) {
 		return delegate.appendChanges(additionalChanges);
 	}
 
+    @Override
 	public List<OWLOntologyChange> getChanges(OWLOntology ontology) {
 		return delegate.getChanges(ontology);
 	}
+    
+    @Override
+    public List<OWLOntologyChange> getChanges(OWLOntology ontology, Set<OntologyDocumentRevision> toIgnore) {
+        return delegate.getChanges(ontology, toIgnore);
+    }
 	
 	@Override
 	public int size() {
 	    return delegate.size();
 	}
 
+	@Override
 	public void writeChangeDocument(OutputStream out) throws IOException {
 	    ObjectOutputStream oos;
 	    if (out instanceof ObjectOutputStream) {

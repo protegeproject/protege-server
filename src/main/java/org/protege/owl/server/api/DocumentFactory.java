@@ -3,7 +3,7 @@ package org.protege.owl.server.api;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -20,7 +20,7 @@ public interface DocumentFactory {
 	 * @param start
 	 * @return
 	 */
-	ChangeDocument createChangeDocument(List<OWLOntologyChange> changes, Map<OntologyDocumentRevision, ChangeMetaData> metaData, OntologyDocumentRevision start);
+	ChangeDocument createChangeDocument(List<OWLOntologyChange> changes, SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData, OntologyDocumentRevision start);
 	
 	ChangeDocument readChangeDocument(InputStream in, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException;
 	

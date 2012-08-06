@@ -7,7 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
@@ -16,7 +19,6 @@ import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.VersionedOWLOntology;
-import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
@@ -74,13 +76,30 @@ public class ClientUtilities {
 		RemoteOntologyDocument serverDoc = ontologyDoc.getServerDocument();
 		OntologyDocumentRevision revision = ontologyDoc.getRevision();
 		ChangeDocument serverHistory = getChanges(ontologyDoc, OntologyDocumentRevision.START_REVISION, ontologyDoc.getRevision());
-		ChangeDocument baselineHistory = serverHistory.appendChanges(ontologyDoc.getCommittedChanges());
-		OWLOntology ontology = ontologyDoc.getOntology();
-		List<OWLOntologyChange> uncommittedChanges = getUncommittedChanges(ontologyDoc.getOntology(), baselineHistory.getChanges(ontology));
-		Map<OntologyDocumentRevision, ChangeMetaData> metaDataMap = Collections.singletonMap(revision, metaData);
-		client.commit(serverDoc, metaData, factory.createChangeDocument(uncommittedChanges, metaDataMap, revision));
-		ChangeDocument uncommittedChangeDoc = factory.createChangeDocument(uncommittedChanges, new TreeMap<OntologyDocumentRevision, ChangeMetaData>(), revision);
-		ontologyDoc.setCommittedChanges(ontologyDoc.getCommittedChanges().appendChanges(uncommittedChangeDoc));
+        OWLOntology ontology = ontologyDoc.getOntology();
+		List<OWLOntologyChange> baselineHistory = serverHistory.getChanges(ontology);
+		for (ChangeDocument alreadyCommitted : ontologyDoc.getCommittedChanges()) {
+		    baselineHistory.addAll(alreadyCommitted.getChanges(ontology));
+		}
+		List<OWLOntologyChange> uncommittedChanges = getUncommittedChanges(ontologyDoc.getOntology(), baselineHistory);
+		SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
+		metaDataMap.put(revision, metaData);
+		List<ChangeDocument> myPreviousCommits = ontologyDoc.getCommittedChanges();
+		ChangeDocument newCommit = client.commit(serverDoc, metaData, factory.createChangeDocument(uncommittedChanges, metaDataMap, revision), collectCommitRevisions(myPreviousCommits));
+		myPreviousCommits.add(newCommit);
+		ontologyDoc.setCommittedChanges(myPreviousCommits);
+	}
+	
+	private SortedSet<OntologyDocumentRevision> collectCommitRevisions(List<ChangeDocument> previousCommits) {
+	    SortedSet<OntologyDocumentRevision> revisions = new TreeSet<OntologyDocumentRevision>();
+	    for (ChangeDocument previousCommit : previousCommits) {
+	        for (OntologyDocumentRevision previousCommitRevision = previousCommit.getStartRevision();
+	                previousCommitRevision.compareTo(previousCommit.getEndRevision()) <= 0;
+	                previousCommitRevision = previousCommitRevision.next()) {
+	            revisions.add(previousCommitRevision);
+	        }
+	    }
+	    return revisions;
 	}
 	
 	public void update(VersionedOWLOntology ontology) throws IOException {
@@ -94,7 +113,12 @@ public class ClientUtilities {
 		ChangeDocument updates = getChanges(openOntology, startRevision, revision);
 		manager.applyChanges(updates.getChanges(localOntology));
 		openOntology.setRevision(updates.getEndRevision());
-		ChangeDocument committedChanges = ChangeUtilities.swapOrderOfChangeLists(factory, openOntology.getCommittedChanges(), updates);
+		List<ChangeDocument> committedChanges = new ArrayList<ChangeDocument>();
+		for (ChangeDocument committedChange : openOntology.getCommittedChanges()) {
+		    if (committedChange.getEndRevision().compareTo(updates.getEndRevision()) >= 0) {
+		        committedChanges.add(committedChange.cropChanges(updates.getEndRevision(), null));
+		    }
+		}
 		openOntology.setCommittedChanges(committedChanges);
 	}
 	

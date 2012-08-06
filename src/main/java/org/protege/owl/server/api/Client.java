@@ -2,6 +2,7 @@ package org.protege.owl.server.api;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.SortedSet;
 
 import org.semanticweb.owlapi.model.IRI;
 
@@ -80,7 +81,7 @@ public interface Client {
 	 * @param revision
 	 * @param changes
 	 */
-	void commit(RemoteOntologyDocument document, ChangeMetaData commitComment, ChangeDocument changes) throws IOException;
+	ChangeDocument commit(RemoteOntologyDocument document, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits) throws IOException;
 	
 	void shutdown();
 

@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Collection;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
@@ -94,10 +95,10 @@ public class RMIClient extends AbstractClient {
 	}
 
 	@Override
-	public void commit(RemoteOntologyDocument doc,
-			            ChangeMetaData metaData, ChangeDocument changes)
+	public ChangeDocument commit(RemoteOntologyDocument doc,
+			                      ChangeMetaData metaData, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits)
 			throws RemoteException {
-		server.commit(u, doc, metaData, changes);
+		return server.commit(u, doc, metaData, changes, myCommits);
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,11 +25,8 @@ import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
-import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.VersionedOWLOntology;
-import org.protege.owl.server.impl.RemoteOntologyDocumentImpl;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -50,7 +47,7 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	@SuppressWarnings("deprecation")
 	@Override
 	public ChangeDocument createChangeDocument(List<OWLOntologyChange> changes,
-											   Map<OntologyDocumentRevision, ChangeMetaData> metaData, 
+											   SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData, 
 											   OntologyDocumentRevision start) {
 		return new ChangeDocumentImpl(this, start, changes, metaData);
 	}
@@ -60,7 +57,8 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 													    RemoteOntologyDocument serverDocument,
 													    OntologyDocumentRevision revision) {
 		ChangeDocument localChanges = createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION);
-		return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges, createEmptyChangeDocument(revision));
+		List<ChangeDocument> previousCommits = new ArrayList<ChangeDocument>();
+		return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges, previousCommits);
 	}
 	
 	@Override
@@ -81,7 +79,8 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	        OntologyDocumentRevision revision = (OntologyDocumentRevision) ois.readObject();
 	        RemoteOntologyDocument serverDocument = (RemoteOntologyDocument) ois.readObject();
 	        ChangeDocument localChanges = (ChangeDocument) ois.readObject();
-	        ChangeDocument committedChanges = (ChangeDocument) ois.readObject();
+	        @SuppressWarnings("unchecked")
+            List<ChangeDocument> committedChanges = (List<ChangeDocument>) ois.readObject();
 	        return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges, committedChanges);
 	    }
 	    catch (ClassNotFoundException cnfe) {

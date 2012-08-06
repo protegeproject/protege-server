@@ -2,6 +2,7 @@ package org.protege.owl.server.connect.local;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.SortedSet;
 import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
@@ -74,10 +75,10 @@ public class LocalClient extends AbstractClient {
 	}
 
 	@Override
-	public void commit(RemoteOntologyDocument document, ChangeMetaData metaData,
-					   ChangeDocument changes)
+	public ChangeDocument commit(RemoteOntologyDocument document, ChangeMetaData metaData,
+					              ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits)
 			throws IOException {
-		server.commit(user, document, metaData, changes);
+		return server.commit(user, document, metaData, changes, previousCommits);
 	}
 
 	@Override

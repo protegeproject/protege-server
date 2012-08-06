@@ -12,7 +12,9 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
@@ -20,6 +22,7 @@ import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.util.ChangeUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
 import org.semanticweb.owlapi.io.WriterDocumentTarget;
@@ -80,7 +83,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	}
 
 	@Override
-	public Map<OntologyDocumentRevision, ChangeMetaData> getMetaData() {
+	public SortedMap<OntologyDocumentRevision, ChangeMetaData> getMetaData() {
 		return new TreeMap<OntologyDocumentRevision, ChangeMetaData>(metaData);
 	}
 	
@@ -132,7 +135,19 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 
 	@Override
 	public List<OWLOntologyChange> getChanges(OWLOntology ontology) {
-		return ReplaceChangedOntologyVisitor.mutate(ontology, changes);
+		return ReplaceChangedOntologyVisitor.mutate(ontology, ChangeUtilities.normalizeChangeDelta(changes));
+	}
+	
+	@Override
+	public List<OWLOntologyChange> getChanges(OWLOntology ontology, Set<OntologyDocumentRevision> toIgnore) {
+	    List<OWLOntologyChange> filteredChanges = new ArrayList<OWLOntologyChange>();
+	    OntologyDocumentRevision revision = startRevision;
+	    for (OWLOntologyChange change : changes) {
+	        if (!toIgnore.contains(revision)) {
+	            filteredChanges.add(change);
+	        }
+	    }
+	    return ReplaceChangedOntologyVisitor.mutate(ontology, filteredChanges);
 	}
 	
 	@Override
