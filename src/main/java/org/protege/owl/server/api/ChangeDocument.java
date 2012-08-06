@@ -81,6 +81,8 @@ public interface ChangeDocument {
 	 */
 	List<OWLOntologyChange> getChanges(OWLOntology ontology);
 	
+	int size();
+	
 	
 	void writeChangeDocument(OutputStream out) throws IOException;
 }

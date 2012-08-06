@@ -136,6 +136,11 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	}
 	
 	@Override
+	public int size() {
+	    return changes.size();
+	}
+	
+	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof ChangeDocument)) {
 			return false;

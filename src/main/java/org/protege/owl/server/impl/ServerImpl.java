@@ -172,7 +172,7 @@ public class ServerImpl implements Server {
 			fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
 		}
 		catch (OWLOntologyCreationException e) {
-			throw new IllegalStateException("Why me?");
+			throw new IllegalStateException("Why me?", e);
 		}
 		List<OWLOntologyChange> serverChanges = commitWhiteBoard.getServerChangesSinceCommit().getChanges(fakeOntology);
 		ChangeDocument fullHistory = commitWhiteBoard.getFullChanges();

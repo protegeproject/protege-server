@@ -1,9 +1,10 @@
 package org.protege.owl.server.changes;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Properties;
+import java.io.ObjectOutputStream;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.OntologyDocumentRevision;
@@ -16,12 +17,6 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 	public static final String BACKING_STORE_PROPERTY = "server.location";
 	public static final String VERSION_PROPERTY       = "version";
-	public static final String HISTORY_PROPERTIES_EXTENSION = ".history-properties";
-	
-	public static File getVersioningPropertiesFile(File ontologyFile) {
-		File versionInfoDir = getVersionInfoDirectory(ontologyFile);
-		return new File(versionInfoDir, ontologyFile.getName() + HISTORY_PROPERTIES_EXTENSION);		
-	}
 
 	public static File getHistoryFile(File ontologyFile) {
 		File versionInfoDir = getVersionInfoDirectory(ontologyFile);
@@ -110,17 +105,11 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 		}
 		File historyFile = getHistoryFile(ontologyFile);
 		historyFile.mkdirs();
-		ChangeDocumentUtilities.writeChanges(localHistory, historyFile);
-		Properties p = new Properties();
-		p.setProperty(VERSION_PROPERTY, new Integer(revision.getRevision()).toString());
-		p.setProperty(BACKING_STORE_PROPERTY, serverDocument.getServerLocation().toString());
-		FileOutputStream out = new FileOutputStream(getVersioningPropertiesFile(ontologyFile));
-		try {
-			p.store(out, "OWL Server Properties");
-		}
-		finally {
-			out.close();
-		}
+		ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(historyFile)));
+		oos.writeObject(revision);
+		oos.writeObject(serverDocument);
+		oos.writeObject(localHistory);
+		oos.writeObject(committedChanges);
 		return true;
 	}
 

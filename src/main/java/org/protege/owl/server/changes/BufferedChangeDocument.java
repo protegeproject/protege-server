@@ -55,6 +55,11 @@ public class BufferedChangeDocument implements ChangeDocument, Serializable {
 	public List<OWLOntologyChange> getChanges(OWLOntology ontology) {
 		return delegate.getChanges(ontology);
 	}
+	
+	@Override
+	public int size() {
+	    return delegate.size();
+	}
 
 	public void writeChangeDocument(OutputStream out) throws IOException {
 	    ObjectOutputStream oos;

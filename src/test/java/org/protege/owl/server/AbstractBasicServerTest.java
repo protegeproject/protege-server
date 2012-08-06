@@ -92,11 +92,14 @@ public abstract class AbstractBasicServerTest {
 	    changes1.add(new AddAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 	    ontology1.getOWLOntologyManager().applyChanges(changes1);
 	    clientUtilities.commit(new ChangeMetaData("back"), versionedPizza1);
+	    Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 2);
 	    
 	    client2Utilities.update(versionedPizza2);
 	    Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	    Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 
+	    clientUtilities.update(versionedPizza1);
+	    Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 0);
 	    List<OWLOntologyChange> changes2 = new ArrayList<OWLOntologyChange>();
 	    changes2.add(new RemoveAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 	    changes2.add(new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));

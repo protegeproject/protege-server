@@ -16,6 +16,7 @@ import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.VersionedOWLOntology;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
@@ -72,11 +73,14 @@ public class ClientUtilities {
 	public void commit(ChangeMetaData metaData, VersionedOWLOntology ontologyDoc) throws IOException {
 		RemoteOntologyDocument serverDoc = ontologyDoc.getServerDocument();
 		OntologyDocumentRevision revision = ontologyDoc.getRevision();
-		ChangeDocument baseLineChanges = getChanges(ontologyDoc, OntologyDocumentRevision.START_REVISION, ontologyDoc.getRevision());
+		ChangeDocument serverHistory = getChanges(ontologyDoc, OntologyDocumentRevision.START_REVISION, ontologyDoc.getRevision());
+		ChangeDocument baselineHistory = serverHistory.appendChanges(ontologyDoc.getCommittedChanges());
 		OWLOntology ontology = ontologyDoc.getOntology();
-		List<OWLOntologyChange> changes = getUncommittedChanges(ontologyDoc.getOntology(), baseLineChanges.getChanges(ontology));
+		List<OWLOntologyChange> uncommittedChanges = getUncommittedChanges(ontologyDoc.getOntology(), baselineHistory.getChanges(ontology));
 		Map<OntologyDocumentRevision, ChangeMetaData> metaDataMap = Collections.singletonMap(revision, metaData);
-		client.commit(serverDoc, metaData, factory.createChangeDocument(changes, metaDataMap, revision));
+		client.commit(serverDoc, metaData, factory.createChangeDocument(uncommittedChanges, metaDataMap, revision));
+		ChangeDocument uncommittedChangeDoc = factory.createChangeDocument(uncommittedChanges, new TreeMap<OntologyDocumentRevision, ChangeMetaData>(), revision);
+		ontologyDoc.setCommittedChanges(ontologyDoc.getCommittedChanges().appendChanges(uncommittedChangeDoc));
 	}
 	
 	public void update(VersionedOWLOntology ontology) throws IOException {
@@ -84,13 +88,14 @@ public class ClientUtilities {
 	}
 	
 	public void update(VersionedOWLOntology openOntology, OntologyDocumentRevision revision) throws IOException {
-		RemoteOntologyDocument backingStore = openOntology.getServerDocument();
 		OWLOntology localOntology = openOntology.getOntology();
 		OWLOntologyManager manager = localOntology.getOWLOntologyManager();
 		OntologyDocumentRevision startRevision = openOntology.getRevision();
-		ChangeDocument changes = getChanges(openOntology, startRevision, revision);
-		manager.applyChanges(changes.getChanges(localOntology));
-		openOntology.setRevision(revision);
+		ChangeDocument updates = getChanges(openOntology, startRevision, revision);
+		manager.applyChanges(updates.getChanges(localOntology));
+		openOntology.setRevision(updates.getEndRevision());
+		ChangeDocument committedChanges = ChangeUtilities.swapOrderOfChangeLists(factory, openOntology.getCommittedChanges(), updates);
+		openOntology.setCommittedChanges(committedChanges);
 	}
 	
 	public ChangeDocument getChanges(VersionedOWLOntology ontologyDoc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException {

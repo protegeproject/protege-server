@@ -5,9 +5,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeMetaData;
+import org.protege.owl.server.api.DocumentFactory;
+import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
 import org.semanticweb.owlapi.io.StringDocumentTarget;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -18,6 +24,7 @@ import org.semanticweb.owlapi.model.OWLAxiomChange;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyChangeVisitor;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
@@ -58,7 +65,16 @@ public class ChangeUtilities {
         return result;
     }
     
- 
+    public static ChangeDocument swapOrderOfChangeLists(DocumentFactory factory, ChangeDocument doc1, ChangeDocument doc2) {
+        try {
+            OWLOntology fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
+            List<OWLOntologyChange> doc3 =swapOrderOfChangeLists(doc1.getChanges(fakeOntology), doc2.getChanges(fakeOntology));
+            return factory.createChangeDocument(doc3, new TreeMap<OntologyDocumentRevision, ChangeMetaData>(), doc2.getEndRevision());
+        }
+        catch (OWLOntologyCreationException ooce) {
+            throw new RuntimeException("Why would this happen?", ooce);
+        }
+    }
     
     /**
      * This routine calculates a minimal set of changes x such that 

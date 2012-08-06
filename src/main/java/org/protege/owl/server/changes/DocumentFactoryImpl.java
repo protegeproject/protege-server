@@ -25,6 +25,7 @@ import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
+import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.VersionedOWLOntology;
 import org.protege.owl.server.impl.RemoteOntologyDocumentImpl;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -68,31 +69,24 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 		if (ontologyFile == null) {
 			return false;
 		}
-		return VersionedOWLOntologyImpl.getVersioningPropertiesFile(ontologyFile).exists();
+		return VersionedOWLOntologyImpl.getHistoryFile(ontologyFile).exists();
 	}
 
 	@Override
 	public VersionedOWLOntology createVersionedOntology(OWLOntology ontology) throws IOException {
-		File ontologyFile = VersionedOWLOntologyImpl.getBackingStore(ontology);
-		Properties p = new Properties();
-		FileInputStream in = new FileInputStream(VersionedOWLOntologyImpl.getVersioningPropertiesFile(ontologyFile));
-		try {
-			p.load(in);
-		}
-		finally {
-			in.close();
-		}
-		OntologyDocumentRevision revision = new OntologyDocumentRevision(Integer.parseInt(p.getProperty(VersionedOWLOntologyImpl.VERSION_PROPERTY)));
-		RemoteOntologyDocument serverDocument = new RemoteOntologyDocumentImpl(IRI.create(p.getProperty(VersionedOWLOntologyImpl.BACKING_STORE_PROPERTY)));
-		File historyFile = VersionedOWLOntologyImpl.getHistoryFile(ontologyFile);
-		ChangeDocument localChanges;
-		if (historyFile.exists()) {
-			localChanges = ChangeDocumentUtilities.readChanges(this, historyFile, null, null);
-		}
-		else {
-			localChanges = createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION);
-		}
-		return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges, createEmptyChangeDocument(revision));
+	    try {
+	        File ontologyFile = VersionedOWLOntologyImpl.getBackingStore(ontology);
+	        File historyFile = VersionedOWLOntologyImpl.getHistoryFile(ontologyFile);
+	        ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(historyFile)));
+	        OntologyDocumentRevision revision = (OntologyDocumentRevision) ois.readObject();
+	        RemoteOntologyDocument serverDocument = (RemoteOntologyDocument) ois.readObject();
+	        ChangeDocument localChanges = (ChangeDocument) ois.readObject();
+	        ChangeDocument committedChanges = (ChangeDocument) ois.readObject();
+	        return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges, committedChanges);
+	    }
+	    catch (ClassNotFoundException cnfe) {
+	        throw new IOException("Class Loader issues when hydrating ontology history document", cnfe);
+	    }
 	}
 	
 	/*
