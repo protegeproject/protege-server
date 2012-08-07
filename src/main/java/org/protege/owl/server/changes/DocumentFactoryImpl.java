@@ -39,12 +39,10 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
     public static Logger logger = Logger.getLogger(DocumentFactoryImpl.class.getCanonicalName());
 	
     @Override
-    @SuppressWarnings("deprecation")
     public ChangeDocument createEmptyChangeDocument(OntologyDocumentRevision revision) {
         return new ChangeDocumentImpl(this, revision, new ArrayList<OWLOntologyChange>(), new TreeMap<OntologyDocumentRevision, ChangeMetaData>());
     }
     
-	@SuppressWarnings("deprecation")
 	@Override
 	public ChangeDocument createChangeDocument(List<OWLOntologyChange> changes,
 											   SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData, 
