@@ -35,9 +35,7 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 /**
  * 
  * @author tredmond
- * @deprecated replace with Matthew's binary serialization format.
  */
-@Deprecated
 public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	private static final long serialVersionUID = -3842895051205436375L;
 	public static Logger logger = Logger.getLogger(ChangeDocumentImpl.class.getCanonicalName());
