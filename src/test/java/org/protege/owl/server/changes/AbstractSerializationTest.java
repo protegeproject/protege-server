@@ -201,16 +201,20 @@ public abstract class AbstractSerializationTest {
         fos.close();
         FileInputStream fin = new FileInputStream(testFile);
         ChangeDocument doc2 = factory.readChangeDocument(fin, start, end);
+        fin.close();
         Assert.assertEquals(doc2, doc.cropChanges(start, end));
     }
 
     protected ChangeDocument getPizzaChanges(DocumentFactory factory) throws OWLOntologyCreationException {
         OWLOntology pizzaOntology = PizzaVocabulary.loadPizza();
-        List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
+        ChangeDocument document = factory.createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION);
         for (OWLAxiom axiom : pizzaOntology.getAxioms()) {
+            List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
             changes.add(new AddAxiom(pizzaOntology, axiom));
+            ChangeDocument toAppend = factory.createChangeDocument(changes, new ChangeMetaData(), document.getEndRevision());
+            document = document.appendChanges(toAppend);
         }
-        return factory.createChangeDocument(changes, new TreeMap<OntologyDocumentRevision, ChangeMetaData>(), OntologyDocumentRevision.START_REVISION);
+        return document;
     }
 
 }
