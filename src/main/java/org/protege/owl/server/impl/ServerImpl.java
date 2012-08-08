@@ -184,12 +184,10 @@ public class ServerImpl implements Server {
 		OntologyDocumentRevision latestRevision = fullHistory.getEndRevision();
 		List<OWLOntologyChange> clientChanges = changes.getChanges(fakeOntology);
 		List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);
-		SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
-		metaDataMap.put(latestRevision, metaData);
-		ChangeDocument changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaDataMap, latestRevision);
+		ChangeDocument changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaData, latestRevision);
 		ChangeDocument fullHistoryAfterCommit = fullHistory.appendChanges(changeDocumentToAppend);
 		ChangeDocumentUtilities.writeChanges(fullHistoryAfterCommit, parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT));
-		return factory.createChangeDocument(changesToCommit, new TreeMap<OntologyDocumentRevision, ChangeMetaData>(), fullHistory.getEndRevision());
+		return factory.createChangeDocument(changesToCommit, new ChangeMetaData(), fullHistory.getEndRevision());
 	}
 	
 	@Override

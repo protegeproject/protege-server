@@ -70,6 +70,7 @@
       <pathelement location="${equinox.common}"/>
       <pathelement location="${equinox.registry}"/>
       <pathelement location="${owl.lib}"/>
+      <pathelement location="./lib/serialize.jar"/>
     </path>
   </target>
   
@@ -85,6 +86,7 @@
           classname="org.protege.owl.server.connect.rmi.RemoteServerImpl">
       <classpath refid = "project.classpath"/>  
     </rmic>
+  	<copy file="./lib/serialize.jar" todir="${classes}/lib"/>
   </target>
   
   <target name = "testng.compile" depends="init,checkProtegeLibsAndReport">

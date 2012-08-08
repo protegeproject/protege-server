@@ -93,7 +93,6 @@ public abstract class AbstractBasicServerTest {
 	        ontology1.getOWLOntologyManager().applyChanges(changes1);
 	        clientUtilities.commit(new ChangeMetaData("back"), versionedPizza1);
 	        Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 1);
-	        Assert.assertEquals(versionedPizza1.getCommittedChanges().get(0).size(), 2);
 	        
 	        client2Utilities.update(versionedPizza2);
 	        Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
@@ -106,7 +105,6 @@ public abstract class AbstractBasicServerTest {
 	        ontology1.getOWLOntologyManager().applyChanges(changes2);
 	        clientUtilities.commit(new ChangeMetaData("forth"), versionedPizza1);
 	        Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 2);
-	        Assert.assertEquals(versionedPizza1.getCommittedChanges().get(1).size(), 2);
 	        
 	        client2Utilities.update(versionedPizza2);
 	        Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
@@ -132,7 +130,6 @@ public abstract class AbstractBasicServerTest {
 	    ontology1.getOWLOntologyManager().applyChanges(changes1);
 	    clientUtilities.commit(new ChangeMetaData("back"), versionedPizza1);
 	    Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 1);
-        Assert.assertEquals(versionedPizza1.getCommittedChanges().get(0).size(), 2);
 	    
 	    client2Utilities.update(versionedPizza2);
 	    Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));

@@ -82,10 +82,8 @@ public class ClientUtilities {
 		    baselineHistory.addAll(alreadyCommitted.getChanges(ontology));
 		}
 		List<OWLOntologyChange> uncommittedChanges = getUncommittedChanges(ontologyDoc.getOntology(), baselineHistory);
-		SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
-		metaDataMap.put(revision, metaData);
 		List<ChangeDocument> myPreviousCommits = ontologyDoc.getCommittedChanges();
-		ChangeDocument newCommit = client.commit(serverDoc, metaData, factory.createChangeDocument(uncommittedChanges, metaDataMap, revision), collectCommitRevisions(myPreviousCommits));
+		ChangeDocument newCommit = client.commit(serverDoc, metaData, factory.createChangeDocument(uncommittedChanges, metaData, revision), collectCommitRevisions(myPreviousCommits));
 		myPreviousCommits.add(newCommit);
 		ontologyDoc.setCommittedChanges(myPreviousCommits);
 	}

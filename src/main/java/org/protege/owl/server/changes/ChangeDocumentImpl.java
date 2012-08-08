@@ -1,36 +1,30 @@
 package org.protege.owl.server.changes;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Serializable;
-import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.changes.format.OWLOutputStream;
 import org.protege.owl.server.util.ChangeUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
-import org.semanticweb.owlapi.io.WriterDocumentTarget;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 /**
  * 
@@ -40,26 +34,32 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	private static final long serialVersionUID = -3842895051205436375L;
 	public static Logger logger = Logger.getLogger(ChangeDocumentImpl.class.getCanonicalName());
 	private OntologyDocumentRevision startRevision;
-	private List<OWLOntologyChange> changes;
-	private Map<OntologyDocumentRevision, ChangeMetaData> metaData = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
+	private List<List<OWLOntologyChange>> changes = new ArrayList<List<OWLOntologyChange>>();
+	private SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
 	private DocumentFactory documentFactory;
+	
+	private ChangeDocumentImpl(OntologyDocumentRevision start, DocumentFactory documentFactory) {
+        startRevision = start;
+        this.documentFactory = documentFactory;	    
+	}
+	
+	ChangeDocumentImpl(OntologyDocumentRevision start, DocumentFactory documentFactory, List<List<OWLOntologyChange>> changes, SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap) {
+	    startRevision = start;
+	    this.documentFactory = documentFactory;
+	    this.changes = changes;
+	    this.metaDataMap = metaDataMap;
+	}
 
 	/*
 	 * 
 	 */
-	public ChangeDocumentImpl(DocumentFactory documentFactory, OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes, Map<OntologyDocumentRevision, ChangeMetaData> metaData) {
+	public ChangeDocumentImpl(DocumentFactory documentFactory, OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes, ChangeMetaData metaData) {
 		this.startRevision = startRevision;
 		if (changes != null) {
-			this.changes = new ArrayList<OWLOntologyChange>(changes);
+			this.changes.add(new ArrayList<OWLOntologyChange>(changes));
 		}
-		else {
-			this.changes = new ArrayList<OWLOntologyChange>();
-		}
-		if (metaData != null) {
-			this.metaData = new TreeMap<OntologyDocumentRevision, ChangeMetaData>(metaData);
-		}
-		else {
-			this.metaData = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
+		if (metaData != null && changes != null) {
+		    this.metaDataMap.put(startRevision, metaData);
 		}
 		this.documentFactory = documentFactory;
 	}
@@ -82,7 +82,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 
 	@Override
 	public SortedMap<OntologyDocumentRevision, ChangeMetaData> getMetaData() {
-		return new TreeMap<OntologyDocumentRevision, ChangeMetaData>(metaData);
+		return Collections.unmodifiableSortedMap(metaDataMap);
 	}
 	
 	@Override
@@ -96,16 +96,22 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 		if (start.equals(getStartRevision()) && end.equals(getEndRevision())) {
 		    return this;
 		}
-		List<OWLOntologyChange> subChanges = changes.subList(start.getRevision() - startRevision.getRevision(), end.getRevision() - startRevision.getRevision());
-		Map<OntologyDocumentRevision, ChangeMetaData> newCommitComments = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
-		for (Entry<OntologyDocumentRevision, ChangeMetaData> entry : metaData.entrySet()) {
-			OntologyDocumentRevision revision = entry.getKey();
-			ChangeMetaData metaDataEntry = entry.getValue();
-			if (start.compareTo(revision) <= 0 && revision.compareTo(end) <= 0) {
-				newCommitComments.put(revision, metaDataEntry);
-			}
-		}
-		return new ChangeDocumentImpl(documentFactory, start, subChanges, newCommitComments);
+		List<List<OWLOntologyChange>> subChanges = changes.subList(start.getRevision() - startRevision.getRevision(), end.getRevision() - startRevision.getRevision());
+		SortedMap<OntologyDocumentRevision, ChangeMetaData> subMetaDataMap = cropMap(metaDataMap, start, end);
+		return new ChangeDocumentImpl(start, documentFactory, subChanges, subMetaDataMap);
+	}
+	
+	private <X extends Comparable<X>, Y> SortedMap<X, Y> cropMap(SortedMap<X,Y> map, X start, X end) {
+	    if (map.isEmpty()) {
+	        return new TreeMap<X,Y>();
+	    }
+	    if (start.compareTo(map.lastKey()) > 0) {
+	        return new TreeMap<X,Y>();
+	    }
+	    if (end.compareTo(map.firstKey()) < 0) {
+	        return new TreeMap<X,Y>();
+	    }
+	    return map.tailMap(start).headMap(end);
 	}
 	
 	@Override
@@ -123,15 +129,17 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 		catch (OWLOntologyCreationException e) {
 			throw new RuntimeException("This really shouldn't happen!", e);
 		}
-		ChangeDocumentImpl newDoc = new ChangeDocumentImpl(documentFactory, startRevision, changes, metaData);
+		ChangeDocumentImpl newDoc = new ChangeDocumentImpl(startRevision, documentFactory);
+		newDoc.changes = new ArrayList<List<OWLOntologyChange>>(changes);
+		newDoc.metaDataMap = new TreeMap<OntologyDocumentRevision, ChangeMetaData>(metaDataMap);
 		SortedMap<OntologyDocumentRevision, ChangeMetaData> additionalMetaData = additionalChanges.getMetaData();
 		for (OntologyDocumentRevision revision = newDoc.getEndRevision();
 		        additionalChanges.getEndRevision().compareTo(revision) > 0;
 		        revision = revision.next()) {
 		    if (additionalMetaData.containsKey(revision)) {
-		        newDoc.metaData.put(revision, additionalMetaData.get(revision));
+		        newDoc.metaDataMap.put(revision, additionalMetaData.get(revision));
 		    }
-		    newDoc.changes.addAll(additionalChanges.cropChanges(revision, revision.next()).getChanges(fakeOntology));
+		    newDoc.changes.add(additionalChanges.cropChanges(revision, revision.next()).getChanges(fakeOntology));
 		}
 		return newDoc;
 	}
@@ -139,24 +147,20 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 
 	@Override
 	public List<OWLOntologyChange> getChanges(OWLOntology ontology) {
-		return ReplaceChangedOntologyVisitor.mutate(ontology, ChangeUtilities.normalizeChangeDelta(changes));
+	    return getChanges(ontology, new TreeSet<OntologyDocumentRevision>());
 	}
 	
 	@Override
 	public List<OWLOntologyChange> getChanges(OWLOntology ontology, Set<OntologyDocumentRevision> toIgnore) {
 	    List<OWLOntologyChange> filteredChanges = new ArrayList<OWLOntologyChange>();
 	    OntologyDocumentRevision revision = startRevision;
-	    for (OWLOntologyChange change : changes) {
+	    for (List<OWLOntologyChange> change : changes) {
 	        if (!toIgnore.contains(revision)) {
-	            filteredChanges.add(change);
+	            filteredChanges.addAll(change);
 	        }
+	        revision = revision.next();
 	    }
-	    return ReplaceChangedOntologyVisitor.mutate(ontology, filteredChanges);
-	}
-	
-	@Override
-	public int size() {
-	    return changes.size();
+	    return ReplaceChangedOntologyVisitor.mutate(ontology, ChangeUtilities.normalizeChangeDelta(filteredChanges));
 	}
 	
 	@Override
@@ -187,20 +191,13 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 			oos = new ObjectOutputStream(out);
 		}
 		oos.writeObject(startRevision);
-		oos.writeObject(metaData);
-		OWLOntology changesOntology = ChangesToOntologyVisitor.createChangesOntology(startRevision, changes);
-		OWLOntologyManager manager = changesOntology.getOWLOntologyManager();
-		Writer writer = new OutputStreamWriter(new BufferedOutputStream(oos), "UTF-8");
-		try {
-			OWLXMLOntologyFormat format = new OWLXMLOntologyFormat();
-			manager.saveOntology(changesOntology, format, new WriterDocumentTarget(writer));
+		oos.writeObject(metaDataMap);
+		oos.writeInt(changes.size());
+		OWLOutputStream owlstream = new OWLOutputStream(oos);
+		for (List<OWLOntologyChange> changeSet : changes) {
+		    owlstream.write(changeSet);
 		}
-		catch (OWLOntologyStorageException e) {
-			throw new OntologyStorageIOException(e);
-		}
-		finally {
-			writer.flush();
-		}
+		oos.flush();
 	}
 	
 	@Override
@@ -221,7 +218,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	    ChangeDocumentImpl doc = (ChangeDocumentImpl) documentFactory.readChangeDocument(in, null, null);
 	    startRevision = doc.getStartRevision();
 	    changes = doc.changes;
-	    metaData = doc.metaData;
+	    metaDataMap = doc.metaDataMap;
 	}
 	
 	private void readObjectNoData() throws ObjectStreamException {

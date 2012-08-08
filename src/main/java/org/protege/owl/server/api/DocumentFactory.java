@@ -20,7 +20,7 @@ public interface DocumentFactory {
 	 * @param start
 	 * @return
 	 */
-	ChangeDocument createChangeDocument(List<OWLOntologyChange> changes, SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData, OntologyDocumentRevision start);
+	ChangeDocument createChangeDocument(List<OWLOntologyChange> changes, ChangeMetaData metaData, OntologyDocumentRevision start);
 	
 	ChangeDocument readChangeDocument(InputStream in, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException;
 	

@@ -16,13 +16,36 @@ public class ChangeMetaData implements Serializable {
 		this.date = new Date();
 		this.commitComment = commitComment;
 	}
+	
+	public ChangeMetaData() {
+	    this.date = new Date();
+	    this.commitComment = "";
+	}
+	
 	public Date getDate() {
 		return date;
 	}
 	public String getCommitComment() {
 		return commitComment;
 	}
+
+	@Override
+	public int hashCode() {
+	    return date.hashCode() + 42 * commitComment.hashCode();
+	}
 	
-//	
+	@Override
+	public boolean equals(Object obj) {
+	    if (!(obj instanceof ChangeMetaData)) {
+	        return false;
+	    }
+	    ChangeMetaData other = (ChangeMetaData) obj;
+	    return other.getCommitComment().equals(commitComment) && other.getDate().equals(date);
+	}
+	
+	@Override
+	public String toString() {
+	    return "Committed at " + date +": " + commitComment;
+	}
 
 }

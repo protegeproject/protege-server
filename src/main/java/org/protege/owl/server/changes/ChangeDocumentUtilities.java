@@ -20,7 +20,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 public class ChangeDocumentUtilities {
 	
 	public static void writeEmptyChanges(DocumentFactory factory, File historyFile) throws IOException {
-		ChangeDocument changes = factory.createChangeDocument(new ArrayList<OWLOntologyChange>(), new TreeMap<OntologyDocumentRevision, ChangeMetaData>(), OntologyDocumentRevision.START_REVISION);
+		ChangeDocument changes = factory.createChangeDocument(new ArrayList<OWLOntologyChange>(), null, OntologyDocumentRevision.START_REVISION);
 		ChangeDocumentUtilities.writeChanges(changes, historyFile);
 	}
 

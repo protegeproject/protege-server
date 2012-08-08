@@ -82,8 +82,6 @@ public interface ChangeDocument {
 	List<OWLOntologyChange> getChanges(OWLOntology ontology);
 	
 	List<OWLOntologyChange> getChanges(OWLOntology ontology, Set<OntologyDocumentRevision> toIgnore);
-		
-	int size();
 	
 	
 	void writeChangeDocument(OutputStream out) throws IOException;

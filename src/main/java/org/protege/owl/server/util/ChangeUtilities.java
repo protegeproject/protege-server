@@ -70,7 +70,7 @@ public class ChangeUtilities {
         try {
             OWLOntology fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
             List<OWLOntologyChange> doc3 =swapOrderOfChangeLists(doc1.getChanges(fakeOntology), doc2.getChanges(fakeOntology));
-            return factory.createChangeDocument(doc3, new TreeMap<OntologyDocumentRevision, ChangeMetaData>(), doc2.getEndRevision());
+            return factory.createChangeDocument(doc3, new ChangeMetaData(), doc2.getEndRevision());
         }
         catch (OWLOntologyCreationException ooce) {
             throw new RuntimeException("Why would this happen?", ooce);

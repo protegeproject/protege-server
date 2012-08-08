@@ -9,9 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,6 +24,7 @@ import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.VersionedOWLOntology;
+import org.protege.owl.server.changes.format.OWLInputStream;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -40,12 +39,12 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	
     @Override
     public ChangeDocument createEmptyChangeDocument(OntologyDocumentRevision revision) {
-        return new ChangeDocumentImpl(this, revision, new ArrayList<OWLOntologyChange>(), new TreeMap<OntologyDocumentRevision, ChangeMetaData>());
+        return new ChangeDocumentImpl(this, revision, new ArrayList<OWLOntologyChange>(), null);
     }
     
 	@Override
 	public ChangeDocument createChangeDocument(List<OWLOntologyChange> changes,
-											   SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData, 
+											   ChangeMetaData metaData, 
 											   OntologyDocumentRevision start) {
 		return new ChangeDocumentImpl(this, start, changes, metaData);
 	}
@@ -102,26 +101,27 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 				ois = new ObjectInputStream(in);
 			}
 			OntologyDocumentRevision startRevision = (OntologyDocumentRevision) ois.readObject();
-			@SuppressWarnings("unchecked")
-			Map<OntologyDocumentRevision, ChangeMetaData> metaData = (Map<OntologyDocumentRevision, ChangeMetaData>) ois.readObject();
-			
-
-			OWLOntology changesOntology = readOntology(ois);
-			OntologyToChangesUtil otcu = new OntologyToChangesUtil(changesOntology, startRevision);
-			otcu.initialise();
-			List<OWLOntologyChange> changes = otcu.getChanges();
-			ChangeDocument fullDoc = new ChangeDocumentImpl(this, startRevision, changes, metaData);
 			if (start == null) {
-			    start = fullDoc.getStartRevision();
+			    start = startRevision;
+			}
+			@SuppressWarnings("unchecked")
+			SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData = (SortedMap<OntologyDocumentRevision, ChangeMetaData>) ois.readObject();
+			List<List<OWLOntologyChange>> changes = new ArrayList<List<OWLOntologyChange>>();
+			OWLInputStream owlStream = new OWLInputStream(ois);
+			int count = ois.readInt();
+			OntologyDocumentRevision revision = startRevision;
+			for (int i = 0; i < count; i++,revision = revision.next()) {
+			    @SuppressWarnings("unchecked")
+                List<OWLOntologyChange> changeList = (List<OWLOntologyChange>) owlStream.read();
+			    if (revision.compareTo(start) >= 0 && (end == null || revision.compareTo(end) < 0)) {
+			        changes.add(changeList);
+			    }
 			}
 			if (end == null) {
-			    end = fullDoc.getEndRevision();
+			    end = start.add(changes.size());
 			}
-			return fullDoc.cropChanges(start, end)    ;
-		}
-		catch (OWLOntologyCreationException e) {
-			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
-			throw new OntologyCreationIOException(e);
+			metaData = metaData.tailMap(start).headMap(end);
+            return new ChangeDocumentImpl(start, this, changes, metaData); 
 		}
 		catch (IOException ioe) {
 			logger.log(Level.WARNING, "Exception caught deserializing change document", ioe);
@@ -136,23 +136,7 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 			throw e;
 		}
 	}
-	
-	/*
-	 * The reason that the parser is getting wired in here is that the default implementation copies the stream to memory.
-	 * We have run out of memory doing this even for the NCI Thesaurus.
-	 */
-	private OWLOntology readOntology(InputStream providedInputStream) throws OWLOntologyCreationException, ParserConfigurationException, SAXException, IOException {
-        InputStream is = new UncloseableInputStream(new BufferedInputStream(providedInputStream));
-        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-        OWLOntology changesOntology = manager.createOntology();
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setNamespaceAware(true);
-        SAXParser parser = factory.newSAXParser();
-        OWLXMLParserHandler handler = new OWLXMLParserHandler(changesOntology, new OWLOntologyLoaderConfiguration());
-        parser.parse(is, handler);
-        return changesOntology;
-	}
-	
+
 
 
 }
