@@ -13,4 +13,4 @@ Import-Template: org.osgi.framework;version="1.0.0",
  org.semanticweb.owlapi.*;version="3.2.0",
  javax.xml.parsers;version="0.0.0"
 Import-Package: org.xml.sax.helpers;version="0.0.0"
-
+Bundle-Classpath: .,./lib/serialize.jar
