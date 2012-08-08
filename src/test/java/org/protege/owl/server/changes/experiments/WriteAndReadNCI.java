@@ -10,7 +10,6 @@ import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.changes.BufferedDocumentFactory;
 import org.protege.owl.server.changes.ChangeDocumentUtilities;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -49,11 +48,13 @@ public class WriteAndReadNCI {
     public static void main(String[] args) throws Exception {
         OWLOntology ontology = loadOntology();
 
+        /*
         System.out.println("\nWith buffering...");
         DocumentFactory factory2 = new BufferedDocumentFactory(new DocumentFactoryImpl());
         File f2 = writeAxioms(ontology, factory2);
         breath();
         readAxioms(f2, factory2);
+        */
         
         System.out.println("Without buffering...");
         DocumentFactoryImpl factory1 = new DocumentFactoryImpl();
@@ -76,7 +77,7 @@ public class WriteAndReadNCI {
             changes.add(new AddAxiom(ontology, axiom));
         }
         long startTime = System.currentTimeMillis();
-        ChangeDocument doc = factory.createChangeDocument(changes, new TreeMap<OntologyDocumentRevision, ChangeMetaData>(),OntologyDocumentRevision.START_REVISION);
+        ChangeDocument doc = factory.createChangeDocument(changes, new ChangeMetaData(),OntologyDocumentRevision.START_REVISION);
         ChangeDocumentUtilities.writeChanges(doc, tmp);
         System.out.println("\tTook " + (System.currentTimeMillis() - startTime) + " ms.");
 
