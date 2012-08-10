@@ -67,7 +67,10 @@ public class ChangeUtilities {
      *    firstChanges o secondChanges = secondChanges o x
      * </center>
      * where composition goes from left to right.
-     * 
+     * <p/>
+     * ToDo - this routine is quadratic time when it should be linear time.
+     * I suspect that this is rarely a problem.
+     * <p/>
      * @param firstChanges 
      * @param secondChanges 
      * @return a minimal set of changes that when applied after secondChanges will result in the same result as if 

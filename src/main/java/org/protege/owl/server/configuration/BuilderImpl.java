@@ -82,6 +82,13 @@ public class BuilderImpl implements Builder {
 	}
 	
 	@Override
+	public void deactivate() {
+	    if (server != null) {
+	        server.shutdown();
+	    }
+	}
+	
+	@Override
 	public boolean isUp() {
 		return server != null;
 	}

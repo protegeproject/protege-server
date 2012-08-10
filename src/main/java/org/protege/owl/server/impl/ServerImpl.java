@@ -51,44 +51,49 @@ public class ServerImpl implements Server {
 	public enum ServerObjectStatus {
 		OBJECT_NOT_FOUND {
 			@Override
-			public boolean isStatusOf(File f) {
-				return !f.exists();
+			public boolean isStatusOf(File f, boolean pooledDocumentFound) {
+				return !pooledDocumentFound && !f.exists();
 			}
 			
 		},
 		OBJECT_FOUND {
 			@Override
-			public boolean isStatusOf(File f) {
-				return OBJECT_IS_DIRECTORY.isStatusOf(f) || ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT.isStatusOf(f);
+			public boolean isStatusOf(File f, boolean pooledDocumentFound) {
+				return pooledDocumentFound || 
+				        OBJECT_IS_DIRECTORY.isStatusOf(f, pooledDocumentFound) || 
+				        ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT.isStatusOf(f, pooledDocumentFound);
 			}
 			
 		},
 		OBJECT_IS_DIRECTORY {
 			@Override
-			public boolean isStatusOf(File f) {
+			public boolean isStatusOf(File f, boolean pooledDocumentFound) {
 				return f.isDirectory();
 			}
 
 		},
 		OBJECT_IS_ONTOLOGY_DOCUMENT {
 			@Override
-			public boolean isStatusOf(File f) {
-				return f.isFile() && f.getName().endsWith(ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
+			public boolean isStatusOf(File f, boolean pooledDocumentFound) {
+				return pooledDocumentFound ||
+				        (f.isFile() && f.getName().endsWith(ChangeDocument.CHANGE_DOCUMENT_EXTENSION));
 			}
 
 		};
 		
-		public abstract boolean isStatusOf(File f);
+		public abstract boolean isStatusOf(File f, boolean pooledDocumentFound);
 	}
 	
 	private File root;
 	private DocumentFactory factory = new DocumentFactoryImpl();
+	private ChangeDocumentPool pool;
 	
 	public ServerImpl(File root) {
 		if (!root.isDirectory() || !root.exists()) {
 			throw new IllegalStateException("Server does not have a valid root directory");
 		}
 		this.root = root;
+		this.pool = new ChangeDocumentPool(factory, 15 * 60 * 1000);
 	}
 
 	@Override
@@ -136,8 +141,9 @@ public class ServerImpl implements Server {
 		if (!historyFile.getName().endsWith(ChangeDocument.CHANGE_DOCUMENT_EXTENSION)) {
 			throw new IllegalArgumentException("Server side IRI's must have the " + ChangeDocument.CHANGE_DOCUMENT_EXTENSION + " extension");
 		}
-		ChangeDocumentUtilities.writeEmptyChanges(factory, historyFile);
-		return new RemoteOntologyDocumentImpl(serverIRI);
+		RemoteOntologyDocument doc = new RemoteOntologyDocumentImpl(serverIRI);
+		pool.setChangeDocument(doc, historyFile, factory.createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION));
+		return doc;
 	}
 
 	@Override
@@ -157,7 +163,7 @@ public class ServerImpl implements Server {
 		if (historyFile == null) {
 			throw new IllegalStateException("Expected to find ontology document at the location " + doc.getServerLocation());
 		}
-		return ChangeDocumentUtilities.readChanges(factory, historyFile, start, end);
+		return pool.getChangeDocument(doc, historyFile).cropChanges(start, end);
 	}
 	
 
@@ -182,13 +188,13 @@ public class ServerImpl implements Server {
 		List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);
 		ChangeDocument changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaData, latestRevision);
 		ChangeDocument fullHistoryAfterCommit = fullHistory.appendChanges(changeDocumentToAppend);
-		ChangeDocumentUtilities.writeChanges(fullHistoryAfterCommit, parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT));
+		pool.setChangeDocument(doc, parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT), fullHistoryAfterCommit);
 		return factory.createChangeDocument(changesToCommit, new ChangeMetaData(), fullHistory.getEndRevision());
 	}
 
 	@Override
 	public void shutdown() {
-
+	    pool.dispose();
 	}
 
 	private File parseServerIRI(IRI serverIRI, ServerObjectStatus expected) throws DocumentNotFoundException {
@@ -197,7 +203,8 @@ public class ServerImpl implements Server {
 			path = path.substring(1);
 		}
 		File f = new File(root, path);
-		if (expected.isStatusOf(f)) {
+		boolean pooledDocumentFound = pool.testServerLocation(serverIRI);
+		if (expected.isStatusOf(f, pooledDocumentFound)) {
 			return f;
 		}
 		return null;

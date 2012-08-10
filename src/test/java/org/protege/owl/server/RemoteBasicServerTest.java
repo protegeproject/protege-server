@@ -42,6 +42,10 @@ public class RemoteBasicServerTest extends AbstractBasicServerTest {
 	public void stopServer() throws IOException {
 		try {
 			framework.stop();
+			framework.waitForStop(60 * 60 * 1000);
+		}
+		catch (InterruptedException ie) {
+		    throw new IOException(ie);
 		}
 		catch (BundleException be) {
 			throw new IOException(be);

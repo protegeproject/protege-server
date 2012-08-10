@@ -9,5 +9,7 @@ public interface Builder {
 
 	void removeServerComponentFactory(ServerComponentFactory factory);
 	
+	void deactivate();
+	
 	boolean isUp();
 }
