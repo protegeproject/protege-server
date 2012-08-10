@@ -21,7 +21,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class WriteAndReadNCI {
-    public static final String ONTOLOGY_LOCATION = "/Users/tredmond/work/Shared/ontologies/NCI/Thesaurus-11.01e-fixed-annotations.owl";
+    public static final String ONTOLOGY_LOCATION = "/home/redmond/work/Shared/ontologies/NCI/Thesaurus-11.01e-fixed-annotations.owl";
     
     /*
      * Matthew's work should make this a couple of orders of magnitude faster!
@@ -44,6 +44,23 @@ public class WriteAndReadNCI {
      *     Took 45355 ms.
      *     Reading a small section of the file
      *     Took 45882 ms.
+     *     
+     * Loading ontology
+     * Without buffering...
+     *     Writing history file
+     *     Took 4141 ms.
+     *     Take a deep breath...
+     *     Reading file
+     *     Took 4024 ms.
+     *     Reading a small section of the file
+     *     Took 5643 ms.
+     *     Reading file
+     *     Took 4636 ms.
+     *     Reading a small section of the file
+     *     Took 4278 ms.
+    *
+     * A Matthew-like parser gave an order of magnitude improvement:
+
      */
     public static void main(String[] args) throws Exception {
         OWLOntology ontology = loadOntology();
@@ -60,6 +77,7 @@ public class WriteAndReadNCI {
         DocumentFactoryImpl factory1 = new DocumentFactoryImpl();
         File f1 = writeAxioms(ontology, factory1);
         breath();
+        readAxioms(f1, factory1);
         readAxioms(f1, factory1);
     }
     

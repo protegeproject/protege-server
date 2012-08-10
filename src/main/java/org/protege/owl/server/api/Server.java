@@ -22,8 +22,6 @@ public interface Server {
 	ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException;
 
 	ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits) throws IOException;
-	
-	CommitWhiteBoard getCommitWhiteBoard();
-	
+		
 	void shutdown();
 }

@@ -258,5 +258,22 @@
             </classpath>
         </java>
     </target>
+
+    <target name = "profile" depends="init">
+        <java fork = "true" dir = "${server.dir}" 
+              classname = "org.protege.osgi.framework.Launcher">
+            <jvmarg value = "-Xmx3000M"/>
+            <jvmarg value="-Djava.util.logging.config.file=./logging.properties"/>
+        	<jvmarg value="-DentityExpansionLimit=100000000"/>
+        	<jvmarg value="-Dfile.encoding=UTF-8"/>
+        	<jvmarg value="-Dorg.protege.owl.server.configuration=metaproject.owl"/>
+            <jvmarg value="-agentpath:/home/redmond/work/packages/yjp-9.5.6/bin/linux-x86-64/libyjpagent.so"/>
+            <classpath>
+              <pathelement path="${protege.osgi}"/>
+              <pathelement path="${protege.launcher}"/>
+            </classpath>
+        </java>
+    </target>
 	
+
 </project>

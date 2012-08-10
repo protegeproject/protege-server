@@ -27,4 +27,14 @@ public class ServerDocumentImpl implements ServerDocument, Serializable {
 		ServerDocument other = (ServerDocument) o;
 		return serverLocation.equals(other.getServerLocation());
 	}
+	
+	@Override
+	public int hashCode() {
+	    return serverLocation.hashCode();
+	}
+	
+	@Override
+	public int compareTo(ServerDocument o) {
+	    return serverLocation.compareTo(o.getServerLocation());
+	}
 }

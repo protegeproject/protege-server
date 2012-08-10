@@ -47,23 +47,7 @@ public class ChangeUtilities {
      * That is to say that changes that will have no effect on the net result are removed.
      */
     public static List<OWLOntologyChange> normalizeChangeDelta(List<OWLOntologyChange> changes) {
-        List<OWLOntologyChange> result = new ArrayList<OWLOntologyChange>();
-        // ToDo - this is an O(N^2) algorithm - I think it can be linear time - this is important.
-        for (int i = 0; i < changes.size(); i++) {
-        	OWLOntologyChange change1 = changes.get(i);
-        	boolean overlap = false;
-        	for (int j = i + 1; j < changes.size(); j++) {
-        		OWLOntologyChange change2 = changes.get(j);
-        		if (overlappingChange(change1, change2)) {
-        			overlap = true;
-        			break;
-        		}
-        	}
-        	if (!overlap) {
-        		result.add(change1);
-        	}
-        }
-        return result;
+        return ChangeNormalizer.normalizeChangeDelta(changes);
     }
     
     public static ChangeDocument swapOrderOfChangeLists(DocumentFactory factory, ChangeDocument doc1, ChangeDocument doc2) {

@@ -1,7 +1,5 @@
 package org.protege.owl.server.impl;
 
-import java.io.Serializable;
-
 import org.protege.owl.server.api.ServerDirectory;
 import org.semanticweb.owlapi.model.IRI;
 
@@ -10,6 +8,11 @@ public class ServerDirectoryImpl extends ServerDocumentImpl implements ServerDir
 
 	public ServerDirectoryImpl(IRI serverLocation) {
 		super(serverLocation);
+	}
+	
+	@Override
+	public String toString() {
+	    return "<Dir: " + getServerLocation() + ">";
 	}
 
 }

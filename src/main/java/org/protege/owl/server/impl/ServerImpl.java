@@ -14,7 +14,6 @@ import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
-import org.protege.owl.server.api.CommitWhiteBoard;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
@@ -84,14 +83,12 @@ public class ServerImpl implements Server {
 	
 	private File root;
 	private DocumentFactory factory = new DocumentFactoryImpl();
-	private CommitWhiteBoard commitWhiteBoard;
 	
 	public ServerImpl(File root) {
 		if (!root.isDirectory() || !root.exists()) {
 			throw new IllegalStateException("Server does not have a valid root directory");
 		}
 		this.root = root;
-		commitWhiteBoard = new CommitWhiteBoardImpl(this);
 	}
 
 	@Override
@@ -170,7 +167,6 @@ public class ServerImpl implements Server {
 	                             ChangeMetaData metaData,
 	                             ChangeDocument changes, 
 	                             SortedSet<OntologyDocumentRevision> previousCommits) throws IOException {
-		commitWhiteBoard.init(doc, metaData, changes);
 		OWLOntology fakeOntology;
 		try {
 			fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
@@ -178,8 +174,8 @@ public class ServerImpl implements Server {
 		catch (OWLOntologyCreationException e) {
 			throw new IllegalStateException("Why me?", e);
 		}
-		List<OWLOntologyChange> serverChanges = commitWhiteBoard.getServerChangesSinceCommit().getChanges(fakeOntology, previousCommits);
-		ChangeDocument fullHistory = commitWhiteBoard.getFullChanges();
+		List<OWLOntologyChange> serverChanges = getChanges(u, doc, changes.getStartRevision(), null).getChanges(fakeOntology, previousCommits);
+		ChangeDocument fullHistory = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, null);
 		
 		OntologyDocumentRevision latestRevision = fullHistory.getEndRevision();
 		List<OWLOntologyChange> clientChanges = changes.getChanges(fakeOntology);
@@ -189,12 +185,7 @@ public class ServerImpl implements Server {
 		ChangeDocumentUtilities.writeChanges(fullHistoryAfterCommit, parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT));
 		return factory.createChangeDocument(changesToCommit, new ChangeMetaData(), fullHistory.getEndRevision());
 	}
-	
-	@Override
-	public CommitWhiteBoard getCommitWhiteBoard() {
-		return commitWhiteBoard;
-	}
-	
+
 	@Override
 	public void shutdown() {
 
