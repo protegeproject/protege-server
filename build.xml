@@ -16,6 +16,7 @@
   <property name = "src"               location = "./src/main/java"/>
   <property name = "testng.src"        location = "./src/test/java"/>
   <property name = "build"             location = "./build"/>
+  <property name = "gensrc"            location = "${build}/src"/>
   <property name = "classes"           location = "${build}/classes"/>
   <property name = "server.dir"        location = "${build}/server"/>
   <property name = "server.bundles"    location = "${server.dir}/bundles"/>
@@ -74,6 +75,20 @@
     </path>
   </target>
   
+  <target name="generate.src" depends="init,checkProtegeLibsAndReport">
+  	<delete dir="${gensrc}"/>
+    <property name="authorizationsrc" 
+              location="${gensrc}/org/protege/owl/server/policy/authorize/generated"/>
+  	<mkdir dir="${authorizationsrc}"/>
+    <java classname="org.antlr.Tool" dir="./etc" fork="true">
+      <classpath>
+        <pathelement location="./lib/antlr-3.4-complete-no-antlrv2.jar"/>
+      </classpath>
+      <arg value="-o"/> <arg value="${parser.dir}"/>
+      <arg value="Authorization.g"/>
+    </java>
+  </target>
+
   
   <target name = "compile" depends="init,checkProtegeLibsAndReport">
     <javac srcdir = "${src}"
