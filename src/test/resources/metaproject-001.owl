@@ -49,7 +49,7 @@
     <DataPropertyAssertion>
         <DataProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasServerRootPath"/>
         <NamedIndividual IRI="#testServer"/>
-        <Literal datatypeIRI="&xsd;string">build/server.root</Literal>
+        <Literal datatypeIRI="&xsd;string">build/server/root</Literal>
     </DataPropertyAssertion>
 </Ontology>
 

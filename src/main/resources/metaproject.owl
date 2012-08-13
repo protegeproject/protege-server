@@ -51,6 +51,7 @@ ObjectPropertyDomain(<http://protege.stanford.edu/ontologies/metaproject.owl#has
 ObjectPropertyRange(<http://protege.stanford.edu/ontologies/metaproject.owl#hasTransport> <http://protege.stanford.edu/ontologies/metaproject.owl#ServerTransport>)
 Declaration(ObjectProperty(<http://protege.stanford.edu/ontologies/metaproject.owl#serverComponent>))
 ObjectPropertyRange(<http://protege.stanford.edu/ontologies/metaproject.owl#serverComponent> <http://protege.stanford.edu/ontologies/metaproject.owl#ServerComponent>)
+Declaration(DataProperty(<http://protege.stanford.edu/ontologies/metaproject.owl#hasConfigurationDir>))
 Declaration(DataProperty(<http://protege.stanford.edu/ontologies/metaproject.owl#hasHostName>))
 FunctionalDataProperty(<http://protege.stanford.edu/ontologies/metaproject.owl#hasHostName>)
 DataPropertyRange(<http://protege.stanford.edu/ontologies/metaproject.owl#hasHostName> xsd:string)
