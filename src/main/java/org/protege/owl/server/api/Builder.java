@@ -1,9 +1,8 @@
 package org.protege.owl.server.api;
 
-import org.semanticweb.owlapi.model.OWLOntology;
 
 public interface Builder {
-	void setConfiguration(OWLOntology configuration);
+	void initialise(ServerConfiguration configuration);
 	
 	void addServerComponentFactory(ServerComponentFactory factory);
 
