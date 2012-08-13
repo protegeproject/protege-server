@@ -24,9 +24,9 @@ public interface Server {
 
 	ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits) throws IOException;
 
-	File getConfiguration(String fileName);
+	File getConfiguration(String fileName) throws IOException;
 	
-	File getConfiguration(IRI serverIRI, String extension);
+	File getConfiguration(ServerDocument doc, String extension) throws IOException;
 	
 	void shutdown();
 }
