@@ -13,7 +13,7 @@ public class LocalBasicServerTest extends AbstractBasicServerTest {
 	@Override
 	public void startServer() {
 		TestUtilities.initializeServerRoot();
-		server = new ServerImpl(TestUtilities.ROOT_DIRECTORY);
+		server = new ServerImpl(TestUtilities.ROOT_DIRECTORY, TestUtilities.CONFIGURATION_DIRECTORY);
 	}
 	
 	@Override
