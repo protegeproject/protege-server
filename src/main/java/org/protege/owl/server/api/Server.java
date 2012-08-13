@@ -23,10 +23,17 @@ public interface Server {
 	ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException;
 
 	ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits) throws IOException;
-
-	File getConfiguration(String fileName) throws IOException;
-	
-	File getConfiguration(ServerDocument doc, String extension) throws IOException;
 	
 	void shutdown();
+	
+	/* Interfaces that are not visible to the client. */
+	
+   File getConfiguration(String fileName) throws IOException;
+	    
+   File getConfiguration(ServerDocument doc, String extension) throws IOException;
+   
+   void setTransports(Collection<ServerTransport> transports);
+   
+   Collection<ServerTransport> getTransports();
+	
 }

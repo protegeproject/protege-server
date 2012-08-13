@@ -85,7 +85,7 @@
         <pathelement location="./tools/antlr-3.4-complete-no-antlrv2.jar"/>
       </classpath>
       <arg value="-o"/> <arg value="${parser.dir}"/>
-      <arg value="Authorization.g"/>
+      <arg value="UsersAndGroups.g"/>
     </java>
   </target>
 

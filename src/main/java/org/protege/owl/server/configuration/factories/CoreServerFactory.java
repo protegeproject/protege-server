@@ -1,20 +1,16 @@
 package org.protege.owl.server.configuration.factories;
 
-import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_HOST_PORT;
-import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_ROOT_PATH;
-import static org.protege.owl.server.configuration.MetaprojectVocabulary.RMI_TRANSPORT;
-import static org.protege.owl.server.configuration.MetaprojectVocabulary.STANDARD_SERVER;
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_CONFIGURATION_PATH;
+import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_ROOT_PATH;
+import static org.protege.owl.server.configuration.MetaprojectVocabulary.STANDARD_SERVER;
 
 import java.io.File;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerComponentFactory;
 import org.protege.owl.server.api.ServerFilter;
 import org.protege.owl.server.api.ServerTransport;
-import org.protege.owl.server.connect.rmi.RMITransport;
 import org.protege.owl.server.impl.ServerImpl;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;

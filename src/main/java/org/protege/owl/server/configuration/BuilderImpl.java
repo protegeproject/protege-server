@@ -95,6 +95,7 @@ public class BuilderImpl implements Builder {
 			if (!isUp() && serverConstraints.satisfied(factories)) {
 				server = serverConstraints.buildServer(factories);
 				serverTransports = serverConstraints.buildServerTransports(factories, server);
+				server.setTransports(serverTransports);
 				logger.info("Server started");
 			}
 			success = true;

@@ -15,6 +15,10 @@ Annotation(rdfs:comment "This ontology contains all the pieces of the configurat
 
 When the running Protege server sees an import of this ontology, the Protege server will resolve this import locally without going to the network."@en)
 
+Declaration(Class(<http://protege.stanford.edu/ontologies/metaproject.owl#BasicAuthenticationManager>))
+AnnotationAssertion(rdfs:comment <http://protege.stanford.edu/ontologies/metaproject.owl#BasicAuthenticationManager> "This authentication manager depends on the RMI transport component because it uses
+a back channel for login.")
+SubClassOf(<http://protege.stanford.edu/ontologies/metaproject.owl#BasicAuthenticationManager> <http://protege.stanford.edu/ontologies/metaproject.owl#PolicyManager>)
 Declaration(Class(<http://protege.stanford.edu/ontologies/metaproject.owl#ConflictManager>))
 SubClassOf(<http://protege.stanford.edu/ontologies/metaproject.owl#ConflictManager> <http://protege.stanford.edu/ontologies/metaproject.owl#ServerFilter>)
 DisjointClasses(<http://protege.stanford.edu/ontologies/metaproject.owl#ConflictManager> <http://protege.stanford.edu/ontologies/metaproject.owl#PolicyManager>)

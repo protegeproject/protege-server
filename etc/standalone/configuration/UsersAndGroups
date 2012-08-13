@@ -1,0 +1,12 @@
+
+User: redmond Password: troglodyte
+  Groups: administrator redmond
+
+User: ttania Password: tania
+  Groups: administrator ttania
+
+User: noy Password: natalia
+  Groups: administrator noy
+
+User: guest Password: guest
+  Groups: guest

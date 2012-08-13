@@ -1,15 +1,14 @@
-grammar Authorization;
+grammar UsersAndGroups;
 
 @header{
 package org.protege.owl.server.policy.generated;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.protege.owl.server.api.User;
 
@@ -31,6 +30,9 @@ package org.protege.owl.server.policy.generated;
 	     return Collections.unmodifiableCollection(userMap.values());
 	 }
 	 
+	 public Collection<Group> getGroups() {
+	     return Collections.unmodifiableCollection(groupMap.values());
+	 }
 	 
 	 public Collection<Group> getGroups(User u) {
 	      return Collections.unmodifiableCollection(userToGroups.get(u));
@@ -41,14 +43,19 @@ top:  ( user ) * ;
 
 user : 'User:' username=ID 'Password:' password=ID { 
            UserImpl u = new UserImpl($username.getText(), $password.getText());
-           userMap.put($username.getText(), u); 
+           Collection<Group> userGroups = new TreeSet<Group>();
+           userMap.put($username.getText(), u);
+           userToGroups.put(u, userGroups);
        } 
        'Groups:'
-          ( group[ $username.getText() ] ) *
+          ( group[ u, userGroups ] ) *
        ;
        
-group[String user ]: groupName = ID {
-          String group = $groupName.getText();          
+group[UserImpl user, Collection<Group> userGroups ]: groupToken = ID {
+          String groupName = $groupToken.getText();
+          Group group = new Group(groupName);
+          groupMap.put(groupName, group);
+          userGroups.add(group);
        }
        ;
 

@@ -8,9 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
@@ -20,10 +18,10 @@ import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
+import org.protege.owl.server.api.ServerTransport;
 import org.protege.owl.server.api.User;
 import org.protege.owl.server.api.exception.DocumentAlreadyExistsException;
 import org.protege.owl.server.api.exception.DocumentNotFoundException;
-import org.protege.owl.server.changes.ChangeDocumentUtilities;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
 import org.protege.owl.server.util.ChangeUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -95,6 +93,7 @@ public class ServerImpl implements Server {
 	private File configurationDir;
 	private DocumentFactory factory = new DocumentFactoryImpl();
 	private ChangeDocumentPool pool;
+	private Collection<ServerTransport> transports = new ArrayList<ServerTransport>();
 	
 	public ServerImpl(File root, File configurationDir) {
 		if (!root.isDirectory() || !root.exists()) {
@@ -206,24 +205,7 @@ public class ServerImpl implements Server {
 	    pool.dispose();
 	}
 	
-	@Override
-	public File getConfiguration(String fileName) {
-	    return new File(configurationDir, fileName);
-	}
-	
-	@Override
-	public File getConfiguration(ServerDocument doc, String extension) throws DocumentNotFoundException {
-	    File f = parseServerIRI(doc.getServerLocation(), ServerObjectStatus.ANY);
-	    String fullName = f.getPath();
-	    String prefix;
-	    if (fullName.endsWith(ChangeDocument.CHANGE_DOCUMENT_EXTENSION)) {
-	        prefix = fullName.substring(0, fullName.length() - ChangeDocument.CHANGE_DOCUMENT_EXTENSION.length());
-	    }
-	    else {
-	        prefix = fullName;
-	    }
-	    return new File(prefix + extension);
-	}
+
 
 	private File parseServerIRI(IRI serverIRI, ServerObjectStatus expected) throws DocumentNotFoundException {
 		String path =  serverIRI.toURI().getPath();
@@ -251,5 +233,35 @@ public class ServerImpl implements Server {
 		return IRI.create(iriBuffer.toString());
 	}
 
+	/* Interfaces that are not visible to the client. */
 
+	@Override
+	public File getConfiguration(String fileName) {
+	    return new File(configurationDir, fileName);
+	}
+
+	@Override
+	public File getConfiguration(ServerDocument doc, String extension) throws DocumentNotFoundException {
+	    File f = parseServerIRI(doc.getServerLocation(), ServerObjectStatus.ANY);
+	    String fullName = f.getPath();
+	    String prefix;
+	    if (fullName.endsWith(ChangeDocument.CHANGE_DOCUMENT_EXTENSION)) {
+	        prefix = fullName.substring(0, fullName.length() - ChangeDocument.CHANGE_DOCUMENT_EXTENSION.length());
+	    }
+	    else {
+	        prefix = fullName;
+	    }
+	    return new File(prefix + extension);
+	}
+
+	@Override
+	public void setTransports(Collection<ServerTransport> transports) {
+	    this.transports.clear();
+	    this.transports.addAll(transports);
+	}
+
+	@Override
+	public Collection<ServerTransport> getTransports() {
+	    return Collections.unmodifiableCollection(transports);
+	}
 }

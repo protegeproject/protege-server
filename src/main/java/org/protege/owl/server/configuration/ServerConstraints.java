@@ -16,10 +16,12 @@ import org.semanticweb.owlapi.model.OWLOntology;
 public class ServerConstraints {
 	private OWLIndividual serverIndividual;
 
+	private FilterConstraint containingFilterConstraint;
 	private List<TransportConstraints> transportConstraints = new ArrayList<TransportConstraints>();
 	
 	public ServerConstraints(OWLOntology configuration, OWLIndividual serverIndividual) {
 		this.serverIndividual = serverIndividual;
+		containingFilterConstraint = FilterConstraint.getDelegateConstraint(configuration, serverIndividual);
 		Set<OWLIndividual> transports = serverIndividual.getObjectPropertyValues(HAS_TRANSPORT, configuration);
 		if (transports != null) {
 			for (OWLIndividual transport : transports) {
@@ -30,6 +32,9 @@ public class ServerConstraints {
 
 
 	public boolean satisfied(Set<ServerComponentFactory> factories) {
+	    if (containingFilterConstraint != null && !containingFilterConstraint.satisfied(factories)) {
+	        return false;
+	    }
 		for (TransportConstraints constraint : transportConstraints) {
 			if (!constraint.satisfied(factories)) {
 				return false;
@@ -56,12 +61,21 @@ public class ServerConstraints {
 	}
 	
 	public Server buildServer(Set<ServerComponentFactory> factories) {
+	    Server baseServer = null;
 		for (ServerComponentFactory factory : factories) {
 			if (factory.hasSuitableServer(serverIndividual)) {
-				return factory.createServer(serverIndividual);
+				baseServer = factory.createServer(serverIndividual);
 			}
 		}
-		throw new IllegalStateException("Expected to be ready to build the server...");
+		if (baseServer == null) {
+		    throw new IllegalStateException("Expected to be ready to build the server...");
+		}
+		else if (containingFilterConstraint != null) {
+		    return containingFilterConstraint.build(baseServer, factories);
+		}
+		else {
+		    return baseServer;
+		}
 	}
 	
 
