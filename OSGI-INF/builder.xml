@@ -5,7 +5,11 @@
 	<implementation class="org.protege.owl.server.configuration.BuilderImpl"/>
 	<service>
 		<provide interface="org.protege.owl.server.api.Builder"/>
-	</service>	
+	</service>
+	<reference name="CONFIGURATION"
+	    interface="org.protege.owl.server.api.ServerConfiguration"
+	    bind="initialise"
+	    cardinality="1..1"/>
 	<reference name="FACTORY"
 		interface="org.protege.owl.server.api.ServerComponentFactory"
 		bind="addServerComponentFactory"
