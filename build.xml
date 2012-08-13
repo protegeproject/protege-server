@@ -149,6 +149,7 @@
 
 
   <target name="setup.server.framework">
+    <mkdir dir="${server.dir}/configuration"/>
     <mkdir dir="${server.dir}/lib"/>
     <mkdir dir="${server.dir}/plugins"/>
     <mkdir dir="${server.dir}/root"/>
