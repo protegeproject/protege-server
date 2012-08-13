@@ -79,20 +79,29 @@ public class ServerImpl implements Server {
 				        (f.isFile() && f.getName().endsWith(ChangeDocument.CHANGE_DOCUMENT_EXTENSION));
 			}
 
+		},
+		
+		ANY {
+		    @Override
+		    public boolean isStatusOf(File f, boolean pooledDocumentFound) {
+		        return true;
+		    }
 		};
 		
 		public abstract boolean isStatusOf(File f, boolean pooledDocumentFound);
 	}
 	
 	private File root;
+	private File configurationDir;
 	private DocumentFactory factory = new DocumentFactoryImpl();
 	private ChangeDocumentPool pool;
 	
-	public ServerImpl(File root) {
+	public ServerImpl(File root, File configurationDir) {
 		if (!root.isDirectory() || !root.exists()) {
 			throw new IllegalStateException("Server does not have a valid root directory");
 		}
 		this.root = root;
+		this.configurationDir = configurationDir;
 		this.pool = new ChangeDocumentPool(factory, 15 * 60 * 1000);
 	}
 
@@ -195,6 +204,25 @@ public class ServerImpl implements Server {
 	@Override
 	public void shutdown() {
 	    pool.dispose();
+	}
+	
+	@Override
+	public File getConfiguration(String fileName) {
+	    return new File(configurationDir, fileName);
+	}
+	
+	@Override
+	public File getConfiguration(ServerDocument doc, String extension) throws DocumentNotFoundException {
+	    File f = parseServerIRI(doc.getServerLocation(), ServerObjectStatus.ANY);
+	    String fullName = f.getPath();
+	    String prefix;
+	    if (fullName.endsWith(ChangeDocument.CHANGE_DOCUMENT_EXTENSION)) {
+	        prefix = fullName.substring(0, fullName.length() - ChangeDocument.CHANGE_DOCUMENT_EXTENSION.length());
+	    }
+	    else {
+	        prefix = fullName;
+	    }
+	    return new File(prefix + extension);
 	}
 
 	private File parseServerIRI(IRI serverIRI, ServerObjectStatus expected) throws DocumentNotFoundException {
