@@ -1,5 +1,6 @@
 package org.protege.owl.server.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -22,6 +23,10 @@ public interface Server {
 	ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException;
 
 	ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits) throws IOException;
-		
+
+	File getConfiguration(String fileName);
+	
+	File getConfiguration(IRI serverIRI, String extension);
+	
 	void shutdown();
 }

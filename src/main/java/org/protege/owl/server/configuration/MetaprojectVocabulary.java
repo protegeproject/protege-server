@@ -28,6 +28,8 @@ public class MetaprojectVocabulary {
 	public static final OWLObjectProperty HAS_TRANSPORT;
 	
 	public static final OWLDataProperty HAS_ROOT_PATH;
+	public static final OWLDataProperty HAS_CONFIGURATION_PATH;
+	public static final OWLDataProperty HAS_POOL_TIMEOUT;
 	public static final OWLDataProperty HAS_HOST_NAME;
 	public static final OWLDataProperty HAS_HOST_PORT;
 	
@@ -41,9 +43,11 @@ public class MetaprojectVocabulary {
 		HAS_SERVER_FILTER = factory.getOWLObjectProperty(IRI.create(NS + "#hasServerFilter"));
 		HAS_TRANSPORT     = factory.getOWLObjectProperty(IRI.create(NS + "#hasTransport"));
 		
-		HAS_ROOT_PATH     = factory.getOWLDataProperty(IRI.create(NS + "#hasServerRootPath"));
-		HAS_HOST_NAME     = factory.getOWLDataProperty(IRI.create(NS + "#hasHostName"));
-		HAS_HOST_PORT     = factory.getOWLDataProperty(IRI.create(NS + "#hasHostPort"));
+		HAS_ROOT_PATH          = factory.getOWLDataProperty(IRI.create(NS + "#hasServerRootPath"));
+		HAS_CONFIGURATION_PATH = factory.getOWLDataProperty(IRI.create(NS + "#hasConfigurationDir"));
+		HAS_POOL_TIMEOUT       = factory.getOWLDataProperty(IRI.create(NS + "#hasPoolTimeout"));
+		HAS_HOST_NAME          = factory.getOWLDataProperty(IRI.create(NS + "#hasHostName"));
+		HAS_HOST_PORT          = factory.getOWLDataProperty(IRI.create(NS + "#hasHostPort"));
 	}
 
 	public static void addIRIMapper(OWLOntologyManager manager) {
