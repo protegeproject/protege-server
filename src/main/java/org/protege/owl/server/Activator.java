@@ -1,6 +1,7 @@
 package org.protege.owl.server;
 
 import java.io.File;
+import java.util.Hashtable;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -12,6 +13,7 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.protege.owl.server.api.Builder;
+import org.protege.owl.server.api.ServerConfiguration;
 import org.protege.owl.server.configuration.MetaprojectVocabulary;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -45,10 +47,17 @@ public class Activator implements BundleActivator {
 	private void loadConfiguration(BundleContext context, String configuration) throws OWLOntologyCreationException {
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 		MetaprojectVocabulary.addIRIMapper(manager);
-		OWLOntology ontology = manager.loadOntologyFromOntologyDocument(new File(configuration));
-		loadConfiguration(context, ontology);
+		final OWLOntology ontology = manager.loadOntologyFromOntologyDocument(new File(configuration));
+		context.registerService(ServerConfiguration.class, new ServerConfiguration() {
+		    @Override
+		    public OWLOntology getMetaOntology() {
+		        return ontology;
+		    }
+		}, 
+		new Hashtable<String, String>());
 	}
 
+	/*
 	private void loadConfiguration(final BundleContext context, final OWLOntology configuration) {
 		ServiceReference<Builder> builderSr = context.getServiceReference(Builder.class);
 		if (builderSr != null) {
@@ -84,6 +93,7 @@ public class Activator implements BundleActivator {
 			}
 		}
 	}
+	*/
 	
 	@Override
 	public void stop(BundleContext context) {
