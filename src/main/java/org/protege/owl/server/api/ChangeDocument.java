@@ -53,9 +53,7 @@ public interface ChangeDocument {
 	 * start revision to the end revision.
 	 * <p/>
 	 * If the start or the end revision is out of the range of the ChangeDocument then this call can 
-	 * fail with an exception.  A primary use of this call is to handle a collection of changes that have
-	 * been deserialized off of the disk.  The routine that is deserializing the change document may 
-	 * only want a subset of the changes from the ChangeDocument.
+	 * fail with an exception.
 	 * 
 	 * @param start
 	 * @param end
