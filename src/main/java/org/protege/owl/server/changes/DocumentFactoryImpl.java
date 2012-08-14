@@ -13,11 +13,6 @@ import java.util.SortedMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.coode.owlapi.owlxmlparser.OWLXMLParserHandler;
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
@@ -25,13 +20,8 @@ import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.VersionedOWLOntology;
 import org.protege.owl.server.changes.format.OWLInputStream;
-import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.xml.sax.SAXException;
 
 public class DocumentFactoryImpl implements DocumentFactory, Serializable {
     private static final long serialVersionUID = -4952738108103836430L;

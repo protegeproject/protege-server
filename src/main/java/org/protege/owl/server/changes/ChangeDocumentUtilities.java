@@ -9,10 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
-import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.semanticweb.owlapi.model.OWLOntologyChange;

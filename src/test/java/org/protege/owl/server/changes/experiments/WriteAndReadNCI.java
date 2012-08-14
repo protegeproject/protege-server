@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;

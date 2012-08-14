@@ -5,14 +5,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
 import org.semanticweb.owlapi.io.StringDocumentTarget;

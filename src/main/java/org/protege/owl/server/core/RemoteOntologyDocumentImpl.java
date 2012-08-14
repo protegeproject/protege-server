@@ -1,6 +1,5 @@
 package org.protege.owl.server.core;
 
-import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.semanticweb.owlapi.model.IRI;
 

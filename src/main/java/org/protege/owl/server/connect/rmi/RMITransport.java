@@ -8,9 +8,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.rmi.ssl.SslRMIClientSocketFactory;
-import javax.rmi.ssl.SslRMIServerSocketFactory;
-
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerTransport;
 

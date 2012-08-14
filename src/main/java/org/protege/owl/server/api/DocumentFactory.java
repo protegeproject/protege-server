@@ -3,7 +3,6 @@ package org.protege.owl.server.api;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.SortedMap;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
