@@ -53,7 +53,7 @@ public class RMIConnectionFactory implements ServerComponentFactory {
     public boolean hasSuitableServerTransport(OWLIndividual i) {
         OWLAxiom rightType = factory.getOWLClassAssertionAxiom(RMI_TRANSPORT, i);
         boolean hasRightType = ontology.containsAxiom(rightType);
-        return hasRightType && getServerPort(i) != null;
+        return hasRightType;
     }
 
     @Override
@@ -71,14 +71,14 @@ public class RMIConnectionFactory implements ServerComponentFactory {
         return Registry.REGISTRY_PORT;
     }
     
-    private Integer getServerPort(OWLIndividual i) {
+    private int getServerPort(OWLIndividual i) {
         for (OWLLiteral hostPortLiteral : i.getDataPropertyValues(HAS_SERVER_PORT, ontology)) {
             if (hostPortLiteral.isInteger()) {
                 int port = hostPortLiteral.parseInteger();
                 return port;
             }
         }
-        return null;
+        return 0;
     }
     
     @Override

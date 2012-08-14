@@ -1,21 +1,25 @@
 package org.protege.owl.server.connect.rmi;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.rmi.NoSuchObjectException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.RMIClientSocketFactory;
-import java.rmi.server.RMIServerSocketFactory;
-import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.rmi.ssl.SslRMIClientSocketFactory;
+import javax.rmi.ssl.SslRMIServerSocketFactory;
+
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerTransport;
 
+/*
+ * ToDo - add SslRMIServerSocketFactory and SSLRMIClientSocketFactory
+ *        to make this work I need to setup some crypto as otherwise there are handshake failures.
+ *        also I need to remember to add this to the guys that use the RMI transport for a back channel.
+ *        I may be able to find these by looking at the callers of getServerPort() - I will know if this works shortly.
+ */
 public class RMITransport implements ServerTransport {
 	public static final String SERVER_NAME = "OWL 2 Server";
 	
@@ -23,7 +27,6 @@ public class RMITransport implements ServerTransport {
 	RemoteServer exportedServer;
 	private Registry registry;
 	private int rmiRegistryPort;
-	private boolean hasServerPort;
 	private int serverPort;
 	
 	public RMITransport(int rmiRegistryPort, int serverPort) {
@@ -52,7 +55,8 @@ public class RMITransport implements ServerTransport {
 		finally {
 			Thread.currentThread().setContextClassLoader(oldClassLoader);
 		}
-		logger.info("Server exported via rmi on port " + rmiRegistryPort);
+		logger.info("Server advertised via rmi on port " + rmiRegistryPort);
+		logger.info("Server exported via rmi on port " + serverPort);
 	}
 	
 	@Override

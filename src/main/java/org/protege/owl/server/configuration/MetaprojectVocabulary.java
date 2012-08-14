@@ -18,7 +18,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.util.SimpleIRIMapper;
 
 public class MetaprojectVocabulary {
-	public static final String NS = "http://protege.stanford.edu/ontologies/metaproject.owl";
+	public static final String NS = "http://protege.stanford.edu/ontologies/owl.server/metaproject.owl";
 	
 	public static final OWLClass SERVER;
 	public static final OWLClass STANDARD_SERVER;

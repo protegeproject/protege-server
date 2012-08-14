@@ -10,18 +10,18 @@
 
 
 <Ontology xmlns="http://www.w3.org/2002/07/owl#"
-     xml:base="http://protege.stanford.edu/ontologies/test-metaproject-001"
+     xml:base="http://protege.stanford.edu/ontologies/owl.server/test-metaproject-001"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
      xmlns:xml="http://www.w3.org/XML/1998/namespace"
-     ontologyIRI="http://protege.stanford.edu/ontologies/test-metaproject-001">
+     ontologyIRI="http://protege.stanford.edu/ontologies/owl.server/test-metaproject-001">
     <Prefix name="" IRI="http://www.w3.org/2002/07/owl#"/>
     <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
     <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
     <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
     <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
-    <Import>http://protege.stanford.edu/ontologies/metaproject.owl</Import>
+    <Import>http://protege.stanford.edu/ontologies/owl.server/metaproject.owl</Import>
     <Declaration>
         <NamedIndividual IRI="#testRMITransport"/>
     </Declaration>
@@ -29,30 +29,30 @@
         <NamedIndividual IRI="#testServer"/>
     </Declaration>
     <ClassAssertion>
-        <Class IRI="http://protege.stanford.edu/ontologies/metaproject.owl#RMI"/>
+        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#RMI"/>
         <NamedIndividual IRI="#testRMITransport"/>
     </ClassAssertion>
     <ClassAssertion>
-        <Class IRI="http://protege.stanford.edu/ontologies/metaproject.owl#StandardOWL2Server"/>
+        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#StandardOWL2Server"/>
         <NamedIndividual IRI="#testServer"/>
     </ClassAssertion>
     <ObjectPropertyAssertion>
-        <ObjectProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasTransport"/>
+        <ObjectProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasTransport"/>
         <NamedIndividual IRI="#testServer"/>
         <NamedIndividual IRI="#testRMITransport"/>
     </ObjectPropertyAssertion>
     <DataPropertyAssertion>
-        <DataProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasRegistryPort"/>
+        <DataProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasRegistryPort"/>
         <NamedIndividual IRI="#testRMITransport"/>
         <Literal datatypeIRI="&xsd;integer">5100</Literal>
     </DataPropertyAssertion>
     <DataPropertyAssertion>
-        <DataProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasServerPort"/>
+        <DataProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasServerPort"/>
         <NamedIndividual IRI="#testRMITransport"/>
         <Literal datatypeIRI="&xsd;integer">5200</Literal>
     </DataPropertyAssertion>
     <DataPropertyAssertion>
-        <DataProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasServerRootPath"/>
+        <DataProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasServerRootPath"/>
         <NamedIndividual IRI="#testServer"/>
         <Literal datatypeIRI="&xsd;string">build/server/root</Literal>
     </DataPropertyAssertion>
