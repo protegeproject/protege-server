@@ -79,7 +79,7 @@
   	<delete dir="${gensrc}"/>
     <property name="parser.dir" 
               location="${gensrc}/org/protege/owl/server/policy/generated"/>
-  	<mkdir dir="${authorizationsrc}"/>
+  	<mkdir dir="${parser.dir}"/>
     <java classname="org.antlr.Tool" dir="./etc" fork="true">
       <classpath>
         <pathelement location="./tools/antlr-3.4-complete-no-antlrv2.jar"/>

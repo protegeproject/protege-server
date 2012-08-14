@@ -42,7 +42,7 @@
         <NamedIndividual IRI="#testRMITransport"/>
     </ObjectPropertyAssertion>
     <DataPropertyAssertion>
-        <DataProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasHostPort"/>
+        <DataProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasRegistryPort"/>
         <NamedIndividual IRI="#testRMITransport"/>
         <Literal datatypeIRI="&xsd;integer">5100</Literal>
     </DataPropertyAssertion>

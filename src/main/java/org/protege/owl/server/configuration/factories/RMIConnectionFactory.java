@@ -1,9 +1,10 @@
 package org.protege.owl.server.configuration.factories;
 
-import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_HOST_PORT;
+import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_REGISTRY_PORT;
+import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_SERVER_PORT;
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.RMI_TRANSPORT;
 
-import java.util.Set;
+import java.rmi.registry.Registry;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.Server;
@@ -52,20 +53,29 @@ public class RMIConnectionFactory implements ServerComponentFactory {
     public boolean hasSuitableServerTransport(OWLIndividual i) {
         OWLAxiom rightType = factory.getOWLClassAssertionAxiom(RMI_TRANSPORT, i);
         boolean hasRightType = ontology.containsAxiom(rightType);
-        Set<OWLLiteral> ports = i.getDataPropertyValues(HAS_HOST_PORT, ontology);
-        if (hasRightType && (ports == null || ports.size() != 1)) {
-            logger.warning("OWL Individual " + i + " has the right type for an rmi transport plugin but doesn't have its ports correctly configured");
-            return false;
-        }
-        return hasRightType;
+        return hasRightType && getServerPort(i) != null;
     }
 
     @Override
     public ServerTransport createServerTransport(OWLIndividual i) {
-        for (OWLLiteral hostPortLiteral : i.getDataPropertyValues(HAS_HOST_PORT, ontology)) {
+        return new RMITransport(getRegistryPort(i), getServerPort(i));
+    }
+    
+    private int getRegistryPort(OWLIndividual i) {
+        for (OWLLiteral hostPortLiteral : i.getDataPropertyValues(HAS_REGISTRY_PORT, ontology)) {
             if (hostPortLiteral.isInteger()) {
                 int port = hostPortLiteral.parseInteger();
-                return new RMITransport(port);
+                return port;
+            }
+        }
+        return Registry.REGISTRY_PORT;
+    }
+    
+    private Integer getServerPort(OWLIndividual i) {
+        for (OWLLiteral hostPortLiteral : i.getDataPropertyValues(HAS_SERVER_PORT, ontology)) {
+            if (hostPortLiteral.isInteger()) {
+                int port = hostPortLiteral.parseInteger();
+                return port;
             }
         }
         return null;

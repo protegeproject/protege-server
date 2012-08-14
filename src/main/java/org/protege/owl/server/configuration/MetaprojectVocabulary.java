@@ -31,7 +31,8 @@ public class MetaprojectVocabulary {
 	public static final OWLDataProperty HAS_CONFIGURATION_PATH;
 	public static final OWLDataProperty HAS_POOL_TIMEOUT;
 	public static final OWLDataProperty HAS_HOST_NAME;
-	public static final OWLDataProperty HAS_HOST_PORT;
+	public static final OWLDataProperty HAS_REGISTRY_PORT;
+	public static final OWLDataProperty HAS_SERVER_PORT;
 	
 	
 	static {
@@ -47,7 +48,8 @@ public class MetaprojectVocabulary {
 		HAS_CONFIGURATION_PATH = factory.getOWLDataProperty(IRI.create(NS + "#hasConfigurationDir"));
 		HAS_POOL_TIMEOUT       = factory.getOWLDataProperty(IRI.create(NS + "#hasPoolTimeout"));
 		HAS_HOST_NAME          = factory.getOWLDataProperty(IRI.create(NS + "#hasHostName"));
-		HAS_HOST_PORT          = factory.getOWLDataProperty(IRI.create(NS + "#hasHostPort"));
+		HAS_REGISTRY_PORT      = factory.getOWLDataProperty(IRI.create(NS + "#hasRegistryPort"));
+		HAS_SERVER_PORT        = factory.getOWLDataProperty(IRI.create(NS + "#hasServerPort"));
 	}
 
 	public static void addIRIMapper(OWLOntologyManager manager) {
