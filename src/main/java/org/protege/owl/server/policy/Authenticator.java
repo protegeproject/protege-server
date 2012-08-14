@@ -1,11 +1,15 @@
 package org.protege.owl.server.policy;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.SortedSet;
 
+import org.antlr.runtime.ANTLRInputStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.OntologyDocumentRevision;
@@ -17,14 +21,25 @@ import org.protege.owl.server.api.ServerFilter;
 import org.protege.owl.server.api.ServerTransport;
 import org.protege.owl.server.api.User;
 import org.protege.owl.server.api.exception.DocumentNotFoundException;
+import org.protege.owl.server.policy.generated.UsersAndGroupsLexer;
+import org.protege.owl.server.policy.generated.UsersAndGroupsParser;
 import org.semanticweb.owlapi.model.IRI;
 
 public class Authenticator extends ServerFilter {
     
-    public Authenticator(Server delegate) {
+    public Authenticator(Server delegate) throws IOException, RecognitionException {
         super(delegate);
+        parse();
     }
-
+    
+    private void parse() throws IOException, RecognitionException {
+        File usersAndGroups = getConfiguration("UsersAndGroups");
+        ANTLRInputStream input = new ANTLRInputStream(new FileInputStream(usersAndGroups));
+        UsersAndGroupsLexer lexer = new UsersAndGroupsLexer(input);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        UsersAndGroupsParser parser = new UsersAndGroupsParser(tokens);
+        parser.top();
+    }
 
     public ServerDocument getServerDocument(User u, IRI serverIRI) throws DocumentNotFoundException {
         return getDelegate().getServerDocument(u, serverIRI);

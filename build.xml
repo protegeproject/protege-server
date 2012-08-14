@@ -25,7 +25,7 @@
   <property name = "manifest.bundlor"  location = "./META-INF/manifest.bundlor"/>
   
   <property name = "lib.testng"        location = "./tools/testng-5.14.7.jar"/>
-  <property name = "lib.antlr"         location = "./tools/antlr-3.4-complete-no-antlrv2.jar"/>
+  <property name = "lib.antlr"         location = "./lib/antlr-3.4-complete-no-antlrv2.jar"/>
   
   <taskdef name="check.dependencies"
   	       classname="org.protege.ant.ProtegeDependencies">
@@ -72,6 +72,7 @@
       <pathelement location="${equinox.registry}"/>
       <pathelement location="${owl.lib}"/>
       <pathelement location="./lib/serialize.jar"/>
+      <pathelement location="${lib.antlr}"/>
     </path>
   </target>
   
@@ -82,7 +83,7 @@
   	<mkdir dir="${parser.dir}"/>
     <java classname="org.antlr.Tool" dir="./etc" fork="true">
       <classpath>
-        <pathelement location="./tools/antlr-3.4-complete-no-antlrv2.jar"/>
+        <pathelement location="${lib.antlr}"/>
       </classpath>
       <arg value="-o"/> <arg value="${parser.dir}"/>
       <arg value="UsersAndGroups.g"/>
@@ -90,8 +91,8 @@
   </target>
 
   
-  <target name = "compile" depends="init,checkProtegeLibsAndReport">
-    <javac srcdir = "${src}"
+  <target name = "compile" depends="init,checkProtegeLibsAndReport,generate.src">
+    <javac srcdir = "${src}:${gensrc}"
            destdir = "${classes}" 
            debug="on"
            includeAntRuntime="false">
@@ -101,7 +102,10 @@
           classname="org.protege.owl.server.connect.rmi.RemoteServerImpl">
       <classpath refid = "project.classpath"/>  
     </rmic>
-  	<copy file="./lib/serialize.jar" todir="${classes}/lib"/>
+  	<copy todir="${classes}/lib">
+      <fileset dir="./lib" includes="**/*.jar"/>
+  	</copy>
+
   </target>
   
   <target name = "testng.compile" depends="init,checkProtegeLibsAndReport">
