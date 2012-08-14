@@ -11,7 +11,7 @@ import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerComponentFactory;
 import org.protege.owl.server.api.ServerFilter;
 import org.protege.owl.server.api.ServerTransport;
-import org.protege.owl.server.impl.ServerImpl;
+import org.protege.owl.server.core.ServerImpl;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLIndividual;

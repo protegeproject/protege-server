@@ -1,4 +1,4 @@
- package org.protege.owl.server.impl;
+ package org.protege.owl.server.core;
 
 import java.io.Serializable;
 

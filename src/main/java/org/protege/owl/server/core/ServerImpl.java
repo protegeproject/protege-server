@@ -1,4 +1,4 @@
-package org.protege.owl.server.impl;
+package org.protege.owl.server.core;
 
 import java.io.File;
 import java.io.IOException;
