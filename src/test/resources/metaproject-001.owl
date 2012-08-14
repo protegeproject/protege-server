@@ -47,6 +47,11 @@
         <Literal datatypeIRI="&xsd;integer">5100</Literal>
     </DataPropertyAssertion>
     <DataPropertyAssertion>
+        <DataProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasServerPort"/>
+        <NamedIndividual IRI="#testRMITransport"/>
+        <Literal datatypeIRI="&xsd;integer">5200</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
         <DataProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasServerRootPath"/>
         <NamedIndividual IRI="#testServer"/>
         <Literal datatypeIRI="&xsd;string">build/server/root</Literal>

@@ -23,6 +23,7 @@ public class RMITransport implements ServerTransport {
 	RemoteServer exportedServer;
 	private Registry registry;
 	private int rmiRegistryPort;
+	private boolean hasServerPort;
 	private int serverPort;
 	
 	public RMITransport(int rmiRegistryPort, int serverPort) {

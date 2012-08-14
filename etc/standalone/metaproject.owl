@@ -42,11 +42,12 @@
         <NamedIndividual IRI="#rmiTransport"/>
     </ObjectPropertyAssertion>
     <DataPropertyAssertion>
-        <Annotation>
-            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
-            <Literal datatypeIRI="&rdf;PlainLiteral">This port number must correspond to the port used to make the connection in the corresponding unit tests...</Literal>
-        </Annotation>
-        <DataProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasHostPort"/>
+        <DataProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasRegistryPort"/>
+        <NamedIndividual IRI="#rmiTransport"/>
+        <Literal datatypeIRI="&xsd;integer">5100</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="http://protege.stanford.edu/ontologies/metaproject.owl#hasServerPort"/>
         <NamedIndividual IRI="#rmiTransport"/>
         <Literal datatypeIRI="&xsd;integer">5100</Literal>
     </DataPropertyAssertion>
