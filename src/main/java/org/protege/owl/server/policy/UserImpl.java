@@ -36,5 +36,10 @@ public class UserImpl implements User, Serializable {
         User other = (UserImpl) obj;
         return name.equals(other.getUserName());
     }
+    
+    @Override
+    public String toString() {
+        return "[User: " + name + "]";
+    }
 
 }

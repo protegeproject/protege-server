@@ -29,4 +29,9 @@ public class Group implements Comparable<Group> {
     public int hashCode() {
         return groupName.hashCode();
     }
+    
+    @Override
+    public String toString() {
+        return "[Group " + groupName + "]";
+    }
 }
