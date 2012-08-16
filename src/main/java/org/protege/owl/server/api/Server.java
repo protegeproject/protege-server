@@ -1,36 +1,35 @@
 package org.protege.owl.server.api;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.SortedSet;
 
-import org.protege.owl.server.api.exception.DocumentNotFoundException;
+import org.protege.owl.server.api.exception.ServerException;
 import org.semanticweb.owlapi.model.IRI;
 
-// TODO - perhaps these should not be IOExceptions.
+
 public interface Server {
 		
-	ServerDocument getServerDocument(User u, IRI serverIRI) throws DocumentNotFoundException;
+	ServerDocument getServerDocument(User u, IRI serverIRI) throws ServerException;
 	
-	Collection<ServerDocument> list(User u, ServerDirectory dir) throws IOException;
+	Collection<ServerDocument> list(User u, ServerDirectory dir) throws ServerException;
 		
-	ServerDirectory createDirectory(User u, IRI serverIRI) throws IOException;
+	ServerDirectory createDirectory(User u, IRI serverIRI) throws ServerException;
 
-	RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws IOException;
+	RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws ServerException;
 	
-	ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException;
+	ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws ServerException;
 
-	ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits) throws IOException;
+	ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits) throws ServerException;
 	
 	void shutdown();
 	
 	/* Interfaces that are not visible to the client. */
 	
-   File getConfiguration(String fileName) throws IOException;
+   File getConfiguration(String fileName) throws ServerException;
 	    
-   File getConfiguration(ServerDocument doc, String extension) throws IOException;
+   File getConfiguration(ServerDocument doc, String extension) throws ServerException;
    
    void setTransports(Collection<ServerTransport> transports);
    
