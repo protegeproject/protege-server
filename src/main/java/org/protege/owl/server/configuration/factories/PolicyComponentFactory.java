@@ -57,5 +57,9 @@ public class PolicyComponentFactory implements ServerComponentFactory {
     public ServerTransport createServerTransport(OWLIndividual i) {
         return null;
     }
+    
+    public String toString() {
+        return "Policy Components Factory";
+    }
 
 }

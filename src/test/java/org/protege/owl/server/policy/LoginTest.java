@@ -3,6 +3,7 @@ package org.protege.owl.server.policy;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -75,5 +76,53 @@ public class LoginTest {
         }
         Assert.assertTrue(hackerFailed);
     }
+    
+    @Test
+    public void testHackedLoginV2() throws NotBoundException, IOException, OWLServerException {
+        RMILoginUtility.login("localhost", rmiPort, "redmond", "troglodyte");
+        User tim = new UserExt("redmond", "troglodyte");
+        RMIClient client = new RMIClient(tim,"localhost", rmiPort);
+        client.initialise();
+        boolean hackerFailed = false;
+        try {
+            client.createRemoteDirectory(IRI.create(RMIClient.SCHEME + "://localhost:" + rmiPort + "/test"));
+        }
+        catch (UserNotAuthenticated una) {
+            hackerFailed = true;
+        }
+        Assert.assertTrue(hackerFailed);
+    }
+    
+    @Test
+    public void testHackedLoginV3() throws NotBoundException, IOException, OWLServerException {
+        UserExt tim = new UserExt("redmond", "troglodyte");
+        tim.setSecret(UUID.randomUUID().toString());
+        RMIClient client = new RMIClient(tim,"localhost", rmiPort);
+        client.initialise();
+        boolean hackerFailed = false;
+        try {
+            client.createRemoteDirectory(IRI.create(RMIClient.SCHEME + "://localhost:" + rmiPort + "/test"));
+        }
+        catch (UserNotAuthenticated una) {
+            hackerFailed = true;
+        }
+        Assert.assertTrue(hackerFailed);
+    }
 
+    @Test
+    public void testHackedLoginV4() throws NotBoundException, IOException, OWLServerException {
+        RMILoginUtility.login("localhost", rmiPort, "redmond", "troglodyte");
+        UserExt tim = new UserExt("redmond", "troglodyte");
+        tim.setSecret(UUID.randomUUID().toString());
+        RMIClient client = new RMIClient(tim,"localhost", rmiPort);
+        client.initialise();
+        boolean hackerFailed = false;
+        try {
+            client.createRemoteDirectory(IRI.create(RMIClient.SCHEME + "://localhost:" + rmiPort + "/test"));
+        }
+        catch (UserNotAuthenticated una) {
+            hackerFailed = true;
+        }
+        Assert.assertTrue(hackerFailed);
+    }
 }
