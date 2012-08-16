@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.api.exception.ServerException;
 import org.protege.owl.server.changes.ChangeDocumentUtilities;
 
 public class ChangeDocumentPoolEntry {
@@ -48,7 +49,7 @@ public class ChangeDocumentPoolEntry {
         executor.submit(new WriteChanges(changes));
     }
     
-    public ChangeDocument getChangeDocument() throws IOException {
+    public ChangeDocument getChangeDocument() throws ServerException {
         touch();
         if (changeDocument == null) {
             try {
@@ -58,8 +59,8 @@ public class ChangeDocumentPoolEntry {
                 throw new RuntimeException(ie);
             }
             catch (ExecutionException ee) {
-                if (ee.getCause() instanceof IOException) {
-                    throw (IOException) ee.getCause();
+                if (ee.getCause() instanceof ServerException) {
+                    throw (ServerException) ee.getCause();
                 }
                 else {
                     throw new RuntimeException(ee);

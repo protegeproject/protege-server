@@ -24,14 +24,10 @@ public class UserParserTest {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         UsersAndGroupsParser parser = new UsersAndGroupsParser(tokens);
         parser.top();
-        User redmond = null;
-        for (User someone : parser.getUsers()) {
-            if (someone.getUserName().equals("redmond")) {
-                redmond = someone;
-            }
-        }
+        UserDatabase db = parser.getUserDatabase();
+        User redmond = db.getUser("redmond");
         Assert.assertNotNull(redmond);
-        Assert.assertTrue(redmond instanceof UserImpl);
-        Assert.assertEquals(((UserImpl) redmond).getSecret(), "troglodyte");
+        Assert.assertTrue(redmond instanceof UserExt);
+        Assert.assertEquals(((UserExt) redmond).getPassword(), "troglodyte");
     }
 }

@@ -1,29 +1,32 @@
 Manifest-Version: 1.0
-Export-Package: org.protege.owl.server;version="2.0.1.2012_08_14_1118"
+Export-Package: org.protege.owl.server;version="2.0.1.2012_08_15_0515"
  ;uses:="org.osgi.framework,org.protege.owl.server.api,org.semanticweb
- .owlapi.model",org.protege.owl.server.api;version="2.0.1.2012_08_14_1
- 118";uses:="org.protege.owl.server.api.exception,org.semanticweb.owla
+ .owlapi.model",org.protege.owl.server.api;version="2.0.1.2012_08_15_0
+ 515";uses:="org.protege.owl.server.api.exception,org.semanticweb.owla
  pi.model",org.protege.owl.server.api.exception;version="2.0.1.2012_08
- _14_1118",org.protege.owl.server.changes;version="2.0.1.2012_08_14_11
- 18";uses:="org.protege.owl.server.api,org.semanticweb.owlapi.model",o
- rg.protege.owl.server.changes.format;version="2.0.1.2012_08_14_1118";
+ _15_0515",org.protege.owl.server.changes;version="2.0.1.2012_08_15_05
+ 15";uses:="org.protege.owl.server.api,org.semanticweb.owlapi.model",o
+ rg.protege.owl.server.changes.format;version="2.0.1.2012_08_15_0515";
  uses:="org.semanticweb.owlapi.model",org.protege.owl.server.configura
- tion;version="2.0.1.2012_08_14_1118";uses:="org.protege.owl.server.ap
+ tion;version="2.0.1.2012_08_15_0515";uses:="org.protege.owl.server.ap
  i,org.semanticweb.owlapi.model",org.protege.owl.server.configuration.
- factories;version="2.0.1.2012_08_14_1118";uses:="org.protege.owl.serv
+ factories;version="2.0.1.2012_08_15_0515";uses:="org.protege.owl.serv
  er.api,org.semanticweb.owlapi.model",org.protege.owl.server.connect.l
- ocal;version="2.0.1.2012_08_14_1118";uses:="org.protege.owl.server.ap
+ ocal;version="2.0.1.2012_08_15_0515";uses:="org.protege.owl.server.ap
  i,org.protege.owl.server.api.exception,org.protege.owl.server.util,or
  g.semanticweb.owlapi.model",org.protege.owl.server.connect.rmi;versio
- n="2.0.1.2012_08_14_1118";uses:="org.protege.owl.server.api,org.prote
- ge.owl.server.util,org.semanticweb.owlapi.model",org.protege.owl.serv
- er.core;version="2.0.1.2012_08_14_1118";uses:="org.protege.owl.server
- .api,org.protege.owl.server.api.exception,org.semanticweb.owlapi.mode
- l",org.protege.owl.server.policy;version="2.0.1.2012_08_14_1118";uses
- :="org.protege.owl.server.api,org.protege.owl.server.api.exception,or
- g.semanticweb.owlapi.model",org.protege.owl.server.util;version="2.0.
- 1.2012_08_14_1118";uses:="org.protege.owl.server.api,org.semanticweb.
- owlapi.model"
+ n="2.0.1.2012_08_15_0515";uses:="org.protege.owl.server.api,org.prote
+ ge.owl.server.api.exception,org.protege.owl.server.util,org.semanticw
+ eb.owlapi.model",org.protege.owl.server.core;version="2.0.1.2012_08_1
+ 5_0515";uses:="org.protege.owl.server.api,org.protege.owl.server.api.
+ exception,org.semanticweb.owlapi.model",org.protege.owl.server.policy
+ ;version="2.0.1.2012_08_15_0515";uses:="org.antlr.runtime,org.protege
+ .owl.server.api,org.protege.owl.server.api.exception,org.semanticweb.
+ owlapi.model",org.protege.owl.server.policy.generated;version="2.0.1.
+ 2012_08_15_0515";uses:="org.antlr.runtime,org.protege.owl.server.poli
+ cy",org.protege.owl.server.util;version="2.0.1.2012_08_15_0515";uses:
+ ="org.protege.owl.server.api,org.protege.owl.server.api.exception,org
+ .semanticweb.owlapi.model"
 Service-Component: OSGI-INF/*.xml
 Bundle-ClassPath: .,lib/antlr-3.4-complete-no-antlrv2.jar,lib/serializ
  e.jar
@@ -32,7 +35,7 @@ Tool: Bundlor 1.1.0.M04
 Bundle-Name: OWL Ontology Server
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: The Protege Development Team
-Bundle-Version: 2.0.1.2012_08_14_1118
+Bundle-Version: 2.0.1.2012_08_15_0515
 Bundle-Activator: org.protege.owl.server.Activator
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.protege.owl.server;singleton:="true"

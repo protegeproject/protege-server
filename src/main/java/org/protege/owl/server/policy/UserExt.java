@@ -4,19 +4,28 @@ import java.io.Serializable;
 
 import org.protege.owl.server.api.User;
 
-public class UserImpl implements User, Serializable {
+public class UserExt implements User, Serializable {
     private static final long serialVersionUID = -3590024420017662281L;
     private String name;
+    private transient String password;
     private String secret;
 
-    public UserImpl(String name, String secret) {
+    public UserExt(String name, String password) {
         this.name = name;
-        this.secret = secret;
+        this.password = password;
     }
 
     @Override
     public String getUserName() {
         return name;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+    
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
     
     public String getSecret() {
@@ -33,8 +42,13 @@ public class UserImpl implements User, Serializable {
         if (!(obj instanceof User)) {
             return false;
         }
-        User other = (UserImpl) obj;
+        User other = (User) obj;
         return name.equals(other.getUserName());
+    }
+    
+    @Override
+    public int compareTo(User other) {
+        return getUserName().compareTo(other.getUserName());
     }
     
     @Override

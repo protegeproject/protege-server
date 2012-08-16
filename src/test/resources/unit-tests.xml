@@ -9,6 +9,7 @@
             <class name="org.protege.owl.server.LocalBasicServerTest"/>
             <class name="org.protege.owl.server.RemoteBasicServerTest"/>
             <class name="org.protege.owl.server.policy.UserParserTest"/>
+            <class name="org.protege.owl.server.policy.LoginTest"/>
         </classes>
     </test>
 

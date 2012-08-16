@@ -13,7 +13,8 @@ import java.util.TreeSet;
 import org.protege.owl.server.api.User;
 
 import org.protege.owl.server.policy.Group;
-import org.protege.owl.server.policy.UserImpl;
+import org.protege.owl.server.policy.UserExt;
+import org.protege.owl.server.policy.UserDatabase;
 }
 
 @lexer::header{
@@ -22,40 +23,27 @@ package org.protege.owl.server.policy.generated;
 
 
 @members{
-     private Map<String, User> userMap = new HashMap<String, User>();
-     private Map<User, Collection<Group>> userToGroups = new HashMap<User, Collection<Group>>();
-     private Map<String, Group> groupMap = new TreeMap<String, Group>();
-
-	 public Collection<User> getUsers() {
-	     return Collections.unmodifiableCollection(userMap.values());
-	 }
-	 
-	 public Collection<Group> getGroups() {
-	     return Collections.unmodifiableCollection(groupMap.values());
-	 }
-	 
-	 public Collection<Group> getGroups(User u) {
-	      return Collections.unmodifiableCollection(userToGroups.get(u));
-	 }
+	private UserDatabase db = new UserDatabase();
+	
+	public UserDatabase getUserDatabase() {
+	    return db;
+	}
 }
 
 top:  ( user ) * ;
 
 user : 'User:' username=ID 'Password:' password=ID { 
-           UserImpl u = new UserImpl($username.getText(), $password.getText());
-           Collection<Group> userGroups = new TreeSet<Group>();
-           userMap.put($username.getText(), u);
-           userToGroups.put(u, userGroups);
+           UserExt u = new UserExt($username.getText(), $password.getText());
+		   db.addUser(u);
        } 
        'Groups:'
-          ( group[ u, userGroups ] ) *
+          ( group[ u ] ) *
        ;
        
-group[UserImpl user, Collection<Group> userGroups ]: groupToken = ID {
+group[UserExt user ]: groupToken = ID {
           String groupName = $groupToken.getText();
           Group group = new Group(groupName);
-          groupMap.put(groupName, group);
-          userGroups.add(group);
+		  db.addGroup(user, group);
        }
        ;
 

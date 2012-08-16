@@ -1,12 +1,12 @@
 package org.protege.owl.server;
 
-import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.protege.owl.server.api.Client;
+import org.protege.owl.server.api.exception.ServerException;
 import org.protege.owl.server.connect.rmi.RMIClient;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
@@ -23,32 +23,27 @@ public class RemoteBasicServerTest extends AbstractBasicServerTest {
 	}
 	
 	@Override
-	protected void startServer() throws IOException {
+	protected void startServer() throws ServerException {
 		try {
 			TestUtilities.initializeServerRoot();
 			framework = TestUtilities.startServer("server-basic-config.xml", "metaproject-001.owl");
 		}
-		catch (IOException ioe) {
-			throw ioe;
-		}
 		catch (Exception e) {
-			IOException ioe = new IOException(e.getMessage());
-			ioe.initCause(e);
-			throw ioe;
+			throw new ServerException(e.getMessage(),e);
 		}
 	}
 
 	@Override
-	public void stopServer() throws IOException {
+	public void stopServer() throws ServerException {
 		try {
 			framework.stop();
 			framework.waitForStop(60 * 60 * 1000);
 		}
 		catch (InterruptedException ie) {
-		    throw new IOException(ie);
+		    throw new ServerException(ie);
 		}
 		catch (BundleException be) {
-			throw new IOException(be);
+			throw new ServerException(be);
 		}
 	}
 
@@ -58,14 +53,17 @@ public class RemoteBasicServerTest extends AbstractBasicServerTest {
 	}
 	
 	@Override
-	protected Client createClient() throws RemoteException {
+	protected Client createClient() throws ServerException {
 		try {
-			RMIClient client = new RMIClient("localhost", rmiPort);
+			RMIClient client = new RMIClient(null, "localhost", rmiPort);
 			client.initialise();
 			return client;
 		}
+		catch (RemoteException re) {
+		    throw new ServerException(re);
+		}
 		catch (NotBoundException nbe) {
-			throw new RemoteException(nbe.getMessage(), nbe);
+			throw new ServerException(nbe.getMessage(), nbe);
 		}
 	}
 

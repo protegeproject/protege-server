@@ -2,7 +2,7 @@ package org.protege.owl.server.api.exception;
 
 import java.io.IOException;
 
-public class DocumentAlreadyExistsException extends IOException {
+public class DocumentAlreadyExistsException extends ServerException {
 	private static final long serialVersionUID = -3582077474042337256L;
 
 	public DocumentAlreadyExistsException() {

@@ -34,7 +34,7 @@ public class FilterConstraint {
     }
     
     public boolean satisfied(Set<ServerComponentFactory> factories) {
-        if (!containingFilterConstraint.satisfied(factories)) {
+        if (containingFilterConstraint != null && !containingFilterConstraint.satisfied(factories)) {
             return false;
         }
         for (ServerComponentFactory factory : factories) {

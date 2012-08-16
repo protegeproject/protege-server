@@ -38,6 +38,10 @@ public class RMITransport implements ServerTransport {
 	public int getServerPort() {
         return serverPort;
     }
+	
+	public Registry getRegistry() {
+	    return registry;
+	}
 
 	@Override
 	public void start(Server server) throws IOException {
