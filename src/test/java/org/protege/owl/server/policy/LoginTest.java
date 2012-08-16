@@ -13,7 +13,7 @@ import org.osgi.framework.launch.Framework;
 import org.protege.owl.server.TestUtilities;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.User;
-import org.protege.owl.server.api.exception.ServerException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.UserNotAuthenticated;
 import org.protege.owl.server.connect.rmi.RMIClient;
 import org.semanticweb.owlapi.model.IRI;
@@ -52,7 +52,7 @@ public class LoginTest {
     }
     
     @Test
-    public void testGoodLogin() throws NotBoundException, IOException, ServerException {
+    public void testGoodLogin() throws NotBoundException, IOException, OWLServerException {
         User tim = RMILoginUtility.login("localhost", rmiPort, "redmond", "troglodyte");
         RMIClient client = new RMIClient(tim,"localhost", rmiPort);
         client.initialise();
@@ -62,7 +62,7 @@ public class LoginTest {
     }
     
     @Test
-    public void testHackedLoginV1() throws NotBoundException, IOException, ServerException {
+    public void testHackedLoginV1() throws NotBoundException, IOException, OWLServerException {
         User tim = new UserExt("redmond", "troglodyte");
         RMIClient client = new RMIClient(tim,"localhost", rmiPort);
         client.initialise();

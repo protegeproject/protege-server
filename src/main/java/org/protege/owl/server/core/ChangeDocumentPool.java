@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.RemoteOntologyDocument;
-import org.protege.owl.server.api.exception.ServerException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.IRI;
 
 public class ChangeDocumentPool {
@@ -60,7 +60,7 @@ public class ChangeDocumentPool {
         }, timeout, timeout, TimeUnit.MILLISECONDS);
     }
     
-    public ChangeDocument getChangeDocument(RemoteOntologyDocument doc, File historyFile) throws ServerException {
+    public ChangeDocument getChangeDocument(RemoteOntologyDocument doc, File historyFile) throws OWLServerException {
         ChangeDocumentPoolEntry entry;
         synchronized (pool) {
             entry = pool.get(doc);

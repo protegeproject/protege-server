@@ -18,7 +18,7 @@ import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.User;
-import org.protege.owl.server.api.exception.ServerException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
 import org.protege.owl.server.util.AbstractClient;
 import org.semanticweb.owlapi.model.IRI;
@@ -53,13 +53,13 @@ public class RMIClient extends AbstractClient {
 		server = (RemoteServer) registry.lookup(RMITransport.SERVER_NAME);
 	}
 	
-	private ServerException processException(RemoteException re) {
+	private OWLServerException processException(RemoteException re) {
 	    for (Throwable cause = re.getCause(); cause != null; cause = cause.getCause()) {
-	        if (cause instanceof ServerException) {
-	            return (ServerException) cause;
+	        if (cause instanceof OWLServerException) {
+	            return (OWLServerException) cause;
 	        }
 	    }
-	    return new ServerException(re);
+	    return new OWLServerException(re);
 	}
 	
 	@Override
@@ -78,7 +78,7 @@ public class RMIClient extends AbstractClient {
 	}
 	
 	@Override
-	public ServerDocument getServerDocument(IRI serverIRI) throws ServerException {
+	public ServerDocument getServerDocument(IRI serverIRI) throws OWLServerException {
 	    try {
 	        return server.getServerDocument(user, serverIRI);
 	    }
@@ -89,7 +89,7 @@ public class RMIClient extends AbstractClient {
 
 	@Override
 	public Collection<ServerDocument> list(ServerDirectory dir)
-	        throws ServerException {
+	        throws OWLServerException {
 	    try {
 	        return server.list(user, dir);
 	    }
@@ -100,7 +100,7 @@ public class RMIClient extends AbstractClient {
 
 	@Override
 	public ServerDirectory createRemoteDirectory(IRI serverIRI)
-	        throws ServerException {
+	        throws OWLServerException {
 	    try {
 	        return server.createDirectory(user, serverIRI);
 	    }
@@ -110,7 +110,7 @@ public class RMIClient extends AbstractClient {
 	}
 
 	@Override
-	public RemoteOntologyDocument createRemoteOntology(IRI serverIRI) throws ServerException {
+	public RemoteOntologyDocument createRemoteOntology(IRI serverIRI) throws OWLServerException {
 	    try {
 	        return server.createOntologyDocument(user, serverIRI, new TreeMap<String, Object>());
 	    }
@@ -122,7 +122,7 @@ public class RMIClient extends AbstractClient {
 	@Override
 	public ChangeDocument getChanges(RemoteOntologyDocument doc,
 	                                 OntologyDocumentRevision start, OntologyDocumentRevision end)
-	                                         throws ServerException {
+	                                         throws OWLServerException {
 	    try {
 	        return server.getChanges(user, doc, start, end);
 	    }
@@ -134,7 +134,7 @@ public class RMIClient extends AbstractClient {
 	@Override
 	public ChangeDocument commit(RemoteOntologyDocument doc,
 	                             ChangeMetaData metaData, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits)
-	                                     throws ServerException {
+	                                     throws OWLServerException {
 	    try {
 	        return server.commit(user, doc, metaData, changes, myCommits);
 	    }

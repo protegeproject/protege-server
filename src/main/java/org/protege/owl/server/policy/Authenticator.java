@@ -26,7 +26,7 @@ import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.ServerFilter;
 import org.protege.owl.server.api.ServerTransport;
 import org.protege.owl.server.api.User;
-import org.protege.owl.server.api.exception.ServerException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.UserNotAuthenticated;
 import org.protege.owl.server.connect.rmi.RMITransport;
 import org.protege.owl.server.policy.generated.UsersAndGroupsLexer;
@@ -38,13 +38,13 @@ public class Authenticator extends ServerFilter {
     private UserDatabase userDb;
     private BasicLoginService loginService;
 
-    public Authenticator(Server delegate) throws IOException, RecognitionException, ServerException {
+    public Authenticator(Server delegate) throws IOException, RecognitionException, OWLServerException {
         super(delegate);
         parse();
         loginService = new BasicLoginService(userDb);
     }
     
-    private void parse() throws IOException, RecognitionException, ServerException {
+    private void parse() throws IOException, RecognitionException, OWLServerException {
         File usersAndGroups = getConfiguration("UsersAndGroups");
         FileInputStream fis = new FileInputStream(usersAndGroups);
         try {
@@ -106,32 +106,32 @@ public class Authenticator extends ServerFilter {
         return getDelegate().getTransports();
     }
 
-    public ServerDocument getServerDocument(User u, IRI serverIRI) throws ServerException  {
+    public ServerDocument getServerDocument(User u, IRI serverIRI) throws OWLServerException  {
         ensureUserIdCorrect(u);
         return getDelegate().getServerDocument(u, serverIRI);
     }
 
-    public Collection<ServerDocument> list(User u, ServerDirectory dir) throws ServerException {
+    public Collection<ServerDocument> list(User u, ServerDirectory dir) throws OWLServerException {
         ensureUserIdCorrect(u);
         return getDelegate().list(u, dir);
     }
 
-    public ServerDirectory createDirectory(User u, IRI serverIRI) throws ServerException {
+    public ServerDirectory createDirectory(User u, IRI serverIRI) throws OWLServerException {
         ensureUserIdCorrect(u);
         return getDelegate().createDirectory(u, serverIRI);
     }
 
-    public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws ServerException {
+    public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws OWLServerException {
         ensureUserIdCorrect(u);
         return getDelegate().createOntologyDocument(u, serverIRI, settings);
     }
 
-    public ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws ServerException {
+    public ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
         ensureUserIdCorrect(u);
         return getDelegate().getChanges(u, doc, start, end);
     }
 
-    public ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits) throws ServerException {
+    public ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits) throws OWLServerException {
         ensureUserIdCorrect(u);
         ChangeDocument serverSideChanges = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, null);
         Map<OntologyDocumentRevision, ChangeMetaData> metaDataMap = serverSideChanges.getMetaData();
@@ -155,11 +155,11 @@ public class Authenticator extends ServerFilter {
         getDelegate().shutdown();
     }
 
-    public File getConfiguration(String fileName) throws ServerException {
+    public File getConfiguration(String fileName) throws OWLServerException {
         return getDelegate().getConfiguration(fileName);
     }
 
-    public File getConfiguration(ServerDocument doc, String extension) throws ServerException {
+    public File getConfiguration(ServerDocument doc, String extension) throws OWLServerException {
         return getDelegate().getConfiguration(doc, extension);
     } 
 

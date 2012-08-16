@@ -15,7 +15,7 @@ import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.ServerFilter;
 import org.protege.owl.server.api.ServerTransport;
 import org.protege.owl.server.api.User;
-import org.protege.owl.server.api.exception.ServerException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.IRI;
 
 public class ServerFilterAdapter extends ServerFilter {
@@ -25,32 +25,32 @@ public class ServerFilterAdapter extends ServerFilter {
     }
 
     @Override
-    public ServerDocument getServerDocument(User u, IRI serverIRI) throws ServerException {
+    public ServerDocument getServerDocument(User u, IRI serverIRI) throws OWLServerException {
         return getDelegate().getServerDocument(u, serverIRI);
     }
 
     @Override
-    public Collection<ServerDocument> list(User u, ServerDirectory dir) throws ServerException {
+    public Collection<ServerDocument> list(User u, ServerDirectory dir) throws OWLServerException {
         return getDelegate().list(u, dir);
     }
 
     @Override
-    public ServerDirectory createDirectory(User u, IRI serverIRI) throws ServerException {
+    public ServerDirectory createDirectory(User u, IRI serverIRI) throws OWLServerException {
         return getDelegate().createDirectory(u, serverIRI);
     }
 
     @Override
-    public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws ServerException {
+    public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws OWLServerException {
         return getDelegate().createOntologyDocument(u, serverIRI, settings);
     }
 
     @Override
-    public ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws ServerException {
+    public ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
         return getDelegate().getChanges(u, doc, start, end);
     }
 
     @Override
-    public ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits) throws ServerException {
+    public ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits) throws OWLServerException {
         return getDelegate().commit(u, doc, commitComment, changes, myCommits);
     }
 
@@ -60,12 +60,12 @@ public class ServerFilterAdapter extends ServerFilter {
     }
 
     @Override
-    public File getConfiguration(String fileName) throws ServerException {
+    public File getConfiguration(String fileName) throws OWLServerException {
         return getDelegate().getConfiguration(fileName);
     }
 
     @Override
-    public File getConfiguration(ServerDocument doc, String extension) throws ServerException {
+    public File getConfiguration(ServerDocument doc, String extension) throws OWLServerException {
         return getDelegate().getConfiguration(doc, extension);
     }
 

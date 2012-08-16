@@ -12,7 +12,7 @@ import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.VersionedOWLOntology;
-import org.protege.owl.server.api.exception.ServerException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.util.ClientUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -32,16 +32,16 @@ public abstract class AbstractBasicServerTest {
 	private ServerDirectory testDirectory;
 	
 
-	protected abstract void startServer() throws ServerException;
+	protected abstract void startServer() throws OWLServerException;
 	
-	protected abstract void stopServer() throws ServerException;
+	protected abstract void stopServer() throws OWLServerException;
 	
 	protected abstract String getServerRoot();
 
-	protected abstract Client createClient() throws ServerException;
+	protected abstract Client createClient() throws OWLServerException;
 	
 	@BeforeMethod
-	public void setup() throws ServerException {
+	public void setup() throws OWLServerException {
 		startServer();
 		client = createClient() ;
 		clientUtilities = new ClientUtilities(client);
@@ -49,12 +49,12 @@ public abstract class AbstractBasicServerTest {
 	}
 	
 	@AfterMethod
-	public void cleanup() throws IOException, ServerException {
+	public void cleanup() throws IOException, OWLServerException {
 		stopServer();
 	}
 	
 	@Test
-	public void testConnect() throws InterruptedException, NotBoundException, IOException, ServerException {
+	public void testConnect() throws InterruptedException, NotBoundException, IOException, OWLServerException {
 		IRI rootServerLocation = IRI.create("owlserver://localhost/");
 		ServerDocument doc = client.getServerDocument(rootServerLocation);
 		Assert.assertTrue(doc instanceof ServerDirectory);
@@ -63,7 +63,7 @@ public abstract class AbstractBasicServerTest {
 	}
 	
 	@Test
-	public void testLoadPizza() throws IOException, OWLOntologyCreationException, ServerException {
+	public void testLoadPizza() throws IOException, OWLOntologyCreationException, OWLServerException {
 		VersionedOWLOntology versionedPizza = loadPizza();
 		OWLOntology ontology1 = versionedPizza.getOntology();
 		Client client2 = createClient();
@@ -76,7 +76,7 @@ public abstract class AbstractBasicServerTest {
 	}
 	
 	   @Test
-	    public void testBackAndForthNoUpdate() throws IOException, OWLOntologyCreationException, ServerException {
+	    public void testBackAndForthNoUpdate() throws IOException, OWLOntologyCreationException, OWLServerException {
 	        VersionedOWLOntology versionedPizza1 = loadPizza();
 	        OWLOntology ontology1 = versionedPizza1.getOntology();
 	        
@@ -113,7 +113,7 @@ public abstract class AbstractBasicServerTest {
 	    }
 	
 	@Test
-	public void testBackAndForthWithUpdate() throws IOException, OWLOntologyCreationException, ServerException {
+	public void testBackAndForthWithUpdate() throws IOException, OWLOntologyCreationException, OWLServerException {
 	    VersionedOWLOntology versionedPizza1 = loadPizza();
 	    OWLOntology ontology1 = versionedPizza1.getOntology();
 	    
@@ -151,7 +151,7 @@ public abstract class AbstractBasicServerTest {
 	}
 
 	
-	public VersionedOWLOntology loadPizza() throws OWLOntologyCreationException, ServerException {
+	public VersionedOWLOntology loadPizza() throws OWLOntologyCreationException, OWLServerException {
 		IRI pizzaLocation = IRI.create(testDirectory.getServerLocation().toString() + "/pizza" + ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
 		OWLOntology ontology = PizzaVocabulary.loadPizza();
 		VersionedOWLOntology versionedOntology = clientUtilities.createServerOntology(pizzaLocation, new ChangeMetaData("A tasty pizza"), ontology);

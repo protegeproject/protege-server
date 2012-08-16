@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.protege.owl.server.api.Client;
-import org.protege.owl.server.api.exception.ServerException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.connect.rmi.RMIClient;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
@@ -23,27 +23,27 @@ public class RemoteBasicServerTest extends AbstractBasicServerTest {
 	}
 	
 	@Override
-	protected void startServer() throws ServerException {
+	protected void startServer() throws OWLServerException {
 		try {
 			TestUtilities.initializeServerRoot();
 			framework = TestUtilities.startServer("server-basic-config.xml", "metaproject-001.owl");
 		}
 		catch (Exception e) {
-			throw new ServerException(e.getMessage(),e);
+			throw new OWLServerException(e.getMessage(),e);
 		}
 	}
 
 	@Override
-	public void stopServer() throws ServerException {
+	public void stopServer() throws OWLServerException {
 		try {
 			framework.stop();
 			framework.waitForStop(60 * 60 * 1000);
 		}
 		catch (InterruptedException ie) {
-		    throw new ServerException(ie);
+		    throw new OWLServerException(ie);
 		}
 		catch (BundleException be) {
-			throw new ServerException(be);
+			throw new OWLServerException(be);
 		}
 	}
 
@@ -53,17 +53,17 @@ public class RemoteBasicServerTest extends AbstractBasicServerTest {
 	}
 	
 	@Override
-	protected Client createClient() throws ServerException {
+	protected Client createClient() throws OWLServerException {
 		try {
 			RMIClient client = new RMIClient(null, "localhost", rmiPort);
 			client.initialise();
 			return client;
 		}
 		catch (RemoteException re) {
-		    throw new ServerException(re);
+		    throw new OWLServerException(re);
 		}
 		catch (NotBoundException nbe) {
-			throw new ServerException(nbe.getMessage(), nbe);
+			throw new OWLServerException(nbe.getMessage(), nbe);
 		}
 	}
 

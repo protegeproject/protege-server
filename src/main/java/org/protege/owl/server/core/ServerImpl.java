@@ -21,7 +21,7 @@ import org.protege.owl.server.api.ServerTransport;
 import org.protege.owl.server.api.User;
 import org.protege.owl.server.api.exception.DocumentAlreadyExistsException;
 import org.protege.owl.server.api.exception.DocumentNotFoundException;
-import org.protege.owl.server.api.exception.ServerException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
 import org.protege.owl.server.util.ChangeUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -141,7 +141,7 @@ public class ServerImpl implements Server {
 	}
 
 	@Override
-	public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws ServerException {
+	public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws OWLServerException {
 		File historyFile = parseServerIRI(serverIRI, ServerObjectStatus.OBJECT_NOT_FOUND);
 		if (historyFile == null) {
 			throw new DocumentAlreadyExistsException("Could not create directory at " + serverIRI);
@@ -155,7 +155,7 @@ public class ServerImpl implements Server {
 	}
 
 	@Override
-	public ServerDirectory createDirectory(User u, IRI serverIRI) throws ServerException  {
+	public ServerDirectory createDirectory(User u, IRI serverIRI) throws OWLServerException  {
 		File serverDirectory = parseServerIRI(serverIRI, ServerObjectStatus.OBJECT_NOT_FOUND);
 		if (serverDirectory == null) {
 			throw new DocumentAlreadyExistsException("Could not create server-side ontology at " + serverIRI);			
@@ -166,7 +166,7 @@ public class ServerImpl implements Server {
 
 	@Override
 	public ChangeDocument getChanges(User u, RemoteOntologyDocument doc,
-								     OntologyDocumentRevision start, OntologyDocumentRevision end) throws ServerException {
+								     OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
 		File historyFile = parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT);
 		if (historyFile == null) {
 			throw new IllegalStateException("Expected to find ontology document at the location " + doc.getServerLocation());
@@ -180,7 +180,7 @@ public class ServerImpl implements Server {
 	public ChangeDocument commit(User u, RemoteOntologyDocument doc,
 	                             ChangeMetaData metaData,
 	                             ChangeDocument changes, 
-	                             SortedSet<OntologyDocumentRevision> previousCommits) throws ServerException {
+	                             SortedSet<OntologyDocumentRevision> previousCommits) throws OWLServerException {
 		OWLOntology fakeOntology;
 		try {
 			fakeOntology = OWLManager.createOWLOntologyManager().createOntology();

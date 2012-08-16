@@ -13,7 +13,7 @@ import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.User;
-import org.protege.owl.server.api.exception.ServerException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.IRI;
 
 public class RemoteServerImpl implements RemoteServer {
@@ -28,7 +28,7 @@ public class RemoteServerImpl implements RemoteServer {
 		try {
 			return server.getServerDocument(u, serverIRI);
 		}
-		catch (ServerException ioe) {
+		catch (OWLServerException ioe) {
 			throw new RemoteException(ioe.getMessage(), ioe);
 		}
 	}
@@ -39,7 +39,7 @@ public class RemoteServerImpl implements RemoteServer {
 		try {
 			return server.list(u, dir);
 		}
-		catch (ServerException ioe) {
+		catch (OWLServerException ioe) {
 			throw new RemoteException(ioe.getMessage(), ioe);
 		}		
 	}
@@ -50,7 +50,7 @@ public class RemoteServerImpl implements RemoteServer {
 		try {
 			return server.createDirectory(u, serverIRI);
 		}
-		catch (ServerException ioe) {
+		catch (OWLServerException ioe) {
 			throw new RemoteException(ioe.getMessage(), ioe);
 		}
 	}
@@ -61,7 +61,7 @@ public class RemoteServerImpl implements RemoteServer {
 		try {
 			return server.createOntologyDocument(u, serverIRI, settings);
 		}
-		catch (ServerException ioe) {
+		catch (OWLServerException ioe) {
 			throw new RemoteException(ioe.getMessage(), ioe);
 		}
 	}
@@ -73,7 +73,7 @@ public class RemoteServerImpl implements RemoteServer {
 		try {
 			return server.getChanges(u, doc, start, end);
 		}
-		catch (ServerException ioe) {
+		catch (OWLServerException ioe) {
 			throw new RemoteException(ioe.getMessage(), ioe);
 		}
 	}
@@ -85,7 +85,7 @@ public class RemoteServerImpl implements RemoteServer {
 		try {
 			return server.commit(u, doc, metaData, changes, previousCommits);
 		}
-		catch (ServerException ioe) {
+		catch (OWLServerException ioe) {
 			throw new RemoteException(ioe.getMessage(), ioe);
 		}
 	}

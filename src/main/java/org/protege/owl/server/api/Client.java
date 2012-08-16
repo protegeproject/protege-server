@@ -3,7 +3,7 @@ package org.protege.owl.server.api;
 import java.util.Collection;
 import java.util.SortedSet;
 
-import org.protege.owl.server.api.exception.ServerException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.IRI;
 
 public interface Client {
@@ -33,7 +33,7 @@ public interface Client {
 	 * @param serverIRI
 	 * @return
 	 */
-	ServerDocument getServerDocument(IRI serverIRI) throws ServerException;
+	ServerDocument getServerDocument(IRI serverIRI) throws OWLServerException;
 	
 	
 	/**
@@ -42,14 +42,14 @@ public interface Client {
 	 * @param path
 	 * @return
 	 */
-	Collection<ServerDocument> list(ServerDirectory path) throws ServerException;
+	Collection<ServerDocument> list(ServerDirectory path) throws OWLServerException;
 	
 	/**
 	 * Allows the user to create a directory on the server.
 	 * 
 	 * @param serverIRI
 	 */
-	ServerDirectory createRemoteDirectory(IRI serverIRI) throws ServerException;
+	ServerDirectory createRemoteDirectory(IRI serverIRI) throws OWLServerException;
 	
 	/**
 	 * Allows the user to create an empty ontology document on the server.
@@ -60,7 +60,7 @@ public interface Client {
 	 * @param serverIRI
 	 * @return
 	 */
-	RemoteOntologyDocument createRemoteOntology(IRI serverIRI) throws ServerException;
+	RemoteOntologyDocument createRemoteOntology(IRI serverIRI) throws OWLServerException;
 		
 	
 	/**
@@ -72,7 +72,7 @@ public interface Client {
 	 * @param end
 	 * @return
 	 */
-	ChangeDocument getChanges(RemoteOntologyDocument document, OntologyDocumentRevision start, OntologyDocumentRevision end) throws ServerException;
+	ChangeDocument getChanges(RemoteOntologyDocument document, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException;
 	
 	/**
 	 * Commits a collection of changes to the remote ontology document.
@@ -81,7 +81,7 @@ public interface Client {
 	 * @param revision
 	 * @param changes
 	 */
-	ChangeDocument commit(RemoteOntologyDocument document, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits) throws ServerException;
+	ChangeDocument commit(RemoteOntologyDocument document, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits) throws OWLServerException;
 	
 	void shutdown();
 

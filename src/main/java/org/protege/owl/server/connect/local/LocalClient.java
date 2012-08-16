@@ -13,7 +13,7 @@ import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.User;
-import org.protege.owl.server.api.exception.ServerException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
 import org.protege.owl.server.util.AbstractClient;
 import org.semanticweb.owlapi.model.IRI;
@@ -44,39 +44,39 @@ public class LocalClient extends AbstractClient {
 	}
 
 	@Override
-	public ServerDocument getServerDocument(IRI serverIRI) throws ServerException {
+	public ServerDocument getServerDocument(IRI serverIRI) throws OWLServerException {
 		return server.getServerDocument(user, serverIRI);
 	}
 
 	@Override
 	public Collection<ServerDocument> list(ServerDirectory path)
-			throws ServerException {
+			throws OWLServerException {
 		return server.list(user, path);
 	}
 
 	@Override
 	public ServerDirectory createRemoteDirectory(IRI serverIRI)
-			throws ServerException {
+			throws OWLServerException {
 		return server.createDirectory(user, serverIRI);
 	}
 
 	@Override
 	public RemoteOntologyDocument createRemoteOntology(IRI serverIRI)
-			throws ServerException {
+			throws OWLServerException {
 		return server.createOntologyDocument(user, serverIRI, new TreeMap<String, Object>());
 	}
 
 	@Override
 	public ChangeDocument getChanges(RemoteOntologyDocument document,
 			OntologyDocumentRevision start, OntologyDocumentRevision end)
-			throws ServerException {
+			throws OWLServerException {
 		return server.getChanges(user, document, start, end);
 	}
 
 	@Override
 	public ChangeDocument commit(RemoteOntologyDocument document, ChangeMetaData metaData,
 					              ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits)
-			throws ServerException {
+			throws OWLServerException {
 		return server.commit(user, document, metaData, changes, previousCommits);
 	}
 

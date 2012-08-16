@@ -17,7 +17,7 @@ import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.VersionedOWLOntology;
-import org.protege.owl.server.api.exception.ServerException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
@@ -50,7 +50,7 @@ public class ClientUtilities {
 	 */
 	
 	
-	public VersionedOWLOntology createServerOntology(IRI serverIRI, ChangeMetaData metaData, OWLOntology ontology) throws ServerException {
+	public VersionedOWLOntology createServerOntology(IRI serverIRI, ChangeMetaData metaData, OWLOntology ontology) throws OWLServerException {
 		RemoteOntologyDocument doc = client.createRemoteOntology(serverIRI);
 		VersionedOWLOntology versionedOntology = factory.createVersionedOntology(ontology, doc, OntologyDocumentRevision.START_REVISION);
 		commit(metaData, versionedOntology);
@@ -58,11 +58,11 @@ public class ClientUtilities {
 		return versionedOntology;
 	}
 
-	public VersionedOWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc) throws OWLOntologyCreationException, ServerException {
+	public VersionedOWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc) throws OWLOntologyCreationException, OWLServerException {
 		return loadOntology(manager, doc, null);
 	}
 	
-	public VersionedOWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc, OntologyDocumentRevision revision) throws OWLOntologyCreationException, ServerException {
+	public VersionedOWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc, OntologyDocumentRevision revision) throws OWLOntologyCreationException, OWLServerException {
 		ChangeDocument changes = client.getChanges(doc, OntologyDocumentRevision.START_REVISION, revision);
 		OWLOntology ontology = manager.createOntology();		
 		manager.applyChanges(changes.getChanges(ontology));
@@ -71,7 +71,7 @@ public class ClientUtilities {
 		return versionedOntology;
 	}
 	
-	public void commit(ChangeMetaData metaData, VersionedOWLOntology ontologyDoc) throws ServerException {
+	public void commit(ChangeMetaData metaData, VersionedOWLOntology ontologyDoc) throws OWLServerException {
 		RemoteOntologyDocument serverDoc = ontologyDoc.getServerDocument();
 		OntologyDocumentRevision revision = ontologyDoc.getRevision();
 		ChangeDocument serverHistory = getChanges(ontologyDoc, OntologyDocumentRevision.START_REVISION, revision);
@@ -99,11 +99,11 @@ public class ClientUtilities {
 	    return revisions;
 	}
 	
-	public void update(VersionedOWLOntology ontology) throws ServerException {
+	public void update(VersionedOWLOntology ontology) throws OWLServerException {
 		update(ontology, null);
 	}
 	
-	public void update(VersionedOWLOntology openOntology, OntologyDocumentRevision revision) throws ServerException {
+	public void update(VersionedOWLOntology openOntology, OntologyDocumentRevision revision) throws OWLServerException {
 		OWLOntology localOntology = openOntology.getOntology();
 		OWLOntologyManager manager = localOntology.getOWLOntologyManager();
 		OntologyDocumentRevision startRevision = openOntology.getRevision();
@@ -119,7 +119,7 @@ public class ClientUtilities {
 		openOntology.setCommittedChanges(committedChanges);
 	}
 	
-	public ChangeDocument getChanges(VersionedOWLOntology ontologyDoc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws ServerException {
+	public ChangeDocument getChanges(VersionedOWLOntology ontologyDoc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
 		ChangeDocument localHistory = ontologyDoc.getLocalHistory();
 		OntologyDocumentRevision realEnd = end;
 		if (end == null || localHistory.getEndRevision().compareTo(end) < 0) {

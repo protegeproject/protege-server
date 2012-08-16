@@ -1,7 +1,7 @@
 package org.protege.owl.server.api.exception;
 
 
-public class UserNotAuthenticated extends ServerException {
+public class UserNotAuthenticated extends OWLServerException {
     private static final long serialVersionUID = -4133433454108805207L;
 
     public UserNotAuthenticated() {
