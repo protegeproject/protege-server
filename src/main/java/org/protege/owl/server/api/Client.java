@@ -1,9 +1,9 @@
 package org.protege.owl.server.api;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.SortedSet;
 
+import org.protege.owl.server.api.exception.ServerException;
 import org.semanticweb.owlapi.model.IRI;
 
 public interface Client {
@@ -33,7 +33,7 @@ public interface Client {
 	 * @param serverIRI
 	 * @return
 	 */
-	ServerDocument getServerDocument(IRI serverIRI) throws IOException;
+	ServerDocument getServerDocument(IRI serverIRI) throws ServerException;
 	
 	
 	/**
@@ -42,14 +42,14 @@ public interface Client {
 	 * @param path
 	 * @return
 	 */
-	Collection<ServerDocument> list(ServerDirectory path) throws IOException;
+	Collection<ServerDocument> list(ServerDirectory path) throws ServerException;
 	
 	/**
 	 * Allows the user to create a directory on the server.
 	 * 
 	 * @param serverIRI
 	 */
-	ServerDirectory createRemoteDirectory(IRI serverIRI) throws IOException;
+	ServerDirectory createRemoteDirectory(IRI serverIRI) throws ServerException;
 	
 	/**
 	 * Allows the user to create an empty ontology document on the server.
@@ -60,7 +60,7 @@ public interface Client {
 	 * @param serverIRI
 	 * @return
 	 */
-	RemoteOntologyDocument createRemoteOntology(IRI serverIRI) throws IOException;
+	RemoteOntologyDocument createRemoteOntology(IRI serverIRI) throws ServerException;
 		
 	
 	/**
@@ -72,7 +72,7 @@ public interface Client {
 	 * @param end
 	 * @return
 	 */
-	ChangeDocument getChanges(RemoteOntologyDocument document, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException;
+	ChangeDocument getChanges(RemoteOntologyDocument document, OntologyDocumentRevision start, OntologyDocumentRevision end) throws ServerException;
 	
 	/**
 	 * Commits a collection of changes to the remote ontology document.
@@ -81,7 +81,7 @@ public interface Client {
 	 * @param revision
 	 * @param changes
 	 */
-	ChangeDocument commit(RemoteOntologyDocument document, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits) throws IOException;
+	ChangeDocument commit(RemoteOntologyDocument document, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits) throws ServerException;
 	
 	void shutdown();
 
