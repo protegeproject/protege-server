@@ -7,6 +7,7 @@ public class ChangeMetaData implements Serializable {
 	private static final long serialVersionUID = -1198003999159038367L;
 	private Date date;
 	private String commitComment;
+	private String username = "";
 	
 	public ChangeMetaData(Date date, String commitComment) {
 		this.date = date;
@@ -28,10 +29,18 @@ public class ChangeMetaData implements Serializable {
 	public String getCommitComment() {
 		return commitComment;
 	}
+	
+	public String getUsername() {
+        return username;
+    }
+	
+	public void setUser(User user) {
+        this.username = user.getUserName();
+    }
 
 	@Override
 	public int hashCode() {
-	    return date.hashCode() + 42 * commitComment.hashCode();
+	    return date.hashCode() + 42 * commitComment.hashCode() + username.hashCode()/42;
 	}
 	
 	@Override
@@ -40,8 +49,9 @@ public class ChangeMetaData implements Serializable {
 	        return false;
 	    }
 	    ChangeMetaData other = (ChangeMetaData) obj;
-	    return other.getCommitComment().equals(commitComment) && other.getDate().equals(date);
+	    return other.getCommitComment().equals(commitComment) && other.getDate().equals(date) && username.equals(other.getUsername());
 	}
+
 	
 	@Override
 	public String toString() {
