@@ -8,21 +8,21 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
-import org.protege.owl.server.api.VersionedOWLOntology;
+import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
+public class VersionedOWLOntologyImpl implements VersionedOntologyDocument {
 	public static final String BACKING_STORE_PROPERTY = "server.location";
 	public static final String VERSION_PROPERTY       = "version";
 
 	public static File getHistoryFile(File ontologyFile) {
 		File versionInfoDir = getVersionInfoDirectory(ontologyFile);
-		return new File(versionInfoDir, ontologyFile.getName() + ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
+		return new File(versionInfoDir, ontologyFile.getName() + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
 	}
 
 	public static File getVersionInfoDirectory(File ontologyFile) {
@@ -42,15 +42,15 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 	private OWLOntology ontology;
 	private RemoteOntologyDocument serverDocument;
 	private OntologyDocumentRevision revision;
-	private ChangeDocument localHistory;
-	private List<ChangeDocument> committedChanges;
+	private ChangeHistory localHistory;
+	private List<ChangeHistory> committedChanges;
 	
 	
 	public VersionedOWLOntologyImpl(OWLOntology ontology,
 								    RemoteOntologyDocument serverDocument,
 								    OntologyDocumentRevision revision,
-								    ChangeDocument localHistory,
-								    List<ChangeDocument> committedChanges) {
+								    ChangeHistory localHistory,
+								    List<ChangeHistory> committedChanges) {
 		this.ontology = ontology;
 		this.serverDocument = serverDocument;
 		this.revision = revision;
@@ -70,23 +70,23 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 	}
 	
 	@Override
-	public ChangeDocument getLocalHistory() {
+	public ChangeHistory getLocalHistory() {
 		return localHistory;
 	}
 	
 	@Override
-	public void appendLocalHistory(ChangeDocument changes) {
+	public void appendLocalHistory(ChangeHistory changes) {
 		localHistory = localHistory.appendChanges(changes);
 	}
 	
 	@Override
-	public List<ChangeDocument> getCommittedChanges() {
-	    return new ArrayList<ChangeDocument>(committedChanges);
+	public List<ChangeHistory> getCommittedChanges() {
+	    return new ArrayList<ChangeHistory>(committedChanges);
 	}
 	
 	@Override
-	public void setCommittedChanges(List<ChangeDocument> commits) {
-	    this.committedChanges = new ArrayList<ChangeDocument>(commits);
+	public void setCommittedChanges(List<ChangeHistory> commits) {
+	    this.committedChanges = new ArrayList<ChangeHistory>(commits);
 	}
 	
 	@Override

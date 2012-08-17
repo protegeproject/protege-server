@@ -13,12 +13,12 @@ import java.util.SortedMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
-import org.protege.owl.server.api.VersionedOWLOntology;
+import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.protege.owl.server.changes.format.OWLInputStream;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -28,23 +28,23 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
     public static Logger logger = Logger.getLogger(DocumentFactoryImpl.class.getCanonicalName());
 	
     @Override
-    public ChangeDocument createEmptyChangeDocument(OntologyDocumentRevision revision) {
+    public ChangeHistory createEmptyChangeDocument(OntologyDocumentRevision revision) {
         return new ChangeDocumentImpl(this, revision, null, null);
     }
     
 	@Override
-	public ChangeDocument createChangeDocument(List<OWLOntologyChange> changes,
+	public ChangeHistory createChangeDocument(List<OWLOntologyChange> changes,
 											   ChangeMetaData metaData, 
 											   OntologyDocumentRevision start) {
 		return new ChangeDocumentImpl(this, start, changes, metaData);
 	}
 	
 	@Override
-	public VersionedOWLOntology createVersionedOntology(OWLOntology ontology,
+	public VersionedOntologyDocument createVersionedOntology(OWLOntology ontology,
 													    RemoteOntologyDocument serverDocument,
 													    OntologyDocumentRevision revision) {
-		ChangeDocument localChanges = createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION);
-		List<ChangeDocument> previousCommits = new ArrayList<ChangeDocument>();
+		ChangeHistory localChanges = createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION);
+		List<ChangeHistory> previousCommits = new ArrayList<ChangeHistory>();
 		return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges, previousCommits);
 	}
 	
@@ -58,16 +58,16 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	}
 
 	@Override
-	public VersionedOWLOntology createVersionedOntology(OWLOntology ontology) throws IOException {
+	public VersionedOntologyDocument createVersionedOntology(OWLOntology ontology) throws IOException {
 	    try {
 	        File ontologyFile = VersionedOWLOntologyImpl.getBackingStore(ontology);
 	        File historyFile = VersionedOWLOntologyImpl.getHistoryFile(ontologyFile);
 	        ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(historyFile)));
 	        OntologyDocumentRevision revision = (OntologyDocumentRevision) ois.readObject();
 	        RemoteOntologyDocument serverDocument = (RemoteOntologyDocument) ois.readObject();
-	        ChangeDocument localChanges = (ChangeDocument) ois.readObject();
+	        ChangeHistory localChanges = (ChangeHistory) ois.readObject();
 	        @SuppressWarnings("unchecked")
-            List<ChangeDocument> committedChanges = (List<ChangeDocument>) ois.readObject();
+            List<ChangeHistory> committedChanges = (List<ChangeHistory>) ois.readObject();
 	        return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges, committedChanges);
 	    }
 	    catch (ClassNotFoundException cnfe) {
@@ -80,7 +80,7 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	 */
 	@SuppressWarnings("deprecation")
 	@Override
-	public ChangeDocument readChangeDocument(InputStream in,
+	public ChangeHistory readChangeDocument(InputStream in,
 											 OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException {
         ObjectInputStream ois;
 	    try {

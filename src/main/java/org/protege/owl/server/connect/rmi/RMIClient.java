@@ -10,7 +10,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
@@ -120,7 +120,7 @@ public class RMIClient extends AbstractClient {
 	}
 
 	@Override
-	public ChangeDocument getChanges(RemoteOntologyDocument doc,
+	public ChangeHistory getChanges(RemoteOntologyDocument doc,
 	                                 OntologyDocumentRevision start, OntologyDocumentRevision end)
 	                                         throws OWLServerException {
 	    try {
@@ -132,8 +132,8 @@ public class RMIClient extends AbstractClient {
 	}
 
 	@Override
-	public ChangeDocument commit(RemoteOntologyDocument doc,
-	                              ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits, CommitOption option)
+	public ChangeHistory commit(RemoteOntologyDocument doc,
+	                              ChangeHistory changes, SortedSet<OntologyDocumentRevision> myCommits, CommitOption option)
 	                                     throws OWLServerException {
 	    try {
 	        return server.commit(user, doc, changes, myCommits, option);

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedMap;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -19,7 +18,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
  *
  */
 
-public interface ChangeDocument {
+public interface ChangeHistory {
 	public static final String CHANGE_DOCUMENT_EXTENSION = ".history";
 	
 	DocumentFactory getDocumentFactory();
@@ -61,10 +60,10 @@ public interface ChangeDocument {
 	 * @param end
 	 * @return
 	 */
-	ChangeDocument cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end);
+	ChangeHistory cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end);
 	
 	
-	ChangeDocument appendChanges(ChangeDocument additionalChanges);
+	ChangeHistory appendChanges(ChangeHistory additionalChanges);
 	
 	/**
 	 * Gets the list of changes associated with this document and associates them with the ontology.  

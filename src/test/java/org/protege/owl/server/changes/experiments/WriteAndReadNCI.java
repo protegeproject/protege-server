@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
@@ -94,7 +94,7 @@ public class WriteAndReadNCI {
             changes.add(new AddAxiom(ontology, axiom));
         }
         long startTime = System.currentTimeMillis();
-        ChangeDocument doc = factory.createChangeDocument(changes, new ChangeMetaData(),OntologyDocumentRevision.START_REVISION);
+        ChangeHistory doc = factory.createChangeDocument(changes, new ChangeMetaData(),OntologyDocumentRevision.START_REVISION);
         ChangeDocumentUtilities.writeChanges(doc, tmp);
         System.out.println("\tTook " + (System.currentTimeMillis() - startTime) + " ms.");
 

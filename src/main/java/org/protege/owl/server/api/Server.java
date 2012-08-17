@@ -19,7 +19,7 @@ public interface Server {
 
 	RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws OWLServerException;
 	
-	ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException;
+	ChangeHistory getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException;
 
 	/**
 	 * The call to commit changes.
@@ -34,8 +34,8 @@ public interface Server {
 	 * @return
 	 * @throws OWLServerException
 	 */
-	ChangeDocument commit(User u, RemoteOntologyDocument doc, 
-	                      ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits,
+	ChangeHistory commit(User u, RemoteOntologyDocument doc, 
+	                      ChangeHistory changes, SortedSet<OntologyDocumentRevision> myCommits,
 	                      CommitOption option) throws OWLServerException;
 	
 	void shutdown();

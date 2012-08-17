@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.DocumentFactory;
@@ -29,7 +29,7 @@ import org.protege.owl.server.api.ServerFilter;
 import org.protege.owl.server.api.ServerTransport;
 import org.protege.owl.server.api.User;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.exception.UserNotAuthenticated;
+import org.protege.owl.server.api.exception.AuthenticationFailedException;
 import org.protege.owl.server.connect.rmi.RMITransport;
 import org.protege.owl.server.policy.generated.UsersAndGroupsLexer;
 import org.protege.owl.server.policy.generated.UsersAndGroupsParser;
@@ -99,9 +99,9 @@ public class Authenticator extends ServerFilter {
         logger.info("Authentication service started");
     }
     
-    private void ensureUserIdCorrect(User u) throws UserNotAuthenticated {
+    private void ensureUserIdCorrect(User u) throws AuthenticationFailedException {
         if (!loginService.checkAuthentication(u)) {
-            throw new UserNotAuthenticated();
+            throw new AuthenticationFailedException();
         }
     }
 
@@ -135,19 +135,19 @@ public class Authenticator extends ServerFilter {
     }
 
     @Override
-    public ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
+    public ChangeHistory getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
         ensureUserIdCorrect(u);
         return getDelegate().getChanges(u, doc, start, end);
     }
 
     @Override
-    public ChangeDocument commit(User u, 
+    public ChangeHistory commit(User u, 
                                   RemoteOntologyDocument doc, 
-                                  ChangeDocument clientChanges, 
+                                  ChangeHistory clientChanges, 
                                   SortedSet<OntologyDocumentRevision> myCommits,
                                   CommitOption option) throws OWLServerException {
         ensureUserIdCorrect(u);
-        ChangeDocument serverSideChanges = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, null);
+        ChangeHistory serverSideChanges = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, null);
         for (OntologyDocumentRevision revision : myCommits) {
             ChangeMetaData metaData = serverSideChanges.getMetaData(revision);
             if (metaData == null) {

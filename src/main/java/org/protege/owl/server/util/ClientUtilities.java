@@ -10,14 +10,14 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
-import org.protege.owl.server.api.VersionedOWLOntology;
+import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
@@ -51,48 +51,48 @@ public class ClientUtilities {
 	 */
 	
 	
-	public VersionedOWLOntology createServerOntology(IRI serverIRI, ChangeMetaData metaData, OWLOntology ontology) throws OWLServerException {
+	public VersionedOntologyDocument createServerOntology(IRI serverIRI, ChangeMetaData metaData, OWLOntology ontology) throws OWLServerException {
 		RemoteOntologyDocument doc = client.createRemoteOntology(serverIRI);
-		VersionedOWLOntology versionedOntology = factory.createVersionedOntology(ontology, doc, OntologyDocumentRevision.START_REVISION);
+		VersionedOntologyDocument versionedOntology = factory.createVersionedOntology(ontology, doc, OntologyDocumentRevision.START_REVISION);
 		commit(metaData, versionedOntology);
 		update(versionedOntology);
 		return versionedOntology;
 	}
 
-	public VersionedOWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc) throws OWLOntologyCreationException, OWLServerException {
+	public VersionedOntologyDocument loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc) throws OWLOntologyCreationException, OWLServerException {
 		return loadOntology(manager, doc, null);
 	}
 	
-	public VersionedOWLOntology loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc, OntologyDocumentRevision revision) throws OWLOntologyCreationException, OWLServerException {
-		ChangeDocument changes = client.getChanges(doc, OntologyDocumentRevision.START_REVISION, revision);
+	public VersionedOntologyDocument loadOntology(OWLOntologyManager manager, RemoteOntologyDocument doc, OntologyDocumentRevision revision) throws OWLOntologyCreationException, OWLServerException {
+		ChangeHistory changes = client.getChanges(doc, OntologyDocumentRevision.START_REVISION, revision);
 		OWLOntology ontology = manager.createOntology();		
 		manager.applyChanges(changes.getChanges(ontology));
-		VersionedOWLOntology versionedOntology = factory.createVersionedOntology(ontology, doc, changes.getEndRevision());
+		VersionedOntologyDocument versionedOntology = factory.createVersionedOntology(ontology, doc, changes.getEndRevision());
 		versionedOntology.appendLocalHistory(changes);
 		return versionedOntology;
 	}
 	
-	public void commit(ChangeMetaData metaData, VersionedOWLOntology ontologyDoc) throws OWLServerException {
+	public void commit(ChangeMetaData metaData, VersionedOntologyDocument ontologyDoc) throws OWLServerException {
 		RemoteOntologyDocument serverDoc = ontologyDoc.getServerDocument();
 		OntologyDocumentRevision revision = ontologyDoc.getRevision();
-		ChangeDocument serverHistory = getChanges(ontologyDoc, OntologyDocumentRevision.START_REVISION, revision);
+		ChangeHistory serverHistory = getChanges(ontologyDoc, OntologyDocumentRevision.START_REVISION, revision);
         OWLOntology ontology = ontologyDoc.getOntology();
 		List<OWLOntologyChange> baselineHistory = serverHistory.getChanges(ontology);
-		for (ChangeDocument alreadyCommitted : ontologyDoc.getCommittedChanges()) {
+		for (ChangeHistory alreadyCommitted : ontologyDoc.getCommittedChanges()) {
 		    baselineHistory.addAll(alreadyCommitted.getChanges(ontology));
 		}
 		List<OWLOntologyChange> uncommittedChanges = getUncommittedChanges(ontologyDoc.getOntology(), baselineHistory);
-		List<ChangeDocument> myPreviousCommits = ontologyDoc.getCommittedChanges();
-		ChangeDocument newCommit = client.commit(serverDoc, 
+		List<ChangeHistory> myPreviousCommits = ontologyDoc.getCommittedChanges();
+		ChangeHistory newCommit = client.commit(serverDoc, 
 		                                         factory.createChangeDocument(uncommittedChanges, metaData, revision), collectCommitRevisions(myPreviousCommits),
 		                                         CommitOption.RETURN_ACTUAL_COMMIT);
 		myPreviousCommits.add(newCommit);
 		ontologyDoc.setCommittedChanges(myPreviousCommits);
 	}
 	
-	private SortedSet<OntologyDocumentRevision> collectCommitRevisions(List<ChangeDocument> previousCommits) {
+	private SortedSet<OntologyDocumentRevision> collectCommitRevisions(List<ChangeHistory> previousCommits) {
 	    SortedSet<OntologyDocumentRevision> revisions = new TreeSet<OntologyDocumentRevision>();
-	    for (ChangeDocument previousCommit : previousCommits) {
+	    for (ChangeHistory previousCommit : previousCommits) {
 	        for (OntologyDocumentRevision previousCommitRevision = previousCommit.getStartRevision();
 	                previousCommitRevision.compareTo(previousCommit.getEndRevision()) < 0;
 	                previousCommitRevision = previousCommitRevision.next()) {
@@ -102,19 +102,19 @@ public class ClientUtilities {
 	    return revisions;
 	}
 	
-	public void update(VersionedOWLOntology ontology) throws OWLServerException {
+	public void update(VersionedOntologyDocument ontology) throws OWLServerException {
 		update(ontology, null);
 	}
 	
-	public void update(VersionedOWLOntology openOntology, OntologyDocumentRevision revision) throws OWLServerException {
+	public void update(VersionedOntologyDocument openOntology, OntologyDocumentRevision revision) throws OWLServerException {
 		OWLOntology localOntology = openOntology.getOntology();
 		OWLOntologyManager manager = localOntology.getOWLOntologyManager();
 		OntologyDocumentRevision startRevision = openOntology.getRevision();
-		ChangeDocument updates = getChanges(openOntology, startRevision, revision);
+		ChangeHistory updates = getChanges(openOntology, startRevision, revision);
 		manager.applyChanges(updates.getChanges(localOntology));
 		openOntology.setRevision(updates.getEndRevision());
-		List<ChangeDocument> committedChanges = new ArrayList<ChangeDocument>();
-		for (ChangeDocument committedChange : openOntology.getCommittedChanges()) {
+		List<ChangeHistory> committedChanges = new ArrayList<ChangeHistory>();
+		for (ChangeHistory committedChange : openOntology.getCommittedChanges()) {
 		    if (committedChange.getEndRevision().compareTo(updates.getEndRevision()) > 0) {
 		        committedChanges.add(committedChange.cropChanges(updates.getEndRevision(), null));
 		    }
@@ -122,11 +122,11 @@ public class ClientUtilities {
 		openOntology.setCommittedChanges(committedChanges);
 	}
 	
-	public ChangeDocument getChanges(VersionedOWLOntology ontologyDoc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
-		ChangeDocument localHistory = ontologyDoc.getLocalHistory();
+	public ChangeHistory getChanges(VersionedOntologyDocument ontologyDoc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
+		ChangeHistory localHistory = ontologyDoc.getLocalHistory();
 		OntologyDocumentRevision realEnd = end;
 		if (end == null || localHistory.getEndRevision().compareTo(end) < 0) {
-			ChangeDocument newChanges = client.getChanges(ontologyDoc.getServerDocument(), localHistory.getEndRevision(), end);
+			ChangeHistory newChanges = client.getChanges(ontologyDoc.getServerDocument(), localHistory.getEndRevision(), end);
 			realEnd = newChanges.getEndRevision();
 			ontologyDoc.appendLocalHistory(newChanges);
 		}

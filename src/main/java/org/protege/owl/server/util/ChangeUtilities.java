@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -48,7 +48,7 @@ public class ChangeUtilities {
         return ChangeNormalizer.normalizeChangeDelta(changes);
     }
     
-    public static ChangeDocument swapOrderOfChangeLists(DocumentFactory factory, ChangeDocument doc1, ChangeDocument doc2) {
+    public static ChangeHistory swapOrderOfChangeLists(DocumentFactory factory, ChangeHistory doc1, ChangeHistory doc2) {
         try {
             OWLOntology fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
             List<OWLOntologyChange> doc3 =swapOrderOfChangeLists(doc1.getChanges(fakeOntology), doc2.getChanges(fakeOntology));

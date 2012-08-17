@@ -24,7 +24,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
  * @author redmond
  *
  */
-public interface VersionedOWLOntology {
+public interface VersionedOntologyDocument {
 
 	 OWLOntology getOntology();
 
@@ -48,7 +48,7 @@ public interface VersionedOWLOntology {
 	  * 
 	  * @return a copy of the changes from revision zero to getRevision().
 	  */
-	 ChangeDocument getLocalHistory();
+	 ChangeHistory getLocalHistory();
 	 
 	 
 	 /**
@@ -59,7 +59,7 @@ public interface VersionedOWLOntology {
 	  * satisfied after the call.
 	  * @param changes
 	  */
-	 void appendLocalHistory(ChangeDocument changes);
+	 void appendLocalHistory(ChangeHistory changes);
 	 
 	 /**
 	  * This call returns changes that have been committed to the server but which are 
@@ -67,7 +67,7 @@ public interface VersionedOWLOntology {
 	  * 
 	  * @return
 	  */
-	 List<ChangeDocument> getCommittedChanges();
+	 List<ChangeHistory> getCommittedChanges();
 	 
 	 /**
 	  * This call allows us to set the committed changes.
@@ -75,7 +75,7 @@ public interface VersionedOWLOntology {
 	  * 
 	  * @param commits
 	  */
-	 void setCommittedChanges(List<ChangeDocument> commits);
+	 void setCommittedChanges(List<ChangeHistory> commits);
 	 
 
 	

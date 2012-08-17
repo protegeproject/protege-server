@@ -3,7 +3,7 @@ package org.protege.owl.server.util;
 import java.net.URI;
 
 import org.protege.owl.server.api.Client;
-import org.protege.owl.server.api.VersionedOWLOntology;
+import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.semanticweb.owlapi.model.IRI;
 
 public abstract class AbstractClient implements Client {
@@ -16,7 +16,7 @@ public abstract class AbstractClient implements Client {
 
 	
 	@Override
-	public boolean isCompatible(VersionedOWLOntology versionedOntology) {
+	public boolean isCompatible(VersionedOntologyDocument versionedOntology) {
 		URI serverUri = versionedOntology.getServerDocument().getServerLocation().toURI();
 		if (serverUri == null) {
 			return false;

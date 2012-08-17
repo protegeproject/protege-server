@@ -11,7 +11,7 @@ import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.User;
-import org.protege.owl.server.api.VersionedOWLOntology;
+import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.ChangeDocumentImpl;
 import org.protege.owl.server.connect.rmi.RMIClient;
@@ -46,13 +46,13 @@ public class ReportedCommitsTest {
     private RMIClient client1;
     private ClientUtilities util1;
     private OWLOntologyManager manager1;
-    private VersionedOWLOntology vont1;
+    private VersionedOntologyDocument vont1;
     
     private User user2;
     private RMIClient client2;
     private ClientUtilities util2;
     private OWLOntologyManager manager2;
-    private VersionedOWLOntology vont2;
+    private VersionedOntologyDocument vont2;
     
     private RemoteOntologyDocument rontology;
     

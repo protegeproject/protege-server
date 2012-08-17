@@ -15,7 +15,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
@@ -30,7 +30,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
  * 
  * @author tredmond
  */
-public class ChangeDocumentImpl implements ChangeDocument, Serializable {
+public class ChangeDocumentImpl implements ChangeHistory, Serializable {
 	private static final long serialVersionUID = -3842895051205436375L;
 	public static Logger logger = Logger.getLogger(ChangeDocumentImpl.class.getCanonicalName());
 	private OntologyDocumentRevision startRevision;
@@ -89,7 +89,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	}
 	
 	@Override
-	public ChangeDocument cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end) {
+	public ChangeHistory cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end) {
 		if (start == null || start.compareTo(getStartRevision()) < 0) {
 			start = getStartRevision();
 		}
@@ -118,7 +118,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	}
 	
 	@Override
-	public ChangeDocument appendChanges(ChangeDocument additionalChanges) {
+	public ChangeHistory appendChanges(ChangeHistory additionalChanges) {
 		if (additionalChanges.getEndRevision().compareTo(getEndRevision()) <= 0) {
 			return this;
 		}
@@ -165,10 +165,10 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof ChangeDocument)) {
+		if (!(o instanceof ChangeHistory)) {
 			return false;
 		}
-		ChangeDocument other = (ChangeDocument) o;
+		ChangeHistory other = (ChangeHistory) o;
 		try {
 			OWLOntology ontology = OWLManager.createOWLOntologyManager().createOntology();
 			if (!(getStartRevision().equals(other.getStartRevision()) &&

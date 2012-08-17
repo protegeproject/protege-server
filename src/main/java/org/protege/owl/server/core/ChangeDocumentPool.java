@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.exception.OWLServerException;
@@ -60,7 +60,7 @@ public class ChangeDocumentPool {
         }, timeout, timeout, TimeUnit.MILLISECONDS);
     }
     
-    public ChangeDocument getChangeDocument(RemoteOntologyDocument doc, File historyFile) throws OWLServerException {
+    public ChangeHistory getChangeDocument(RemoteOntologyDocument doc, File historyFile) throws OWLServerException {
         ChangeDocumentPoolEntry entry;
         synchronized (pool) {
             entry = pool.get(doc);
@@ -72,7 +72,7 @@ public class ChangeDocumentPool {
         return entry.getChangeDocument();
     }
     
-    public void setChangeDocument(RemoteOntologyDocument doc, File historyFile, ChangeDocument changes) {
+    public void setChangeDocument(RemoteOntologyDocument doc, File historyFile, ChangeHistory changes) {
         synchronized (pool) {
             ChangeDocumentPoolEntry entry = pool.get(doc);
             if (entry != null) {

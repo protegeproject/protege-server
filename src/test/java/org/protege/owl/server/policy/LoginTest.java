@@ -15,7 +15,7 @@ import org.protege.owl.server.TestUtilities;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.User;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.exception.UserNotAuthenticated;
+import org.protege.owl.server.api.exception.AuthenticationFailedException;
 import org.protege.owl.server.connect.rmi.RMIClient;
 import org.semanticweb.owlapi.model.IRI;
 import org.testng.annotations.AfterMethod;
@@ -71,7 +71,7 @@ public class LoginTest {
         try {
             client.createRemoteDirectory(IRI.create(RMIClient.SCHEME + "://localhost:" + rmiPort + "/test"));
         }
-        catch (UserNotAuthenticated una) {
+        catch (AuthenticationFailedException una) {
             hackerFailed = true;
         }
         Assert.assertTrue(hackerFailed);
@@ -87,7 +87,7 @@ public class LoginTest {
         try {
             client.createRemoteDirectory(IRI.create(RMIClient.SCHEME + "://localhost:" + rmiPort + "/test"));
         }
-        catch (UserNotAuthenticated una) {
+        catch (AuthenticationFailedException una) {
             hackerFailed = true;
         }
         Assert.assertTrue(hackerFailed);
@@ -103,7 +103,7 @@ public class LoginTest {
         try {
             client.createRemoteDirectory(IRI.create(RMIClient.SCHEME + "://localhost:" + rmiPort + "/test"));
         }
-        catch (UserNotAuthenticated una) {
+        catch (AuthenticationFailedException una) {
             hackerFailed = true;
         }
         Assert.assertTrue(hackerFailed);
@@ -120,7 +120,7 @@ public class LoginTest {
         try {
             client.createRemoteDirectory(IRI.create(RMIClient.SCHEME + "://localhost:" + rmiPort + "/test"));
         }
-        catch (UserNotAuthenticated una) {
+        catch (AuthenticationFailedException una) {
             hackerFailed = true;
         }
         Assert.assertTrue(hackerFailed);

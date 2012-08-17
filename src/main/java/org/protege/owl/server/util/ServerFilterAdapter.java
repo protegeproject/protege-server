@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.SortedSet;
 
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.DocumentFactory;
@@ -47,13 +47,13 @@ public class ServerFilterAdapter extends ServerFilter {
     }
 
     @Override
-    public ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
+    public ChangeHistory getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
         return getDelegate().getChanges(u, doc, start, end);
     }
 
     @Override
-    public ChangeDocument commit(User u, RemoteOntologyDocument doc, 
-                                 ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits,
+    public ChangeHistory commit(User u, RemoteOntologyDocument doc, 
+                                 ChangeHistory changes, SortedSet<OntologyDocumentRevision> myCommits,
                                  CommitOption option) throws OWLServerException {
         return getDelegate().commit(u, doc, changes, myCommits, option);
     }

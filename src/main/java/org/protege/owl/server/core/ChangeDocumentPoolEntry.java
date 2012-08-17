@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.exception.OWLServerException;
@@ -21,8 +21,8 @@ import org.protege.owl.server.changes.ChangeDocumentUtilities;
 public class ChangeDocumentPoolEntry {
     private Logger logger = Logger.getLogger(ChangeDocumentPoolEntry.class.getCanonicalName());
     private DocumentFactory factory;
-    private ChangeDocument changeDocument;
-    private Future<ChangeDocument> readChangeDocumentTask;
+    private ChangeHistory changeDocument;
+    private Future<ChangeHistory> readChangeDocumentTask;
     private File historyFile;
     private long lastTouch;
     
@@ -41,7 +41,7 @@ public class ChangeDocumentPoolEntry {
         readChangeDocumentTask = executor.submit(new ReadChangeDocument());
     }
     
-    public ChangeDocumentPoolEntry(DocumentFactory factory, File historyFile, ChangeDocument changes) {
+    public ChangeDocumentPoolEntry(DocumentFactory factory, File historyFile, ChangeHistory changes) {
         this.factory = factory;
         this.historyFile = historyFile;
         this.changeDocument = changes;
@@ -49,7 +49,7 @@ public class ChangeDocumentPoolEntry {
         executor.submit(new WriteChanges(changes));
     }
     
-    public ChangeDocument getChangeDocument() throws OWLServerException {
+    public ChangeHistory getChangeDocument() throws OWLServerException {
         touch();
         if (changeDocument == null) {
             try {
@@ -70,7 +70,7 @@ public class ChangeDocumentPoolEntry {
         return changeDocument;
     }
     
-    public void setChangeDocument(final ChangeDocument newChangeDocument) {
+    public void setChangeDocument(final ChangeHistory newChangeDocument) {
         touch();
         executor.submit(new WriteChanges(newChangeDocument));
         this.changeDocument = newChangeDocument;
@@ -98,17 +98,17 @@ public class ChangeDocumentPoolEntry {
         this.lastTouch = System.currentTimeMillis();
     }
     
-    private class ReadChangeDocument implements Callable<ChangeDocument> {
+    private class ReadChangeDocument implements Callable<ChangeHistory> {
         @Override
-        public ChangeDocument call() throws IOException {
+        public ChangeHistory call() throws IOException {
             return ChangeDocumentUtilities.readChanges(factory, historyFile, OntologyDocumentRevision.START_REVISION, null);
         }
     }
     
     private class WriteChanges implements Callable<Boolean> {
-        private ChangeDocument newChangeDocument;
+        private ChangeHistory newChangeDocument;
         
-        public WriteChanges(ChangeDocument newChangeDocument) {
+        public WriteChanges(ChangeHistory newChangeDocument) {
             this.newChangeDocument = newChangeDocument;
         }
         

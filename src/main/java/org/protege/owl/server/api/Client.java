@@ -14,7 +14,7 @@ public interface Client {
 	
 	IRI getServerIRI();
 	
-	boolean isCompatible(VersionedOWLOntology versionedOntology);
+	boolean isCompatible(VersionedOntologyDocument versionedOntology);
 	
 	/**
 	 * This call gets the document factory.  This factory defines how the Client implements ChangeDocuments and
@@ -72,7 +72,7 @@ public interface Client {
 	 * @param end
 	 * @return
 	 */
-	ChangeDocument getChanges(RemoteOntologyDocument document, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException;
+	ChangeHistory getChanges(RemoteOntologyDocument document, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException;
 	
 	/**
 	 * Commits a collection of changes to the remote ontology document.
@@ -81,8 +81,8 @@ public interface Client {
 	 * @param revision
 	 * @param changes
 	 */
-	ChangeDocument commit(RemoteOntologyDocument document, 
-	                      ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits,
+	ChangeHistory commit(RemoteOntologyDocument document, 
+	                      ChangeHistory changes, SortedSet<OntologyDocumentRevision> previousCommits,
 	                      CommitOption option) throws OWLServerException;
 	
 	void shutdown();

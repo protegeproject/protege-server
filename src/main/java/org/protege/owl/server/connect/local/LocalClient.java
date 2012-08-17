@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.DocumentFactory;
@@ -68,15 +68,15 @@ public class LocalClient extends AbstractClient {
 	}
 
 	@Override
-	public ChangeDocument getChanges(RemoteOntologyDocument document,
+	public ChangeHistory getChanges(RemoteOntologyDocument document,
 			OntologyDocumentRevision start, OntologyDocumentRevision end)
 			throws OWLServerException {
 		return server.getChanges(user, document, start, end);
 	}
 
 	@Override
-	public ChangeDocument commit(RemoteOntologyDocument document,
-					              ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits, CommitOption option)
+	public ChangeHistory commit(RemoteOntologyDocument document,
+					              ChangeHistory changes, SortedSet<OntologyDocumentRevision> previousCommits, CommitOption option)
 			throws OWLServerException {
 		return server.commit(user, document, changes, previousCommits, option);
 	}

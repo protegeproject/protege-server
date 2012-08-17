@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
-import org.protege.owl.server.api.VersionedOWLOntology;
+import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.util.ClientUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -64,11 +64,11 @@ public abstract class AbstractBasicServerTest {
 	
 	@Test
 	public void testLoadPizza() throws IOException, OWLOntologyCreationException, OWLServerException {
-		VersionedOWLOntology versionedPizza = loadPizza();
+		VersionedOntologyDocument versionedPizza = loadPizza();
 		OWLOntology ontology1 = versionedPizza.getOntology();
 		Client client2 = createClient();
 		ClientUtilities client2Utilities = new ClientUtilities(client2);
-		VersionedOWLOntology versionedOntology2 = client2Utilities.loadOntology(OWLManager.createOWLOntologyManager(), versionedPizza.getServerDocument());
+		VersionedOntologyDocument versionedOntology2 = client2Utilities.loadOntology(OWLManager.createOWLOntologyManager(), versionedPizza.getServerDocument());
 		OWLOntology ontology2 = versionedOntology2.getOntology();
 		Assert.assertEquals(ontology1.getOntologyID(), ontology2.getOntologyID());
 		Assert.assertEquals(ontology1.getAxioms(), ontology2.getAxioms());
@@ -77,12 +77,12 @@ public abstract class AbstractBasicServerTest {
 	
 	   @Test
 	    public void testBackAndForthNoUpdate() throws IOException, OWLOntologyCreationException, OWLServerException {
-	        VersionedOWLOntology versionedPizza1 = loadPizza();
+	        VersionedOntologyDocument versionedPizza1 = loadPizza();
 	        OWLOntology ontology1 = versionedPizza1.getOntology();
 	        
 	        Client client2 = createClient();
 	        ClientUtilities client2Utilities = new ClientUtilities(client2);
-	        VersionedOWLOntology versionedPizza2 = client2Utilities.loadOntology(OWLManager.createOWLOntologyManager(), versionedPizza1.getServerDocument());
+	        VersionedOntologyDocument versionedPizza2 = client2Utilities.loadOntology(OWLManager.createOWLOntologyManager(), versionedPizza1.getServerDocument());
 	        OWLOntology ontology2 = versionedPizza2.getOntology();
 	        
 	        Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
@@ -114,12 +114,12 @@ public abstract class AbstractBasicServerTest {
 	
 	@Test
 	public void testBackAndForthWithUpdate() throws IOException, OWLOntologyCreationException, OWLServerException {
-	    VersionedOWLOntology versionedPizza1 = loadPizza();
+	    VersionedOntologyDocument versionedPizza1 = loadPizza();
 	    OWLOntology ontology1 = versionedPizza1.getOntology();
 	    
 	    Client client2 = createClient();
 	    ClientUtilities client2Utilities = new ClientUtilities(client2);
-	    VersionedOWLOntology versionedPizza2 = client2Utilities.loadOntology(OWLManager.createOWLOntologyManager(), versionedPizza1.getServerDocument());
+	    VersionedOntologyDocument versionedPizza2 = client2Utilities.loadOntology(OWLManager.createOWLOntologyManager(), versionedPizza1.getServerDocument());
 	    OWLOntology ontology2 = versionedPizza2.getOntology();
 	    
 	    Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
@@ -151,10 +151,10 @@ public abstract class AbstractBasicServerTest {
 	}
 
 	
-	public VersionedOWLOntology loadPizza() throws OWLOntologyCreationException, OWLServerException {
-		IRI pizzaLocation = IRI.create(testDirectory.getServerLocation().toString() + "/pizza" + ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
+	public VersionedOntologyDocument loadPizza() throws OWLOntologyCreationException, OWLServerException {
+		IRI pizzaLocation = IRI.create(testDirectory.getServerLocation().toString() + "/pizza" + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
 		OWLOntology ontology = PizzaVocabulary.loadPizza();
-		VersionedOWLOntology versionedOntology = clientUtilities.createServerOntology(pizzaLocation, new ChangeMetaData("A tasty pizza"), ontology);
+		VersionedOntologyDocument versionedOntology = clientUtilities.createServerOntology(pizzaLocation, new ChangeMetaData("A tasty pizza"), ontology);
 		return versionedOntology;
 	}
 }

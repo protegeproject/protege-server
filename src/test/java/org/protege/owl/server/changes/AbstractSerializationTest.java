@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 import org.protege.owl.server.PizzaVocabulary;
 import org.protege.owl.server.TestVocabulary;
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
@@ -62,12 +62,12 @@ public abstract class AbstractSerializationTest {
 		List<OWLOntologyChange> changes1 = new ArrayList<OWLOntologyChange>();
 		changes1.add(new AddAxiom(ontology1, TestVocabulary.AXIOM1));
 		OntologyDocumentRevision revision1 = new OntologyDocumentRevision(3);
-		ChangeDocument doc1 = documentFactory.createChangeDocument(changes1, null, revision1);
+		ChangeHistory doc1 = documentFactory.createChangeDocument(changes1, null, revision1);
 		
 		List<OWLOntologyChange> changes2 = new ArrayList<OWLOntologyChange>();
 		changes2.add(new RemoveAxiom(ontology1, TestVocabulary.AXIOM2));
 		OntologyDocumentRevision revision2 = new OntologyDocumentRevision(4);
-		ChangeDocument doc2 = documentFactory.createChangeDocument(changes2, null, revision2);
+		ChangeHistory doc2 = documentFactory.createChangeDocument(changes2, null, revision2);
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");
 		logs.info("Using file " + tmp);
@@ -78,8 +78,8 @@ public abstract class AbstractSerializationTest {
 		out.close();
 		
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(tmp));
-		ChangeDocument doc3 = (ChangeDocument) in.readObject();
-		ChangeDocument doc4 = (ChangeDocument) in.readObject();
+		ChangeHistory doc3 = (ChangeHistory) in.readObject();
+		ChangeHistory doc4 = (ChangeHistory) in.readObject();
 		
 		Assert.assertEquals(doc3, doc1);
 		Assert.assertEquals(doc4, doc2);
@@ -94,12 +94,12 @@ public abstract class AbstractSerializationTest {
 		List<OWLOntologyChange> changes1 = new ArrayList<OWLOntologyChange>();
 		changes1.add(new AddAxiom(ontology1, TestVocabulary.AXIOM1));
 		OntologyDocumentRevision revision1 = new OntologyDocumentRevision(3);
-		ChangeDocument doc2 = documentFactory.createChangeDocument(changes1, null, revision1);
+		ChangeHistory doc2 = documentFactory.createChangeDocument(changes1, null, revision1);
 		
 		List<OWLOntologyChange> changes2 = new ArrayList<OWLOntologyChange>();
 		changes2.add(new RemoveAxiom(ontology1, TestVocabulary.AXIOM2));
 		OntologyDocumentRevision revision2 = new OntologyDocumentRevision(4);
-		ChangeDocument doc4 = documentFactory.createChangeDocument(changes2, null, revision2);
+		ChangeHistory doc4 = documentFactory.createChangeDocument(changes2, null, revision2);
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");
 		logs.info("Using file " + tmp);
@@ -117,9 +117,9 @@ public abstract class AbstractSerializationTest {
 		
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(tmp));
 		Integer int6 = (Integer) in.readObject();
-		ChangeDocument doc7 = (ChangeDocument) in.readObject();
+		ChangeHistory doc7 = (ChangeHistory) in.readObject();
 		String str8 = (String) in.readObject();
-		ChangeDocument doc9 = (ChangeDocument) in.readObject();
+		ChangeHistory doc9 = (ChangeHistory) in.readObject();
 		Date d10 = (Date) in.readObject();
 		
 		Assert.assertEquals(int6, int1);
@@ -164,7 +164,7 @@ public abstract class AbstractSerializationTest {
 	
 	private void verifyRoundTrip(List<OWLOntologyChange> changes) throws IOException, ClassNotFoundException, OWLOntologyCreationException {
 		DocumentFactory docFactory = createDocumentFactory();
-		ChangeDocument doc = docFactory.createChangeDocument(changes, null, new OntologyDocumentRevision(r.nextInt(500)));
+		ChangeHistory doc = docFactory.createChangeDocument(changes, null, new OntologyDocumentRevision(r.nextInt(500)));
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");
 		logs.info("Using file " + tmp);
@@ -174,14 +174,14 @@ public abstract class AbstractSerializationTest {
 		out.close();
 		
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(tmp));
-		ChangeDocument doc2 = (ChangeDocument) in.readObject();
+		ChangeHistory doc2 = (ChangeHistory) in.readObject();
 		
 		Assert.assertEquals(doc, doc2);
 	}
 
 	
     protected void testRollingCropped(DocumentFactory factory, int interval) throws OWLOntologyCreationException, IOException {
-        ChangeDocument doc = getPizzaChanges(factory);
+        ChangeHistory doc = getPizzaChanges(factory);
         OntologyDocumentRevision windowEnd;
         for (OntologyDocumentRevision windowStart = doc.getStartRevision();
                 windowStart.compareTo(doc.getEndRevision()) < 0;
@@ -191,26 +191,26 @@ public abstract class AbstractSerializationTest {
         }
     }
     
-    protected void testCroppedRoundTrip(ChangeDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException {
+    protected void testCroppedRoundTrip(ChangeHistory doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException {
         DocumentFactory factory = doc.getDocumentFactory();
-        File testFile = File.createTempFile("AlignmentRT", ChangeDocument.CHANGE_DOCUMENT_EXTENSION);
+        File testFile = File.createTempFile("AlignmentRT", ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
         FileOutputStream fos = new FileOutputStream(testFile);
         doc.writeChangeDocument(fos);
         fos.flush();
         fos.close();
         FileInputStream fin = new FileInputStream(testFile);
-        ChangeDocument doc2 = factory.readChangeDocument(fin, start, end);
+        ChangeHistory doc2 = factory.readChangeDocument(fin, start, end);
         fin.close();
         Assert.assertEquals(doc2, doc.cropChanges(start, end));
     }
 
-    protected ChangeDocument getPizzaChanges(DocumentFactory factory) throws OWLOntologyCreationException {
+    protected ChangeHistory getPizzaChanges(DocumentFactory factory) throws OWLOntologyCreationException {
         OWLOntology pizzaOntology = PizzaVocabulary.loadPizza();
-        ChangeDocument document = factory.createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION);
+        ChangeHistory document = factory.createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION);
         for (OWLAxiom axiom : pizzaOntology.getAxioms()) {
             List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
             changes.add(new AddAxiom(pizzaOntology, axiom));
-            ChangeDocument toAppend = factory.createChangeDocument(changes, new ChangeMetaData(), document.getEndRevision());
+            ChangeHistory toAppend = factory.createChangeDocument(changes, new ChangeMetaData(), document.getEndRevision());
             document = document.appendChanges(toAppend);
         }
         return document;

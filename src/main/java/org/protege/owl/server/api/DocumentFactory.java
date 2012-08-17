@@ -9,7 +9,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 public interface DocumentFactory {
     
-    ChangeDocument createEmptyChangeDocument(OntologyDocumentRevision revision);
+    ChangeHistory createEmptyChangeDocument(OntologyDocumentRevision revision);
 	
 	/**
 	 * Create a change document for the list of changes and the commit comments.
@@ -19,15 +19,15 @@ public interface DocumentFactory {
 	 * @param start
 	 * @return
 	 */
-	ChangeDocument createChangeDocument(List<OWLOntologyChange> changes, ChangeMetaData metaData, OntologyDocumentRevision start);
+	ChangeHistory createChangeDocument(List<OWLOntologyChange> changes, ChangeMetaData metaData, OntologyDocumentRevision start);
 	
-	ChangeDocument readChangeDocument(InputStream in, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException;
+	ChangeHistory readChangeDocument(InputStream in, OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException;
 	
 	boolean hasServerMetadata(OWLOntology ontology);
 
-	VersionedOWLOntology createVersionedOntology(OWLOntology ontology) throws IOException;
+	VersionedOntologyDocument createVersionedOntology(OWLOntology ontology) throws IOException;
 	
-	VersionedOWLOntology createVersionedOntology(OWLOntology ontology, RemoteOntologyDocument serverDocument, OntologyDocumentRevision revision);
+	VersionedOntologyDocument createVersionedOntology(OWLOntology ontology, RemoteOntologyDocument serverDocument, OntologyDocumentRevision revision);
 	
 
 }

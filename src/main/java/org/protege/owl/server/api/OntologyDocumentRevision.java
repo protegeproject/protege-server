@@ -2,7 +2,7 @@ package org.protege.owl.server.api;
 
 import java.io.Serializable;
 
-public class OntologyDocumentRevision implements Comparable<OntologyDocumentRevision>, Serializable {
+public final class OntologyDocumentRevision implements Comparable<OntologyDocumentRevision>, Serializable {
 	private static final long serialVersionUID = 7037205560605439026L;
 
 	public static final OntologyDocumentRevision START_REVISION = new OntologyDocumentRevision(0);

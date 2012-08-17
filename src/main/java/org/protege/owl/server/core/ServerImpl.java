@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
-import org.protege.owl.server.api.ChangeDocument;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.DocumentFactory;
@@ -75,7 +75,7 @@ public class ServerImpl implements Server {
 			@Override
 			public boolean isStatusOf(File f, boolean pooledDocumentFound) {
 				return pooledDocumentFound ||
-				        (f.isFile() && f.getName().endsWith(ChangeDocument.CHANGE_DOCUMENT_EXTENSION));
+				        (f.isFile() && f.getName().endsWith(ChangeHistory.CHANGE_DOCUMENT_EXTENSION));
 			}
 
 		},
@@ -147,8 +147,8 @@ public class ServerImpl implements Server {
 		if (historyFile == null) {
 			throw new DocumentAlreadyExistsException("Could not create directory at " + serverIRI);
 		}
-		if (!historyFile.getName().endsWith(ChangeDocument.CHANGE_DOCUMENT_EXTENSION)) {
-			throw new IllegalArgumentException("Server side IRI's must have the " + ChangeDocument.CHANGE_DOCUMENT_EXTENSION + " extension");
+		if (!historyFile.getName().endsWith(ChangeHistory.CHANGE_DOCUMENT_EXTENSION)) {
+			throw new IllegalArgumentException("Server side IRI's must have the " + ChangeHistory.CHANGE_DOCUMENT_EXTENSION + " extension");
 		}
 		RemoteOntologyDocument doc = new RemoteOntologyDocumentImpl(serverIRI);
 		pool.setChangeDocument(doc, historyFile, factory.createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION));
@@ -166,7 +166,7 @@ public class ServerImpl implements Server {
 	}
 
 	@Override
-	public ChangeDocument getChanges(User u, RemoteOntologyDocument doc,
+	public ChangeHistory getChanges(User u, RemoteOntologyDocument doc,
 								     OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
 		File historyFile = parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT);
 		if (historyFile == null) {
@@ -178,8 +178,8 @@ public class ServerImpl implements Server {
 
 
 	@Override
-	public ChangeDocument commit(User u, RemoteOntologyDocument doc,
-	                             ChangeDocument changesFromClient, 
+	public ChangeHistory commit(User u, RemoteOntologyDocument doc,
+	                             ChangeHistory changesFromClient, 
 	                             SortedSet<OntologyDocumentRevision> previousCommits,
 	                             CommitOption option) throws OWLServerException {
 		OWLOntology fakeOntology;
@@ -191,13 +191,13 @@ public class ServerImpl implements Server {
 			throw new IllegalStateException("Why me?", e);
 		}
 		List<OWLOntologyChange> serverChanges = getChanges(u, doc, changesFromClient.getStartRevision(), null).getChanges(fakeOntology, previousCommits);
-		ChangeDocument fullHistory = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, null);
+		ChangeHistory fullHistory = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, null);
 		
 		OntologyDocumentRevision latestRevision = fullHistory.getEndRevision();
 		List<OWLOntologyChange> clientChanges = changesFromClient.getChanges(fakeOntology);
 		List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);
-		ChangeDocument changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaData, latestRevision);
-		ChangeDocument fullHistoryAfterCommit = fullHistory.appendChanges(changeDocumentToAppend);
+		ChangeHistory changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaData, latestRevision);
+		ChangeHistory fullHistoryAfterCommit = fullHistory.appendChanges(changeDocumentToAppend);
 		pool.setChangeDocument(doc, parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT), fullHistoryAfterCommit);
 		return option == CommitOption.RETURN_ACTUAL_COMMIT ? changeDocumentToAppend : factory.createEmptyChangeDocument(latestRevision);
 	}
@@ -247,8 +247,8 @@ public class ServerImpl implements Server {
 	    File f = parseServerIRI(doc.getServerLocation(), ServerObjectStatus.ANY);
 	    String fullName = f.getPath();
 	    String prefix;
-	    if (fullName.endsWith(ChangeDocument.CHANGE_DOCUMENT_EXTENSION)) {
-	        prefix = fullName.substring(0, fullName.length() - ChangeDocument.CHANGE_DOCUMENT_EXTENSION.length());
+	    if (fullName.endsWith(ChangeHistory.CHANGE_DOCUMENT_EXTENSION)) {
+	        prefix = fullName.substring(0, fullName.length() - ChangeHistory.CHANGE_DOCUMENT_EXTENSION.length());
 	    }
 	    else {
 	        prefix = fullName;
