@@ -29,7 +29,7 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	
     @Override
     public ChangeDocument createEmptyChangeDocument(OntologyDocumentRevision revision) {
-        return new ChangeDocumentImpl(this, revision, new ArrayList<OWLOntologyChange>(), null);
+        return new ChangeDocumentImpl(this, revision, null, null);
     }
     
 	@Override

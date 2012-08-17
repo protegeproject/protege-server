@@ -26,6 +26,7 @@ public class PizzaVocabulary {
 	
 	public static final OWLAxiom CHEESEY_PIZZA_DEFINITION;
 	public static final OWLAxiom NOT_CHEESEY_PIZZA_DEFINITION;
+	public static final OWLAxiom HAS_TOPPING_DOMAIN;
 	
 	static {
 		OWLDataFactory factory = OWLManager.getOWLDataFactory();
@@ -38,7 +39,7 @@ public class PizzaVocabulary {
 		
         CHEESEY_PIZZA_DEFINITION = factory.getOWLEquivalentClassesAxiom(CHEESEY_PIZZA, factory.getOWLObjectIntersectionOf(PIZZA, factory.getOWLObjectSomeValuesFrom(HAS_TOPPING, CHEESE_TOPPING)));
         NOT_CHEESEY_PIZZA_DEFINITION = factory.getOWLEquivalentClassesAxiom(CHEESEY_PIZZA, factory.getOWLObjectIntersectionOf(PIZZA, factory.getOWLObjectSomeValuesFrom(HAS_TOPPING, TOMATO_TOPPING)));
-		
+		HAS_TOPPING_DOMAIN = factory.getOWLObjectPropertyDomainAxiom(HAS_TOPPING, PIZZA);
 	}
 	
 	

@@ -91,7 +91,7 @@ public class ClientUtilities {
 	    SortedSet<OntologyDocumentRevision> revisions = new TreeSet<OntologyDocumentRevision>();
 	    for (ChangeDocument previousCommit : previousCommits) {
 	        for (OntologyDocumentRevision previousCommitRevision = previousCommit.getStartRevision();
-	                previousCommitRevision.compareTo(previousCommit.getEndRevision()) <= 0;
+	                previousCommitRevision.compareTo(previousCommit.getEndRevision()) < 0;
 	                previousCommitRevision = previousCommitRevision.next()) {
 	            revisions.add(previousCommitRevision);
 	        }
@@ -202,7 +202,7 @@ public class ClientUtilities {
 		public GetUncommittedChangesVisitor(OWLOntology ontology) {
 			this.ontology = ontology;
 			this.ontologyId = ontology.getOntologyID();
-			ontologyIdChanged = true;
+			ontologyIdChanged = !ontologyId.isAnonymous();
 			for (OWLImportsDeclaration decl : ontology.getImportsDeclarations()) {
 				importChanges.put(decl, OntologyChangeType.ADDED);
 			}

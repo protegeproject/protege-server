@@ -34,7 +34,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	private static final long serialVersionUID = -3842895051205436375L;
 	public static Logger logger = Logger.getLogger(ChangeDocumentImpl.class.getCanonicalName());
 	private OntologyDocumentRevision startRevision;
-	private List<List<OWLOntologyChange>> changes = new ArrayList<List<OWLOntologyChange>>();
+	private List<List<OWLOntologyChange>> listOfRevisionChanges = new ArrayList<List<OWLOntologyChange>>();
 	private SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
 	private DocumentFactory documentFactory;
 	
@@ -43,10 +43,10 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
         this.documentFactory = documentFactory;	    
 	}
 	
-	ChangeDocumentImpl(OntologyDocumentRevision start, DocumentFactory documentFactory, List<List<OWLOntologyChange>> changes, SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap) {
+	ChangeDocumentImpl(OntologyDocumentRevision start, DocumentFactory documentFactory, List<List<OWLOntologyChange>> listOfRevisionChanges, SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap) {
 	    startRevision = start;
 	    this.documentFactory = documentFactory;
-	    this.changes = changes;
+	    this.listOfRevisionChanges = listOfRevisionChanges;
 	    this.metaDataMap = metaDataMap;
 	}
 
@@ -56,7 +56,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	public ChangeDocumentImpl(DocumentFactory documentFactory, OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes, ChangeMetaData metaData) {
 		this.startRevision = startRevision;
 		if (changes != null) {
-			this.changes.add(new ArrayList<OWLOntologyChange>(changes));
+			this.listOfRevisionChanges.add(new ArrayList<OWLOntologyChange>(changes));
 		}
 		if (metaData != null && changes != null) {
 		    this.metaDataMap.put(startRevision, metaData);
@@ -76,7 +76,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 
 	@Override
 	public OntologyDocumentRevision getEndRevision() {
-		int revision = startRevision.getRevision() + changes.size();
+		int revision = startRevision.getRevision() + listOfRevisionChanges.size();
 		return new OntologyDocumentRevision(revision);
 	}
 
@@ -96,7 +96,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 		if (start.equals(getStartRevision()) && end.equals(getEndRevision())) {
 		    return this;
 		}
-		List<List<OWLOntologyChange>> subChanges = changes.subList(start.getRevision() - startRevision.getRevision(), end.getRevision() - startRevision.getRevision());
+		List<List<OWLOntologyChange>> subChanges = listOfRevisionChanges.subList(start.getRevision() - startRevision.getRevision(), end.getRevision() - startRevision.getRevision());
 		SortedMap<OntologyDocumentRevision, ChangeMetaData> subMetaDataMap = cropMap(metaDataMap, start, end);
 		return new ChangeDocumentImpl(start, documentFactory, subChanges, subMetaDataMap);
 	}
@@ -130,7 +130,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 			throw new RuntimeException("This really shouldn't happen!", e);
 		}
 		ChangeDocumentImpl newDoc = new ChangeDocumentImpl(startRevision, documentFactory);
-		newDoc.changes = new ArrayList<List<OWLOntologyChange>>(changes);
+		newDoc.listOfRevisionChanges = new ArrayList<List<OWLOntologyChange>>(listOfRevisionChanges);
 		newDoc.metaDataMap = new TreeMap<OntologyDocumentRevision, ChangeMetaData>(metaDataMap);
 		SortedMap<OntologyDocumentRevision, ChangeMetaData> additionalMetaData = additionalChanges.getMetaData();
 		for (OntologyDocumentRevision revision = newDoc.getEndRevision();
@@ -139,7 +139,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 		    if (additionalMetaData.containsKey(revision)) {
 		        newDoc.metaDataMap.put(revision, additionalMetaData.get(revision));
 		    }
-		    newDoc.changes.add(additionalChanges.cropChanges(revision, revision.next()).getChanges(fakeOntology));
+		    newDoc.listOfRevisionChanges.add(additionalChanges.cropChanges(revision, revision.next()).getChanges(fakeOntology));
 		}
 		return newDoc;
 	}
@@ -154,7 +154,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	public List<OWLOntologyChange> getChanges(OWLOntology ontology, Set<OntologyDocumentRevision> toIgnore) {
 	    List<OWLOntologyChange> filteredChanges = new ArrayList<OWLOntologyChange>();
 	    OntologyDocumentRevision revision = startRevision;
-	    for (List<OWLOntologyChange> change : changes) {
+	    for (List<OWLOntologyChange> change : listOfRevisionChanges) {
 	        if (!toIgnore.contains(revision)) {
 	            filteredChanges.addAll(change);
 	        }
@@ -192,9 +192,9 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 		}
 		oos.writeObject(startRevision);
 		oos.writeObject(metaDataMap);
-		oos.writeInt(changes.size());
+		oos.writeInt(listOfRevisionChanges.size());
 		OWLOutputStream owlstream = new OWLOutputStream(oos);
-		for (List<OWLOntologyChange> changeSet : changes) {
+		for (List<OWLOntologyChange> changeSet : listOfRevisionChanges) {
 		    owlstream.write(changeSet);
 		}
 		oos.flush();
@@ -202,7 +202,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	
 	@Override
 	public String toString() {
-		return "{" + startRevision.getRevision() + " --> " + getEndRevision().getRevision() + ": " + changes + "}";
+		return "{" + startRevision.getRevision() + " --> " + getEndRevision().getRevision() + ": " + listOfRevisionChanges + "}";
 	}
 	
 	
@@ -217,7 +217,7 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	    documentFactory = (DocumentFactory) in.readObject();
 	    ChangeDocumentImpl doc = (ChangeDocumentImpl) documentFactory.readChangeDocument(in, null, null);
 	    startRevision = doc.getStartRevision();
-	    changes = doc.changes;
+	    listOfRevisionChanges = doc.listOfRevisionChanges;
 	    metaDataMap = doc.metaDataMap;
 	}
 	

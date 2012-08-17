@@ -197,7 +197,7 @@ public class ServerImpl implements Server {
 		ChangeDocument changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaData, latestRevision);
 		ChangeDocument fullHistoryAfterCommit = fullHistory.appendChanges(changeDocumentToAppend);
 		pool.setChangeDocument(doc, parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT), fullHistoryAfterCommit);
-		return factory.createChangeDocument(changesToCommit, new ChangeMetaData(), fullHistory.getEndRevision());
+		return changeDocumentToAppend;
 	}
 
 	@Override
