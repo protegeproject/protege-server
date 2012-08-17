@@ -33,7 +33,7 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     static public File getBackingStore(OWLOntology ontology) {
 		OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		IRI documentLocation = manager.getOntologyDocumentIRI(ontology);
-		if (documentLocation.getScheme().equals("file")) {
+		if (!documentLocation.getScheme().equals("file")) {
 			return null;
 		}
 		return new File(documentLocation.toURI());
@@ -106,7 +106,7 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 			return false;
 		}
 		File historyFile = getHistoryFile(ontologyFile);
-		historyFile.mkdirs();
+		historyFile.getParentFile().mkdirs();
 		ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(historyFile)));
 		oos.writeObject(revision);
 		oos.writeObject(serverDocument);

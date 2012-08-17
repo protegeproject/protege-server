@@ -71,7 +71,6 @@
       <pathelement location="${equinox.common}"/>
       <pathelement location="${equinox.registry}"/>
       <pathelement location="${owl.lib}"/>
-      <pathelement location="./lib/serialize.jar"/>
       <pathelement location="${lib.antlr}"/>
     </path>
   </target>

@@ -5,12 +5,27 @@
 	<parameter name="rmiPort" value="5100"/>
     <test name="Local Tests">
         <classes>
-            <class name="org.protege.owl.server.changes.BasicSerializationTest"/>  
-             <class name="org.protege.owl.server.ReportedCommitsTest"/>            
+            <class name="org.protege.owl.server.changes.BasicSerializationTest"/> 
+            <class name="org.protege.owl.server.ReportedCommitsTest"/>            
             <class name="org.protege.owl.server.LocalBasicServerTest"/>
             <class name="org.protege.owl.server.RemoteBasicServerTest"/>
             <class name="org.protege.owl.server.policy.UserParserTest"/>
             <class name="org.protege.owl.server.policy.LoginTest"/>
+        </classes>
+    </test>
+    
+    <test name="Deprecated Serialization Test">
+    	<parameter name="ontologyFile" value="src/test/resources/simple.owl"/>
+        <classes>
+            <class name="org.protege.owl.server.changes.format.FormatTest"/>
+            <class name="org.protege.owl.server.changes.format.SimpleTest"/>
+        </classes>
+    </test>	
+    
+    <test name="Deprecated Serialization Test (Pizza)">
+        <parameter name="ontologyFile" value="src/test/resources/pizza.owl"/>
+        <classes>
+            <class name="org.protege.owl.server.changes.format.FormatTest"/>
         </classes>
     </test>
 
