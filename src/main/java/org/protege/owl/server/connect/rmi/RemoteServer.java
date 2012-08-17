@@ -8,6 +8,7 @@ import java.util.SortedSet;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
+import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.ServerDirectory;
@@ -26,7 +27,9 @@ public interface RemoteServer  extends Remote {
 	
 	ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws RemoteException;
 
-	ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData metaData, ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits) throws RemoteException;
+	ChangeDocument commit(User u, RemoteOntologyDocument doc, 
+	                      ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits,
+	                      CommitOption option) throws RemoteException;
 		
 	void shutdown() throws RemoteException;
 }

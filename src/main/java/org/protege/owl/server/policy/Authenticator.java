@@ -18,6 +18,8 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
+import org.protege.owl.server.api.CommitOption;
+import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.Server;
@@ -60,6 +62,7 @@ public class Authenticator extends ServerFilter {
         }
     }
 
+    @Override
     public void setTransports(Collection<ServerTransport> transports) {
         try {
             loadRMITransports(transports);
@@ -102,41 +105,51 @@ public class Authenticator extends ServerFilter {
         }
     }
 
+    @Override
     public Collection<ServerTransport> getTransports() {
         return getDelegate().getTransports();
     }
 
+    @Override
     public ServerDocument getServerDocument(User u, IRI serverIRI) throws OWLServerException  {
         ensureUserIdCorrect(u);
         return getDelegate().getServerDocument(u, serverIRI);
     }
 
+    @Override
     public Collection<ServerDocument> list(User u, ServerDirectory dir) throws OWLServerException {
         ensureUserIdCorrect(u);
         return getDelegate().list(u, dir);
     }
 
+    @Override
     public ServerDirectory createDirectory(User u, IRI serverIRI) throws OWLServerException {
         ensureUserIdCorrect(u);
         return getDelegate().createDirectory(u, serverIRI);
     }
 
+    @Override
     public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws OWLServerException {
         ensureUserIdCorrect(u);
         return getDelegate().createOntologyDocument(u, serverIRI, settings);
     }
 
+    @Override
     public ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
         ensureUserIdCorrect(u);
         return getDelegate().getChanges(u, doc, start, end);
     }
 
-    public ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits) throws OWLServerException {
+    @Override
+    public ChangeDocument commit(User u, 
+                                  RemoteOntologyDocument doc, 
+                                  ChangeDocument clientChanges, 
+                                  SortedSet<OntologyDocumentRevision> myCommits,
+                                  CommitOption option) throws OWLServerException {
         ensureUserIdCorrect(u);
         ChangeDocument serverSideChanges = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, null);
-        Map<OntologyDocumentRevision, ChangeMetaData> metaDataMap = serverSideChanges.getMetaData();
         for (OntologyDocumentRevision revision : myCommits) {
-            ChangeMetaData metaData = metaDataMap.get(revision);
+            ChangeMetaData metaData = serverSideChanges.getMetaData(revision);
             if (metaData == null) {
                 throw new IllegalStateException("No commit comment, etc found for previous commit");
             }
@@ -144,23 +157,32 @@ public class Authenticator extends ServerFilter {
                 throw new IllegalStateException("Caller is claiming a commit he did not do.  Is someone trying to pull something?");
             }
         }
+        ChangeMetaData commitComment = clientChanges.getMetaData(clientChanges.getStartRevision());
         if (commitComment == null) {
-            commitComment = new ChangeMetaData();
+            throw new IllegalStateException("Changes to be committed must have metadata");
         }
         commitComment.setUser(u);
-        return getDelegate().commit(u, doc, commitComment, changes, myCommits);
+        return getDelegate().commit(u, doc, clientChanges, myCommits, option);
     }
 
+    @Override
     public void shutdown() {
         getDelegate().shutdown();
     }
 
+    @Override
     public File getConfiguration(String fileName) throws OWLServerException {
         return getDelegate().getConfiguration(fileName);
     }
 
+    @Override
     public File getConfiguration(ServerDocument doc, String extension) throws OWLServerException {
         return getDelegate().getConfiguration(doc, extension);
-    } 
+    }
+    
+    @Override
+    public DocumentFactory getDocumentFactory() {
+        return getDelegate().getDocumentFactory();
+    }
 
 }

@@ -11,6 +11,7 @@ import java.util.SortedSet;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
+import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
@@ -178,26 +179,27 @@ public class ServerImpl implements Server {
 
 	@Override
 	public ChangeDocument commit(User u, RemoteOntologyDocument doc,
-	                             ChangeMetaData metaData,
-	                             ChangeDocument changes, 
-	                             SortedSet<OntologyDocumentRevision> previousCommits) throws OWLServerException {
+	                             ChangeDocument changesFromClient, 
+	                             SortedSet<OntologyDocumentRevision> previousCommits,
+	                             CommitOption option) throws OWLServerException {
 		OWLOntology fakeOntology;
+		ChangeMetaData metaData = changesFromClient.getMetaData(changesFromClient.getStartRevision());
 		try {
 			fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
 		}
 		catch (OWLOntologyCreationException e) {
 			throw new IllegalStateException("Why me?", e);
 		}
-		List<OWLOntologyChange> serverChanges = getChanges(u, doc, changes.getStartRevision(), null).getChanges(fakeOntology, previousCommits);
+		List<OWLOntologyChange> serverChanges = getChanges(u, doc, changesFromClient.getStartRevision(), null).getChanges(fakeOntology, previousCommits);
 		ChangeDocument fullHistory = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, null);
 		
 		OntologyDocumentRevision latestRevision = fullHistory.getEndRevision();
-		List<OWLOntologyChange> clientChanges = changes.getChanges(fakeOntology);
+		List<OWLOntologyChange> clientChanges = changesFromClient.getChanges(fakeOntology);
 		List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);
 		ChangeDocument changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaData, latestRevision);
 		ChangeDocument fullHistoryAfterCommit = fullHistory.appendChanges(changeDocumentToAppend);
 		pool.setChangeDocument(doc, parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT), fullHistoryAfterCommit);
-		return changeDocumentToAppend;
+		return option == CommitOption.RETURN_ACTUAL_COMMIT ? changeDocumentToAppend : factory.createEmptyChangeDocument(latestRevision);
 	}
 
 	@Override
@@ -263,5 +265,10 @@ public class ServerImpl implements Server {
 	@Override
 	public Collection<ServerTransport> getTransports() {
 	    return Collections.unmodifiableCollection(transports);
+	}
+	
+	@Override
+	public DocumentFactory getDocumentFactory() {
+	    return factory;
 	}
 }

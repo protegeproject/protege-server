@@ -54,7 +54,10 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	 * 
 	 */
 	public ChangeDocumentImpl(DocumentFactory documentFactory, OntologyDocumentRevision startRevision, List<OWLOntologyChange> changes, ChangeMetaData metaData) {
-		this.startRevision = startRevision;
+		if (metaData == null) {
+		    metaData = new ChangeMetaData();
+		}
+	    this.startRevision = startRevision;
 		if (changes != null) {
 			this.listOfRevisionChanges.add(new ArrayList<OWLOntologyChange>(changes));
 		}
@@ -81,8 +84,8 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 	}
 
 	@Override
-	public SortedMap<OntologyDocumentRevision, ChangeMetaData> getMetaData() {
-		return Collections.unmodifiableSortedMap(metaDataMap);
+	public ChangeMetaData getMetaData(OntologyDocumentRevision revision) {
+		return metaDataMap.get(revision);
 	}
 	
 	@Override
@@ -132,13 +135,10 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 		ChangeDocumentImpl newDoc = new ChangeDocumentImpl(startRevision, documentFactory);
 		newDoc.listOfRevisionChanges = new ArrayList<List<OWLOntologyChange>>(listOfRevisionChanges);
 		newDoc.metaDataMap = new TreeMap<OntologyDocumentRevision, ChangeMetaData>(metaDataMap);
-		SortedMap<OntologyDocumentRevision, ChangeMetaData> additionalMetaData = additionalChanges.getMetaData();
 		for (OntologyDocumentRevision revision = newDoc.getEndRevision();
 		        additionalChanges.getEndRevision().compareTo(revision) > 0;
 		        revision = revision.next()) {
-		    if (additionalMetaData.containsKey(revision)) {
-		        newDoc.metaDataMap.put(revision, additionalMetaData.get(revision));
-		    }
+		    newDoc.metaDataMap.put(revision, additionalChanges.getMetaData(revision));
 		    newDoc.listOfRevisionChanges.add(additionalChanges.cropChanges(revision, revision.next()).getChanges(fakeOntology));
 		}
 		return newDoc;
@@ -171,10 +171,20 @@ public class ChangeDocumentImpl implements ChangeDocument, Serializable {
 		ChangeDocument other = (ChangeDocument) o;
 		try {
 			OWLOntology ontology = OWLManager.createOWLOntologyManager().createOntology();
-			return getStartRevision().equals(other.getStartRevision()) &&
-					getEndRevision().equals(other.getEndRevision()) &&
-					getChanges(ontology).equals(other.getChanges(ontology)) &&
-					getMetaData().equals(other.getMetaData());
+			if (!(getStartRevision().equals(other.getStartRevision()) &&
+                    getEndRevision().equals(other.getEndRevision()))) {
+			    return false;
+			}
+			for (OntologyDocumentRevision revision = getStartRevision(); revision.compareTo(getEndRevision()) < 0; revision = revision.next()) {
+			    if (!(getMetaData(revision).equals(other.getMetaData(revision)))) {
+			        return false;
+			    }
+			    if (!cropChanges(revision, revision.next()).getChanges(ontology)
+			            .equals(other.cropChanges(revision, revision.next()).getChanges(ontology))) {
+			        return false;
+			    }
+			}
+			return true;
 		}
 		catch (OWLOntologyCreationException e) {
 			throw new IllegalStateException("Could not create empty ontology");

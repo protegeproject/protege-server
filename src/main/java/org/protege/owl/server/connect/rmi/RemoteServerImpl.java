@@ -7,6 +7,7 @@ import java.util.SortedSet;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
+import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.Server;
@@ -80,10 +81,11 @@ public class RemoteServerImpl implements RemoteServer {
 
 	@Override
 	public ChangeDocument commit(User u, RemoteOntologyDocument doc,
-			                     ChangeMetaData metaData, ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits)
+			                     ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits, 
+			                     CommitOption option)
 			throws RemoteException {
 		try {
-			return server.commit(u, doc, metaData, changes, previousCommits);
+			return server.commit(u, doc, changes, previousCommits, option);
 		}
 		catch (OWLServerException ioe) {
 			throw new RemoteException(ioe.getMessage(), ioe);

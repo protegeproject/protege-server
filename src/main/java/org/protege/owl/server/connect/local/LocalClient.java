@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
+import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
@@ -74,10 +75,10 @@ public class LocalClient extends AbstractClient {
 	}
 
 	@Override
-	public ChangeDocument commit(RemoteOntologyDocument document, ChangeMetaData metaData,
-					              ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits)
+	public ChangeDocument commit(RemoteOntologyDocument document,
+					              ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits, CommitOption option)
 			throws OWLServerException {
-		return server.commit(user, document, metaData, changes, previousCommits);
+		return server.commit(user, document, changes, previousCommits, option);
 	}
 
 	@Override

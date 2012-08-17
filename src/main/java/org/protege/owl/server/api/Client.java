@@ -81,7 +81,9 @@ public interface Client {
 	 * @param revision
 	 * @param changes
 	 */
-	ChangeDocument commit(RemoteOntologyDocument document, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits) throws OWLServerException;
+	ChangeDocument commit(RemoteOntologyDocument document, 
+	                      ChangeDocument changes, SortedSet<OntologyDocumentRevision> previousCommits,
+	                      CommitOption option) throws OWLServerException;
 	
 	void shutdown();
 

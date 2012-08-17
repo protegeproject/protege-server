@@ -7,6 +7,8 @@ import java.util.SortedSet;
 
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
+import org.protege.owl.server.api.CommitOption;
+import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.Server;
@@ -50,8 +52,10 @@ public class ServerFilterAdapter extends ServerFilter {
     }
 
     @Override
-    public ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits) throws OWLServerException {
-        return getDelegate().commit(u, doc, commitComment, changes, myCommits);
+    public ChangeDocument commit(User u, RemoteOntologyDocument doc, 
+                                 ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits,
+                                 CommitOption option) throws OWLServerException {
+        return getDelegate().commit(u, doc, changes, myCommits, option);
     }
 
     @Override
@@ -77,6 +81,11 @@ public class ServerFilterAdapter extends ServerFilter {
     @Override
     public Collection<ServerTransport> getTransports() {
         return getDelegate().getTransports();
+    }
+    
+    @Override
+    public DocumentFactory getDocumentFactory() {
+        return getDelegate().getDocumentFactory();
     }
     
 

@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import org.protege.owl.server.api.ChangeDocument;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.Client;
+import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
@@ -82,7 +83,9 @@ public class ClientUtilities {
 		}
 		List<OWLOntologyChange> uncommittedChanges = getUncommittedChanges(ontologyDoc.getOntology(), baselineHistory);
 		List<ChangeDocument> myPreviousCommits = ontologyDoc.getCommittedChanges();
-		ChangeDocument newCommit = client.commit(serverDoc, metaData, factory.createChangeDocument(uncommittedChanges, metaData, revision), collectCommitRevisions(myPreviousCommits));
+		ChangeDocument newCommit = client.commit(serverDoc, 
+		                                         factory.createChangeDocument(uncommittedChanges, metaData, revision), collectCommitRevisions(myPreviousCommits),
+		                                         CommitOption.RETURN_ACTUAL_COMMIT);
 		myPreviousCommits.add(newCommit);
 		ontologyDoc.setCommittedChanges(myPreviousCommits);
 	}

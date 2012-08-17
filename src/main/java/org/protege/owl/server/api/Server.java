@@ -21,11 +21,28 @@ public interface Server {
 	
 	ChangeDocument getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException;
 
-	ChangeDocument commit(User u, RemoteOntologyDocument doc, ChangeMetaData commitComment, ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits) throws OWLServerException;
+	/**
+	 * The call to commit changes.
+	 * <p/>
+	 * The server is free to compress the changes in the ChangeDocument and only the first ChangeMetaData is guaranteed to survive.
+	 * 
+	 * @param u
+	 * @param doc
+	 * @param changes
+	 * @param myCommits
+	 * @param option
+	 * @return
+	 * @throws OWLServerException
+	 */
+	ChangeDocument commit(User u, RemoteOntologyDocument doc, 
+	                      ChangeDocument changes, SortedSet<OntologyDocumentRevision> myCommits,
+	                      CommitOption option) throws OWLServerException;
 	
 	void shutdown();
 	
 	/* Interfaces that are not visible to the client. */
+	
+   DocumentFactory getDocumentFactory();
 	
    File getConfiguration(String fileName) throws OWLServerException;
 	    

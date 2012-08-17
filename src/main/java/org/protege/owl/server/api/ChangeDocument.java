@@ -39,14 +39,16 @@ public interface ChangeDocument {
 	OntologyDocumentRevision getEndRevision();
 	
 	/**
-	 * For each revision from the start revision (inclusive) to the end revision (exclusive) there 
-	 * will be a commit comment which represents what the user said about the ontology at that 
-	 * stage of the development.
+	 * Returns the ChangeMetaData (user, date of change) for the change document at a given revision.  
+	 * <p/>
+	 * It
+	 * should be non-null for all revisions from the start revision of the change document (inclusive) to 
+	 * the end revision of the document (exclusive).  Passing any other revision id in leads to unknown results.
 	 * 
 	 * @param revision
 	 * @return
 	 */
-	SortedMap<OntologyDocumentRevision, ChangeMetaData> getMetaData();
+	ChangeMetaData getMetaData(OntologyDocumentRevision revision);
 	
 	/**
 	 * This call will return the change document obtained by restricting the set of changes from the 
