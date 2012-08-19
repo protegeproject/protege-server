@@ -28,7 +28,6 @@ import org.testng.annotations.Test;
 
 public abstract class AbstractBasicServerTest {
 	private Client client;
-	private ClientUtilities clientUtilities;
 	private RemoteServerDirectory testDirectory;
 	
 
@@ -44,7 +43,6 @@ public abstract class AbstractBasicServerTest {
 	public void setup() throws OWLServerException {
 		startServer();
 		client = createClient() ;
-		clientUtilities = new ClientUtilities(client);
 		testDirectory = client.createRemoteDirectory(IRI.create(getServerRoot() + UUID.randomUUID()));
 	}
 	
@@ -67,8 +65,7 @@ public abstract class AbstractBasicServerTest {
 		VersionedOntologyDocument versionedPizza = loadPizza();
 		OWLOntology ontology1 = versionedPizza.getOntology();
 		Client client2 = createClient();
-		ClientUtilities client2Utilities = new ClientUtilities(client2);
-		VersionedOntologyDocument versionedOntology2 = client2Utilities.loadOntology(OWLManager.createOWLOntologyManager(), versionedPizza.getServerDocument());
+		VersionedOntologyDocument versionedOntology2 = ClientUtilities.loadOntology(client2, OWLManager.createOWLOntologyManager(), versionedPizza.getServerDocument());
 		OWLOntology ontology2 = versionedOntology2.getOntology();
 		Assert.assertEquals(ontology1.getOntologyID(), ontology2.getOntologyID());
 		Assert.assertEquals(ontology1.getAxioms(), ontology2.getAxioms());
@@ -81,8 +78,7 @@ public abstract class AbstractBasicServerTest {
 	        OWLOntology ontology1 = versionedPizza1.getOntology();
 	        
 	        Client client2 = createClient();
-	        ClientUtilities client2Utilities = new ClientUtilities(client2);
-	        VersionedOntologyDocument versionedPizza2 = client2Utilities.loadOntology(OWLManager.createOWLOntologyManager(), versionedPizza1.getServerDocument());
+	        VersionedOntologyDocument versionedPizza2 = ClientUtilities.loadOntology(client2, OWLManager.createOWLOntologyManager(), versionedPizza1.getServerDocument());
 	        OWLOntology ontology2 = versionedPizza2.getOntology();
 	        
 	        Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
@@ -92,9 +88,9 @@ public abstract class AbstractBasicServerTest {
 	        changes1.add(new RemoveAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	        changes1.add(new AddAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 	        ontology1.getOWLOntologyManager().applyChanges(changes1);
-	        clientUtilities.commit(new ChangeMetaData("back"), versionedPizza1);
+	        ClientUtilities.commit(client, new ChangeMetaData("back"), versionedPizza1);
 	        
-	        client2Utilities.update(versionedPizza2);
+	        ClientUtilities.update(client2, versionedPizza2);
 	        Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	        Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 
@@ -102,9 +98,9 @@ public abstract class AbstractBasicServerTest {
 	        changes2.add(new RemoveAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 	        changes2.add(new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	        ontology1.getOWLOntologyManager().applyChanges(changes2);
-	        clientUtilities.commit(new ChangeMetaData("forth"), versionedPizza1);
+	        ClientUtilities.commit(client, new ChangeMetaData("forth"), versionedPizza1);
 	        
-	        client2Utilities.update(versionedPizza2);
+	        ClientUtilities.update(client, versionedPizza2);
 	        Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	        Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));      
 	    }
@@ -115,8 +111,7 @@ public abstract class AbstractBasicServerTest {
 	    OWLOntology ontology1 = versionedPizza1.getOntology();
 	    
 	    Client client2 = createClient();
-	    ClientUtilities client2Utilities = new ClientUtilities(client2);
-	    VersionedOntologyDocument versionedPizza2 = client2Utilities.loadOntology(OWLManager.createOWLOntologyManager(), versionedPizza1.getServerDocument());
+	    VersionedOntologyDocument versionedPizza2 = ClientUtilities.loadOntology(client2, OWLManager.createOWLOntologyManager(), versionedPizza1.getServerDocument());
 	    OWLOntology ontology2 = versionedPizza2.getOntology();
 	    
 	    Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
@@ -126,20 +121,20 @@ public abstract class AbstractBasicServerTest {
 	    changes1.add(new RemoveAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	    changes1.add(new AddAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 	    ontology1.getOWLOntologyManager().applyChanges(changes1);
-	    clientUtilities.commit(new ChangeMetaData("back"), versionedPizza1);
+        ClientUtilities.commit(client, new ChangeMetaData("back"), versionedPizza1);
 	    
-	    client2Utilities.update(versionedPizza2);
+	    ClientUtilities.update(client2, versionedPizza2);
 	    Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	    Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 
-	    clientUtilities.update(versionedPizza1);
+	    ClientUtilities.update(client, versionedPizza1);
 	    List<OWLOntologyChange> changes2 = new ArrayList<OWLOntologyChange>();
 	    changes2.add(new RemoveAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 	    changes2.add(new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	    ontology1.getOWLOntologyManager().applyChanges(changes2);
-	    clientUtilities.commit(new ChangeMetaData("forth"), versionedPizza1);
+	    ClientUtilities.commit(client, new ChangeMetaData("forth"), versionedPizza1);
 	    
-	    client2Utilities.update(versionedPizza2);
+	    ClientUtilities.update(client2, versionedPizza2);
         Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
         Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));	    
 	}
@@ -148,7 +143,7 @@ public abstract class AbstractBasicServerTest {
 	public VersionedOntologyDocument loadPizza() throws OWLOntologyCreationException, OWLServerException {
 		IRI pizzaLocation = IRI.create(testDirectory.getServerLocation().toString() + "/pizza" + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
 		OWLOntology ontology = PizzaVocabulary.loadPizza();
-		VersionedOntologyDocument versionedOntology = clientUtilities.createServerOntology(pizzaLocation, new ChangeMetaData("A tasty pizza"), ontology);
+		VersionedOntologyDocument versionedOntology = ClientUtilities.createServerOntology(client, pizzaLocation, new ChangeMetaData("A tasty pizza"), ontology);
 		return versionedOntology;
 	}
 }

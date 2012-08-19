@@ -50,7 +50,7 @@ public class VOntSerializationTest {
         OWLOntology ontology = manager.loadOntologyFromOntologyDocument(new File("src/test/resources/pizza.owl"));
         RMIClient client = new RMIClient(authToken, serverLocation);
         client.initialise();
-        new ClientUtilities(client).createServerOntology(serverLocation, new ChangeMetaData("Seeded Pizza"), ontology);
+        ClientUtilities.createServerOntology(client, serverLocation, new ChangeMetaData("Seeded Pizza"), ontology);
     }
 
     @AfterMethod
@@ -78,7 +78,7 @@ public class VOntSerializationTest {
         RMIClient client = new RMIClient(authToken, serverLocation);
         client.initialise();
         RemoteOntologyDocument doc = (RemoteOntologyDocument) client.getServerDocument(serverLocation);
-        VersionedOntologyDocument vont = new ClientUtilities(client).loadOntology(manager, doc);
+        VersionedOntologyDocument vont = ClientUtilities.loadOntology(client, manager, doc);
         File ontologyFile = File.createTempFile("Pizza", ".owl");
         manager.saveOntology(vont.getOntology(), IRI.create(ontologyFile));
         manager.setOntologyDocumentIRI(vont.getOntology(), IRI.create(ontologyFile));
