@@ -1,25 +1,29 @@
 package org.protege.owl.server.core;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 
+import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
-import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
+import org.protege.owl.server.api.ServerOntologyDocument;
+import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.ServerTransport;
-import org.protege.owl.server.api.User;
 import org.protege.owl.server.api.exception.DocumentAlreadyExistsException;
 import org.protege.owl.server.api.exception.DocumentNotFoundException;
 import org.protege.owl.server.api.exception.OWLServerException;
@@ -106,71 +110,70 @@ public class ServerImpl implements Server {
 	}
 
 	@Override
-	public ServerDocument getServerDocument(User u, IRI serverIRI) throws DocumentNotFoundException {
-		File f = parseServerIRI(serverIRI, ServerObjectStatus.OBJECT_FOUND);
+	public ServerDocument getServerDocument(AuthToken u, ServerPath serverPath) throws DocumentNotFoundException {
+		File f = parseServerIRI(serverPath, ServerObjectStatus.OBJECT_FOUND);
 		if (f == null) {
 			throw new DocumentNotFoundException();
 		}
 		else if (f.isDirectory()) {
-			return new ServerDirectoryImpl(serverIRI);
+			return new ServerDirectoryImpl(serverPath);
 		}
 		else {
-			return new RemoteOntologyDocumentImpl(serverIRI);
+			return new ServerOntologyDocumentImpl(serverPath);
 		}
 	}
 
 	
 	@Override
-	public Collection<ServerDocument> list(User u, ServerDirectory dir) throws DocumentNotFoundException {
-		File parent = parseServerIRI(dir.getServerLocation(), ServerObjectStatus.OBJECT_IS_DIRECTORY);
+	public Collection<ServerDocument> list(AuthToken u, ServerDirectory dir) throws DocumentNotFoundException {
+		File parent = parseServerIRI(dir.getServerPath(), ServerObjectStatus.OBJECT_IS_DIRECTORY);
 		if (parent == null) {
-			throw new IllegalStateException("directory " + dir.getServerLocation() + " does not exist on the server");
+			throw new IllegalStateException("directory " + dir.getServerPath() + " does not exist on the server");
 		}
 		List<ServerDocument> documents = new ArrayList<ServerDocument>();
 		URI rootUri = root.toURI();
 		for (File child : parent.listFiles()) {
-			String relativeChildPath = rootUri.relativize(child.toURI()).getPath();
-			IRI serverIRI = createIRI(dir.getServerLocation(), relativeChildPath);
+			ServerPath serverPath = new ServerPath(rootUri.relativize(child.toURI()));
 			if (child.isDirectory()) {
-				documents.add(new ServerDirectoryImpl(serverIRI));
+				documents.add(new ServerDirectoryImpl(serverPath));
 			}
 			else {
-				documents.add(new RemoteOntologyDocumentImpl(serverIRI));
+				documents.add(new ServerOntologyDocumentImpl(serverPath));
 			}
 		}
 		return documents;
 	}
 
 	@Override
-	public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws OWLServerException {
-		File historyFile = parseServerIRI(serverIRI, ServerObjectStatus.OBJECT_NOT_FOUND);
+	public ServerOntologyDocument createOntologyDocument(AuthToken u, ServerPath serverPath, Map<String, Object> settings) throws OWLServerException {
+		File historyFile = parseServerIRI(serverPath, ServerObjectStatus.OBJECT_NOT_FOUND);
 		if (historyFile == null) {
-			throw new DocumentAlreadyExistsException("Could not create directory at " + serverIRI);
+			throw new DocumentAlreadyExistsException("Could not create directory at " + serverPath);
 		}
 		if (!historyFile.getName().endsWith(ChangeHistory.CHANGE_DOCUMENT_EXTENSION)) {
 			throw new IllegalArgumentException("Server side IRI's must have the " + ChangeHistory.CHANGE_DOCUMENT_EXTENSION + " extension");
 		}
-		RemoteOntologyDocument doc = new RemoteOntologyDocumentImpl(serverIRI);
+		ServerOntologyDocument doc = new ServerOntologyDocumentImpl(serverPath);
 		pool.setChangeDocument(doc, historyFile, factory.createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION));
 		return doc;
 	}
 
 	@Override
-	public ServerDirectory createDirectory(User u, IRI serverIRI) throws OWLServerException  {
-		File serverDirectory = parseServerIRI(serverIRI, ServerObjectStatus.OBJECT_NOT_FOUND);
+	public ServerDirectory createDirectory(AuthToken u, ServerPath serverPath) throws OWLServerException  {
+		File serverDirectory = parseServerIRI(serverPath, ServerObjectStatus.OBJECT_NOT_FOUND);
 		if (serverDirectory == null) {
-			throw new DocumentAlreadyExistsException("Could not create server-side ontology at " + serverIRI);			
+			throw new DocumentAlreadyExistsException("Could not create server-side ontology at " + serverPath);			
 		}
 		serverDirectory.mkdir();
-		return new ServerDirectoryImpl(serverIRI);
+		return new ServerDirectoryImpl(serverPath);
 	}
 
 	@Override
-	public ChangeHistory getChanges(User u, RemoteOntologyDocument doc,
+	public ChangeHistory getChanges(AuthToken u, ServerOntologyDocument doc,
 								     OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
-		File historyFile = parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT);
+		File historyFile = parseServerIRI(doc.getServerPath(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT);
 		if (historyFile == null) {
-			throw new IllegalStateException("Expected to find ontology document at the location " + doc.getServerLocation());
+			throw new IllegalStateException("Expected to find ontology document at the location " + doc.getServerPath());
 		}
 		return pool.getChangeDocument(doc, historyFile).cropChanges(start, end);
 	}
@@ -178,10 +181,9 @@ public class ServerImpl implements Server {
 
 
 	@Override
-	public ChangeHistory commit(User u, RemoteOntologyDocument doc,
-	                             ChangeHistory changesFromClient, 
-	                             SortedSet<OntologyDocumentRevision> previousCommits,
-	                             CommitOption option) throws OWLServerException {
+	public void commit(AuthToken u, ServerOntologyDocument doc,
+	                    ChangeHistory changesFromClient) throws OWLServerException {
+	    changesFromClient.getMetaData(changesFromClient.getStartRevision()).setUser(u);
 		OWLOntology fakeOntology;
 		ChangeMetaData metaData = changesFromClient.getMetaData(changesFromClient.getStartRevision());
 		try {
@@ -190,16 +192,39 @@ public class ServerImpl implements Server {
 		catch (OWLOntologyCreationException e) {
 			throw new IllegalStateException("Why me?", e);
 		}
-		List<OWLOntologyChange> serverChanges = getChanges(u, doc, changesFromClient.getStartRevision(), null).getChanges(fakeOntology, previousCommits);
+		List<OWLOntologyChange> clientChanges = changesFromClient.getChanges(fakeOntology);
+		List<OWLOntologyChange> serverChanges =  adjustServerAndClientChanges(u, 
+		                                                                      clientChanges, 
+		                                                                      getChanges(u, doc, changesFromClient.getStartRevision(), null), 
+		                                                                      fakeOntology);
 		ChangeHistory fullHistory = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, null);
 		
 		OntologyDocumentRevision latestRevision = fullHistory.getEndRevision();
-		List<OWLOntologyChange> clientChanges = changesFromClient.getChanges(fakeOntology);
 		List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);
 		ChangeHistory changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaData, latestRevision);
 		ChangeHistory fullHistoryAfterCommit = fullHistory.appendChanges(changeDocumentToAppend);
-		pool.setChangeDocument(doc, parseServerIRI(doc.getServerLocation(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT), fullHistoryAfterCommit);
-		return option == CommitOption.RETURN_ACTUAL_COMMIT ? changeDocumentToAppend : factory.createEmptyChangeDocument(latestRevision);
+		pool.setChangeDocument(doc, parseServerIRI(doc.getServerPath(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT), fullHistoryAfterCommit);
+	}
+	
+	private List<OWLOntologyChange> adjustServerAndClientChanges(AuthToken u, 
+	                                                              List<OWLOntologyChange> clientChanges, 
+	                                                              ChangeHistory serverChanges, 
+	                                                              OWLOntology fakeOntology) {
+	    List<OWLOntologyChange> serverChangeList = new ArrayList<OWLOntologyChange>();
+	    for (OntologyDocumentRevision revision = serverChanges.getStartRevision();
+	            revision.compareTo(serverChanges.getEndRevision()) < 0;
+	            revision = revision.next()) {
+	        ChangeHistory singleRevisionJump = serverChanges.cropChanges(revision, revision.next());
+	        if (singleRevisionJump.getMetaData(revision).getUserId().equals(u.getUserId())) {
+	            // this is somewhat cosmetic but we don't want to see the same commit twice
+	            clientChanges.removeAll(singleRevisionJump.getChanges(fakeOntology));
+	        }
+	        else {
+	            // only add changes from other users - we don't want previous changes from our user to block new changes from our user.
+	            serverChangeList.addAll(singleRevisionJump.getChanges(fakeOntology));
+	        }
+	    }    
+	    return serverChangeList;
 	}
 
 	@Override
@@ -209,13 +234,9 @@ public class ServerImpl implements Server {
 	
 
 
-	private File parseServerIRI(IRI serverIRI, ServerObjectStatus expected) throws DocumentNotFoundException {
-		String path =  serverIRI.toURI().getPath();
-		if (path.startsWith("/")) {
-			path = path.substring(1);
-		}
-		File f = new File(root, path);
-		boolean pooledDocumentFound = pool.testServerLocation(serverIRI);
+	private File parseServerIRI(ServerPath path, ServerObjectStatus expected) throws DocumentNotFoundException {
+		File f = new File(root, path.pathAsString());
+		boolean pooledDocumentFound = pool.testServerLocation(path);
 		if (expected.isStatusOf(f, pooledDocumentFound)) {
 			return f;
 		}
@@ -238,13 +259,47 @@ public class ServerImpl implements Server {
 	/* Interfaces that are not visible to the client. */
 
 	@Override
-	public File getConfiguration(String fileName) {
-	    return new File(configurationDir, fileName);
+	public InputStream getConfigurationInputStream(String fileName) throws OWLServerException {
+	    try {
+	        return new FileInputStream(new File(configurationDir, fileName));
+	    }
+	    catch (FileNotFoundException fnfe) {
+	        throw new DocumentNotFoundException(fnfe);
+	    }
 	}
 
 	@Override
-	public File getConfiguration(ServerDocument doc, String extension) throws DocumentNotFoundException {
-	    File f = parseServerIRI(doc.getServerLocation(), ServerObjectStatus.ANY);
+	public OutputStream getConfigurationOutputStream(String fileName) throws OWLServerException {
+	    try {
+	        return new FileOutputStream(new File(configurationDir, fileName));
+	    }
+	    catch (FileNotFoundException fnfe) {
+	        throw new DocumentNotFoundException(fnfe);
+	    }
+	}
+	
+    @Override
+    public InputStream getConfigurationInputStream(ServerDocument doc, String extension) throws OWLServerException {
+        try {
+            return new FileInputStream(getConfiguration(doc, extension));
+        }
+        catch (FileNotFoundException fnfe) {
+            throw new DocumentNotFoundException(fnfe);
+        }
+    }
+    
+    @Override
+    public OutputStream getConfigurationOutputStream(ServerDocument doc, String extension) throws OWLServerException {
+        try {
+            return new FileOutputStream(getConfiguration(doc, extension));
+        }
+        catch (FileNotFoundException fnfe) {
+            throw new DocumentNotFoundException(fnfe);
+        }
+    }
+	
+	private File getConfiguration(ServerDocument doc, String extension) throws DocumentNotFoundException {
+	    File f = parseServerIRI(doc.getServerPath(), ServerObjectStatus.ANY);
 	    String fullName = f.getPath();
 	    String prefix;
 	    if (fullName.endsWith(ChangeHistory.CHANGE_DOCUMENT_EXTENSION)) {

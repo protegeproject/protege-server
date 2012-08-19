@@ -5,9 +5,11 @@ import java.rmi.RemoteException;
 
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
+import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.connect.rmi.RMIClient;
+import org.protege.owl.server.policy.UnauthorizedToken;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 
@@ -55,7 +57,8 @@ public class RemoteBasicServerTest extends AbstractBasicServerTest {
 	@Override
 	protected Client createClient() throws OWLServerException {
 		try {
-			RMIClient client = new RMIClient(null, "localhost", rmiPort);
+		    AuthToken u = new UnauthorizedToken("redmond");
+			RMIClient client = new RMIClient(u, "localhost", rmiPort);
 			client.initialise();
 			return client;
 		}

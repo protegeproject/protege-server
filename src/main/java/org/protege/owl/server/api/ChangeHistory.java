@@ -78,10 +78,7 @@ public interface ChangeHistory {
 	 * @param ontology
 	 * @return
 	 */
-	List<OWLOntologyChange> getChanges(OWLOntology ontology);
-	
-	List<OWLOntologyChange> getChanges(OWLOntology ontology, Set<OntologyDocumentRevision> toIgnore);
-	
+	List<OWLOntologyChange> getChanges(OWLOntology ontology);	
 	
 	void writeChangeDocument(OutputStream out) throws IOException;
 }

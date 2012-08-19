@@ -17,6 +17,7 @@ import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.protege.owl.server.changes.format.OWLInputStream;
@@ -44,8 +45,7 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 													    RemoteOntologyDocument serverDocument,
 													    OntologyDocumentRevision revision) {
 		ChangeHistory localChanges = createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION);
-		List<ChangeHistory> previousCommits = new ArrayList<ChangeHistory>();
-		return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges, previousCommits);
+		return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges);
 	}
 	
 	@Override
@@ -68,7 +68,7 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	        ChangeHistory localChanges = (ChangeHistory) ois.readObject();
 	        @SuppressWarnings("unchecked")
             List<ChangeHistory> committedChanges = (List<ChangeHistory>) ois.readObject();
-	        return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges, committedChanges);
+	        return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges);
 	    }
 	    catch (ClassNotFoundException cnfe) {
 	        throw new IOException("Class Loader issues when hydrating ontology history document", cnfe);

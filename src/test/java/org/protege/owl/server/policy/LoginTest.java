@@ -12,10 +12,10 @@ import junit.framework.Assert;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.protege.owl.server.TestUtilities;
-import org.protege.owl.server.api.ServerDirectory;
-import org.protege.owl.server.api.User;
-import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.api.RemoteServerDirectory;
+import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.exception.AuthenticationFailedException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.connect.rmi.RMIClient;
 import org.semanticweb.owlapi.model.IRI;
 import org.testng.annotations.AfterMethod;
@@ -54,17 +54,17 @@ public class LoginTest {
     
     @Test
     public void testGoodLogin() throws NotBoundException, IOException, OWLServerException {
-        User tim = RMILoginUtility.login("localhost", rmiPort, "redmond", "troglodyte");
+        AuthToken tim = RMILoginUtility.login("localhost", rmiPort, "redmond", "troglodyte");
         RMIClient client = new RMIClient(tim,"localhost", rmiPort);
         client.initialise();
         client.createRemoteDirectory(IRI.create(RMIClient.SCHEME + "://localhost:" + rmiPort + "/test"));
-        ServerDirectory root = (ServerDirectory) client.getServerDocument(IRI.create(RMIClient.SCHEME + "://localhost:" + rmiPort + "/"));
+        RemoteServerDirectory root = (RemoteServerDirectory) client.getServerDocument(IRI.create(RMIClient.SCHEME + "://localhost:" + rmiPort + "/"));
         Assert.assertEquals(1, client.list(root).size());
     }
     
     @Test
     public void testHackedLoginV1() throws NotBoundException, IOException, OWLServerException {
-        User tim = new UserExt("redmond", "troglodyte");
+        AuthToken tim = new SimpleAuthToken("redmond", "troglodyte");
         RMIClient client = new RMIClient(tim,"localhost", rmiPort);
         client.initialise();
         boolean hackerFailed = false;
@@ -80,7 +80,7 @@ public class LoginTest {
     @Test
     public void testHackedLoginV2() throws NotBoundException, IOException, OWLServerException {
         RMILoginUtility.login("localhost", rmiPort, "redmond", "troglodyte");
-        User tim = new UserExt("redmond", "troglodyte");
+        AuthToken tim = new SimpleAuthToken("redmond", "troglodyte");
         RMIClient client = new RMIClient(tim,"localhost", rmiPort);
         client.initialise();
         boolean hackerFailed = false;
@@ -95,7 +95,7 @@ public class LoginTest {
     
     @Test
     public void testHackedLoginV3() throws NotBoundException, IOException, OWLServerException {
-        UserExt tim = new UserExt("redmond", "troglodyte");
+        SimpleAuthToken tim = new SimpleAuthToken("redmond", "troglodyte");
         tim.setSecret(UUID.randomUUID().toString());
         RMIClient client = new RMIClient(tim,"localhost", rmiPort);
         client.initialise();
@@ -112,7 +112,7 @@ public class LoginTest {
     @Test
     public void testHackedLoginV4() throws NotBoundException, IOException, OWLServerException {
         RMILoginUtility.login("localhost", rmiPort, "redmond", "troglodyte");
-        UserExt tim = new UserExt("redmond", "troglodyte");
+        SimpleAuthToken tim = new SimpleAuthToken("redmond", "troglodyte");
         tim.setSecret(UUID.randomUUID().toString());
         RMIClient client = new RMIClient(tim,"localhost", rmiPort);
         client.initialise();

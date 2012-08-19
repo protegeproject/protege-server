@@ -3,20 +3,21 @@
 import java.io.Serializable;
 
 import org.protege.owl.server.api.ServerDocument;
+import org.protege.owl.server.api.ServerPath;
 import org.semanticweb.owlapi.model.IRI;
 
 
-public class ServerDocumentImpl implements ServerDocument, Serializable {
+public abstract class ServerDocumentImpl implements ServerDocument, Serializable {
 	private static final long serialVersionUID = -3003767122936738208L;
-	private IRI serverLocation;
+	private ServerPath serverPath;
 	
-	public ServerDocumentImpl(IRI serverLocation) {
-		this.serverLocation = serverLocation;
+	public ServerDocumentImpl(ServerPath serverPath) {
+		this.serverPath = serverPath;
 	}
 
 	@Override
-	public IRI getServerLocation() {
-		return serverLocation;
+	public ServerPath getServerPath() {
+	    return serverPath;
 	}
 	
 	@Override
@@ -25,16 +26,16 @@ public class ServerDocumentImpl implements ServerDocument, Serializable {
 			return false;
 		}
 		ServerDocument other = (ServerDocument) o;
-		return serverLocation.equals(other.getServerLocation());
+		return serverPath.equals(other.getServerPath());
 	}
 	
 	@Override
 	public int hashCode() {
-	    return serverLocation.hashCode();
+	    return serverPath.hashCode();
 	}
 	
 	@Override
 	public int compareTo(ServerDocument o) {
-	    return serverLocation.compareTo(o.getServerLocation());
+	    return serverPath.compareTo(o.getServerPath());
 	}
 }

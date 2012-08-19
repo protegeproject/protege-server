@@ -59,26 +59,9 @@ public interface VersionedOntologyDocument {
 	  * satisfied after the call.
 	  * @param changes
 	  */
-	 void appendLocalHistory(ChangeHistory changes);
-	 
-	 /**
-	  * This call returns changes that have been committed to the server but which are 
-	  * not visible on the server until a later revision.
-	  * 
-	  * @return
-	  */
-	 List<ChangeHistory> getCommittedChanges();
-	 
-	 /**
-	  * This call allows us to set the committed changes.
-	  * 
-	  * 
-	  * @param commits
-	  */
-	 void setCommittedChanges(List<ChangeHistory> commits);
-	 
+    void appendLocalHistory(ChangeHistory changes);
 
-	
+		
 	OntologyDocumentRevision getRevision();
 	
 	void setRevision(OntologyDocumentRevision revision);

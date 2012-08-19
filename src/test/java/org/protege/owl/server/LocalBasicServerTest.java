@@ -1,9 +1,9 @@
 package org.protege.owl.server;
 
-import java.io.IOException;
-
+import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.Server;
+import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.connect.local.LocalClient;
 import org.protege.owl.server.core.ServerImpl;
@@ -29,7 +29,18 @@ public class LocalBasicServerTest extends AbstractBasicServerTest {
 	
 	@Override
 	public Client createClient() {
-		return new LocalClient(null, server);
+		return new LocalClient(new AuthToken() {
+            
+            @Override
+            public int compareTo(AuthToken o) {
+                return getUserId().compareTo(o.getUserId());
+            }
+            
+            @Override
+            public UserId getUserId() {
+                return new UserId("redmond");
+            }
+        }, server);
 	}
 	
 	

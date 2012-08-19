@@ -147,17 +147,10 @@ public class ChangeDocumentImpl implements ChangeHistory, Serializable {
 
 	@Override
 	public List<OWLOntologyChange> getChanges(OWLOntology ontology) {
-	    return getChanges(ontology, new TreeSet<OntologyDocumentRevision>());
-	}
-	
-	@Override
-	public List<OWLOntologyChange> getChanges(OWLOntology ontology, Set<OntologyDocumentRevision> toIgnore) {
 	    List<OWLOntologyChange> filteredChanges = new ArrayList<OWLOntologyChange>();
 	    OntologyDocumentRevision revision = startRevision;
 	    for (List<OWLOntologyChange> change : listOfRevisionChanges) {
-	        if (!toIgnore.contains(revision)) {
-	            filteredChanges.addAll(change);
-	        }
+	        filteredChanges.addAll(change);
 	        revision = revision.next();
 	    }
 	    return ReplaceChangedOntologyVisitor.mutate(ontology, ChangeUtilities.normalizeChangeDelta(filteredChanges));

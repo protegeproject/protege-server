@@ -2,24 +2,26 @@ package org.protege.owl.server.policy;
 
 import java.io.Serializable;
 
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.AuthToken;
+import org.protege.owl.server.api.UserId;
 
-public class UserExt implements User, Serializable {
+public class SimpleAuthToken implements AuthToken, Serializable {
     private static final long serialVersionUID = -3590024420017662281L;
     private String name;
     private transient String password;
     private String secret;
 
-    public UserExt(String name, String password) {
+    public SimpleAuthToken(String name, String password) {
         this.name = name;
         this.password = password;
     }
 
     @Override
-    public String getUserName() {
-        return name;
+    public UserId getUserId() {
+        return new UserId(name);
     }
     
+    // ToDo remove this.
     public String getPassword() {
         return password;
     }
@@ -39,16 +41,16 @@ public class UserExt implements User, Serializable {
     
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof User)) {
+        if (!(obj instanceof AuthToken)) {
             return false;
         }
-        User other = (User) obj;
-        return name.equals(other.getUserName());
+        AuthToken other = (AuthToken) obj;
+        return name.equals(other.getUserId().getUserName());
     }
     
     @Override
-    public int compareTo(User other) {
-        return getUserName().compareTo(other.getUserName());
+    public int compareTo(AuthToken other) {
+        return name.compareTo(other.getUserId().getUserName());
     }
     
     @Override

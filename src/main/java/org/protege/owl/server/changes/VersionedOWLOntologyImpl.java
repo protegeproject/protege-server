@@ -5,11 +5,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.semanticweb.owlapi.model.IRI;
@@ -43,19 +43,16 @@ public class VersionedOWLOntologyImpl implements VersionedOntologyDocument {
 	private RemoteOntologyDocument serverDocument;
 	private OntologyDocumentRevision revision;
 	private ChangeHistory localHistory;
-	private List<ChangeHistory> committedChanges;
 	
 	
 	public VersionedOWLOntologyImpl(OWLOntology ontology,
 								    RemoteOntologyDocument serverDocument,
 								    OntologyDocumentRevision revision,
-								    ChangeHistory localHistory,
-								    List<ChangeHistory> committedChanges) {
+								    ChangeHistory localHistory) {
 		this.ontology = ontology;
 		this.serverDocument = serverDocument;
 		this.revision = revision;
 		this.localHistory = localHistory;
-		this.committedChanges = committedChanges;
 	}
 
 	@Override
@@ -78,17 +75,7 @@ public class VersionedOWLOntologyImpl implements VersionedOntologyDocument {
 	public void appendLocalHistory(ChangeHistory changes) {
 		localHistory = localHistory.appendChanges(changes);
 	}
-	
-	@Override
-	public List<ChangeHistory> getCommittedChanges() {
-	    return new ArrayList<ChangeHistory>(committedChanges);
-	}
-	
-	@Override
-	public void setCommittedChanges(List<ChangeHistory> commits) {
-	    this.committedChanges = new ArrayList<ChangeHistory>(commits);
-	}
-	
+
 	@Override
 	public OntologyDocumentRevision getRevision() {
 		return revision;
@@ -111,7 +98,6 @@ public class VersionedOWLOntologyImpl implements VersionedOntologyDocument {
 		oos.writeObject(revision);
 		oos.writeObject(serverDocument);
 		oos.writeObject(localHistory);
-		oos.writeObject(committedChanges);
 		return true;
 	}
 

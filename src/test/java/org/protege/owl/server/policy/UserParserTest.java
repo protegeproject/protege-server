@@ -8,7 +8,7 @@ import java.io.IOException;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.policy.generated.UsersAndGroupsLexer;
 import org.protege.owl.server.policy.generated.UsersAndGroupsParser;
 import org.testng.Assert;
@@ -25,9 +25,9 @@ public class UserParserTest {
         UsersAndGroupsParser parser = new UsersAndGroupsParser(tokens);
         parser.top();
         UserDatabase db = parser.getUserDatabase();
-        User redmond = db.getUser("redmond");
+        AuthToken redmond = db.getUser("redmond");
         Assert.assertNotNull(redmond);
-        Assert.assertTrue(redmond instanceof UserExt);
-        Assert.assertEquals(((UserExt) redmond).getPassword(), "troglodyte");
+        Assert.assertTrue(redmond instanceof SimpleAuthToken);
+        Assert.assertEquals(((SimpleAuthToken) redmond).getPassword(), "troglodyte");
     }
 }

@@ -6,20 +6,20 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Collection;
-import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
+import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
-import org.protege.owl.server.api.ServerDirectory;
-import org.protege.owl.server.api.ServerDocument;
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.RemoteServerDirectory;
+import org.protege.owl.server.api.RemoteServerDocument;
+import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
+import org.protege.owl.server.connect.RootUtils;
 import org.protege.owl.server.util.AbstractClient;
 import org.semanticweb.owlapi.model.IRI;
 
@@ -29,11 +29,11 @@ public class RMIClient extends AbstractClient {
 	private Logger logger = Logger.getLogger(RMIClient.class.getCanonicalName());
 	private String host;
 	private int port;
-	private User user;
+	private AuthToken authToken;
 	private RemoteServer server;
 	
-	public RMIClient(User authenticatedUser, IRI serverLocation) {
-	    this.user = authenticatedUser;
+	public RMIClient(AuthToken authenticatedUser, IRI serverLocation) {
+	    this.authToken = authenticatedUser;
 		URI serverURI = serverLocation.toURI();
 		host = serverURI.getHost();
 		port = serverURI.getPort();
@@ -42,8 +42,8 @@ public class RMIClient extends AbstractClient {
 		}
 	}
 	
-	public RMIClient(User authenticatedUser, String host, int port) {
-	    this.user = authenticatedUser;
+	public RMIClient(AuthToken authenticatedUser, String host, int port) {
+	    this.authToken = authenticatedUser;
 		this.host = host;
 		this.port = port;
 	}
@@ -73,14 +73,19 @@ public class RMIClient extends AbstractClient {
 	}
 	
 	@Override
+	public UserId getUserId() {
+	    return authToken.getUserId();
+	}
+	
+	@Override
 	public DocumentFactory getDocumentFactory() {
 		return new DocumentFactoryImpl();
 	}
 	
 	@Override
-	public ServerDocument getServerDocument(IRI serverIRI) throws OWLServerException {
+	public RemoteServerDocument getServerDocument(IRI serverIRI) throws OWLServerException {
 	    try {
-	        return server.getServerDocument(user, serverIRI);
+	        return server.getServerDocument(authToken, serverIRI).createRemoteDocument(SCHEME, host, port);
 	    }
 	    catch (RemoteException re) {
 	        throw processException(re);
@@ -88,10 +93,10 @@ public class RMIClient extends AbstractClient {
 	}
 
 	@Override
-	public Collection<ServerDocument> list(ServerDirectory dir)
+	public Collection<RemoteServerDocument> list(RemoteServerDirectory dir)
 	        throws OWLServerException {
 	    try {
-	        return server.list(user, dir);
+	        return RootUtils.rootList(server.list(authToken, dir.createServerDocument()), SCHEME, host, port);
 	    }
 	    catch (RemoteException re) {
 	        throw processException(re);
@@ -99,10 +104,10 @@ public class RMIClient extends AbstractClient {
 	}
 
 	@Override
-	public ServerDirectory createRemoteDirectory(IRI serverIRI)
+	public RemoteServerDirectory createRemoteDirectory(IRI serverIRI)
 	        throws OWLServerException {
 	    try {
-	        return server.createDirectory(user, serverIRI);
+	        return server.createDirectory(authToken, serverIRI).createRemoteDocument(SCHEME, host, port);
 	    }
 	    catch (RemoteException re) {
 	        throw processException(re);
@@ -110,9 +115,9 @@ public class RMIClient extends AbstractClient {
 	}
 
 	@Override
-	public RemoteOntologyDocument createRemoteOntology(IRI serverIRI) throws OWLServerException {
+	public  RemoteOntologyDocument createRemoteOntology(IRI serverIRI) throws OWLServerException {
 	    try {
-	        return server.createOntologyDocument(user, serverIRI, new TreeMap<String, Object>());
+	        return server.createOntologyDocument(authToken, serverIRI, new TreeMap<String, Object>()).createRemoteDocument(SCHEME, host, port);
 	    }
 	    catch (RemoteException re) {
 	        throw processException(re);
@@ -124,7 +129,7 @@ public class RMIClient extends AbstractClient {
 	                                 OntologyDocumentRevision start, OntologyDocumentRevision end)
 	                                         throws OWLServerException {
 	    try {
-	        return server.getChanges(user, doc, start, end);
+	        return server.getChanges(authToken, doc.createServerDocument(), start, end);
 	    }
 	    catch (RemoteException re) {
 	        throw processException(re);
@@ -132,25 +137,14 @@ public class RMIClient extends AbstractClient {
 	}
 
 	@Override
-	public ChangeHistory commit(RemoteOntologyDocument doc,
-	                              ChangeHistory changes, SortedSet<OntologyDocumentRevision> myCommits, CommitOption option)
-	                                     throws OWLServerException {
+	public void commit(RemoteOntologyDocument doc,
+	                    ChangeHistory changes) throws OWLServerException {
 	    try {
-	        return server.commit(user, doc, changes, myCommits, option);
+	        server.commit(authToken, doc.createServerDocument(), changes);
 	    }
 	    catch (RemoteException re) {
 	        throw processException(re);
 	    }
-	}
-
-	@Override
-	public void shutdown() {
-		try {
-			server.shutdown();
-		}
-		catch (RemoteException re) {
-			logger.warning("Could not shutdown server");
-		}
 	}
 
 

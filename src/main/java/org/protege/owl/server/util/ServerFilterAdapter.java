@@ -1,22 +1,23 @@
 package org.protege.owl.server.util;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Map;
 import java.util.SortedSet;
 
 import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.ChangeMetaData;
-import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.RemoteOntologyDocument;
+import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.ServerFilter;
+import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.ServerTransport;
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.IRI;
 
@@ -27,35 +28,34 @@ public class ServerFilterAdapter extends ServerFilter {
     }
 
     @Override
-    public ServerDocument getServerDocument(User u, IRI serverIRI) throws OWLServerException {
-        return getDelegate().getServerDocument(u, serverIRI);
+    public ServerDocument getServerDocument(AuthToken u, ServerPath servePath) throws OWLServerException {
+        return getDelegate().getServerDocument(u, servePath);
     }
 
     @Override
-    public Collection<ServerDocument> list(User u, ServerDirectory dir) throws OWLServerException {
+    public Collection<ServerDocument> list(AuthToken u, ServerDirectory dir) throws OWLServerException {
         return getDelegate().list(u, dir);
     }
 
     @Override
-    public ServerDirectory createDirectory(User u, IRI serverIRI) throws OWLServerException {
-        return getDelegate().createDirectory(u, serverIRI);
+    public ServerDirectory createDirectory(AuthToken u, ServerPath serverPath) throws OWLServerException {
+        return getDelegate().createDirectory(u, serverPath);
     }
 
     @Override
-    public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws OWLServerException {
-        return getDelegate().createOntologyDocument(u, serverIRI, settings);
+    public ServerOntologyDocument createOntologyDocument(AuthToken u, ServerPath serverPath, Map<String, Object> settings) throws OWLServerException {
+        return getDelegate().createOntologyDocument(u, serverPath, settings);
     }
 
     @Override
-    public ChangeHistory getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
+    public ChangeHistory getChanges(AuthToken u, ServerOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
         return getDelegate().getChanges(u, doc, start, end);
     }
 
     @Override
-    public ChangeHistory commit(User u, RemoteOntologyDocument doc, 
-                                 ChangeHistory changes, SortedSet<OntologyDocumentRevision> myCommits,
-                                 CommitOption option) throws OWLServerException {
-        return getDelegate().commit(u, doc, changes, myCommits, option);
+    public void commit(AuthToken u, ServerOntologyDocument doc, 
+                        ChangeHistory changes) throws OWLServerException {
+        getDelegate().commit(u, doc, changes);
     }
 
     @Override
@@ -64,13 +64,23 @@ public class ServerFilterAdapter extends ServerFilter {
     }
 
     @Override
-    public File getConfiguration(String fileName) throws OWLServerException {
-        return getDelegate().getConfiguration(fileName);
+    public InputStream getConfigurationInputStream(String fileName) throws OWLServerException {
+        return getDelegate().getConfigurationInputStream(fileName);
+    }
+    
+    @Override
+    public OutputStream getConfigurationOutputStream(String fileName) throws OWLServerException {
+        return getDelegate().getConfigurationOutputStream(fileName);
     }
 
     @Override
-    public File getConfiguration(ServerDocument doc, String extension) throws OWLServerException {
-        return getDelegate().getConfiguration(doc, extension);
+    public InputStream getConfigurationInputStream(ServerDocument doc, String extension) throws OWLServerException {
+        return getDelegate().getConfigurationInputStream(doc, extension);
+    }
+    
+    @Override
+    public OutputStream getConfigurationOutputStream(ServerDocument doc, String extension) throws OWLServerException {
+        return getDelegate().getConfigurationOutputStream(doc, extension);
     }
 
     @Override

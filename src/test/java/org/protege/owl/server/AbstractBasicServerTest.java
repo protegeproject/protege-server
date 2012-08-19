@@ -9,8 +9,8 @@ import java.util.UUID;
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.Client;
-import org.protege.owl.server.api.ServerDirectory;
-import org.protege.owl.server.api.ServerDocument;
+import org.protege.owl.server.api.RemoteServerDirectory;
+import org.protege.owl.server.api.RemoteServerDocument;
 import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.util.ClientUtilities;
@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
 public abstract class AbstractBasicServerTest {
 	private Client client;
 	private ClientUtilities clientUtilities;
-	private ServerDirectory testDirectory;
+	private RemoteServerDirectory testDirectory;
 	
 
 	protected abstract void startServer() throws OWLServerException;
@@ -55,10 +55,10 @@ public abstract class AbstractBasicServerTest {
 	
 	@Test
 	public void testConnect() throws InterruptedException, NotBoundException, IOException, OWLServerException {
-		IRI rootServerLocation = IRI.create("owlserver://localhost/");
-		ServerDocument doc = client.getServerDocument(rootServerLocation);
-		Assert.assertTrue(doc instanceof ServerDirectory);
-		ServerDirectory sd = (ServerDirectory) doc;
+		IRI rootServerLocation = IRI.create(getServerRoot());
+		RemoteServerDocument doc = client.getServerDocument(rootServerLocation);
+		Assert.assertTrue(doc instanceof RemoteServerDirectory);
+		RemoteServerDirectory sd = (RemoteServerDirectory) doc;
 		Assert.assertEquals(sd.getServerLocation(), rootServerLocation);
 	}
 	
@@ -93,19 +93,16 @@ public abstract class AbstractBasicServerTest {
 	        changes1.add(new AddAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 	        ontology1.getOWLOntologyManager().applyChanges(changes1);
 	        clientUtilities.commit(new ChangeMetaData("back"), versionedPizza1);
-	        Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 1);
 	        
 	        client2Utilities.update(versionedPizza2);
 	        Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	        Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 
-	        Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 1);
 	        List<OWLOntologyChange> changes2 = new ArrayList<OWLOntologyChange>();
 	        changes2.add(new RemoveAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 	        changes2.add(new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	        ontology1.getOWLOntologyManager().applyChanges(changes2);
 	        clientUtilities.commit(new ChangeMetaData("forth"), versionedPizza1);
-	        Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 2);
 	        
 	        client2Utilities.update(versionedPizza2);
 	        Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
@@ -130,20 +127,17 @@ public abstract class AbstractBasicServerTest {
 	    changes1.add(new AddAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 	    ontology1.getOWLOntologyManager().applyChanges(changes1);
 	    clientUtilities.commit(new ChangeMetaData("back"), versionedPizza1);
-	    Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 1);
 	    
 	    client2Utilities.update(versionedPizza2);
 	    Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	    Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 
 	    clientUtilities.update(versionedPizza1);
-	    Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 0);
 	    List<OWLOntologyChange> changes2 = new ArrayList<OWLOntologyChange>();
 	    changes2.add(new RemoveAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 	    changes2.add(new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	    ontology1.getOWLOntologyManager().applyChanges(changes2);
 	    clientUtilities.commit(new ChangeMetaData("forth"), versionedPizza1);
-	    Assert.assertEquals(versionedPizza1.getCommittedChanges().size(), 1);
 	    
 	    client2Utilities.update(versionedPizza2);
         Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));

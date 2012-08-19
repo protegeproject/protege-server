@@ -14,6 +14,8 @@ public interface Client {
 	
 	IRI getServerIRI();
 	
+	UserId getUserId();
+	
 	boolean isCompatible(VersionedOntologyDocument versionedOntology);
 	
 	/**
@@ -33,7 +35,7 @@ public interface Client {
 	 * @param serverIRI
 	 * @return
 	 */
-	ServerDocument getServerDocument(IRI serverIRI) throws OWLServerException;
+	RemoteServerDocument getServerDocument(IRI serverIRI) throws OWLServerException;
 	
 	
 	/**
@@ -42,14 +44,14 @@ public interface Client {
 	 * @param path
 	 * @return
 	 */
-	Collection<ServerDocument> list(ServerDirectory path) throws OWLServerException;
+	Collection<RemoteServerDocument> list(RemoteServerDirectory path) throws OWLServerException;
 	
 	/**
 	 * Allows the user to create a directory on the server.
 	 * 
 	 * @param serverIRI
 	 */
-	ServerDirectory createRemoteDirectory(IRI serverIRI) throws OWLServerException;
+	RemoteServerDirectory createRemoteDirectory(IRI serverIRI) throws OWLServerException;
 	
 	/**
 	 * Allows the user to create an empty ontology document on the server.
@@ -81,10 +83,6 @@ public interface Client {
 	 * @param revision
 	 * @param changes
 	 */
-	ChangeHistory commit(RemoteOntologyDocument document, 
-	                      ChangeHistory changes, SortedSet<OntologyDocumentRevision> previousCommits,
-	                      CommitOption option) throws OWLServerException;
-	
-	void shutdown();
-
+	void commit(RemoteOntologyDocument document, 
+	             ChangeHistory changes) throws OWLServerException;
 }

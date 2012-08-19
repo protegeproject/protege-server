@@ -10,10 +10,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.protege.owl.server.api.User;
-
 import org.protege.owl.server.policy.Group;
-import org.protege.owl.server.policy.UserExt;
+import org.protege.owl.server.policy.SimpleAuthToken;
 import org.protege.owl.server.policy.UserDatabase;
 }
 
@@ -33,14 +31,14 @@ package org.protege.owl.server.policy.generated;
 top:  ( user ) * ;
 
 user : 'User:' username=ID 'Password:' password=ID { 
-           UserExt u = new UserExt($username.getText(), $password.getText());
+           SimpleAuthToken u = new SimpleAuthToken($username.getText(), $password.getText());
 		   db.addUser(u);
        } 
        'Groups:'
           ( group[ u ] ) *
        ;
        
-group[UserExt user ]: groupToken = ID {
+group[SimpleAuthToken user ]: groupToken = ID {
           String groupName = $groupToken.getText();
           Group group = new Group(groupName);
 		  db.addGroup(user, group);

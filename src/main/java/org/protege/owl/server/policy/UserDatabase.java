@@ -7,16 +7,16 @@ import java.util.TreeSet;
 
 
 public class UserDatabase {
-    private Map<String, UserExt> userMap = new TreeMap<String, UserExt>();
+    private Map<String, SimpleAuthToken> userMap = new TreeMap<String, SimpleAuthToken>();
     private Map<String, Group> groupMap = new TreeMap<String, Group>();
-    private Map<UserExt, Collection<Group>> userToGroupsMap = new TreeMap<UserExt, Collection<Group>>();
+    private Map<SimpleAuthToken, Collection<Group>> userToGroupsMap = new TreeMap<SimpleAuthToken, Collection<Group>>();
     
     
-    public void addUser(UserExt u) {
-        userMap.put(u.getUserName(), u);
+    public void addUser(SimpleAuthToken u) {
+        userMap.put(u.getUserId().getUserName(), u);
     }
     
-    public void addGroup(UserExt u, Group g) {
+    public void addGroup(SimpleAuthToken u, Group g) {
         addUser(u);
         groupMap.put(g.getGroupName(), g);
         Collection<Group> groups = userToGroupsMap.get(u);
@@ -31,15 +31,15 @@ public class UserDatabase {
         return groupMap.values();
     }
     
-    public Collection<Group> getGroups(UserExt u) {
+    public Collection<Group> getGroups(SimpleAuthToken u) {
         return userToGroupsMap.get(u);
     }
     
-    public Collection<UserExt> getUsers() {
+    public Collection<SimpleAuthToken> getUsers() {
         return userMap.values();
     }
     
-    public UserExt getUser(String name) {
+    public SimpleAuthToken getUser(String name) {
         return userMap.get(name);
     }
     

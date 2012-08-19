@@ -3,12 +3,12 @@ package org.protege.owl.server.policy;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.AuthToken;
 
 public interface LoginService extends Remote {
     public static String SERVICE = "LoginService";
 
-    User login(String name, String password) throws RemoteException;
+    AuthToken login(String name, String password) throws RemoteException;
     
-    boolean checkAuthentication(User user) throws RemoteException;
+    boolean checkAuthentication(AuthToken user) throws RemoteException;
 }

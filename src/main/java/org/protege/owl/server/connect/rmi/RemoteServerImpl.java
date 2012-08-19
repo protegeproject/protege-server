@@ -3,17 +3,15 @@ package org.protege.owl.server.connect.rmi;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Map;
-import java.util.SortedSet;
 
 import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.ChangeMetaData;
-import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.RemoteOntologyDocument;
+import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.ServerPath;
+import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.IRI;
 
@@ -25,9 +23,9 @@ public class RemoteServerImpl implements RemoteServer {
 	}
 
 	@Override
-	public ServerDocument getServerDocument(User u, IRI serverIRI) throws RemoteException {
+	public ServerDocument getServerDocument(AuthToken u, IRI serverIRI) throws RemoteException {
 		try {
-			return server.getServerDocument(u, serverIRI);
+			return server.getServerDocument(u, new ServerPath(serverIRI));
 		}
 		catch (OWLServerException ioe) {
 			throw new RemoteException(ioe.getMessage(), ioe);
@@ -35,7 +33,7 @@ public class RemoteServerImpl implements RemoteServer {
 	}
 
 	@Override
-	public Collection<ServerDocument> list(User u, ServerDirectory dir)
+	public Collection<ServerDocument> list(AuthToken u, ServerDirectory dir)
 			throws RemoteException {
 		try {
 			return server.list(u, dir);
@@ -46,10 +44,10 @@ public class RemoteServerImpl implements RemoteServer {
 	}
 
 	@Override
-	public ServerDirectory createDirectory(User u, IRI serverIRI)
+	public ServerDirectory createDirectory(AuthToken u, IRI serverIRI)
 			throws RemoteException {
 		try {
-			return server.createDirectory(u, serverIRI);
+			return server.createDirectory(u, new ServerPath(serverIRI));
 		}
 		catch (OWLServerException ioe) {
 			throw new RemoteException(ioe.getMessage(), ioe);
@@ -57,10 +55,10 @@ public class RemoteServerImpl implements RemoteServer {
 	}
 
 	@Override
-	public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI,
+	public ServerOntologyDocument createOntologyDocument(AuthToken u, IRI serverIRI,
 			Map<String, Object> settings) throws RemoteException {
 		try {
-			return server.createOntologyDocument(u, serverIRI, settings);
+			return server.createOntologyDocument(u, new ServerPath(serverIRI), settings);
 		}
 		catch (OWLServerException ioe) {
 			throw new RemoteException(ioe.getMessage(), ioe);
@@ -68,7 +66,7 @@ public class RemoteServerImpl implements RemoteServer {
 	}
 
 	@Override
-	public ChangeHistory getChanges(User u, RemoteOntologyDocument doc,
+	public ChangeHistory getChanges(AuthToken u, ServerOntologyDocument doc,
 			OntologyDocumentRevision start, OntologyDocumentRevision end)
 			throws RemoteException {
 		try {
@@ -80,21 +78,15 @@ public class RemoteServerImpl implements RemoteServer {
 	}
 
 	@Override
-	public ChangeHistory commit(User u, RemoteOntologyDocument doc,
-			                     ChangeHistory changes, SortedSet<OntologyDocumentRevision> previousCommits, 
-			                     CommitOption option)
+	public void commit(AuthToken u, ServerOntologyDocument doc,
+	                    ChangeHistory changes)
 			throws RemoteException {
 		try {
-			return server.commit(u, doc, changes, previousCommits, option);
+		    server.commit(u, doc, changes);
 		}
 		catch (OWLServerException ioe) {
 			throw new RemoteException(ioe.getMessage(), ioe);
 		}
-	}
-
-	@Override
-	public void shutdown() throws RemoteException {
-		server.shutdown();
 	}
 
 }

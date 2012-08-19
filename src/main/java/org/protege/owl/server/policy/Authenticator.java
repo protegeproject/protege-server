@@ -3,37 +3,37 @@ package org.protege.owl.server.policy;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collection;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
+import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
-import org.protege.owl.server.api.CommitOption;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.ServerFilter;
+import org.protege.owl.server.api.ServerOntologyDocument;
+import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.ServerTransport;
-import org.protege.owl.server.api.User;
-import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.AuthenticationFailedException;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.connect.rmi.RMITransport;
 import org.protege.owl.server.policy.generated.UsersAndGroupsLexer;
 import org.protege.owl.server.policy.generated.UsersAndGroupsParser;
-import org.semanticweb.owlapi.model.IRI;
 
 public class Authenticator extends ServerFilter {
     private Logger logger = Logger.getLogger(Authenticator.class.getCanonicalName());
@@ -47,8 +47,7 @@ public class Authenticator extends ServerFilter {
     }
     
     private void parse() throws IOException, RecognitionException, OWLServerException {
-        File usersAndGroups = getConfiguration("UsersAndGroups");
-        FileInputStream fis = new FileInputStream(usersAndGroups);
+        InputStream fis = getConfigurationInputStream("UsersAndGroups");
         try {
             ANTLRInputStream input = new ANTLRInputStream(fis);
             UsersAndGroupsLexer lexer = new UsersAndGroupsLexer(input);
@@ -99,7 +98,7 @@ public class Authenticator extends ServerFilter {
         logger.info("Authentication service started");
     }
     
-    private void ensureUserIdCorrect(User u) throws AuthenticationFailedException {
+    private void ensureUserIdCorrect(AuthToken u) throws AuthenticationFailedException {
         if (!loginService.checkAuthentication(u)) {
             throw new AuthenticationFailedException();
         }
@@ -111,58 +110,47 @@ public class Authenticator extends ServerFilter {
     }
 
     @Override
-    public ServerDocument getServerDocument(User u, IRI serverIRI) throws OWLServerException  {
+    public ServerDocument getServerDocument(AuthToken u, ServerPath serverPath) throws OWLServerException  {
         ensureUserIdCorrect(u);
-        return getDelegate().getServerDocument(u, serverIRI);
+        return getDelegate().getServerDocument(u, serverPath);
     }
 
     @Override
-    public Collection<ServerDocument> list(User u, ServerDirectory dir) throws OWLServerException {
+    public Collection<ServerDocument> list(AuthToken u, ServerDirectory dir) throws OWLServerException {
         ensureUserIdCorrect(u);
         return getDelegate().list(u, dir);
     }
 
     @Override
-    public ServerDirectory createDirectory(User u, IRI serverIRI) throws OWLServerException {
+    public ServerDirectory createDirectory(AuthToken u, ServerPath serverPath) throws OWLServerException {
         ensureUserIdCorrect(u);
-        return getDelegate().createDirectory(u, serverIRI);
+        return getDelegate().createDirectory(u, serverPath);
     }
 
     @Override
-    public RemoteOntologyDocument createOntologyDocument(User u, IRI serverIRI, Map<String, Object> settings) throws OWLServerException {
+    public ServerOntologyDocument createOntologyDocument(AuthToken u, ServerPath serverPath, Map<String, Object> settings) throws OWLServerException {
         ensureUserIdCorrect(u);
-        return getDelegate().createOntologyDocument(u, serverIRI, settings);
+        return getDelegate().createOntologyDocument(u, serverPath, settings);
     }
 
     @Override
-    public ChangeHistory getChanges(User u, RemoteOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
+    public ChangeHistory getChanges(AuthToken u, ServerOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
         ensureUserIdCorrect(u);
         return getDelegate().getChanges(u, doc, start, end);
     }
 
     @Override
-    public ChangeHistory commit(User u, 
-                                  RemoteOntologyDocument doc, 
-                                  ChangeHistory clientChanges, 
-                                  SortedSet<OntologyDocumentRevision> myCommits,
-                                  CommitOption option) throws OWLServerException {
+    public void commit(AuthToken u, 
+                                  ServerOntologyDocument doc, 
+                                  ChangeHistory clientChanges) throws OWLServerException {
         ensureUserIdCorrect(u);
         ChangeHistory serverSideChanges = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, null);
-        for (OntologyDocumentRevision revision : myCommits) {
-            ChangeMetaData metaData = serverSideChanges.getMetaData(revision);
-            if (metaData == null) {
-                throw new IllegalStateException("No commit comment, etc found for previous commit");
-            }
-            if (!u.getUserName().equals(metaData.getUsername())) {
-                throw new IllegalStateException("Caller is claiming a commit he did not do.  Is someone trying to pull something?");
-            }
-        }
         ChangeMetaData commitComment = clientChanges.getMetaData(clientChanges.getStartRevision());
         if (commitComment == null) {
             throw new IllegalStateException("Changes to be committed must have metadata");
         }
         commitComment.setUser(u);
-        return getDelegate().commit(u, doc, clientChanges, myCommits, option);
+        getDelegate().commit(u, doc, clientChanges);
     }
 
     @Override
@@ -171,13 +159,23 @@ public class Authenticator extends ServerFilter {
     }
 
     @Override
-    public File getConfiguration(String fileName) throws OWLServerException {
-        return getDelegate().getConfiguration(fileName);
+    public InputStream getConfigurationInputStream(String fileName) throws OWLServerException {
+        return getDelegate().getConfigurationInputStream(fileName);
+    }
+    
+    @Override
+    public OutputStream getConfigurationOutputStream(String fileName) throws OWLServerException {
+        return getDelegate().getConfigurationOutputStream(fileName);
     }
 
     @Override
-    public File getConfiguration(ServerDocument doc, String extension) throws OWLServerException {
-        return getDelegate().getConfiguration(doc, extension);
+    public InputStream getConfigurationInputStream(ServerDocument doc, String extension) throws OWLServerException {
+        return getDelegate().getConfigurationInputStream(doc, extension);
+    }
+    
+    @Override
+    public OutputStream getConfigurationOutputStream(ServerDocument doc, String extension) throws OWLServerException {
+        return getDelegate().getConfigurationOutputStream(doc, extension);
     }
     
     @Override

@@ -1,7 +1,6 @@
 package org.protege.owl.server.core;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,15 +14,15 @@ import java.util.logging.Logger;
 
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.RemoteOntologyDocument;
+import org.protege.owl.server.api.ServerOntologyDocument;
+import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.semanticweb.owlapi.model.IRI;
 
 public class ChangeDocumentPool {
     private Logger logger = Logger.getLogger(ChangeDocumentPool.class.getCanonicalName());
     private DocumentFactory docFactory;
     private final long timeout;
-    private Map<RemoteOntologyDocument, ChangeDocumentPoolEntry> pool = new TreeMap<RemoteOntologyDocument, ChangeDocumentPoolEntry>();
+    private Map<ServerOntologyDocument, ChangeDocumentPoolEntry> pool = new TreeMap<ServerOntologyDocument, ChangeDocumentPoolEntry>();
     
     public ChangeDocumentPool(DocumentFactory docFactory, long timeout) {
         this.docFactory = docFactory;
@@ -44,8 +43,8 @@ public class ChangeDocumentPool {
             
             @Override
             public void run() {
-                for (Entry<RemoteOntologyDocument, ChangeDocumentPoolEntry> entry : pool.entrySet()) {
-                    RemoteOntologyDocument doc = entry.getKey();
+                for (Entry<ServerOntologyDocument, ChangeDocumentPoolEntry> entry : pool.entrySet()) {
+                    ServerOntologyDocument doc = entry.getKey();
                     ChangeDocumentPoolEntry poolEntry = entry.getValue();
                     synchronized (pool) {
                         long now = System.currentTimeMillis();
@@ -60,7 +59,7 @@ public class ChangeDocumentPool {
         }, timeout, timeout, TimeUnit.MILLISECONDS);
     }
     
-    public ChangeHistory getChangeDocument(RemoteOntologyDocument doc, File historyFile) throws OWLServerException {
+    public ChangeHistory getChangeDocument(ServerOntologyDocument doc, File historyFile) throws OWLServerException {
         ChangeDocumentPoolEntry entry;
         synchronized (pool) {
             entry = pool.get(doc);
@@ -72,7 +71,7 @@ public class ChangeDocumentPool {
         return entry.getChangeDocument();
     }
     
-    public void setChangeDocument(RemoteOntologyDocument doc, File historyFile, ChangeHistory changes) {
+    public void setChangeDocument(ServerOntologyDocument doc, File historyFile, ChangeHistory changes) {
         synchronized (pool) {
             ChangeDocumentPoolEntry entry = pool.get(doc);
             if (entry != null) {
@@ -85,9 +84,9 @@ public class ChangeDocumentPool {
         }
     }
     
-    public boolean testServerLocation(IRI serverLocation) {
+    public boolean testServerLocation(ServerPath serverPath) {
         synchronized (pool) {
-            return pool.containsKey(new RemoteOntologyDocumentImpl(serverLocation));
+            return pool.containsKey(new ServerOntologyDocumentImpl(serverPath));
         }
     }
     
