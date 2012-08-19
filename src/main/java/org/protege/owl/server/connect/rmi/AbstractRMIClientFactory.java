@@ -1,12 +1,19 @@
 package org.protege.owl.server.connect.rmi;
 
-import org.protege.owl.server.api.Client;
-import org.protege.owl.server.api.ClientFactory;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.naming.AuthenticationException;
+
 import org.protege.owl.server.api.AuthToken;
+import org.protege.owl.server.api.ClientFactory;
+import org.protege.owl.server.api.exception.AuthenticationFailedException;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.connect.RootUtils;
 import org.semanticweb.owlapi.model.IRI;
 
 public abstract class AbstractRMIClientFactory implements ClientFactory {
+    private Map<IRI, AuthToken> authMap = new TreeMap<IRI, AuthToken>(); 
 
     @Override
     public boolean isSuitable(IRI serverLocation) {
@@ -14,10 +21,27 @@ public abstract class AbstractRMIClientFactory implements ClientFactory {
     }
 
     @Override
-    public Client createClient(IRI serverLocation) throws OWLServerException {
+    public RMIClient createClient(IRI serverLocation) throws OWLServerException {
         try {
-            RMIClient client = new RMIClient(login(serverLocation), serverLocation);
+            boolean existingAuthToken = true;
+            IRI serverRoot = RootUtils.getRoot(serverLocation);
+            AuthToken authToken = authMap.get(serverRoot);
+            if (authToken == null) {
+                authToken = login(serverLocation);
+                authMap.put(serverRoot, authToken);
+                existingAuthToken = false;
+            }
+            RMIClient client = new RMIClient(authToken, serverLocation);
             client.initialise();
+            if (existingAuthToken) {
+                try {
+                    client.getServerDocument(serverRoot);
+                }
+                catch (AuthenticationFailedException ae) {
+                    authMap.remove(serverRoot);
+                    client = createClient(serverLocation);
+                }
+            }
             return client;
         }
         catch (Exception e) {
