@@ -1,19 +1,41 @@
 package org.protege.owl.server.connect.rmi;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.naming.AuthenticationException;
-
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ClientFactory;
+import org.protege.owl.server.api.DocumentFactory;
+import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.protege.owl.server.api.exception.AuthenticationFailedException;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.changes.DocumentFactoryImpl;
 import org.protege.owl.server.connect.RootUtils;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 public abstract class AbstractRMIClientFactory implements ClientFactory {
-    private Map<IRI, AuthToken> authMap = new TreeMap<IRI, AuthToken>(); 
+    private Map<IRI, AuthToken> authMap = new TreeMap<IRI, AuthToken>();
+    private DocumentFactory factory = new DocumentFactoryImpl();
+    
+    @Override
+    public boolean hasSuitableMetaData(OWLOntology ontology) throws IOException {
+        if (factory.hasServerMetadata(ontology)) {
+            return isSuitable(factory.getServerLocation(ontology));
+        }
+        return false;
+    }
+    
+    @Override
+    public VersionedOntologyDocument getVersionedOntologyDocument(OWLOntology ontology) throws IOException {
+        return factory.getVersionedOntologyDocument(ontology);
+    }
+    
+   @Override
+   public RMIClient connectToServer(OWLOntology ontology) throws OWLServerException, IOException {
+        return connectToServer(factory.getServerLocation(ontology));
+    }
 
     @Override
     public boolean isSuitable(IRI serverLocation) {
@@ -21,7 +43,7 @@ public abstract class AbstractRMIClientFactory implements ClientFactory {
     }
 
     @Override
-    public RMIClient createClient(IRI serverLocation) throws OWLServerException {
+    public RMIClient connectToServer(IRI serverLocation) throws OWLServerException {
         try {
             boolean existingAuthToken = true;
             IRI serverRoot = RootUtils.getRoot(serverLocation);
@@ -39,7 +61,7 @@ public abstract class AbstractRMIClientFactory implements ClientFactory {
                 }
                 catch (AuthenticationFailedException ae) {
                     authMap.remove(serverRoot);
-                    client = createClient(serverLocation);
+                    client = connectToServer(serverLocation);
                 }
             }
             return client;

@@ -1,6 +1,5 @@
 package org.protege.owl.server.changes;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,10 +16,10 @@ import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.protege.owl.server.changes.format.OWLInputStream;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
@@ -45,39 +44,51 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 													    RemoteOntologyDocument serverDocument,
 													    OntologyDocumentRevision revision) {
 		ChangeHistory localChanges = createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION);
-		return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges);
+		return new VersionedOntologyDocumentImpl(ontology, serverDocument, revision, localChanges);
 	}
 	
 	@Override
 	public boolean hasServerMetadata(OWLOntology ontology) {
-		File ontologyFile = VersionedOWLOntologyImpl.getBackingStore(ontology);
+		File ontologyFile = VersionedOntologyDocumentImpl.getBackingStore(ontology);
 		if (ontologyFile == null) {
 			return false;
 		}
-		return VersionedOWLOntologyImpl.getHistoryFile(ontologyFile).exists();
+		return VersionedOntologyDocumentImpl.getHistoryFile(ontologyFile).exists();
+	}
+	
+	@Override
+	public IRI getServerLocation(OWLOntology ontology) throws IOException {
+	    try {
+
+	        File ontologyFile = VersionedOntologyDocumentImpl.getBackingStore(ontology);
+	        File historyFile = VersionedOntologyDocumentImpl.getHistoryFile(ontologyFile);
+	        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(historyFile));
+	        RemoteOntologyDocument serverDocument = (RemoteOntologyDocument) ois.readObject();
+	        return serverDocument.getServerLocation();
+	    }
+	    catch (ClassNotFoundException cnfe) {
+	        throw new IOException("Class Loader issues when hydrating ontology history document", cnfe);
+	    }
 	}
 
 	@Override
-	public VersionedOntologyDocument createVersionedOntology(OWLOntology ontology) throws IOException {
+	public VersionedOntologyDocument getVersionedOntologyDocument(OWLOntology ontology) throws IOException {
 	    try {
-	        File ontologyFile = VersionedOWLOntologyImpl.getBackingStore(ontology);
-	        File historyFile = VersionedOWLOntologyImpl.getHistoryFile(ontologyFile);
-	        ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(historyFile)));
-	        OntologyDocumentRevision revision = (OntologyDocumentRevision) ois.readObject();
+	        File ontologyFile = VersionedOntologyDocumentImpl.getBackingStore(ontology);
+	        File historyFile = VersionedOntologyDocumentImpl.getHistoryFile(ontologyFile);
+	        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(historyFile));
+	        
 	        RemoteOntologyDocument serverDocument = (RemoteOntologyDocument) ois.readObject();
+	        OntologyDocumentRevision revision = (OntologyDocumentRevision) ois.readObject();
 	        ChangeHistory localChanges = (ChangeHistory) ois.readObject();
-	        @SuppressWarnings("unchecked")
-            List<ChangeHistory> committedChanges = (List<ChangeHistory>) ois.readObject();
-	        return new VersionedOWLOntologyImpl(ontology, serverDocument, revision, localChanges);
+	        
+	        return new VersionedOntologyDocumentImpl(ontology, serverDocument, revision, localChanges);
 	    }
 	    catch (ClassNotFoundException cnfe) {
 	        throw new IOException("Class Loader issues when hydrating ontology history document", cnfe);
 	    }
 	}
 	
-	/*
-     * This algorithm involves a copy of the input stream which would be nice to avoid.
-	 */
 	@SuppressWarnings("deprecation")
 	@Override
 	public ChangeHistory readChangeDocument(InputStream in,

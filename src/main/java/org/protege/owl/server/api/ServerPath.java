@@ -21,6 +21,9 @@ public final class ServerPath implements Comparable<ServerPath>, Serializable {
     
     public ServerPath(URI uri) {
         String uriPath = uri.getPath();
+        if (uriPath.startsWith("/")) {
+            uriPath = uriPath.substring(1);
+        }
         components = new ArrayList<String>();
         for (String component : uriPath.split("/")) {
             components.add(component);
@@ -54,7 +57,7 @@ public final class ServerPath implements Comparable<ServerPath>, Serializable {
             sb.append(":");
             sb.append(port);
         }
-        sb.append("/");
+        sb.append('/');
         sb.append(pathAsString());
         return IRI.create(sb.toString());
     }

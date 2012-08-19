@@ -31,32 +31,45 @@ public class ServerOntologyDocumentImpl extends ServerDocumentImpl implements Se
 	}
 	
     public RemoteOntologyDocument createRemoteDocument(final String scheme, final String host, final int port) {
-        return new RemoteOntologyDocument() {
-            @Override
-            public IRI getServerLocation() {
-                return getServerPath().getIRI(scheme, host, port);
-            }
-            
-            @Override
-            public ServerOntologyDocument createServerDocument() {
-                return ServerOntologyDocumentImpl.this;
-            }
-            
-            @Override
-            public String toString() {
-                return "<Doc: " + getServerLocation() + ">";
-            }
-            
-            @Override
-            public int compareTo(RemoteServerDocument o) {
-                return getServerLocation().compareTo(o.getServerLocation());
-            }
-        };
+        return new RemoteOntologyDocumentImpl(scheme, host, port);
     }
 	
 	@Override
 	public String toString() {
 	    return "<Doc: " + getServerPath() + ">";
+	}
+	
+	private class RemoteOntologyDocumentImpl implements RemoteOntologyDocument, Serializable {
+        private static final long serialVersionUID = -6446764435372376878L;
+        private String scheme; 
+	    private String host;
+	    private int port;
+	    
+	    public RemoteOntologyDocumentImpl(final String scheme, final String host, final int port) {
+	        this.scheme = scheme;
+	        this.host = host;
+	        this.port = port;
+	    }
+	    
+        @Override
+        public IRI getServerLocation() {
+            return getServerPath().getIRI(scheme, host, port);
+        }
+        
+        @Override
+        public ServerOntologyDocument createServerDocument() {
+            return ServerOntologyDocumentImpl.this;
+        }
+        
+        @Override
+        public String toString() {
+            return "<Doc: " + getServerLocation() + ">";
+        }
+        
+        @Override
+        public int compareTo(RemoteServerDocument o) {
+            return getServerLocation().compareTo(o.getServerLocation());
+        }
 	}
 
 }

@@ -16,18 +16,20 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-public class VersionedOWLOntologyImpl implements VersionedOntologyDocument {
-	public static final String BACKING_STORE_PROPERTY = "server.location";
-	public static final String VERSION_PROPERTY       = "version";
+public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument {
+	public static final String BACKING_STORE_PROPERTY     = "server.location";
+	public static final String VERSION_PROPERTY           = "version";
+	public static final String VERSION_DOCUMENT_DIRECTORY = ".owlserver";
+	public static final String VERSION_DOCUMENT_EXTENSION = ".vontology";
 
 	public static File getHistoryFile(File ontologyFile) {
 		File versionInfoDir = getVersionInfoDirectory(ontologyFile);
-		return new File(versionInfoDir, ontologyFile.getName() + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
+		return new File(versionInfoDir, ontologyFile.getName() + VERSION_DOCUMENT_EXTENSION);
 	}
 
 	public static File getVersionInfoDirectory(File ontologyFile) {
 		File dir = ontologyFile.getParentFile();
-		return new File(dir, ".owlserver");
+		return new File(dir, VERSION_DOCUMENT_DIRECTORY);
 	}
 	
     static public File getBackingStore(OWLOntology ontology) {
@@ -45,7 +47,7 @@ public class VersionedOWLOntologyImpl implements VersionedOntologyDocument {
 	private ChangeHistory localHistory;
 	
 	
-	public VersionedOWLOntologyImpl(OWLOntology ontology,
+	public VersionedOntologyDocumentImpl(OWLOntology ontology,
 								    RemoteOntologyDocument serverDocument,
 								    OntologyDocumentRevision revision,
 								    ChangeHistory localHistory) {
@@ -95,11 +97,20 @@ public class VersionedOWLOntologyImpl implements VersionedOntologyDocument {
 		File historyFile = getHistoryFile(ontologyFile);
 		historyFile.getParentFile().mkdirs();
 		ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(historyFile)));
-		oos.writeObject(revision);
-		oos.writeObject(serverDocument);
-		oos.writeObject(localHistory);
+		try {
+		    oos.writeObject(serverDocument);
+		    oos.writeObject(revision);
+		    oos.writeObject(localHistory);
+		}
+		finally {
+		    oos.flush();
+		    oos.close();
+		}
 		return true;
 	}
 
-
+	@Override
+	public String toString() {
+	    return "[Document " + ontology.getOntologyID() + " from server " + serverDocument.getServerLocation() + " revision " + revision + "]";
+	}
 }
