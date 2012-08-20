@@ -6,6 +6,7 @@ import java.util.Map;
 import org.protege.owl.server.api.exception.OWLServerException;
 
 public interface ServerExports {
+    
     ServerDocument getServerDocument(AuthToken u, ServerPath serverIRI) throws OWLServerException;
     
     Collection<ServerDocument> list(AuthToken u, ServerDirectory dir) throws OWLServerException;

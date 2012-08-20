@@ -9,17 +9,14 @@ import org.semanticweb.owlapi.model.OWLOntology;
  * This is an open OWL ontology held by the client with an association to a corresponding server
  * document at a particular revision.  
  * <p/>
- * There is enough information here that several operations are possible:
- * <ul>
- * <li>the changes made to the local in-memory ontology can be committed to the remote server.  
- *     The collection of changes can be calculated by getting the changes up to the revision of the in-memory
- *     ontology and calculating the changes made since the changes described on the server.  ClientUtilities uses 
- *     just such a method internally.</li>
- * <li>the changes made on the server since the revision can be merged into the clients copy of the ontology</li>
- * </ul>
- * <p/>
- * This interface also supports the idea of a local cache of the history held on the server.  This cache can be updated
- * as change data is collected from the server.
+ * This is a central class but it is more a container of the required data than a set of required methods for 
+ * manipulating a versioned ontology document.  Devloper who want to manipulate this class should look at the 
+ * ClientUtilities class which contains utilities that 
+ * <ol>
+ * <li>load a versioned ontology document from a server,</li>
+ * <li>load or save a versioned ontology document from disk and</li>
+ * <li>commit or update a versioned ontology document by interacting with a server</li>
+ * </ol>
  * 
  * @author redmond
  *

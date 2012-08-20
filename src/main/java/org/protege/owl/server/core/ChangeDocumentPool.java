@@ -66,6 +66,7 @@ public class ChangeDocumentPool {
             if (entry == null) {
                 entry = new ChangeDocumentPoolEntry(docFactory, historyFile);
                 pool.put(doc, entry);
+                logger.info("Checked out in-memory change history for " + doc);
             }
         }
         return entry.getChangeDocument();

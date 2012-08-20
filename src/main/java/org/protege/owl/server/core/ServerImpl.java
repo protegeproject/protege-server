@@ -18,6 +18,7 @@ import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
@@ -108,7 +109,7 @@ public class ServerImpl implements Server {
 		this.configurationDir = configurationDir;
 		this.pool = new ChangeDocumentPool(factory, 15 * 60 * 1000);
 	}
-
+	
 	@Override
 	public ServerDocument getServerDocument(AuthToken u, ServerPath serverPath) throws DocumentNotFoundException {
 		File f = parseServerIRI(serverPath, ServerObjectStatus.OBJECT_FOUND);

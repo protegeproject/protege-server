@@ -19,6 +19,15 @@ import org.protege.owl.server.connect.RootUtils;
 import org.protege.owl.server.util.AbstractClient;
 import org.semanticweb.owlapi.model.IRI;
 
+/**
+ * This is the recommended way of interacting with a server on the same jvm.
+ * <p/>
+ * This is a very thin wrapper around a server object.  It provides a client interface which can be 
+ * used by such things as the ClientUtilities (enabling update and commit for instance).
+ * 
+ * @author redmond
+ *
+ */
 public class LocalClient extends AbstractClient {
 	public static final String SCHEME    = "local-owl2-server";
 	public static final String LOCALHOST = "localhost";
