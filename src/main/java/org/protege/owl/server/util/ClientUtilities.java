@@ -74,21 +74,36 @@ public class ClientUtilities {
         DocumentFactory factory = client.getDocumentFactory();
 		RemoteOntologyDocument serverDoc = ontologyDoc.getServerDocument();
 		OntologyDocumentRevision revision = ontologyDoc.getRevision();
-		ChangeHistory historyToClientRevision = getChanges(client, ontologyDoc, OntologyDocumentRevision.START_REVISION, revision);
-        OWLOntology ontology = ontologyDoc.getOntology();
-		List<OWLOntologyChange> baselineHistory = historyToClientRevision.getChanges(ontology);
-		ChangeHistory historyFromClientRevision = getChanges(client, ontologyDoc, revision, null);
-		for (OntologyDocumentRevision possiblePastCommitRevision = historyFromClientRevision.getStartRevision();
-		        possiblePastCommitRevision.compareTo(historyFromClientRevision.getEndRevision()) < 0;
-		        possiblePastCommitRevision = possiblePastCommitRevision.next()) {
-		    if (historyFromClientRevision.getMetaData(possiblePastCommitRevision).getUserId().equals(client.getUserId())) {
-		        ChangeHistory pastCommit = historyFromClientRevision.cropChanges(possiblePastCommitRevision, possiblePastCommitRevision.next());
-		        baselineHistory.addAll(pastCommit.getChanges(ontology));
-		    }
-		}
-		List<OWLOntologyChange> uncommittedChanges = getUncommittedChanges(client, ontologyDoc.getOntology(), baselineHistory);
+		List<OWLOntologyChange> uncommittedChanges = getUncommittedChanges(client, ontologyDoc);
 		client.commit(serverDoc, 
 		              factory.createChangeDocument(uncommittedChanges, metaData, revision));
+	}
+	
+	public static List<OWLOntologyChange> getUncommittedChanges(Client client, VersionedOntologyDocument ontologyDoc) throws OWLServerException {
+	    OntologyDocumentRevision revision = ontologyDoc.getRevision();
+	    ChangeHistory historyToClientRevision = getChanges(client, ontologyDoc, OntologyDocumentRevision.START_REVISION, revision);
+	    OWLOntology ontology = ontologyDoc.getOntology();
+	    List<OWLOntologyChange> baselineHistory = historyToClientRevision.getChanges(ontology);
+	    ChangeHistory historyFromClientRevision = getChanges(client, ontologyDoc, revision, null);
+	    for (OntologyDocumentRevision possiblePastCommitRevision = historyFromClientRevision.getStartRevision();
+	            possiblePastCommitRevision.compareTo(historyFromClientRevision.getEndRevision()) < 0;
+	            possiblePastCommitRevision = possiblePastCommitRevision.next()) {
+	        if (historyFromClientRevision.getMetaData(possiblePastCommitRevision).getUserId().equals(client.getUserId())) {
+	            ChangeHistory pastCommit = historyFromClientRevision.cropChanges(possiblePastCommitRevision, possiblePastCommitRevision.next());
+	            baselineHistory.addAll(pastCommit.getChanges(ontology));
+	        }
+	    }
+	    return getUncommittedChanges(ontologyDoc.getOntology(), baselineHistory);
+	}
+	
+	private static List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology, List<OWLOntologyChange> toBaseline) {
+	    List<OWLOntologyChange> reversedList = new ArrayList<OWLOntologyChange>(toBaseline);
+	    Collections.reverse(reversedList);
+	    GetUncommittedChangesVisitor visitor = new GetUncommittedChangesVisitor(ontology);
+	    for (OWLOntologyChange change : toBaseline) {
+	        change.accept(visitor);
+	    }
+	    return visitor.getChanges();
 	}
 	
 	public static void update(Client client, VersionedOntologyDocument ontology) throws OWLServerException {
@@ -113,17 +128,6 @@ public class ClientUtilities {
 			ontologyDoc.appendLocalHistory(newChanges);
 		}
 		return ontologyDoc.getLocalHistory().cropChanges(start, realEnd);
-	}
-	
-	
-	private static List<OWLOntologyChange> getUncommittedChanges(Client client, OWLOntology ontology, List<OWLOntologyChange> toBaseline) {
-		List<OWLOntologyChange> reversedList = new ArrayList<OWLOntologyChange>(toBaseline);
-		Collections.reverse(reversedList);
-		GetUncommittedChangesVisitor visitor = new GetUncommittedChangesVisitor(ontology);
-		for (OWLOntologyChange change : toBaseline) {
-			change.accept(visitor);
-		}
-		return visitor.getChanges();
 	}
 	
 	
