@@ -34,6 +34,11 @@ public class ChangeUtilities {
 	private ChangeUtilities() {
 	}
 	
+	
+	public static List<OWLOntologyChange> invertChanges(List<OWLOntologyChange> changes) {
+	    throw new IllegalStateException("not implemented yet");
+	}
+	
     /**
      * The purpose of this routine is to calculate a minimal set of changes that will have the 
      * same effect on a collection of ontologies as the given changes.  Note that this routine

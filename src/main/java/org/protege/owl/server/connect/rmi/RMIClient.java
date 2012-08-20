@@ -16,6 +16,7 @@ import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.RemoteServerDirectory;
 import org.protege.owl.server.api.RemoteServerDocument;
+import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
@@ -83,6 +84,19 @@ public class RMIClient extends AbstractClient {
 	}
 	
 	@Override
+	public OntologyDocumentRevision evaluateRevisionPointer(RemoteOntologyDocument doc, RevisionPointer pointer) throws OWLServerException {
+	    if (pointer.isOntologyDocumentRevision()) {   // don't waste the call...
+	        return pointer.asOntologyDocumentRevision();
+	    }
+        try {
+            return server.evaluateRevisionPointer(authToken, doc.createServerDocument(), pointer);
+        }
+        catch (RemoteException re) {
+            throw processException(re);
+        }
+	}
+	
+	@Override
 	public RemoteServerDocument getServerDocument(IRI serverIRI) throws OWLServerException {
 	    try {
 	        return server.getServerDocument(authToken, serverIRI).createRemoteDocument(SCHEME, host, port);
@@ -126,7 +140,7 @@ public class RMIClient extends AbstractClient {
 
 	@Override
 	public ChangeHistory getChanges(RemoteOntologyDocument doc,
-	                                 OntologyDocumentRevision start, OntologyDocumentRevision end)
+	                                 RevisionPointer start, RevisionPointer end)
 	                                         throws OWLServerException {
 	    try {
 	        return server.getChanges(authToken, doc.createServerDocument(), start, end);

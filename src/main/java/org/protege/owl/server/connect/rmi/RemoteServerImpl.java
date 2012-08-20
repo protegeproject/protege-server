@@ -4,14 +4,15 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Map;
 
+import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.ServerOntologyDocument;
+import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
+import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.ServerPath;
-import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.IRI;
 
@@ -20,6 +21,16 @@ public class RemoteServerImpl implements RemoteServer {
 	
 	public RemoteServerImpl(Server server) {
 		this.server = server;
+	}
+	
+	@Override
+	public OntologyDocumentRevision evaluateRevisionPointer(AuthToken u, ServerOntologyDocument doc, RevisionPointer pointer) throws RemoteException {
+	       try {
+	            return server.evaluateRevisionPointer(u, doc, pointer);
+	        }
+	        catch (OWLServerException ioe) {
+	            throw new RemoteException(ioe.getMessage(), ioe);
+	        }
 	}
 
 	@Override
@@ -67,9 +78,11 @@ public class RemoteServerImpl implements RemoteServer {
 
 	@Override
 	public ChangeHistory getChanges(AuthToken u, ServerOntologyDocument doc,
-			OntologyDocumentRevision start, OntologyDocumentRevision end)
+	                                RevisionPointer startPointer, RevisionPointer endPointer)
 			throws RemoteException {
 		try {
+		    OntologyDocumentRevision start = server.evaluateRevisionPointer(u, doc, startPointer);
+		    OntologyDocumentRevision end   = server.evaluateRevisionPointer(u, doc, endPointer);
 			return server.getChanges(u, doc, start, end);
 		}
 		catch (OWLServerException ioe) {

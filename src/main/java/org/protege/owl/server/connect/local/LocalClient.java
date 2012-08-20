@@ -10,7 +10,9 @@ import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.RemoteServerDirectory;
 import org.protege.owl.server.api.RemoteServerDocument;
+import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.Server;
+import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.exception.OWLServerException;
@@ -58,6 +60,11 @@ public class LocalClient extends AbstractClient {
 	public DocumentFactory getDocumentFactory() {
 		return new DocumentFactoryImpl();
 	}
+	
+	@Override
+	public OntologyDocumentRevision evaluateRevisionPointer(RemoteOntologyDocument doc, RevisionPointer pointer) throws OWLServerException {
+	    return server.evaluateRevisionPointer(authToken, doc.createServerDocument(), pointer);
+	}
 
 	@Override
 	public RemoteServerDocument getServerDocument(IRI serverIRI) throws OWLServerException {
@@ -84,9 +91,12 @@ public class LocalClient extends AbstractClient {
 
 	@Override
 	public ChangeHistory getChanges(RemoteOntologyDocument document,
-	                                 OntologyDocumentRevision start, OntologyDocumentRevision end)
+	                                 RevisionPointer startPointer, RevisionPointer endPointer)
 			throws OWLServerException {
-		return server.getChanges(authToken, document.createServerDocument(), start, end);
+	    ServerOntologyDocument serverDoc = document.createServerDocument();
+	    OntologyDocumentRevision start = server.evaluateRevisionPointer(authToken, serverDoc, startPointer);
+	    OntologyDocumentRevision end = server.evaluateRevisionPointer(authToken, serverDoc, endPointer);
+		return server.getChanges(authToken, serverDoc, start, end);
 	}
 
 	@Override

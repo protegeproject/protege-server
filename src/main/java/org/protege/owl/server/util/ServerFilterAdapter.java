@@ -10,6 +10,7 @@ import java.util.SortedSet;
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
@@ -27,6 +28,11 @@ public class ServerFilterAdapter extends ServerFilter {
         super(delegate);
     }
 
+    @Override
+    public OntologyDocumentRevision evaluateRevisionPointer(AuthToken u, ServerOntologyDocument doc, RevisionPointer pointer) throws OWLServerException {
+        return getDelegate().evaluateRevisionPointer(u, doc, pointer);
+    }
+    
     @Override
     public ServerDocument getServerDocument(AuthToken u, ServerPath servePath) throws OWLServerException {
         return getDelegate().getServerDocument(u, servePath);

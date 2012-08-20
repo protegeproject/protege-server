@@ -22,6 +22,7 @@ import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
@@ -107,6 +108,12 @@ public class Authenticator extends ServerFilter {
     @Override
     public Collection<ServerTransport> getTransports() {
         return getDelegate().getTransports();
+    }
+    
+    @Override
+    public OntologyDocumentRevision evaluateRevisionPointer(AuthToken u, ServerOntologyDocument doc, RevisionPointer pointer) throws OWLServerException {
+        ensureUserIdCorrect(u);
+        return getDelegate().evaluateRevisionPointer(u, doc, pointer);
     }
 
     @Override

@@ -1,6 +1,10 @@
 package org.protege.owl.server.api;
 
-public class RevisionPointer {
+import java.io.Serializable;
+
+public class RevisionPointer implements Serializable {
+    private static final long serialVersionUID = 8902418724621318750L;
+
     public enum RevisionPointerType {
         DOCUMENT_REVISION, HEAD;
     }

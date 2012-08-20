@@ -107,7 +107,23 @@ public class ServerImpl implements Server {
 		}
 		this.root = root;
 		this.configurationDir = configurationDir;
-		this.pool = new ChangeDocumentPool(factory, 15 * 60 * 1000);
+		this.pool = new ChangeDocumentPool(factory, 60 * 1000);
+	}
+	
+	@Override
+	public OntologyDocumentRevision evaluateRevisionPointer(AuthToken u, ServerOntologyDocument doc, RevisionPointer pointer) throws OWLServerException {
+	    switch (pointer.getType()) {
+	    case DOCUMENT_REVISION:
+	        return pointer.asOntologyDocumentRevision();
+	    case HEAD:
+	        File historyFile = parseServerIRI(doc.getServerPath(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT);
+	        if (historyFile == null) {
+	            throw new IllegalStateException("Expected to find ontology document at the location " + doc.getServerPath());
+	        }
+	        return pool.getChangeDocument(doc, historyFile).getEndRevision();
+	    default:
+	        throw new IllegalStateException("Programmer missed a case.");
+	    }
 	}
 	
 	@Override
@@ -185,6 +201,7 @@ public class ServerImpl implements Server {
 	public void commit(AuthToken u, ServerOntologyDocument doc,
 	                    ChangeHistory changesFromClient) throws OWLServerException {
 	    changesFromClient.getMetaData(changesFromClient.getStartRevision()).setUser(u);
+	    OntologyDocumentRevision head = evaluateRevisionPointer(u, doc, RevisionPointer.HEAD_REVISION);
 		OWLOntology fakeOntology;
 		ChangeMetaData metaData = changesFromClient.getMetaData(changesFromClient.getStartRevision());
 		try {
@@ -196,9 +213,9 @@ public class ServerImpl implements Server {
 		List<OWLOntologyChange> clientChanges = changesFromClient.getChanges(fakeOntology);
 		List<OWLOntologyChange> serverChanges =  adjustServerAndClientChanges(u, 
 		                                                                      clientChanges, 
-		                                                                      getChanges(u, doc, changesFromClient.getStartRevision(), null), 
+		                                                                      getChanges(u, doc, changesFromClient.getStartRevision(), head), 
 		                                                                      fakeOntology);
-		ChangeHistory fullHistory = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, null);
+		ChangeHistory fullHistory = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, head);
 		
 		OntologyDocumentRevision latestRevision = fullHistory.getEndRevision();
 		List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);

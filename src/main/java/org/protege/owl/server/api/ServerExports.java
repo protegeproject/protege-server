@@ -7,6 +7,8 @@ import org.protege.owl.server.api.exception.OWLServerException;
 
 public interface ServerExports {
     
+    OntologyDocumentRevision evaluateRevisionPointer(AuthToken u, ServerOntologyDocument doc, RevisionPointer pointer) throws OWLServerException;
+    
     ServerDocument getServerDocument(AuthToken u, ServerPath serverIRI) throws OWLServerException;
     
     Collection<ServerDocument> list(AuthToken u, ServerDirectory dir) throws OWLServerException;

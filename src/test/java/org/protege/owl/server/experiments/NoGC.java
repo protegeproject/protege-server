@@ -7,6 +7,7 @@ import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
+import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.connect.rmi.RMIClient;
 import org.protege.owl.server.policy.RMILoginUtility;
@@ -24,7 +25,7 @@ public class NoGC {
                 RMIClient client = new RMIClient(tim,"localhost", rmiPort);
                 client.initialise();
                 RemoteOntologyDocument pizzaDoc = (RemoteOntologyDocument) client.getServerDocument(IRI.create(RMIClient.SCHEME + "://localhost:5100/Pizza.history"));
-                ChangeHistory changes = client.getChanges(pizzaDoc, OntologyDocumentRevision.START_REVISION, null);
+                ChangeHistory changes = client.getChanges(pizzaDoc, OntologyDocumentRevision.START_REVISION.asPointer(), RevisionPointer.HEAD_REVISION);
                 if (changes.getChanges(OWLManager.createOWLOntologyManager().createOntology()).size() != 945) {
                     System.out.println("Hmm");
                     System.exit(-1);

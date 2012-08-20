@@ -26,6 +26,9 @@ public interface Client {
 	 */
 	DocumentFactory getDocumentFactory();
 	
+    OntologyDocumentRevision evaluateRevisionPointer(RemoteOntologyDocument doc, RevisionPointer pointer) throws OWLServerException;
+
+	
 	/**
 	 * If you pass an address for an object on the server, the server will try to return the
 	 * ServerDocument associated with that address.
@@ -74,7 +77,7 @@ public interface Client {
 	 * @param end
 	 * @return
 	 */
-	ChangeHistory getChanges(RemoteOntologyDocument document, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException;
+	ChangeHistory getChanges(RemoteOntologyDocument document, RevisionPointer start, RevisionPointer end) throws OWLServerException;
 	
 	/**
 	 * Commits a collection of changes to the remote ontology document.
