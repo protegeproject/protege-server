@@ -21,7 +21,7 @@ public class RMILoginUtility {
     }
     
     public static AuthToken login(String host, int port, String username, String password) throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry("localhost", port);
+        Registry registry = LocateRegistry.getRegistry(host, port);
         LoginService server = (LoginService) registry.lookup(LoginService.SERVICE);
         return server.login(username, password);
     }
