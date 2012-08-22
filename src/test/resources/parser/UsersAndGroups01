@@ -1,6 +1,6 @@
 
 User: fergerson Password: claudia
-  Groups: administrator fergerson ;
+  Groups: fergerson ;
 
 User: redmond Password: troglodyte
   Groups: administrator redmond ;

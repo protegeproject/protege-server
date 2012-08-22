@@ -57,6 +57,11 @@ public class ServerOntologyDocumentImpl extends ServerDocumentImpl implements Se
         }
         
         @Override
+        public Object getProperty(String key) {
+            return ServerOntologyDocumentImpl.this.getProperty(key);
+        }
+        
+        @Override
         public ServerOntologyDocument createServerDocument() {
             return ServerOntologyDocumentImpl.this;
         }

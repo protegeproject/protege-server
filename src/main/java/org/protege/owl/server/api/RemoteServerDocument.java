@@ -6,4 +6,6 @@ public interface RemoteServerDocument extends Comparable<RemoteServerDocument> {
     ServerDocument createServerDocument();
     
     IRI getServerLocation();
+    
+    Object getProperty(String key);
 }

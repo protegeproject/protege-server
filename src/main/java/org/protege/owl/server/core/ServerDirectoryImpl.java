@@ -20,6 +20,11 @@ public class ServerDirectoryImpl extends ServerDocumentImpl implements ServerDir
             }
             
             @Override
+            public Object getProperty(String key) {
+                return ServerDirectoryImpl.this.getProperty(key);
+            }
+            
+            @Override
             public ServerDirectory createServerDocument() {
                 return ServerDirectoryImpl.this;
             }

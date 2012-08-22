@@ -1,61 +1,48 @@
 package org.protege.owl.server.policy;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.UserId;
 
-public class SimpleAuthToken implements AuthToken, Serializable {
+public final class SimpleAuthToken implements AuthToken, Serializable {
     private static final long serialVersionUID = -3590024420017662281L;
-    private String name;
-    private transient String password;
+    private UserId userId;
     private String secret;
 
-    public SimpleAuthToken(String name, String password) {
-        this.name = name;
-        this.password = password;
+    public SimpleAuthToken(UserId userId) {
+        this.userId = userId;
+        this.secret = UUID.randomUUID().toString();
     }
 
     @Override
     public UserId getUserId() {
-        return new UserId(name);
-    }
-    
-    // ToDo remove this.
-    public String getPassword() {
-        return password;
-    }
-    
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
-    
-    public String getSecret() {
-        return secret;
+        return userId;
     }
     
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return userId.hashCode() + 2718 * secret.hashCode();
     }
     
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof AuthToken)) {
+        if (!(obj instanceof SimpleAuthToken)) {
             return false;
         }
-        AuthToken other = (AuthToken) obj;
-        return name.equals(other.getUserId().getUserName());
+        SimpleAuthToken other = (SimpleAuthToken) obj;
+        return userId.equals(other.getUserId()) && secret.equals(other.secret);
     }
     
     @Override
     public int compareTo(AuthToken other) {
-        return name.compareTo(other.getUserId().getUserName());
+        return userId.compareTo(other.getUserId());
     }
     
     @Override
     public String toString() {
-        return "[User: " + name + "]";
+        return "<Authentication Token for " + userId + ">";
     }
 
 }

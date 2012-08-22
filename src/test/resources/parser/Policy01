@@ -1,0 +1,10 @@
+Policy (
+   Allow [
+     Owner
+     Group administrator
+   ] to write ;
+   Allow [
+     All
+   ] to read ;
+)
+     

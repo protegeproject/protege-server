@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.UUID;
 
 import org.protege.owl.server.api.AuthToken;
+import org.protege.owl.server.api.UserId;
 
 public class BasicLoginService implements LoginService {
     private UserDatabase userDb;
@@ -13,21 +14,22 @@ public class BasicLoginService implements LoginService {
     }
 
     public AuthToken login(String name, String password) throws RemoteException {
-        SimpleAuthToken u = userDb.getUser(name);
-        if (u != null && u.getPassword().equals(password)) {
-            if (u.getSecret() == null) {
-                u.setSecret(UUID.randomUUID().toString());
-            }
-            return u;
+        UserId u = new UserId(name);
+        if (!userDb.checkPassword(u, password)) {
+            return null;
         }
-        return null;
+        SimpleAuthToken authToken = userDb.getToken(u);
+        if (authToken == null) {
+            authToken = new SimpleAuthToken(u);
+            userDb.addToken(authToken);
+        }
+        return authToken;
     }
     
     public boolean checkAuthentication(AuthToken token) {
         if (!(token instanceof SimpleAuthToken)) {
             return false;
         }
-        SimpleAuthToken authenticatedId = userDb.getUser(token.getUserId().getUserName());
-        return authenticatedId.getSecret() != null && authenticatedId.getSecret().equals(((SimpleAuthToken) token).getSecret());
+        return userDb.isValid((SimpleAuthToken) token);
     }
 }
