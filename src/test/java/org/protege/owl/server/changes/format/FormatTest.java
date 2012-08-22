@@ -41,7 +41,6 @@ public class FormatTest {
     public void setup(String ontologyFile) throws OWLOntologyCreationException {
         long startTime = System.currentTimeMillis();
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-        OWLOntologyLoaderConfiguration configuration = new OWLOntologyLoaderConfiguration();
         ontology = manager.loadOntologyFromOntologyDocument(new File(ontologyFile));
         logger.info("Initial ontology load took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
     }
