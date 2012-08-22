@@ -21,6 +21,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataAllValuesFrom;
+import org.semanticweb.owlapi.model.OWLDataExactCardinality;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyDomainAxiom;
 import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
@@ -28,11 +29,13 @@ import org.semanticweb.owlapi.model.OWLDataPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLDataRange;
 import org.semanticweb.owlapi.model.OWLDataSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLDatatype;
+import org.semanticweb.owlapi.model.OWLDatatypeRestriction;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLDifferentIndividualsAxiom;
 import org.semanticweb.owlapi.model.OWLDisjointClassesAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
+import org.semanticweb.owlapi.model.OWLFacetRestriction;
 import org.semanticweb.owlapi.model.OWLFunctionalObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLIndividual;
@@ -42,6 +45,7 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectAllValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectComplementOf;
+import org.semanticweb.owlapi.model.OWLObjectExactCardinality;
 import org.semanticweb.owlapi.model.OWLObjectHasValue;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectMinCardinality;
@@ -61,6 +65,7 @@ import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 import org.semanticweb.owlapi.model.SetOntologyID;
+import org.semanticweb.owlapi.vocab.OWLFacet;
 
 /**
  * 
@@ -401,6 +406,51 @@ public enum OWLObjectType {
             out.write(entity.getIRI());
         }
     },
+    
+    DATATYPE_RESTRICTION {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLDatatype datatype = (OWLDatatype) in.read();
+            int facetRestrictionCount = IOUtils.readInt(in.getInputStream());
+            Set<OWLFacetRestriction> facetRestrictions = new TreeSet<OWLFacetRestriction>();
+            for (int i = 0; i < facetRestrictionCount; i++) {
+                facetRestrictions.add((OWLFacetRestriction) in.read());
+            }
+            return in.getOWLDataFactory().getOWLDatatypeRestriction(datatype, facetRestrictions);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDatatypeRestriction dr =(OWLDatatypeRestriction) o;
+            out.write(dr.getDatatype());
+            IOUtils.writeInt(out.getOutputStream(), dr.getFacetRestrictions().size());
+            for (OWLFacetRestriction facetRestriction : dr.getFacetRestrictions()) {
+                out.write(facetRestriction);
+            }
+        }
+        
+    },
+    
+    FACET_RESTRICTION {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            int ordinal = IOUtils.readInt(in.getInputStream());
+            OWLFacet facet = OWLFacet.values()[ordinal];
+            OWLLiteral literal = (OWLLiteral) in.read();
+            return in.getOWLDataFactory().getOWLFacetRestriction(facet, literal);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLFacetRestriction facetRestriction = (OWLFacetRestriction) o;
+            IOUtils.writeInt(out.getOutputStream(), facetRestriction.getFacet().ordinal());
+            out.write(facetRestriction.getFacetValue());
+        }
+        
+    },
+    
     EMPTY_ANNOTATION_SET {
 
         @Override
@@ -830,6 +880,27 @@ public enum OWLObjectType {
         }
         
     },
+    
+    OBJECT_EXACT_CARDINALITY {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLObjectProperty p = (OWLObjectProperty) in.read();
+            int cardinality = IOUtils.readInt(in.getInputStream());
+            OWLClassExpression filler = (OWLClassExpression) in.read();
+            return in.getOWLDataFactory().getOWLObjectExactCardinality(cardinality, p, filler);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLObjectExactCardinality ce = (OWLObjectExactCardinality) o;
+            out.write(ce.getProperty());
+            IOUtils.writeInt(out.getOutputStream(), ce.getCardinality());
+            out.write(ce.getFiller());
+        }
+        
+    },
+    
     OBJECT_HAS_VALUE {
 
         @Override
@@ -880,6 +951,26 @@ public enum OWLObjectType {
             out.write(ce.getProperty());
             out.write(ce.getFiller());
         }
+    },
+    
+    DATA_EXACT_CARDINALTY {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLDataProperty property = (OWLDataProperty) in.read();
+            int cardinality = IOUtils.readInt(in.getInputStream());
+            OWLDataRange dataRange = (OWLDataRange) in.read();
+            return in.getOWLDataFactory().getOWLDataExactCardinality(cardinality, property, dataRange);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDataExactCardinality ce = (OWLDataExactCardinality) o;
+            out.write(ce.getProperty());
+            IOUtils.writeInt(out.getOutputStream(), ce.getCardinality());
+            out.write(ce.getFiller());
+        }
+        
     },
     
     OBJECT_ONE_OF {

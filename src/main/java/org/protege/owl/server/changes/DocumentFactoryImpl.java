@@ -29,14 +29,14 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	
     @Override
     public ChangeHistory createEmptyChangeDocument(OntologyDocumentRevision revision) {
-        return new ChangeDocumentImpl(this, revision, null, null);
+        return new ChangeHistoryImpl(this, revision, null, null);
     }
     
 	@Override
 	public ChangeHistory createChangeDocument(List<OWLOntologyChange> changes,
 											   ChangeMetaData metaData, 
 											   OntologyDocumentRevision start) {
-		return new ChangeDocumentImpl(this, start, changes, metaData);
+		return new ChangeHistoryImpl(this, start, changes, metaData);
 	}
 	
 	@Override
@@ -122,7 +122,7 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 			    end = start.add(changes.size());
 			}
 			metaData = metaData.tailMap(start).headMap(end);
-            return new ChangeDocumentImpl(start, this, changes, metaData); 
+            return new ChangeHistoryImpl(start, this, changes, metaData); 
 		}
 		catch (IOException ioe) {
 			logger.log(Level.WARNING, "Exception caught deserializing change document", ioe);

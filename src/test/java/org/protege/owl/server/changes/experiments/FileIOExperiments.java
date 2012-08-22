@@ -29,6 +29,7 @@ public class FileIOExperiments {
         try {
             boolean eof = false;
             while (!eof) {
+                /*
                 if (in.skip(BUFFER) < 0) {
                     System.out.println("Skip failed");
                     break;
@@ -36,7 +37,7 @@ public class FileIOExperiments {
                 if (in.read() < 0) {
                     break;
                 }
-                /*
+                */
                 InputStream bufIn = buffering ? new BufferedInputStream(in) : in;
                 int bytesRead = 0;
                 do {
@@ -48,7 +49,6 @@ public class FileIOExperiments {
                     }
                     bytesRead += ret;
                 } while (bytesRead < count);
-                */
                 count++;
             }
         }

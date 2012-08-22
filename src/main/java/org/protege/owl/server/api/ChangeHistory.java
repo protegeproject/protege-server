@@ -71,7 +71,7 @@ public interface ChangeHistory {
 	 * The changes 
 	 * returned are guaranteed to be minimal.  That is if an axiom is added it will not be added again or removed.
 	 * Similarly for annotations and imports.  The SetOntologyID change can only occur once.
-	 * 
+	 * <p/> 
 	 * The minimality simplifies processing of the returned changes.  For example the order of the changes
 	 * is no longer important.
 	 * 

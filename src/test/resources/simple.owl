@@ -64,7 +64,7 @@
         <ObjectProperty IRI="#os"/>
     </Declaration>
     <Declaration>
-        <DataProperty IRI="#op"/>
+        <DataProperty IRI="#dp"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#i"/>
@@ -104,9 +104,23 @@
         </ObjectOneOf>
     </EquivalentClasses>
     <SubClassOf>
+        <Class IRI="#B"/>
+        <ObjectExactCardinality cardinality="2">
+            <ObjectProperty IRI="#or"/>
+            <Class IRI="#E"/>
+        </ObjectExactCardinality>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#B"/>
+        <DataExactCardinality cardinality="4">
+            <DataProperty IRI="#dp"/>
+            <Datatype abbreviatedIRI="xsd:integer"/>
+        </DataExactCardinality>
+    </SubClassOf>
+    <SubClassOf>
         <Class IRI="#C"/>
         <DataAllValuesFrom>
-            <DataProperty IRI="#op"/>
+            <DataProperty IRI="#dp"/>
             <Datatype abbreviatedIRI="xsd:integer"/>
         </DataAllValuesFrom>
     </SubClassOf>
@@ -121,7 +135,7 @@
     <SubClassOf>
         <Class IRI="#D"/>
         <DataSomeValuesFrom>
-            <DataProperty IRI="#op"/>
+            <DataProperty IRI="#dp"/>
             <Datatype abbreviatedIRI="xsd:integer"/>
         </DataSomeValuesFrom>
     </SubClassOf>
@@ -181,8 +195,8 @@
         <ObjectProperty IRI="#op"/>
     </SubObjectPropertyOf>
     <InverseObjectProperties>
-        <ObjectProperty IRI="#os"/>
         <ObjectProperty IRI="#or"/>
+        <ObjectProperty IRI="#os"/>
     </InverseObjectProperties>
     <FunctionalObjectProperty>
         <ObjectProperty IRI="#or"/>
@@ -208,15 +222,24 @@
         </ObjectIntersectionOf>
     </ObjectPropertyRange>
     <DataPropertyDomain>
-        <DataProperty IRI="#op"/>
+        <DataProperty IRI="#dp"/>
         <ObjectIntersectionOf>
             <Class IRI="#A"/>
             <Class IRI="#B"/>
         </ObjectIntersectionOf>
     </DataPropertyDomain>
     <DataPropertyRange>
-        <DataProperty IRI="#op"/>
+        <DataProperty IRI="#dp"/>
         <Datatype abbreviatedIRI="xsd:integer"/>
+    </DataPropertyRange>
+    <DataPropertyRange>
+        <DataProperty IRI="#dp"/>
+        <DatatypeRestriction>
+            <Datatype abbreviatedIRI="xsd:integer"/>
+            <FacetRestriction facet="&xsd;maxInclusive">
+                <Literal datatypeIRI="&xsd;integer">17</Literal>
+            </FacetRestriction>
+        </DatatypeRestriction>
     </DataPropertyRange>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>

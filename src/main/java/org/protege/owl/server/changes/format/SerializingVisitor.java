@@ -178,8 +178,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLObjectExactCardinality ce) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.OBJECT_EXACT_CARDINALITY, ce);
     }
 
     @Override
@@ -223,8 +222,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLDataExactCardinality ce) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.DATA_EXACT_CARDINALTY, ce);
     }
 
     @Override
@@ -440,8 +438,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLFacetRestriction node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.FACET_RESTRICTION, node);
     }
 
     @Override
@@ -475,8 +472,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLDatatypeRestriction node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.DATATYPE_RESTRICTION, node);
     }
 
     @Override

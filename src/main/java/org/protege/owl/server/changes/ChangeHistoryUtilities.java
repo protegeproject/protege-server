@@ -15,11 +15,11 @@ import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
-public class ChangeDocumentUtilities {
+public class ChangeHistoryUtilities {
 	
 	public static void writeEmptyChanges(DocumentFactory factory, File historyFile) throws IOException {
 		ChangeHistory changes = factory.createChangeDocument(new ArrayList<OWLOntologyChange>(), null, OntologyDocumentRevision.START_REVISION);
-		ChangeDocumentUtilities.writeChanges(changes, historyFile);
+		ChangeHistoryUtilities.writeChanges(changes, historyFile);
 	}
 
 

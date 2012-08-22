@@ -9,7 +9,7 @@ import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.changes.ChangeDocumentUtilities;
+import org.protege.owl.server.changes.ChangeHistoryUtilities;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -95,7 +95,7 @@ public class WriteAndReadNCI {
         }
         long startTime = System.currentTimeMillis();
         ChangeHistory doc = factory.createChangeDocument(changes, new ChangeMetaData(),OntologyDocumentRevision.START_REVISION);
-        ChangeDocumentUtilities.writeChanges(doc, tmp);
+        ChangeHistoryUtilities.writeChanges(doc, tmp);
         System.out.println("\tTook " + (System.currentTimeMillis() - startTime) + " ms.");
 
         return tmp;
@@ -111,11 +111,11 @@ public class WriteAndReadNCI {
     public static void readAxioms(File tmp, DocumentFactory factory) throws IOException  {
         System.out.println("\tReading file");
         long startTime = System.currentTimeMillis();
-        ChangeDocumentUtilities.readChanges(factory, tmp, null, null);
+        ChangeHistoryUtilities.readChanges(factory, tmp, null, null);
         System.out.println("\tTook " + (System.currentTimeMillis() - startTime) + " ms.");
         System.out.println("\tReading a small section of the file");
         startTime = System.currentTimeMillis();
-        ChangeDocumentUtilities.readChanges(factory, tmp, new OntologyDocumentRevision(12345), new OntologyDocumentRevision(13456));
+        ChangeHistoryUtilities.readChanges(factory, tmp, new OntologyDocumentRevision(12345), new OntologyDocumentRevision(13456));
         System.out.println("\tTook " + (System.currentTimeMillis() - startTime) + " ms.");
     }
 }

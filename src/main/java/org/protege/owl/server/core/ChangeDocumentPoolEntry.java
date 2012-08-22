@@ -16,7 +16,7 @@ import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.changes.ChangeDocumentUtilities;
+import org.protege.owl.server.changes.ChangeHistoryUtilities;
 
 public class ChangeDocumentPoolEntry {
     private Logger logger = Logger.getLogger(ChangeDocumentPoolEntry.class.getCanonicalName());
@@ -101,7 +101,7 @@ public class ChangeDocumentPoolEntry {
     private class ReadChangeDocument implements Callable<ChangeHistory> {
         @Override
         public ChangeHistory call() throws IOException {
-            return ChangeDocumentUtilities.readChanges(factory, historyFile, OntologyDocumentRevision.START_REVISION, null);
+            return ChangeHistoryUtilities.readChanges(factory, historyFile, OntologyDocumentRevision.START_REVISION, null);
         }
     }
     
@@ -118,7 +118,7 @@ public class ChangeDocumentPoolEntry {
                 if (changeDocument == newChangeDocument) {
                     long startTime = System.currentTimeMillis();
                     
-                    ChangeDocumentUtilities.writeChanges(newChangeDocument, historyFile);
+                    ChangeHistoryUtilities.writeChanges(newChangeDocument, historyFile);
                     
                     long interval = System.currentTimeMillis() - startTime;
                     if (interval > 1000) {
