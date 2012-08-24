@@ -14,10 +14,35 @@ import org.protege.owl.server.api.UserId;
  */
 
 public class UserDatabase {
+    private Permission defaultDocPolicy;
+    private Map<UserId, Permission> docPolicyMap = new TreeMap<UserId, Permission>();
     private Map<UserId, String> passwordMap = new TreeMap<UserId, String>();
     private Map<UserId, Collection<Group>> userToGroupsMap = new TreeMap<UserId, Collection<Group>>();
     private Map<UserId, SimpleAuthToken> tokenMap = new TreeMap<UserId, SimpleAuthToken>();
     
+    
+    public UserDatabase() {
+        Map<Operation, UserContainer> permissionMap = new TreeMap<Operation, UserContainer>();
+        permissionMap.put(Operation.READ, UserContainer.EVERYONE);
+        permissionMap.put(Operation.WRITE, UserContainer.EVERYONE);
+        defaultDocPolicy = new Permission(permissionMap);
+    }
+    
+    public void setDefaultDocPolicy(Permission defaultDocPolicy) {
+        this.defaultDocPolicy = defaultDocPolicy;
+    }
+    
+    public void setDefaultDocPolicy(UserId u, Permission p) {
+        docPolicyMap.put(u, p);
+    }
+    
+    public Permission getDocumentPolicy(UserId u) {
+        Permission p = docPolicyMap.get(u);
+        if (p == null) {
+            p = defaultDocPolicy;
+        }
+        return p;
+    }
     
     public UserId addUser(String userName, String password) {
         UserId u = new UserId(userName);

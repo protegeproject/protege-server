@@ -1,5 +1,10 @@
 package org.protege.owl.server.policy;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
 import org.protege.owl.server.api.UserId;
 
 public interface UserContainer {
@@ -7,9 +12,15 @@ public interface UserContainer {
         public boolean contains(UserDatabase db, UserId owner, UserId requestingUser) {
             return true;
         }
+        
+        public void write(Writer writer) throws IOException {
+            writer.write("\t\tAll\n");
+        }
     };
     
     
-    public boolean contains(UserDatabase db, UserId owner, UserId requestingUser);
+    boolean contains(UserDatabase db, UserId owner, UserId requestingUser);
+    
+    void write(Writer writer) throws IOException; 
 
 }

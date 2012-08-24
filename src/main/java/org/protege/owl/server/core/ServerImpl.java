@@ -318,15 +318,11 @@ public class ServerImpl implements Server {
 	
 	private File getConfiguration(ServerDocument doc, String extension) throws DocumentNotFoundException {
 	    File f = parseServerIRI(doc.getServerPath(), ServerObjectStatus.ANY);
+	    if (doc instanceof ServerDirectory) {
+	        return new File(f, "-" + extension);
+	    }
 	    String fullName = f.getPath();
-	    String prefix;
-	    if (fullName.endsWith(ChangeHistory.CHANGE_DOCUMENT_EXTENSION)) {
-	        prefix = fullName.substring(0, fullName.length() - ChangeHistory.CHANGE_DOCUMENT_EXTENSION.length());
-	    }
-	    else {
-	        prefix = fullName;
-	    }
-	    return new File(prefix + extension);
+	    return new File(fullName + "-" + extension);
 	}
 
 	@Override

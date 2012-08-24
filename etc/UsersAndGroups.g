@@ -28,20 +28,32 @@ package org.protege.owl.server.policy.generated;
 
 @members{
 	private UserDatabase db = new UserDatabase();
+    private Map<String, Permission> namedPolicyMap = new TreeMap<String, Permission>();
 	
 	public UserDatabase getUserDatabase() {
 	    return db;
 	}
 }
 
-top:  ( user ) * ;
+top:  ( defaultDocPolicy )?  ( namedPolicy |  user ) * ;
+
+defaultDocPolicy: 'Default' 'Document' p=policy ';' {
+      db.setDefaultDocPolicy(p);
+   };
+
+namedPolicy: 'Set' name=ID '=' p=policy ';' {
+            namedPolicyMap.put(name.getText(), p);
+        };
 
 user : 'User:' username=ID 'Password:' password=ID { 
            UserId u = db.addUser($username.getText(), $password.getText());
        } 
-       'Groups:'
+        ('Groups:'
           ( group[ u ] ) *
-          ';'
+          ';' )?
+        ( 'Use' 'Document' 'Policy' p=ID ';' {
+                db.setDefaultDocPolicy(u, namedPolicyMap.get($p.getText()));
+            } )?
        ;
        
 group[UserId user ]: groupToken = ID {

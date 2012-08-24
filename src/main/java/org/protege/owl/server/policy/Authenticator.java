@@ -1,7 +1,5 @@
 package org.protege.owl.server.policy;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -38,30 +36,32 @@ import org.protege.owl.server.policy.generated.UsersAndGroupsParser;
 
 public class Authenticator extends ServerFilter {
     private Logger logger = Logger.getLogger(Authenticator.class.getCanonicalName());
-    private UserDatabase userDb;
     private BasicLoginService loginService;
 
-    public Authenticator(Server delegate) throws IOException, RecognitionException, OWLServerException {
-        super(delegate);
-        parse();
-        loginService = new BasicLoginService(userDb);
-    }
-    
-    private void parse() throws IOException, RecognitionException, OWLServerException {
-        InputStream fis = getConfigurationInputStream("UsersAndGroups");
+    public static UserDatabase parseUsersAndGroups(Server server) throws IOException, RecognitionException, OWLServerException {
+        InputStream fis = server.getConfigurationInputStream("UsersAndGroups");
         try {
             ANTLRInputStream input = new ANTLRInputStream(fis);
             UsersAndGroupsLexer lexer = new UsersAndGroupsLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             UsersAndGroupsParser parser = new UsersAndGroupsParser(tokens);
             parser.top();
-            userDb = parser.getUserDatabase();
+            return parser.getUserDatabase();
         }
         finally {
             fis.close();
         }
     }
 
+    public Authenticator(Server delegate) throws IOException, RecognitionException, OWLServerException {
+        this(delegate, parseUsersAndGroups(delegate));
+    }
+    
+    public Authenticator(Server delegate, UserDatabase userDb) {
+        super(delegate);
+        loginService = new BasicLoginService(userDb);
+    }
+    
     @Override
     public void setTransports(Collection<ServerTransport> transports) {
         try {
