@@ -19,6 +19,9 @@ Declaration(Class(<http://protege.stanford.edu/ontologies/owl.server/metaproject
 AnnotationAssertion(rdfs:comment <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicAuthenticationManager> "This authentication manager depends on the RMI transport component because it uses
 a back channel for login.")
 SubClassOf(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicAuthenticationManager> <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#PolicyManager>)
+Declaration(Class(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicConflictManager>))
+AnnotationAssertion(rdfs:comment <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicConflictManager> "Conflict managers in this class trigger a conflict when two users both make a change that involves either the ontology id, the same imports declaration, the same ontology annotation or the same axiom."^^xsd:string)
+SubClassOf(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicConflictManager> <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#ConflictManager>)
 Declaration(Class(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#ConflictManager>))
 SubClassOf(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#ConflictManager> <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#ServerFilter>)
 DisjointClasses(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#ConflictManager> <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#PolicyManager>)
