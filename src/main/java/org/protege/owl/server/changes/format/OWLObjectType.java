@@ -46,8 +46,10 @@ import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectAllValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectComplementOf;
 import org.semanticweb.owlapi.model.OWLObjectExactCardinality;
+import org.semanticweb.owlapi.model.OWLObjectHasSelf;
 import org.semanticweb.owlapi.model.OWLObjectHasValue;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
+import org.semanticweb.owlapi.model.OWLObjectInverseOf;
 import org.semanticweb.owlapi.model.OWLObjectMinCardinality;
 import org.semanticweb.owlapi.model.OWLObjectOneOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
@@ -580,7 +582,7 @@ public enum OWLObjectType {
         }
         
     },
-    INVERSE_OBJECT_PROPERTIES {
+    INVERSE_OBJECT_PROPERTIES_AXIOM {
 
         @Override
         public Object read(OWLInputStream in) throws IOException {
@@ -919,6 +921,22 @@ public enum OWLObjectType {
         
     },
     
+    OBJECT_SELF {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLObjectPropertyExpression pe = (OWLObjectPropertyExpression) in.read();
+            return in.getOWLDataFactory().getOWLObjectHasSelf(pe);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLObjectHasSelf ce = (OWLObjectHasSelf) o;
+            out.write(ce.getProperty());
+        }
+        
+    },
+    
     DATA_SOME_VALUES_FROM {
 
         @Override
@@ -994,7 +1012,24 @@ public enum OWLObjectType {
             }
         }
         
+    },
+    
+    INVERSE_OBJECT_PROPERTY {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLObjectPropertyExpression pe = (OWLObjectPropertyExpression) in.read();
+            return in.getOWLDataFactory().getOWLObjectInverseOf(pe);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLObjectInverseOf pe = (OWLObjectInverseOf) o;
+            out.write(pe.getInverse());
+        }
+        
     }
+    
     
     ;
     

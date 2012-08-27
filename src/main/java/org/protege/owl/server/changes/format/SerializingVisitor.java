@@ -189,8 +189,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLObjectHasSelf ce) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.OBJECT_SELF, ce);
     }
 
     @Override
@@ -405,7 +404,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLInverseObjectPropertiesAxiom axiom) {
-        owlOutputStream.write(OWLObjectType.INVERSE_OBJECT_PROPERTIES, axiom);
+        owlOutputStream.write(OWLObjectType.INVERSE_OBJECT_PROPERTIES_AXIOM, axiom);
     }
 
     @Override
@@ -482,8 +481,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLObjectInverseOf property) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.INVERSE_OBJECT_PROPERTY, property);
     }
 
     @Override
