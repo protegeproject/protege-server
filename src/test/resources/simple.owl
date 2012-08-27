@@ -112,6 +112,14 @@
     </SubClassOf>
     <SubClassOf>
         <Class IRI="#B"/>
+        <ObjectHasSelf>
+            <ObjectInverseOf>
+                <ObjectProperty IRI="#op"/>
+            </ObjectInverseOf>
+        </ObjectHasSelf>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#B"/>
         <DataExactCardinality cardinality="4">
             <DataProperty IRI="#dp"/>
             <Datatype abbreviatedIRI="xsd:integer"/>
