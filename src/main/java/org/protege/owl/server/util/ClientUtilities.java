@@ -115,7 +115,10 @@ public class ClientUtilities {
 		OWLOntologyManager manager = localOntology.getOWLOntologyManager();
 		OntologyDocumentRevision currentRevision = openOntology.getRevision();
 		OntologyDocumentRevision targetRevision = client.evaluateRevisionPointer(openOntology.getServerDocument(), targetRevisionPointer);
-		if (currentRevision.compareTo(targetRevision) < 0) {
+		if (currentRevision.equals(targetRevision)) {
+		    ;
+		}
+		else if (currentRevision.compareTo(targetRevision) < 0) {
 		    ChangeHistory updates = getChanges(client, openOntology, currentRevision.asPointer(), targetRevisionPointer);
 		    manager.applyChanges(updates.getChanges(localOntology));
 		}
