@@ -13,7 +13,7 @@ public class BasicLoginService implements LoginService {
         this.userDb = userDb;
     }
 
-    public AuthToken login(String name, String password) throws RemoteException {
+    public AuthToken login(String name, String password) {
         UserId u = new UserId(name);
         if (!userDb.checkPassword(u, password)) {
             return null;

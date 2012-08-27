@@ -25,6 +25,7 @@ public class MetaprojectVocabulary {
 	
 	public static final OWLClass RMI_TRANSPORT;
 	
+	public static final OWLClass BASIC_CONFLICT_MANAGER;
 	public static final OWLClass BASIC_AUTHENTICATION_MANAGER;
 	
 	public static final OWLObjectProperty HAS_SERVER_FILTER;
@@ -43,6 +44,7 @@ public class MetaprojectVocabulary {
 		SERVER            = factory.getOWLClass(IRI.create(NS + "#Server"));
 		STANDARD_SERVER   = factory.getOWLClass(IRI.create(NS + "#StandardOWL2Server"));
 		
+		BASIC_CONFLICT_MANAGER       = factory.getOWLClass(IRI.create(NS + "#BasicConflictManager"));
 		BASIC_AUTHENTICATION_MANAGER = factory.getOWLClass(IRI.create(NS + "#BasicAuthenticationManager"));
 		
 		RMI_TRANSPORT     = factory.getOWLClass(IRI.create(NS + "#RMI"));

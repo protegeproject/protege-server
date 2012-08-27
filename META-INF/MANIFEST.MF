@@ -1,34 +1,38 @@
 Manifest-Version: 1.0
-Export-Package: org.protege.owl.server;version="2.0.1.2012_08_19_0300"
+Export-Package: org.protege.owl.server;version="2.0.1.2012_08_26_1209"
  ;uses:="org.osgi.framework,org.protege.owl.server.api,org.semanticweb
- .owlapi.model",org.protege.owl.server.api;version="2.0.1.2012_08_19_0
- 300";uses:="org.protege.owl.server.api.exception,org.protege.owl.serv
+ .owlapi.model",org.protege.owl.server.api;version="2.0.1.2012_08_26_1
+ 209";uses:="org.protege.owl.server.api.exception,org.protege.owl.serv
  er.connect.rmi,org.semanticweb.owlapi.model",org.protege.owl.server.a
- pi.exception;version="2.0.1.2012_08_19_0300",org.protege.owl.server.c
- hanges;version="2.0.1.2012_08_19_0300";uses:="org.protege.owl.server.
+ pi.exception;version="2.0.1.2012_08_26_1209",org.protege.owl.server.c
+ hanges;version="2.0.1.2012_08_26_1209";uses:="org.protege.owl.server.
  api,org.semanticweb.owlapi.model",org.protege.owl.server.changes.form
- at;version="2.0.1.2012_08_19_0300";uses:="org.semanticweb.owlapi.mode
- l",org.protege.owl.server.configuration;version="2.0.1.2012_08_19_030
- 0";uses:="org.protege.owl.server.api,org.semanticweb.owlapi.model",or
- g.protege.owl.server.configuration.factories;version="2.0.1.2012_08_1
- 9_0300";uses:="org.protege.owl.server.api,org.semanticweb.owlapi.mode
- l",org.protege.owl.server.connect;version="2.0.1.2012_08_19_0300";use
- s:="org.semanticweb.owlapi.model",org.protege.owl.server.connect.loca
- l;version="2.0.1.2012_08_19_0300";uses:="org.protege.owl.server.api,o
- rg.protege.owl.server.api.exception,org.protege.owl.server.util,org.s
- emanticweb.owlapi.model",org.protege.owl.server.connect.rmi;version="
- 2.0.1.2012_08_19_0300";uses:="org.protege.owl.server.api,org.protege.
- owl.server.api.exception,org.protege.owl.server.util,org.semanticweb.
- owlapi.model",org.protege.owl.server.core;version="2.0.1.2012_08_19_0
- 300";uses:="org.protege.owl.server.api,org.protege.owl.server.api.exc
- eption,org.semanticweb.owlapi.model",org.protege.owl.server.policy;ve
- rsion="2.0.1.2012_08_19_0300";uses:="org.antlr.runtime,org.protege.ow
- l.server.api,org.protege.owl.server.api.exception,org.semanticweb.owl
- api.model",org.protege.owl.server.policy.generated;version="2.0.1.201
- 2_08_19_0300";uses:="org.antlr.runtime,org.protege.owl.server.policy"
- ,org.protege.owl.server.util;version="2.0.1.2012_08_19_0300";uses:="o
- rg.protege.owl.server.api,org.protege.owl.server.api.exception,org.pr
- otege.owl.server.connect.rmi,org.semanticweb.owlapi.model"
+ at;version="2.0.1.2012_08_26_1209";uses:="org.semanticweb.owlapi.mode
+ l",org.protege.owl.server.configuration;version="2.0.1.2012_08_26_120
+ 9";uses:="org.protege.owl.server.api,org.semanticweb.owlapi.model",or
+ g.protege.owl.server.configuration.factories;version="2.0.1.2012_08_2
+ 6_1209";uses:="org.protege.owl.server.api,org.semanticweb.owlapi.mode
+ l",org.protege.owl.server.conflict;version="2.0.1.2012_08_26_1209";us
+ es:="org.protege.owl.server.api,org.protege.owl.server.api.exception,
+ org.protege.owl.server.util",org.protege.owl.server.connect;version="
+ 2.0.1.2012_08_26_1209";uses:="org.semanticweb.owlapi.model",org.prote
+ ge.owl.server.connect.local;version="2.0.1.2012_08_26_1209";uses:="or
+ g.protege.owl.server.api,org.protege.owl.server.api.exception,org.pro
+ tege.owl.server.util,org.semanticweb.owlapi.model",org.protege.owl.se
+ rver.connect.rmi;version="2.0.1.2012_08_26_1209";uses:="org.protege.o
+ wl.server.api,org.protege.owl.server.api.exception,org.protege.owl.se
+ rver.util,org.semanticweb.owlapi.model",org.protege.owl.server.core;v
+ ersion="2.0.1.2012_08_26_1209";uses:="org.protege.owl.server.api,org.
+ protege.owl.server.api.exception,org.protege.owl.server.util,org.sema
+ nticweb.owlapi.model",org.protege.owl.server.policy;version="2.0.1.20
+ 12_08_26_1209";uses:="org.antlr.runtime,org.protege.owl.server.api,or
+ g.protege.owl.server.api.exception,org.protege.owl.server.util,org.se
+ manticweb.owlapi.model",org.protege.owl.server.policy.generated;versi
+ on="2.0.1.2012_08_26_1209";uses:="org.antlr.runtime,org.protege.owl.s
+ erver.api,org.protege.owl.server.policy",org.protege.owl.server.util;
+ version="2.0.1.2012_08_26_1209";uses:="org.protege.owl.server.api,org
+ .protege.owl.server.api.exception,org.protege.owl.server.connect.rmi,
+ org.semanticweb.owlapi.model"
 Service-Component: OSGI-INF/*.xml
 Bundle-ClassPath: .,lib/antlr-3.4-complete-no-antlrv2.jar
 Built-By: redmond
@@ -36,7 +40,7 @@ Tool: Bundlor 1.1.0.M05
 Bundle-Name: OWL Ontology Server
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: The Protege Development Team
-Bundle-Version: 2.0.1.2012_08_19_0300
+Bundle-Version: 2.0.1.2012_08_26_1209
 Bundle-Activator: org.protege.owl.server.Activator
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.protege.owl.server;singleton:="true"
@@ -48,5 +52,6 @@ Import-Package: javax.swing;version="0.0.0";resolution:="optional",jav
  "optional",org.osgi.framework;version="1.0.0",org.semanticweb.owlapi.
  apibinding;version="3.2.0",org.semanticweb.owlapi.io;version="3.2.0",
  org.semanticweb.owlapi.model;version="3.2.0",org.semanticweb.owlapi.u
- til;version="3.2.0",org.xml.sax.helpers;version="0.0.0"
+ til;version="3.2.0",org.semanticweb.owlapi.vocab;version="3.2.0",org.
+ xml.sax.helpers;version="0.0.0"
 

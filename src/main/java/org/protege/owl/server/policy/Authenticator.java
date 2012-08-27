@@ -30,11 +30,14 @@ import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.ServerTransport;
 import org.protege.owl.server.api.exception.AuthenticationFailedException;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.connect.local.LocalTransport;
 import org.protege.owl.server.connect.rmi.RMITransport;
 import org.protege.owl.server.policy.generated.UsersAndGroupsLexer;
 import org.protege.owl.server.policy.generated.UsersAndGroupsParser;
 
 public class Authenticator extends ServerFilter {
+    public static final String LOCAL_BASIC_LOGIN_KEY = "Basic Login key for Local Transport";
+    
     private Logger logger = Logger.getLogger(Authenticator.class.getCanonicalName());
     private BasicLoginService loginService;
 
@@ -52,6 +55,11 @@ public class Authenticator extends ServerFilter {
             fis.close();
         }
     }
+    
+    public static AuthToken localLogin(LocalTransport transport, String username, String password) {
+        BasicLoginService loginService = (BasicLoginService) transport.getRegisteredObject(LOCAL_BASIC_LOGIN_KEY);
+        return loginService.login(username, password);
+    }
 
     public Authenticator(Server delegate) throws IOException, RecognitionException, OWLServerException {
         this(delegate, parseUsersAndGroups(delegate));
@@ -65,29 +73,33 @@ public class Authenticator extends ServerFilter {
     @Override
     public void setTransports(Collection<ServerTransport> transports) {
         try {
-            loadRMITransports(transports);
+            loadTransports(transports);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Authentication Service failed to start up.  Users may not be able to authenticate.", e);
         }
         getDelegate().setTransports(transports);
     }
     
-    private void loadRMITransports(Collection<ServerTransport> transports) throws RemoteException, AlreadyBoundException {
-        int rmitransports = 0;
-        int othertransports = 0;
+    private void loadTransports(Collection<ServerTransport> transports) throws RemoteException, AlreadyBoundException {
+        int workingTransports = 0;
+        int otherTransports = 0;
         for (ServerTransport transport : transports) {
             if (transport instanceof RMITransport) {
-                rmitransports++;
+                workingTransports++;
                 loadRMITransport((RMITransport) transport);
             }
+            else if (transport instanceof LocalTransport) {
+                workingTransports++;
+                ((LocalTransport) transport).registerObject(LOCAL_BASIC_LOGIN_KEY, loginService);
+            }
             else {
-                othertransports++;
+                otherTransports++;
             }
         }
-        if (rmitransports == 0) {
+        if (workingTransports == 0) {
             logger.warning("Did not find communications suitable for login.  Clients will be locked out.");
         }
-        if (othertransports > 0) {
+        if (otherTransports > 0) {
             logger.warning("Clients must use RMI to login.  Thereafter they can communicate with the server in other ways.");
         }      
     }
@@ -151,7 +163,6 @@ public class Authenticator extends ServerFilter {
                                   ServerOntologyDocument doc, 
                                   ChangeHistory clientChanges) throws OWLServerException {
         ensureUserIdCorrect(u);
-        ChangeHistory serverSideChanges = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, null);
         ChangeMetaData commitComment = clientChanges.getMetaData(clientChanges.getStartRevision());
         if (commitComment == null) {
             throw new IllegalStateException("Changes to be committed must have metadata");

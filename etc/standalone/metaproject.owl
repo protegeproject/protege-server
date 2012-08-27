@@ -26,6 +26,9 @@
         <NamedIndividual IRI="#authenticationManager"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#defaultConflictManager"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#rmiTransport"/>
     </Declaration>
     <Declaration>
@@ -34,6 +37,10 @@
     <ClassAssertion>
         <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicAuthenticationManager"/>
         <NamedIndividual IRI="#authenticationManager"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicConflictManager"/>
+        <NamedIndividual IRI="#defaultConflictManager"/>
     </ClassAssertion>
     <ClassAssertion>
         <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#RMI"/>
@@ -45,8 +52,13 @@
     </ClassAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasServerFilter"/>
-        <NamedIndividual IRI="#server"/>
+        <NamedIndividual IRI="#defaultConflictManager"/>
         <NamedIndividual IRI="#authenticationManager"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasServerFilter"/>
+        <NamedIndividual IRI="#server"/>
+        <NamedIndividual IRI="#defaultConflictManager"/>
     </ObjectPropertyAssertion>
     <ObjectPropertyAssertion>
         <ObjectProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasTransport"/>

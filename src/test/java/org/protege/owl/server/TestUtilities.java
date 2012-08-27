@@ -2,12 +2,22 @@ package org.protege.owl.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.protege.osgi.framework.Launcher;
+import org.protege.owl.server.api.ChangeMetaData;
+import org.protege.owl.server.api.Client;
+import org.protege.owl.server.api.VersionedOntologyDocument;
+import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.util.ClientUtilities;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyChange;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.xml.sax.SAXException;
 
 public class TestUtilities {
@@ -41,6 +51,17 @@ public class TestUtilities {
 		launcher.start(false);
 		return launcher.getFramework();
 	}
+	
+    public static void commit(Client client, VersionedOntologyDocument vont, OWLOntologyChange... changes) throws OWLServerException {
+        OWLOntology ontology = vont.getOntology();
+        OWLOntologyManager manager = ontology.getOWLOntologyManager();
+        List<OWLOntologyChange> changeList = new ArrayList<OWLOntologyChange>();
+        for (OWLOntologyChange change : changes) {
+            changeList.add(change);
+        }
+        manager.applyChanges(changeList);
+        ClientUtilities.commit(client, new ChangeMetaData(), vont);
+    }
 	
 	
     private static void delete(File f) {
