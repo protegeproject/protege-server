@@ -16,9 +16,9 @@ public final class OntologyDocumentRevision implements Comparable<OntologyDocume
 	public RevisionPointer asPointer() {
 	    return new RevisionPointer(this);
 	}
-	
-	public int getRevision() {
-		return revision;
+
+	public int getRevisionDifferenceFrom(OntologyDocumentRevision start) {
+	    return revision - start.revision;
 	}
 	
 	public OntologyDocumentRevision next() {
@@ -47,7 +47,7 @@ public final class OntologyDocumentRevision implements Comparable<OntologyDocume
 		if (!(other instanceof OntologyDocumentRevision)) {
 			return false;
 		}
-		return revision == ((OntologyDocumentRevision) other).getRevision();
+		return revision == ((OntologyDocumentRevision) other).revision;
 	}
 	
 	@Override

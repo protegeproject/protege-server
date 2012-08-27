@@ -35,7 +35,7 @@ package org.protege.owl.server.policy.generated;
 	}
 }
 
-top:  ( defaultDocPolicy )?  ( namedPolicy |  user ) * ;
+top:  ( defaultDocPolicy )? ( namedPolicy |  user ) * ;
 
 defaultDocPolicy: 'Default' 'Document' p=policy ';' {
       db.setDefaultDocPolicy(p);

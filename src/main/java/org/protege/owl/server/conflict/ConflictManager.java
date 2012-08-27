@@ -1,16 +1,17 @@
 package org.protege.owl.server.conflict;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ChangeHistory;
+import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerOntologyDocument;
+import org.protege.owl.server.api.exception.ConflictException;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.util.CollectingChangeVisitor;
 import org.protege.owl.server.util.ServerFilterAdapter;
@@ -32,11 +33,16 @@ public class ConflictManager extends ServerFilterAdapter {
     
     @Override
     public void commit(AuthToken u, ServerOntologyDocument doc, ChangeHistory proposedChanges) throws OWLServerException {
+        List<OWLOntologyChange> conflicts = getConflicts(u, doc, proposedChanges);
+        if (!conflicts.isEmpty()) {
+            ChangeHistory history = getDocumentFactory().createChangeDocument(conflicts, new ChangeMetaData("Conflicts Found"), proposedChanges.getStartRevision());
+            throw new ConflictException(history);
+        }
         super.commit(u, doc, proposedChanges);
     }
     
-    private Set<OWLOntologyChange> getConflicts(AuthToken u, ServerOntologyDocument doc, ChangeHistory proposedChanges) throws OWLServerException {
-        Set<OWLOntologyChange> conflicts = new TreeSet<OWLOntologyChange>();
+    private List<OWLOntologyChange> getConflicts(AuthToken u, ServerOntologyDocument doc, ChangeHistory proposedChanges) throws OWLServerException {
+        List<OWLOntologyChange> conflicts = new ArrayList<OWLOntologyChange>();
         OWLOntology fakeOntology;
         try {
             fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
@@ -57,7 +63,7 @@ public class ConflictManager extends ServerFilterAdapter {
         return conflicts;
     }
     
-    private void addConflicts(CollectingChangeVisitor clientChanges, CollectingChangeVisitor serverChanges, Set<OWLOntologyChange> conflicts) {
+    private void addConflicts(CollectingChangeVisitor clientChanges, CollectingChangeVisitor serverChanges, List<OWLOntologyChange> conflicts) {
         if (clientChanges.getLastOntologyIDChange() != null && serverChanges.getLastOntologyIDChange() != null) {
             conflicts.add(clientChanges.getLastOntologyIDChange());
         }

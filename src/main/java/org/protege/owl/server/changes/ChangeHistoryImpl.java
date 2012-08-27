@@ -79,8 +79,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 
 	@Override
 	public OntologyDocumentRevision getEndRevision() {
-		int revision = startRevision.getRevision() + listOfRevisionChanges.size();
-		return new OntologyDocumentRevision(revision);
+	    return startRevision.add(listOfRevisionChanges.size());
 	}
 
 	@Override
@@ -99,7 +98,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 		if (start.equals(getStartRevision()) && end.equals(getEndRevision())) {
 		    return this;
 		}
-		List<List<OWLOntologyChange>> subChanges = listOfRevisionChanges.subList(start.getRevision() - startRevision.getRevision(), end.getRevision() - startRevision.getRevision());
+		List<List<OWLOntologyChange>> subChanges = listOfRevisionChanges.subList(start.getRevisionDifferenceFrom(startRevision), end.getRevisionDifferenceFrom(startRevision));
 		SortedMap<OntologyDocumentRevision, ChangeMetaData> subMetaDataMap = cropMap(metaDataMap, start, end);
 		return new ChangeHistoryImpl(start, documentFactory, subChanges, subMetaDataMap);
 	}
@@ -238,7 +237,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 
     @Override
     public String toString() {
-    	return "{" + startRevision.getRevision() + " --> " + getEndRevision().getRevision() + ": " + listOfRevisionChanges + "}";
+    	return "{" + startRevision + " --> " + getEndRevision() + ": " + listOfRevisionChanges + "}";
     }
 
 }

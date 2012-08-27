@@ -9,12 +9,14 @@ Default Document Policy (
    ] to read; 
 ) ;
 
+
+
 Set p4Policy = Policy (
    Allow [
      Group p4 
    ] to write;
    Allow [
-     Group p4
+     All
    ] to read;
 );
 
