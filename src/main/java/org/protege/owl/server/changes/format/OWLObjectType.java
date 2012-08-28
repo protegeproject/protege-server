@@ -18,6 +18,7 @@ import org.semanticweb.owlapi.model.OWLAnnotationPropertyDomainAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
+import org.semanticweb.owlapi.model.OWLAsymmetricObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
@@ -49,10 +50,12 @@ import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLInverseFunctionalObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLInverseObjectPropertiesAxiom;
+import org.semanticweb.owlapi.model.OWLIrreflexiveObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLNegativeDataPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLNegativeObjectPropertyAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLObjectAllValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectComplementOf;
 import org.semanticweb.owlapi.model.OWLObjectExactCardinality;
@@ -72,9 +75,11 @@ import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyID;
+import org.semanticweb.owlapi.model.OWLReflexiveObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLSubAnnotationPropertyOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
+import org.semanticweb.owlapi.model.OWLSymmetricObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLTransitiveObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
@@ -710,7 +715,67 @@ public enum OWLObjectType {
             out.write(axiom.getProperty());
         }
         
-    },    
+    },
+    SYMMETRIC_OBJECT_PROPERTY {
+
+        @Override
+        public OWLSymmetricObjectPropertyAxiom read(OWLInputStream in) throws IOException {
+            OWLObjectPropertyExpression property = (OWLObjectPropertyExpression) in.read();
+            return in.getOWLDataFactory().getOWLSymmetricObjectPropertyAxiom(property);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLSymmetricObjectPropertyAxiom axiom = (OWLSymmetricObjectPropertyAxiom) o;
+            out.write(axiom.getProperty());
+        }
+        
+    },
+    ASYMMETRIC_OBJECT_PROPERTY {
+
+        @Override
+        public OWLObject read(OWLInputStream in) throws IOException {
+            OWLObjectPropertyExpression property = (OWLObjectPropertyExpression) in.read();
+            return in.getOWLDataFactory().getOWLAsymmetricObjectPropertyAxiom(property);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLAsymmetricObjectPropertyAxiom axiom = (OWLAsymmetricObjectPropertyAxiom) o;
+            out.write(axiom.getProperty());
+        }
+        
+    },
+    REFLEXIVE_OBJECT_PROPERTY {
+
+        @Override
+        public OWLObject read(OWLInputStream in) throws IOException {
+            OWLObjectPropertyExpression property = (OWLObjectPropertyExpression) in.read();
+            return in.getOWLDataFactory().getOWLReflexiveObjectPropertyAxiom(property);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLReflexiveObjectPropertyAxiom axiom = (OWLReflexiveObjectPropertyAxiom) o;
+            out.write(axiom.getProperty());
+        }
+        
+    },
+    IRREFLEXIVE_OBJECT_PROPERTY {
+
+        @Override
+        public OWLObject read(OWLInputStream in) throws IOException {
+            OWLObjectPropertyExpression property = (OWLObjectPropertyExpression) in.read();
+            return in.getOWLDataFactory().getOWLIrreflexiveObjectPropertyAxiom(property);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLIrreflexiveObjectPropertyAxiom axiom = (OWLIrreflexiveObjectPropertyAxiom) o;
+            out.write(axiom.getProperty());
+        }
+        
+    },
     OBJECT_PROPERTY_DOMAIN_AXIOM {
 
         @Override

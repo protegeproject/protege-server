@@ -269,12 +269,33 @@
     <FunctionalObjectProperty>
         <ObjectProperty IRI="#or"/>
     </FunctionalObjectProperty>
+    <FunctionalObjectProperty>
+        <ObjectProperty IRI="#ot"/>
+    </FunctionalObjectProperty>
     <InverseFunctionalObjectProperty>
         <ObjectProperty IRI="#op"/>
     </InverseFunctionalObjectProperty>
+    <InverseFunctionalObjectProperty>
+        <ObjectProperty IRI="#ot"/>
+    </InverseFunctionalObjectProperty>
+    <SymmetricObjectProperty>
+        <ObjectProperty IRI="#ot"/>
+    </SymmetricObjectProperty>
+    <AsymmetricObjectProperty>
+        <ObjectProperty IRI="#ot"/>
+    </AsymmetricObjectProperty>
     <TransitiveObjectProperty>
         <ObjectProperty IRI="#os"/>
     </TransitiveObjectProperty>
+    <TransitiveObjectProperty>
+        <ObjectProperty IRI="#ot"/>
+    </TransitiveObjectProperty>
+    <ReflexiveObjectProperty>
+        <ObjectProperty IRI="#ot"/>
+    </ReflexiveObjectProperty>
+    <IrreflexiveObjectProperty>
+        <ObjectProperty IRI="#ot"/>
+    </IrreflexiveObjectProperty>
     <ObjectPropertyDomain>
         <ObjectProperty IRI="#op"/>
         <Class IRI="#A"/>

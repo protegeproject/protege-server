@@ -241,14 +241,12 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLAsymmetricObjectPropertyAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.ASYMMETRIC_OBJECT_PROPERTY, axiom);
     }
 
     @Override
     public void visit(OWLReflexiveObjectPropertyAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.REFLEXIVE_OBJECT_PROPERTY, axiom);
     }
 
     @Override
@@ -320,8 +318,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLSymmetricObjectPropertyAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.SYMMETRIC_OBJECT_PROPERTY, axiom);
     }
 
     @Override
@@ -363,8 +360,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLIrreflexiveObjectPropertyAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.IRREFLEXIVE_OBJECT_PROPERTY, axiom);
     }
 
     @Override
