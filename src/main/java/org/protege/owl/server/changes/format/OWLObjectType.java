@@ -39,6 +39,8 @@ import org.semanticweb.owlapi.model.OWLDatatypeRestriction;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLDifferentIndividualsAxiom;
 import org.semanticweb.owlapi.model.OWLDisjointClassesAxiom;
+import org.semanticweb.owlapi.model.OWLDisjointDataPropertiesAxiom;
+import org.semanticweb.owlapi.model.OWLDisjointObjectPropertiesAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLFacetRestriction;
@@ -743,6 +745,29 @@ public enum OWLObjectType {
         }
         
     },
+    DISJOINT_OBJECT_PROPERTIES_AXIOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            int count = IOUtils.readInt(in.getInputStream());
+            Set<OWLObjectPropertyExpression> properties = new TreeSet<OWLObjectPropertyExpression>();
+            for (int i = 0; i < count; i++) {
+                properties.add((OWLObjectPropertyExpression) in.read());
+            }
+            return in.getOWLDataFactory().getOWLDisjointObjectPropertiesAxiom(properties);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDisjointObjectPropertiesAxiom axiom = (OWLDisjointObjectPropertiesAxiom) o;
+            Set<OWLObjectPropertyExpression> pes = axiom.getProperties();
+            IOUtils.writeInt(out.getOutputStream(), pes.size());
+            for (OWLObjectPropertyExpression pe : pes) {
+                out.write(pe);
+            }
+        }
+        
+    },
     DATA_PROPERTY_DOMAIN_AXIOM {
 
         @Override
@@ -774,6 +799,29 @@ public enum OWLObjectType {
             OWLDataPropertyRangeAxiom axiom = (OWLDataPropertyRangeAxiom) o;
             out.write(axiom.getProperty());
             out.write(axiom.getRange());
+        }
+        
+    },
+    DISJOINT_DATA_PROPERTIES_AXIOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            int count = IOUtils.readInt(in.getInputStream());
+            Set<OWLDataPropertyExpression> properties = new TreeSet<OWLDataPropertyExpression>();
+            for (int i = 0; i < count; i++) {
+                properties.add((OWLDataPropertyExpression) in.read());
+            }
+            return in.getOWLDataFactory().getOWLDisjointDataPropertiesAxiom(properties);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDisjointDataPropertiesAxiom axiom = (OWLDisjointDataPropertiesAxiom) o;
+            Set<OWLDataPropertyExpression> pes = axiom.getProperties();
+            IOUtils.writeInt(out.getOutputStream(), pes.size());
+            for (OWLDataPropertyExpression pe : pes) {
+                out.write(pe);
+            }
         }
         
     },

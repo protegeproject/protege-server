@@ -284,14 +284,12 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLDisjointDataPropertiesAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.DISJOINT_DATA_PROPERTIES_AXIOM, axiom);
     }
 
     @Override
     public void visit(OWLDisjointObjectPropertiesAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.DISJOINT_OBJECT_PROPERTIES_AXIOM, axiom);
     }
 
     @Override

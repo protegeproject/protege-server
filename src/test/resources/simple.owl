@@ -64,7 +64,16 @@
         <ObjectProperty IRI="#os"/>
     </Declaration>
     <Declaration>
+        <ObjectProperty IRI="#ot"/>
+    </Declaration>
+    <Declaration>
         <DataProperty IRI="#dp"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#dq"/>
+    </Declaration>
+    <Declaration>
+        <DataProperty IRI="#dr"/>
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#i"/>
@@ -280,6 +289,11 @@
             </ObjectAllValuesFrom>
         </ObjectIntersectionOf>
     </ObjectPropertyRange>
+    <DisjointObjectProperties>
+        <ObjectProperty IRI="#op"/>
+        <ObjectProperty IRI="#os"/>
+        <ObjectProperty IRI="#ot"/>
+    </DisjointObjectProperties>
     <DataPropertyDomain>
         <DataProperty IRI="#dp"/>
         <ObjectIntersectionOf>
@@ -300,6 +314,11 @@
             </FacetRestriction>
         </DatatypeRestriction>
     </DataPropertyRange>
+    <DisjointDataProperties>
+        <DataProperty IRI="#dp"/>
+        <DataProperty IRI="#dq"/>
+        <DataProperty IRI="#dr"/>
+    </DisjointDataProperties>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
         <IRI>#B</IRI>
