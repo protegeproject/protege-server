@@ -1,4 +1,4 @@
-package org.protege.owl.server.changes.format;
+package org.protege.owl.server.api.exception;
 
 import java.io.IOException;
 
@@ -6,9 +6,7 @@ import java.io.IOException;
 /**
  * 
  * @author redmond
- * @deprecated Replace with Matthew's format
  */
-@Deprecated
 public class RuntimeIOException extends RuntimeException {
     private static final long serialVersionUID = -6102203015891611139L;
 

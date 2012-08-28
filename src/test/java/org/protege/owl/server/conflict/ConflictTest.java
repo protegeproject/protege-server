@@ -13,6 +13,7 @@ import junit.framework.Assert;
 import org.antlr.runtime.RecognitionException;
 import org.protege.owl.server.TestUtilities;
 import org.protege.owl.server.api.AuthToken;
+import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.RemoteOntologyDocument;
@@ -35,7 +36,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class ConflictTest {
-    public static final IRI SERVER_TEST_ONT = IRI.create(LocalClient.SCHEME + "://localhost/Test.owl");
+    public static final IRI SERVER_TEST_ONT = IRI.create(LocalClient.SCHEME + "://localhost/Test" + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
     private LocalTransport transport;
     private Client client1, client2;
     private VersionedOntologyDocument vont1, vont2;
@@ -50,6 +51,7 @@ public class ConflictTest {
         transport = new LocalTransport();
         List<ServerTransport> transports = new ArrayList<ServerTransport>();
         transports.add(transport);
+        transport.start(server);
         server.setTransports(transports);
     }
     
@@ -62,9 +64,9 @@ public class ConflictTest {
                              new AddAxiom(vont1.getOntology(), HAS_TOPPING_DOMAIN));
         boolean foundConflict = false;
         try {
-            TestUtilities.commit(client1, vont1,
-                                 new AddAxiom(vont1.getOntology(), CHEESEY_PIZZA_DEFINITION),
-                                 new AddAxiom(vont1.getOntology(), NOT_CHEESEY_PIZZA_DEFINITION));
+            TestUtilities.commit(client1, vont2,
+                                 new AddAxiom(vont2.getOntology(), CHEESEY_PIZZA_DEFINITION),
+                                 new AddAxiom(vont2.getOntology(), NOT_CHEESEY_PIZZA_DEFINITION));
         }
         catch (ConflictException ce) {
             foundConflict = true;

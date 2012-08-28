@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 
+import org.protege.owl.server.api.exception.RuntimeIOException;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLObject;

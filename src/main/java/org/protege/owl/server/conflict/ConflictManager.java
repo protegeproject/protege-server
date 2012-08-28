@@ -1,8 +1,10 @@
 package org.protege.owl.server.conflict;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ChangeHistory;
@@ -11,6 +13,7 @@ import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerOntologyDocument;
+import org.protege.owl.server.api.ServerTransport;
 import org.protege.owl.server.api.exception.ConflictException;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.util.CollectingChangeVisitor;
@@ -26,6 +29,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 public class ConflictManager extends ServerFilterAdapter {
+    private Logger logger = Logger.getLogger(ConflictManager.class.getCanonicalName());
 
     public ConflictManager(Server delegate) {
         super(delegate);
@@ -85,6 +89,12 @@ public class ConflictManager extends ServerFilterAdapter {
                 conflicts.add(entry.getValue());
             }
         }
+    }
+    
+    @Override
+    public void setTransports(Collection<ServerTransport> transports) {
+        logger.info("Basic Conflict Management started.");
+        super.setTransports(transports);
     }
     
 
