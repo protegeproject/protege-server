@@ -120,20 +120,17 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLSubAnnotationPropertyOfAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.SUB_ANNOTATION_PROPERTY_OF, axiom);
     }
 
     @Override
     public void visit(OWLAnnotationPropertyDomainAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.ANNOTATION_PROPERTY_DOMAIN, axiom);
     }
 
     @Override
     public void visit(OWLAnnotationPropertyRangeAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.ANNOTATION_PROPERTY_RANGE, axiom);
     }
 
     @Override
@@ -183,7 +180,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLObjectMaxCardinality ce) {
-        throw new IllegalStateException("Not implemented yet");
+        owlOutputStream.write(OWLObjectType.OBJECT_MAX_CARDINALITY, ce);
 
     }
 
@@ -209,14 +206,12 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLDataHasValue ce) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.DATA_HAS_VALUE, ce);
     }
 
     @Override
     public void visit(OWLDataMinCardinality ce) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.DATA_MIN_CARDINALTY, ce);
     }
 
     @Override
@@ -226,8 +221,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLDataMaxCardinality ce) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.DATA_MAX_CARDINALTY, ce);
     }
 
     @Override
@@ -242,8 +236,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLNegativeObjectPropertyAssertionAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.NEGATIVE_OBJECT_PROPERTY_ASSERTION, axiom);
     }
 
     @Override
@@ -281,8 +274,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLNegativeDataPropertyAssertionAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.NEGATIVE_DATA_PROPERTY_ASSERTION, axiom);
     }
 
     @Override
@@ -309,8 +301,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLObjectPropertyAssertionAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.OBJECT_PROPERTY_ASSERTION, axiom);
     }
 
     @Override
@@ -364,8 +355,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLDataPropertyAssertionAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.DATA_PROPERTY_ASSERTION, axiom);
     }
 
     @Override

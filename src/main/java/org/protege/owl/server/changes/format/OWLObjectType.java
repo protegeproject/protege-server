@@ -14,6 +14,8 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLAnnotationPropertyDomainAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -22,7 +24,11 @@ import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataAllValuesFrom;
 import org.semanticweb.owlapi.model.OWLDataExactCardinality;
+import org.semanticweb.owlapi.model.OWLDataHasValue;
+import org.semanticweb.owlapi.model.OWLDataMaxCardinality;
+import org.semanticweb.owlapi.model.OWLDataMinCardinality;
 import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataPropertyDomainAxiom;
 import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
 import org.semanticweb.owlapi.model.OWLDataPropertyRangeAxiom;
@@ -43,6 +49,8 @@ import org.semanticweb.owlapi.model.OWLInverseFunctionalObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLInverseObjectPropertiesAxiom;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLNegativeDataPropertyAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLNegativeObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLObjectAllValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectComplementOf;
 import org.semanticweb.owlapi.model.OWLObjectExactCardinality;
@@ -50,9 +58,11 @@ import org.semanticweb.owlapi.model.OWLObjectHasSelf;
 import org.semanticweb.owlapi.model.OWLObjectHasValue;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectInverseOf;
+import org.semanticweb.owlapi.model.OWLObjectMaxCardinality;
 import org.semanticweb.owlapi.model.OWLObjectMinCardinality;
 import org.semanticweb.owlapi.model.OWLObjectOneOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLObjectPropertyDomainAxiom;
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLObjectPropertyRangeAxiom;
@@ -60,6 +70,7 @@ import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyID;
+import org.semanticweb.owlapi.model.OWLSubAnnotationPropertyOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
 import org.semanticweb.owlapi.model.OWLTransitiveObjectPropertyAxiom;
@@ -582,6 +593,60 @@ public enum OWLObjectType {
         }
         
     },
+    
+    SUB_ANNOTATION_PROPERTY_OF {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLAnnotationProperty subProperty = (OWLAnnotationProperty) in.read();
+            OWLAnnotationProperty superProperty = (OWLAnnotationProperty) in.read();
+            return in.getOWLDataFactory().getOWLSubAnnotationPropertyOfAxiom(subProperty, superProperty);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLSubAnnotationPropertyOfAxiom axiom = (OWLSubAnnotationPropertyOfAxiom) o;
+            out.write(axiom.getSubProperty());
+            out.write(axiom.getSuperProperty());
+        }
+        
+    },
+    
+    ANNOTATION_PROPERTY_DOMAIN {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLAnnotationProperty p = (OWLAnnotationProperty) in.read();
+            IRI domain = (IRI) in.read();
+            return in.getOWLDataFactory().getOWLAnnotationPropertyDomainAxiom(p, domain);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLAnnotationPropertyDomainAxiom axiom = (OWLAnnotationPropertyDomainAxiom) o;
+            out.write(axiom.getProperty());
+            out.write(axiom.getDomain());
+        }
+        
+    },
+    ANNOTATION_PROPERTY_RANGE {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLAnnotationProperty p = (OWLAnnotationProperty) in.read();
+            IRI range = (IRI) in.read();
+            return in.getOWLDataFactory().getOWLAnnotationPropertyRangeAxiom(p, range);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLAnnotationPropertyRangeAxiom axiom = (OWLAnnotationPropertyRangeAxiom) o;
+            out.write(axiom.getProperty());
+            out.write(axiom.getRange());
+        }
+        
+    },
+    
     INVERSE_OBJECT_PROPERTIES_AXIOM {
 
         @Override
@@ -883,6 +948,26 @@ public enum OWLObjectType {
         
     },
     
+    OBJECT_MAX_CARDINALITY {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            int cardinality = IOUtils.readInt(in.getInputStream());
+            OWLObjectPropertyExpression property = (OWLObjectPropertyExpression) in.read();
+            OWLClassExpression classExpression = (OWLClassExpression) in.read();
+            return in.getOWLDataFactory().getOWLObjectMaxCardinality(cardinality, property, classExpression);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLObjectMaxCardinality ce = (OWLObjectMaxCardinality) o;
+            IOUtils.writeInt(out.getOutputStream(), ce.getCardinality());
+            out.write(ce.getProperty());
+            out.write(ce.getFiller());
+        }
+        
+    },
+    
     OBJECT_EXACT_CARDINALITY {
 
         @Override
@@ -971,11 +1056,51 @@ public enum OWLObjectType {
         }
     },
     
+    DATA_MIN_CARDINALTY {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLDataPropertyExpression property = (OWLDataPropertyExpression) in.read();
+            int cardinality = IOUtils.readInt(in.getInputStream());
+            OWLDataRange dataRange = (OWLDataRange) in.read();
+            return in.getOWLDataFactory().getOWLDataMinCardinality(cardinality, property, dataRange);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDataMinCardinality ce = (OWLDataMinCardinality) o;
+            out.write(ce.getProperty());
+            IOUtils.writeInt(out.getOutputStream(), ce.getCardinality());
+            out.write(ce.getFiller());
+        }
+        
+    },
+    
+    DATA_MAX_CARDINALTY {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLDataPropertyExpression property = (OWLDataPropertyExpression) in.read();
+            int cardinality = IOUtils.readInt(in.getInputStream());
+            OWLDataRange dataRange = (OWLDataRange) in.read();
+            return in.getOWLDataFactory().getOWLDataMaxCardinality(cardinality, property, dataRange);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDataMaxCardinality ce = (OWLDataMaxCardinality) o;
+            out.write(ce.getProperty());
+            IOUtils.writeInt(out.getOutputStream(), ce.getCardinality());
+            out.write(ce.getFiller());
+        }
+        
+    },
+    
     DATA_EXACT_CARDINALTY {
 
         @Override
         public Object read(OWLInputStream in) throws IOException {
-            OWLDataProperty property = (OWLDataProperty) in.read();
+            OWLDataPropertyExpression property = (OWLDataPropertyExpression) in.read();
             int cardinality = IOUtils.readInt(in.getInputStream());
             OWLDataRange dataRange = (OWLDataRange) in.read();
             return in.getOWLDataFactory().getOWLDataExactCardinality(cardinality, property, dataRange);
@@ -987,6 +1112,24 @@ public enum OWLObjectType {
             out.write(ce.getProperty());
             IOUtils.writeInt(out.getOutputStream(), ce.getCardinality());
             out.write(ce.getFiller());
+        }
+        
+    },
+    
+    DATA_HAS_VALUE {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLDataPropertyExpression dpe = (OWLDataPropertyExpression) in.read();
+            OWLLiteral literal = (OWLLiteral) in.read();
+            return in.getOWLDataFactory().getOWLDataHasValue(dpe, literal);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDataHasValue ce = (OWLDataHasValue) o;
+            out.write(ce.getProperty());
+            out.write(ce.getValue());
         }
         
     },
@@ -1028,8 +1171,87 @@ public enum OWLObjectType {
             out.write(pe.getInverse());
         }
         
-    }
+    },
     
+    NEGATIVE_OBJECT_PROPERTY_ASSERTION {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLIndividual i = (OWLIndividual) in.read();
+            OWLObjectPropertyExpression pe = (OWLObjectPropertyExpression) in.read();
+            OWLIndividual j = (OWLIndividual) in.read();
+            return in.getOWLDataFactory().getOWLNegativeObjectPropertyAssertionAxiom(pe, i, j);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLNegativeObjectPropertyAssertionAxiom axiom = (OWLNegativeObjectPropertyAssertionAxiom) o;
+            out.write(axiom.getSubject());
+            out.write(axiom.getProperty());
+            out.write(axiom.getObject());
+        }
+        
+    },
+
+    OBJECT_PROPERTY_ASSERTION {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLIndividual i = (OWLIndividual) in.read();
+            OWLObjectPropertyExpression pe = (OWLObjectPropertyExpression) in.read();
+            OWLIndividual j = (OWLIndividual) in.read();
+            return in.getOWLDataFactory().getOWLObjectPropertyAssertionAxiom(pe, i, j);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLObjectPropertyAssertionAxiom axiom = (OWLObjectPropertyAssertionAxiom) o;
+            out.write(axiom.getSubject());
+            out.write(axiom.getProperty());
+            out.write(axiom.getObject());
+        }
+        
+    },
+    
+    DATA_PROPERTY_ASSERTION {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLIndividual i = (OWLIndividual) in.read();
+            OWLDataPropertyExpression pe = (OWLDataPropertyExpression) in.read();
+            OWLLiteral literal = (OWLLiteral) in.read();
+            return in.getOWLDataFactory().getOWLDataPropertyAssertionAxiom(pe, i, literal);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDataPropertyAssertionAxiom axiom = (OWLDataPropertyAssertionAxiom) o;
+            out.write(axiom.getSubject());
+            out.write(axiom.getProperty());
+            out.write(axiom.getObject());
+        }
+        
+    },
+    
+    NEGATIVE_DATA_PROPERTY_ASSERTION {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLIndividual i = (OWLIndividual) in.read();
+            OWLDataPropertyExpression pe = (OWLDataPropertyExpression) in.read();
+            OWLLiteral literal = (OWLLiteral) in.read();
+            return in.getOWLDataFactory().getOWLNegativeDataPropertyAssertionAxiom(pe, i, literal);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLNegativeDataPropertyAssertionAxiom axiom = (OWLNegativeDataPropertyAssertionAxiom) o;
+            out.write(axiom.getSubject());
+            out.write(axiom.getProperty());
+            out.write(axiom.getObject());
+        }
+        
+    }    
     
     ;
     

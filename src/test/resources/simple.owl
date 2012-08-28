@@ -75,6 +75,9 @@
     <Declaration>
         <NamedIndividual IRI="#k"/>
     </Declaration>
+    <Declaration>
+        <AnnotationProperty IRI="#ap"/>
+    </Declaration>
     <EquivalentClasses>
         <Class IRI="#A"/>
         <ObjectIntersectionOf>
@@ -155,6 +158,34 @@
         </ObjectHasValue>
     </SubClassOf>
     <SubClassOf>
+        <Class IRI="#F"/>
+        <ObjectMaxCardinality cardinality="5">
+            <ObjectProperty IRI="#op"/>
+            <Class IRI="#E"/>
+        </ObjectMaxCardinality>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#F"/>
+        <DataHasValue>
+            <DataProperty IRI="#dp"/>
+            <Literal datatypeIRI="&xsd;integer">8</Literal>
+        </DataHasValue>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#F"/>
+        <DataMinCardinality cardinality="8">
+            <DataProperty IRI="#dp"/>
+            <Datatype abbreviatedIRI="xsd:integer"/>
+        </DataMinCardinality>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#F"/>
+        <DataMaxCardinality cardinality="8">
+            <DataProperty IRI="#dp"/>
+            <Datatype abbreviatedIRI="xsd:integer"/>
+        </DataMaxCardinality>
+    </SubClassOf>
+    <SubClassOf>
         <Class IRI="#G"/>
         <ObjectUnionOf>
             <Class IRI="#B"/>
@@ -198,6 +229,26 @@
         <NamedIndividual IRI="#j"/>
         <NamedIndividual IRI="#k"/>
     </DifferentIndividuals>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="#op"/>
+        <NamedIndividual IRI="#i"/>
+        <NamedIndividual IRI="#j"/>
+    </ObjectPropertyAssertion>
+    <NegativeObjectPropertyAssertion>
+        <ObjectProperty IRI="#op"/>
+        <NamedIndividual IRI="#i"/>
+        <NamedIndividual IRI="#k"/>
+    </NegativeObjectPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="#dp"/>
+        <NamedIndividual IRI="#i"/>
+        <Literal datatypeIRI="&xsd;integer">3</Literal>
+    </DataPropertyAssertion>
+    <NegativeDataPropertyAssertion>
+        <DataProperty IRI="#dp"/>
+        <NamedIndividual IRI="#i"/>
+        <Literal datatypeIRI="&xsd;integer">4</Literal>
+    </NegativeDataPropertyAssertion>
     <SubObjectPropertyOf>
         <ObjectProperty IRI="#or"/>
         <ObjectProperty IRI="#op"/>
@@ -254,6 +305,18 @@
         <IRI>#B</IRI>
         <Literal datatypeIRI="&rdf;PlainLiteral">A comment on a class.</Literal>
     </AnnotationAssertion>
+    <SubAnnotationPropertyOf>
+        <AnnotationProperty IRI="#ap"/>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+    </SubAnnotationPropertyOf>
+    <AnnotationPropertyRange>
+        <AnnotationProperty IRI="#ap"/>
+        <IRI>#F</IRI>
+    </AnnotationPropertyRange>
+    <AnnotationPropertyDomain>
+        <AnnotationProperty IRI="#ap"/>
+        <IRI>#B</IRI>
+    </AnnotationPropertyDomain>
 </Ontology>
 
 
