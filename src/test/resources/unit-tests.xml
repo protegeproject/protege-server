@@ -9,17 +9,24 @@
             <class name="org.protege.owl.server.RemoteBasicServerTest"/>
             <class name="org.protege.owl.server.changes.BasicSerializationTest"/> 
             <class name="org.protege.owl.server.changes.VOntSerializationTest"/>
-            <class name="org.protege.owl.server.changes.conflict.ConflictTest"/>
+            <class name="org.protege.owl.server.changes.format.SimpleTest"/>
+            <class name="org.protege.owl.server.conflict.ConflictTest"/>
             <class name="org.protege.owl.server.policy.UserParserTest"/>
-            <class name="org.protege.owl.server.policy.LoginTest"/>
+            <class name="org.protege.owl.server.policy.LoginTest"/>            
         </classes>
     </test>
     
     <test name="Deprecated Serialization Test">
-    	<parameter name="ontologyFile" value="src/test/resources/simple.owl"/>
+    	<parameter name="ontologyFile" value="src/test/resources/allconstructs.owl"/>
         <classes>
             <class name="org.protege.owl.server.changes.format.FormatTest"/>
-            <class name="org.protege.owl.server.changes.format.SimpleTest"/>
+        </classes>
+    </test>	
+
+    <test name="Deprecated Serialization Test (SWRLDataRangeAtom)">
+    	<parameter name="ontologyFile" value="src/test/resources/SWRLDataRangeAtom.owl"/>
+        <classes>
+            <class name="org.protege.owl.server.changes.format.FormatTest"/>
         </classes>
     </test>	
     

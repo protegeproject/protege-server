@@ -31,6 +31,10 @@
     </Annotation>
     <Annotation>
         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <Literal datatypeIRI="&rdf;PlainLiteral">The idea is that this ontology would contain an example of every construct in the OWL language.  The one construct that I know is missing is the SWRLDataRangeAtom.  This is missing because it is problematic in several serializations.  This ontology was constructed for round trip testing.</Literal>
+    </Annotation>
+    <Annotation>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
         <Literal datatypeIRI="&xsd;string">plainliteral</Literal>
     </Annotation>
     <Declaration>

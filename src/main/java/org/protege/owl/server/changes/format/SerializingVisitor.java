@@ -491,8 +491,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(SWRLDataRangeAtom node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.SWRL_DATA_RANGE_ATOM, node);
     }
 
     @Override

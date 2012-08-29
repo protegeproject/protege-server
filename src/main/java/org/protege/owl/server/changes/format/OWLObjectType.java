@@ -531,7 +531,7 @@ public enum OWLObjectType {
         public Object read(OWLInputStream in) throws IOException {
             OWLClassExpression ce = (OWLClassExpression) in.read();
             Set<OWLPropertyExpression> properties = in.readSet(OWLPropertyExpression.class);
-            return in.getOWLDataFactory().getOWLHasKeyAxiom(ce, (Set<? extends OWLPropertyExpression<?, ?>>) properties);
+            return in.getOWLDataFactory().getOWLHasKeyAxiom(ce, (Set) properties);
         }
 
         @Override
@@ -1615,6 +1615,24 @@ public enum OWLObjectType {
             out.write(atom.getPredicate());
             out.write(atom.getFirstArgument());
             out.write(atom.getSecondArgument());
+        }
+        
+    },
+    
+    SWRL_DATA_RANGE_ATOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLDataRange predicate = (OWLDataRange) in.read();
+            SWRLDArgument arg = (SWRLDArgument) in.read();
+            return in.getOWLDataFactory().getSWRLDataRangeAtom(predicate, arg);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            SWRLDataRangeAtom atom = (SWRLDataRangeAtom) o;
+            out.write(atom.getPredicate());
+            out.write(atom.getArgument());
         }
         
     },
