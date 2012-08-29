@@ -386,20 +386,17 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLHasKeyAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.HAS_KEY_AXIOM, axiom);
     }
 
     @Override
     public void visit(OWLDatatypeDefinitionAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.DATATYPE_DEFINITION, axiom);
     }
 
     @Override
     public void visit(SWRLRule rule) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.SWRL_RULE, rule);
     }
 
     @Override
@@ -424,20 +421,17 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLDataOneOf node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.DATA_ONE_OF, node);
     }
 
     @Override
     public void visit(OWLDataComplementOf node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.DATA_COMPLEMENT_OF, node);        
     }
 
     @Override
     public void visit(OWLDataIntersectionOf node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.DATA_INTERSECTION_OF, node);        
     }
 
     @Override
@@ -494,8 +488,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(SWRLClassAtom node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.SWRL_CLASS_ATOM, node);
     }
 
     @Override
@@ -524,8 +517,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(SWRLVariable node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.SWRL_VARIABLE, node);
     }
 
     @Override

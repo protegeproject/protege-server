@@ -55,6 +55,9 @@
         <Class IRI="#G"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#H"/>
+    </Declaration>
+    <Declaration>
         <ObjectProperty IRI="#op"/>
     </Declaration>
     <Declaration>
@@ -89,6 +92,12 @@
     </Declaration>
     <Declaration>
         <AnnotationProperty IRI="#ap"/>
+    </Declaration>
+    <Declaration>
+        <Datatype IRI="#dt"/>
+    </Declaration>
+    <Declaration>
+        <Datatype IRI="#dta"/>
     </Declaration>
     <EquivalentClasses>
         <Class IRI="#A"/>
@@ -226,6 +235,25 @@
         <ObjectMinCardinality cardinality="3">
             <ObjectProperty IRI="#os"/>
         </ObjectMinCardinality>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#H"/>
+        <DataAllValuesFrom>
+            <DataProperty IRI="#dp"/>
+            <DataComplementOf>
+                <Datatype abbreviatedIRI="xsd:string"/>
+            </DataComplementOf>
+        </DataAllValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#H"/>
+        <DataAllValuesFrom>
+            <DataProperty IRI="#dq"/>
+            <DataIntersectionOf>
+                <Datatype abbreviatedIRI="xsd:integer"/>
+                <Datatype abbreviatedIRI="xsd:string"/>
+            </DataIntersectionOf>
+        </DataAllValuesFrom>
     </SubClassOf>
     <DisjointClasses>
         <Class IRI="#B"/>
@@ -376,6 +404,27 @@
         <DataProperty IRI="#dq"/>
         <DataProperty IRI="#dr"/>
     </DisjointDataProperties>
+    <HasKey>
+        <Class IRI="#F"/>
+        <ObjectProperty IRI="#op"/>
+        <ObjectProperty IRI="#os"/>
+        <DataProperty IRI="#dp"/>
+        <DataProperty IRI="#dq"/>
+    </HasKey>
+    <DLSafeRule>
+        <Body>
+            <ClassAtom>
+                <Class IRI="#B"/>
+                <Variable IRI="urn:swrl#x"/>
+            </ClassAtom>
+        </Body>
+        <Head>
+            <ClassAtom>
+                <Class IRI="#F"/>
+                <Variable IRI="urn:swrl#x"/>
+            </ClassAtom>
+        </Head>
+    </DLSafeRule>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
         <IRI>#B</IRI>
@@ -393,6 +442,17 @@
         <AnnotationProperty IRI="#ap"/>
         <IRI>#B</IRI>
     </AnnotationPropertyDomain>
+    <DatatypeDefinition>
+        <Datatype IRI="#dt"/>
+        <Datatype abbreviatedIRI="xsd:string"/>
+    </DatatypeDefinition>
+    <DatatypeDefinition>
+        <Datatype IRI="#dta"/>
+        <DataOneOf>
+            <Literal datatypeIRI="&rdf;PlainLiteral">a</Literal>
+            <Literal datatypeIRI="&rdf;PlainLiteral">b</Literal>
+        </DataOneOf>
+    </DatatypeDefinition>
 </Ontology>
 
 

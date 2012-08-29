@@ -24,10 +24,13 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataAllValuesFrom;
+import org.semanticweb.owlapi.model.OWLDataComplementOf;
 import org.semanticweb.owlapi.model.OWLDataExactCardinality;
 import org.semanticweb.owlapi.model.OWLDataHasValue;
+import org.semanticweb.owlapi.model.OWLDataIntersectionOf;
 import org.semanticweb.owlapi.model.OWLDataMaxCardinality;
 import org.semanticweb.owlapi.model.OWLDataMinCardinality;
+import org.semanticweb.owlapi.model.OWLDataOneOf;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataPropertyDomainAxiom;
@@ -36,6 +39,7 @@ import org.semanticweb.owlapi.model.OWLDataPropertyRangeAxiom;
 import org.semanticweb.owlapi.model.OWLDataRange;
 import org.semanticweb.owlapi.model.OWLDataSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLDatatype;
+import org.semanticweb.owlapi.model.OWLDatatypeDefinitionAxiom;
 import org.semanticweb.owlapi.model.OWLDatatypeRestriction;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLDifferentIndividualsAxiom;
@@ -50,6 +54,7 @@ import org.semanticweb.owlapi.model.OWLEquivalentObjectPropertiesAxiom;
 import org.semanticweb.owlapi.model.OWLFacetRestriction;
 import org.semanticweb.owlapi.model.OWLFunctionalDataPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLFunctionalObjectPropertyAxiom;
+import org.semanticweb.owlapi.model.OWLHasKeyAxiom;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLInverseFunctionalObjectPropertyAxiom;
@@ -79,6 +84,7 @@ import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyID;
+import org.semanticweb.owlapi.model.OWLPropertyExpression;
 import org.semanticweb.owlapi.model.OWLReflexiveObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubAnnotationPropertyOfAxiom;
@@ -91,6 +97,11 @@ import org.semanticweb.owlapi.model.OWLTransitiveObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
+import org.semanticweb.owlapi.model.SWRLAtom;
+import org.semanticweb.owlapi.model.SWRLClassAtom;
+import org.semanticweb.owlapi.model.SWRLIArgument;
+import org.semanticweb.owlapi.model.SWRLRule;
+import org.semanticweb.owlapi.model.SWRLVariable;
 import org.semanticweb.owlapi.model.SetOntologyID;
 import org.semanticweb.owlapi.vocab.OWLFacet;
 
@@ -593,6 +604,24 @@ public enum OWLObjectType {
         }
         
     },
+    HAS_KEY_AXIOM {
+
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLClassExpression ce = (OWLClassExpression) in.read();
+            Set<OWLPropertyExpression> properties = in.readSet(OWLPropertyExpression.class);
+            return in.getOWLDataFactory().getOWLHasKeyAxiom(ce, (Set<? extends OWLPropertyExpression<?, ?>>) properties);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLHasKeyAxiom axiom = (OWLHasKeyAxiom) o;
+            out.write(axiom.getClassExpression());
+            out.write(axiom.getPropertyExpressions());
+        }
+        
+    },
     DISJOINT_CLASSES_AXIOM {
 
         @Override
@@ -1055,6 +1084,68 @@ public enum OWLObjectType {
         }
         
     },
+    DATATYPE_DEFINITION {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLDatatype datatype = (OWLDatatype) in.read();
+            OWLDataRange dataRange = (OWLDataRange) in.read();
+            return in.getOWLDataFactory().getOWLDatatypeDefinitionAxiom(datatype, dataRange);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDatatypeDefinitionAxiom axiom = (OWLDatatypeDefinitionAxiom) o;
+            out.write(axiom.getDatatype());
+            out.write(axiom.getDataRange());
+        }
+        
+    },
+    DATA_ONE_OF {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            Set<OWLLiteral> values = in.readSet(OWLLiteral.class);
+            return in.getOWLDataFactory().getOWLDataOneOf(values);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDataOneOf node = (OWLDataOneOf) o;
+            out.write(node.getValues());
+        }
+        
+    },
+    DATA_COMPLEMENT_OF {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLDataRange range = (OWLDataRange) in.read();
+            return in.getOWLDataFactory().getOWLDataComplementOf(range);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDataComplementOf complement = (OWLDataComplementOf) o;
+            out.write(complement.getDataRange());
+        }
+        
+    },
+    DATA_INTERSECTION_OF {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            Set<OWLDataRange> operands = in.readSet(OWLDataRange.class);
+            return in.getOWLDataFactory().getOWLDataIntersectionOf(operands);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDataIntersectionOf intersection = (OWLDataIntersectionOf) o;
+            out.write(intersection.getOperands());
+        }
+        
+    },
     ANNOTATION_ASSERTION_AXIOM {
 
         @Override
@@ -1512,6 +1603,58 @@ public enum OWLObjectType {
             for (OWLIndividual i : individuals) {
                 out.write(i);
             }
+        }
+        
+    },
+    
+    SWRL_RULE {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            Set<SWRLAtom> head = in.readSet(SWRLAtom.class);
+            Set<SWRLAtom> body = in.readSet(SWRLAtom.class);
+            return in.getOWLDataFactory().getSWRLRule(body, head);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            SWRLRule rule = (SWRLRule) o;
+            out.write(rule.getHead());
+            out.write(rule.getBody());
+        }
+        
+    },
+    
+    SWRL_CLASS_ATOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLClassExpression predicate = (OWLClassExpression) in.read();
+            SWRLIArgument argument = (SWRLIArgument) in.read();
+            return in.getOWLDataFactory().getSWRLClassAtom(predicate, argument);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            SWRLClassAtom atom = (SWRLClassAtom) o;
+            out.write(atom.getPredicate());
+            out.write(atom.getArgument());
+        }
+        
+    }, 
+    
+    SWRL_VARIABLE {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            IRI var = (IRI) in.read();
+            return in.getOWLDataFactory().getSWRLVariable(var);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            SWRLVariable node = (SWRLVariable) o;
+            out.write(node.getIRI());
         }
         
     }
