@@ -7,102 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.semanticweb.owlapi.model.AddAxiom;
-import org.semanticweb.owlapi.model.AddImport;
-import org.semanticweb.owlapi.model.AddOntologyAnnotation;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAnnotation;
-import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLAnnotationProperty;
-import org.semanticweb.owlapi.model.OWLAnnotationPropertyDomainAxiom;
-import org.semanticweb.owlapi.model.OWLAnnotationPropertyRangeAxiom;
-import org.semanticweb.owlapi.model.OWLAnnotationSubject;
-import org.semanticweb.owlapi.model.OWLAnnotationValue;
-import org.semanticweb.owlapi.model.OWLAsymmetricObjectPropertyAxiom;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLDataAllValuesFrom;
-import org.semanticweb.owlapi.model.OWLDataComplementOf;
-import org.semanticweb.owlapi.model.OWLDataExactCardinality;
-import org.semanticweb.owlapi.model.OWLDataHasValue;
-import org.semanticweb.owlapi.model.OWLDataIntersectionOf;
-import org.semanticweb.owlapi.model.OWLDataMaxCardinality;
-import org.semanticweb.owlapi.model.OWLDataMinCardinality;
-import org.semanticweb.owlapi.model.OWLDataOneOf;
-import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLDataPropertyDomainAxiom;
-import org.semanticweb.owlapi.model.OWLDataPropertyExpression;
-import org.semanticweb.owlapi.model.OWLDataPropertyRangeAxiom;
-import org.semanticweb.owlapi.model.OWLDataRange;
-import org.semanticweb.owlapi.model.OWLDataSomeValuesFrom;
-import org.semanticweb.owlapi.model.OWLDatatype;
-import org.semanticweb.owlapi.model.OWLDatatypeDefinitionAxiom;
-import org.semanticweb.owlapi.model.OWLDatatypeRestriction;
-import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
-import org.semanticweb.owlapi.model.OWLDifferentIndividualsAxiom;
-import org.semanticweb.owlapi.model.OWLDisjointClassesAxiom;
-import org.semanticweb.owlapi.model.OWLDisjointDataPropertiesAxiom;
-import org.semanticweb.owlapi.model.OWLDisjointObjectPropertiesAxiom;
-import org.semanticweb.owlapi.model.OWLDisjointUnionAxiom;
-import org.semanticweb.owlapi.model.OWLEntity;
-import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
-import org.semanticweb.owlapi.model.OWLEquivalentDataPropertiesAxiom;
-import org.semanticweb.owlapi.model.OWLEquivalentObjectPropertiesAxiom;
-import org.semanticweb.owlapi.model.OWLFacetRestriction;
-import org.semanticweb.owlapi.model.OWLFunctionalDataPropertyAxiom;
-import org.semanticweb.owlapi.model.OWLFunctionalObjectPropertyAxiom;
-import org.semanticweb.owlapi.model.OWLHasKeyAxiom;
-import org.semanticweb.owlapi.model.OWLImportsDeclaration;
-import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLInverseFunctionalObjectPropertyAxiom;
-import org.semanticweb.owlapi.model.OWLInverseObjectPropertiesAxiom;
-import org.semanticweb.owlapi.model.OWLIrreflexiveObjectPropertyAxiom;
-import org.semanticweb.owlapi.model.OWLLiteral;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLNegativeDataPropertyAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLNegativeObjectPropertyAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLObject;
-import org.semanticweb.owlapi.model.OWLObjectAllValuesFrom;
-import org.semanticweb.owlapi.model.OWLObjectComplementOf;
-import org.semanticweb.owlapi.model.OWLObjectExactCardinality;
-import org.semanticweb.owlapi.model.OWLObjectHasSelf;
-import org.semanticweb.owlapi.model.OWLObjectHasValue;
-import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
-import org.semanticweb.owlapi.model.OWLObjectInverseOf;
-import org.semanticweb.owlapi.model.OWLObjectMaxCardinality;
-import org.semanticweb.owlapi.model.OWLObjectMinCardinality;
-import org.semanticweb.owlapi.model.OWLObjectOneOf;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLObjectPropertyDomainAxiom;
-import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
-import org.semanticweb.owlapi.model.OWLObjectPropertyRangeAxiom;
-import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
-import org.semanticweb.owlapi.model.OWLObjectUnionOf;
-import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyID;
-import org.semanticweb.owlapi.model.OWLPropertyExpression;
-import org.semanticweb.owlapi.model.OWLReflexiveObjectPropertyAxiom;
-import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
-import org.semanticweb.owlapi.model.OWLSubAnnotationPropertyOfAxiom;
-import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
-import org.semanticweb.owlapi.model.OWLSubDataPropertyOfAxiom;
-import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
-import org.semanticweb.owlapi.model.OWLSubPropertyChainOfAxiom;
-import org.semanticweb.owlapi.model.OWLSymmetricObjectPropertyAxiom;
-import org.semanticweb.owlapi.model.OWLTransitiveObjectPropertyAxiom;
-import org.semanticweb.owlapi.model.RemoveAxiom;
-import org.semanticweb.owlapi.model.RemoveImport;
-import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
-import org.semanticweb.owlapi.model.SWRLAtom;
-import org.semanticweb.owlapi.model.SWRLClassAtom;
-import org.semanticweb.owlapi.model.SWRLIArgument;
-import org.semanticweb.owlapi.model.SWRLRule;
-import org.semanticweb.owlapi.model.SWRLVariable;
-import org.semanticweb.owlapi.model.SetOntologyID;
+import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.vocab.OWLFacet;
 
 /**
@@ -429,6 +334,21 @@ public enum OWLObjectType {
             OWLNamedIndividual entity = (OWLNamedIndividual) o;
             out.write(entity.getIRI());
         }
+    },
+    OWL_ANONYMOUS_INDIVIDUAL {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            String id = IOUtils.readString(in.getInputStream());
+            return in.getOWLDataFactory().getOWLAnonymousIndividual(id);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLAnonymousIndividual i = (OWLAnonymousIndividual) o;
+            IOUtils.writeString(out.getOutputStream(), i.getID().getID());
+        }
+        
     },
     OWL_DATATYPE {
 
@@ -1146,6 +1066,22 @@ public enum OWLObjectType {
         }
         
     },
+    
+    DATA_UNION_OF {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            Set<OWLDataRange> operands = in.readSet(OWLDataRange.class);
+            return in.getOWLDataFactory().getOWLDataUnionOf(operands);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDataUnionOf union = (OWLDataUnionOf) o;
+            out.write(union.getOperands());
+        }
+        
+    },
     ANNOTATION_ASSERTION_AXIOM {
 
         @Override
@@ -1641,7 +1577,117 @@ public enum OWLObjectType {
             out.write(atom.getArgument());
         }
         
-    }, 
+    },
+    
+    SWRL_OBJECT_PROPERTY_ATOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLObjectPropertyExpression property = (OWLObjectPropertyExpression) in.read();
+            SWRLIArgument arg1 = (SWRLIArgument) in.read();
+            SWRLIArgument arg2 = (SWRLIArgument) in.read();
+            return in.getOWLDataFactory().getSWRLObjectPropertyAtom(property, arg1, arg2);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            SWRLObjectPropertyAtom atom = (SWRLObjectPropertyAtom) o;
+            out.write(atom.getPredicate());
+            out.write(atom.getFirstArgument());
+            out.write(atom.getSecondArgument());
+        }
+        
+    },
+    
+    SWRL_DATA_PROPERTY_ATOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLDataPropertyExpression property = (OWLDataPropertyExpression) in.read();
+            SWRLIArgument arg1 = (SWRLIArgument) in.read();
+            SWRLDArgument arg2 = (SWRLDArgument) in.read();
+            return in.getOWLDataFactory().getSWRLDataPropertyAtom(property, arg1, arg2);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            SWRLDataPropertyAtom atom = (SWRLDataPropertyAtom) o;
+            out.write(atom.getPredicate());
+            out.write(atom.getFirstArgument());
+            out.write(atom.getSecondArgument());
+        }
+        
+    },
+    
+    SWRL_SAME_AS_ATOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            SWRLIArgument arg1 = (SWRLIArgument) in.read();
+            SWRLIArgument arg2 = (SWRLIArgument) in.read();
+            return in.getOWLDataFactory().getSWRLSameIndividualAtom(arg1, arg2);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            SWRLSameIndividualAtom atom = (SWRLSameIndividualAtom) o;
+            out.write(atom.getFirstArgument());
+            out.write(atom.getSecondArgument());
+        }
+        
+    },
+    
+    SWRL_DIFFERENT_FROM_ATOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            SWRLIArgument arg1 = (SWRLIArgument) in.read();
+            SWRLIArgument arg2 = (SWRLIArgument) in.read();
+            return in.getOWLDataFactory().getSWRLDifferentIndividualsAtom(arg1, arg2);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            SWRLDifferentIndividualsAtom atom = (SWRLDifferentIndividualsAtom) o;
+            out.write(atom.getFirstArgument());
+            out.write(atom.getSecondArgument());
+        }
+        
+    },
+    
+    SWRL_BUILTIN_ATOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            IRI builtInIRI = (IRI) in.read();
+            List<SWRLDArgument> args = in.readList(SWRLDArgument.class);
+            return in.getOWLDataFactory().getSWRLBuiltInAtom(builtInIRI, args);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            SWRLBuiltInAtom atom = (SWRLBuiltInAtom) o;
+            out.write(atom.getPredicate());
+            out.write(atom.getArguments());
+        }
+        
+    },
+    
+    SWRL_INDIVIDUAL_ARGUMENT {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLIndividual individual = (OWLIndividual) in.read();
+            return in.getOWLDataFactory().getSWRLIndividualArgument(individual);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            SWRLIndividualArgument i = (SWRLIndividualArgument) o;
+            out.write(i.getIndividual());
+        }
+        
+    },
     
     SWRL_VARIABLE {
 
@@ -1655,6 +1701,22 @@ public enum OWLObjectType {
         public void write(OWLOutputStream out, Object o) throws IOException {
             SWRLVariable node = (SWRLVariable) o;
             out.write(node.getIRI());
+        }
+        
+    },
+    
+    SWRL_LITERAL_ARGUMENT {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLLiteral literal = (OWLLiteral) in.read();
+            return in.getOWLDataFactory().getSWRLLiteralArgument(literal);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            SWRLLiteralArgument literal = (SWRLLiteralArgument) o;
+            out.write(literal.getLiteral());
         }
         
     }

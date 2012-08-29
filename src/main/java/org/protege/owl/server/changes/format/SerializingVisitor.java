@@ -436,8 +436,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLDataUnionOf node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.DATA_UNION_OF, node);                
     }
 
     @Override
@@ -472,8 +471,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLAnonymousIndividual individual) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.OWL_ANONYMOUS_INDIVIDUAL, individual);        
     }
 
     @Override
@@ -499,20 +497,17 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(SWRLObjectPropertyAtom node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.SWRL_OBJECT_PROPERTY_ATOM, node);        
     }
 
     @Override
     public void visit(SWRLDataPropertyAtom node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.SWRL_DATA_PROPERTY_ATOM, node);        
     }
 
     @Override
     public void visit(SWRLBuiltInAtom node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.SWRL_BUILTIN_ATOM, node);                
     }
 
     @Override
@@ -522,31 +517,27 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(SWRLIndividualArgument node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.SWRL_INDIVIDUAL_ARGUMENT, node);
     }
 
     @Override
     public void visit(SWRLLiteralArgument node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.SWRL_LITERAL_ARGUMENT, node);
     }
 
     @Override
     public void visit(SWRLSameIndividualAtom node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.SWRL_SAME_AS_ATOM, node);
     }
 
     @Override
     public void visit(SWRLDifferentIndividualsAtom node) {
-        throw new IllegalStateException("Not implemented yet");
-        
+        owlOutputStream.write(OWLObjectType.SWRL_DIFFERENT_FROM_ATOM, node);        
     }
 
     @Override
     public void visit(OWLOntology ontology) {
-        throw new IllegalStateException("Not implemented yet");
+        throw new IllegalStateException("This method should not be called.");
         
     }
 
