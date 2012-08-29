@@ -76,6 +76,9 @@
         <DataProperty IRI="#dr"/>
     </Declaration>
     <Declaration>
+        <DataProperty IRI="#dt"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#i"/>
     </Declaration>
     <Declaration>
@@ -229,10 +232,20 @@
         <Class IRI="#E"/>
         <Class IRI="#F"/>
     </DisjointClasses>
+    <DisjointUnion>
+        <Class IRI="#G"/>
+        <Class IRI="#E"/>
+        <Class IRI="#F"/>
+    </DisjointUnion>
     <ClassAssertion>
         <Class IRI="#B"/>
         <NamedIndividual IRI="#i"/>
     </ClassAssertion>
+    <SameIndividual>
+        <NamedIndividual IRI="#i"/>
+        <NamedIndividual IRI="#j"/>
+        <NamedIndividual IRI="#k"/>
+    </SameIndividual>
     <DifferentIndividuals>
         <NamedIndividual IRI="#i"/>
         <NamedIndividual IRI="#j"/>
@@ -258,6 +271,10 @@
         <NamedIndividual IRI="#i"/>
         <Literal datatypeIRI="&xsd;integer">4</Literal>
     </NegativeDataPropertyAssertion>
+    <EquivalentObjectProperties>
+        <ObjectProperty IRI="#op"/>
+        <ObjectProperty IRI="#ot"/>
+    </EquivalentObjectProperties>
     <SubObjectPropertyOf>
         <ObjectProperty IRI="#or"/>
         <ObjectProperty IRI="#op"/>
@@ -315,6 +332,25 @@
         <ObjectProperty IRI="#os"/>
         <ObjectProperty IRI="#ot"/>
     </DisjointObjectProperties>
+    <SubObjectPropertyOf>
+        <ObjectPropertyChain>
+            <ObjectProperty IRI="#op"/>
+            <ObjectProperty IRI="#os"/>
+            <ObjectProperty IRI="#ot"/>
+        </ObjectPropertyChain>
+        <ObjectProperty IRI="#op"/>
+    </SubObjectPropertyOf>
+    <EquivalentDataProperties>
+        <DataProperty IRI="#dp"/>
+        <DataProperty IRI="#dq"/>
+    </EquivalentDataProperties>
+    <SubDataPropertyOf>
+        <DataProperty IRI="#dt"/>
+        <DataProperty IRI="#dr"/>
+    </SubDataPropertyOf>
+    <FunctionalDataProperty>
+        <DataProperty IRI="#dq"/>
+    </FunctionalDataProperty>
     <DataPropertyDomain>
         <DataProperty IRI="#dp"/>
         <ObjectIntersectionOf>

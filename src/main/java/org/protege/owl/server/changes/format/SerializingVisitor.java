@@ -266,8 +266,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLEquivalentObjectPropertiesAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.EQUIVALENT_OBJECT_PROPERTIES_AXIOM, axiom);
     }
 
     @Override
@@ -312,8 +311,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLDisjointUnionAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.DISJOINT_UNION_OF_AXIOM, axiom);
     }
 
     @Override
@@ -328,14 +326,12 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLFunctionalDataPropertyAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.FUNCTIONAL_DATA_PROPERTY_AXIOM, axiom);
     }
 
     @Override
     public void visit(OWLEquivalentDataPropertiesAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.EQUIVALENT_DATA_PROPERTIES_AXIOM, axiom);
     }
 
     @Override
@@ -365,8 +361,7 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLSubDataPropertyOfAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.SUB_DATA_PROPERTY_OF, axiom);
     }
 
     @Override
@@ -376,14 +371,12 @@ public class SerializingVisitor implements OWLObjectVisitor, OWLOntologyChangeVi
 
     @Override
     public void visit(OWLSameIndividualAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.SAME_INDIVIDUALS_AXIOM, axiom);
     }
 
     @Override
     public void visit(OWLSubPropertyChainOfAxiom axiom) {
-        throw new IllegalStateException("Not implemented yet");
-
+        owlOutputStream.write(OWLObjectType.SUB_OBJECT_PROPERTY_CHAIN_AXIOM, axiom);
     }
 
     @Override

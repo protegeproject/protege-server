@@ -2,6 +2,7 @@ package org.protege.owl.server.changes.format;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -46,6 +47,13 @@ public class OWLOutputStream {
         }
         catch (RuntimeIOException rioe) {
             throw rioe.getCause();
+        }
+    }
+    
+    public <X extends OWLObject> void write(Collection<X> objects) throws IOException {
+        IOUtils.writeInt(getOutputStream(), objects.size());
+        for (OWLObject object : objects) {
+            write(object);
         }
     }
     

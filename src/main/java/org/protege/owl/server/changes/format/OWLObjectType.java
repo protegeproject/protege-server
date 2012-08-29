@@ -42,9 +42,13 @@ import org.semanticweb.owlapi.model.OWLDifferentIndividualsAxiom;
 import org.semanticweb.owlapi.model.OWLDisjointClassesAxiom;
 import org.semanticweb.owlapi.model.OWLDisjointDataPropertiesAxiom;
 import org.semanticweb.owlapi.model.OWLDisjointObjectPropertiesAxiom;
+import org.semanticweb.owlapi.model.OWLDisjointUnionAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
+import org.semanticweb.owlapi.model.OWLEquivalentDataPropertiesAxiom;
+import org.semanticweb.owlapi.model.OWLEquivalentObjectPropertiesAxiom;
 import org.semanticweb.owlapi.model.OWLFacetRestriction;
+import org.semanticweb.owlapi.model.OWLFunctionalDataPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLFunctionalObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLIndividual;
@@ -76,9 +80,12 @@ import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyID;
 import org.semanticweb.owlapi.model.OWLReflexiveObjectPropertyAxiom;
+import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubAnnotationPropertyOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.model.OWLSubDataPropertyOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
+import org.semanticweb.owlapi.model.OWLSubPropertyChainOfAxiom;
 import org.semanticweb.owlapi.model.OWLSymmetricObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.OWLTransitiveObjectPropertyAxiom;
 import org.semanticweb.owlapi.model.RemoveAxiom;
@@ -561,6 +568,31 @@ public enum OWLObjectType {
         }
         
     },
+    DISJOINT_UNION_OF_AXIOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLClass c = (OWLClass) in.read();
+            int count = IOUtils.readInt(in.getInputStream());
+            Set<OWLClassExpression> classExpressions = new TreeSet<OWLClassExpression>();
+            for (int i = 0; i < count; i++) {
+                classExpressions.add((OWLClassExpression) in.read());
+            }
+            return in.getOWLDataFactory().getOWLDisjointUnionAxiom(c, classExpressions);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLDisjointUnionAxiom axiom = (OWLDisjointUnionAxiom) o;
+            out.write(axiom.getOWLClass());
+            Set<OWLClassExpression> conjuncts = axiom.getClassExpressions();
+            IOUtils.writeInt(out.getOutputStream(), conjuncts.size());
+            for (OWLClassExpression conjunct : conjuncts) {
+                out.write(conjunct);
+            }
+        }
+        
+    },
     DISJOINT_CLASSES_AXIOM {
 
         @Override
@@ -583,24 +615,6 @@ public enum OWLObjectType {
         }
         
     },
-    SUB_OBJECT_PROPERTY_OF {
-
-        @Override
-        public Object read(OWLInputStream in) throws IOException {
-            OWLObjectPropertyExpression subProperty = (OWLObjectPropertyExpression) in.read();
-            OWLObjectPropertyExpression superProperty = (OWLObjectPropertyExpression) in.read();
-            return in.getOWLDataFactory().getOWLSubObjectPropertyOfAxiom(subProperty, superProperty);
-        }
-
-        @Override
-        public void write(OWLOutputStream out, Object o) throws IOException {
-            OWLSubObjectPropertyOfAxiom axiom = (OWLSubObjectPropertyOfAxiom) o;
-            out.write(axiom.getSubProperty());
-            out.write(axiom.getSuperProperty());
-        }
-        
-    },
-    
     SUB_ANNOTATION_PROPERTY_OF {
 
         @Override
@@ -810,6 +824,63 @@ public enum OWLObjectType {
         }
         
     },
+    SUB_OBJECT_PROPERTY_OF{
+    
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLObjectPropertyExpression subProperty = (OWLObjectPropertyExpression) in.read();
+            OWLObjectPropertyExpression superProperty = (OWLObjectPropertyExpression) in.read();
+            return in.getOWLDataFactory().getOWLSubObjectPropertyOfAxiom(subProperty, superProperty);
+        }
+    
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLSubObjectPropertyOfAxiom axiom = (OWLSubObjectPropertyOfAxiom) o;
+            out.write(axiom.getSubProperty());
+            out.write(axiom.getSuperProperty());
+        }
+        
+    }, 
+    SUB_OBJECT_PROPERTY_CHAIN_AXIOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            List<OWLObjectPropertyExpression> chain = in.readList(OWLObjectPropertyExpression.class);
+            OWLObjectPropertyExpression superProperty = (OWLObjectPropertyExpression) in.read();
+            return in.getOWLDataFactory().getOWLSubPropertyChainOfAxiom(chain, superProperty);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLSubPropertyChainOfAxiom axiom = (OWLSubPropertyChainOfAxiom) o;
+            out.write(axiom.getPropertyChain());
+            out.write(axiom.getSuperProperty());
+        }
+        
+    },
+    EQUIVALENT_OBJECT_PROPERTIES_AXIOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            int count = IOUtils.readInt(in.getInputStream());
+            Set<OWLObjectPropertyExpression> properties = new TreeSet<OWLObjectPropertyExpression>();
+            for (int i = 0; i < count; i++) {
+                properties.add((OWLObjectPropertyExpression) in.read());
+            }
+            return in.getOWLDataFactory().getOWLEquivalentObjectPropertiesAxiom(properties);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLEquivalentObjectPropertiesAxiom axiom = (OWLEquivalentObjectPropertiesAxiom) o;
+            Set<OWLObjectPropertyExpression> properties = axiom.getProperties();
+            IOUtils.writeInt(out.getOutputStream(), properties.size());
+            for (OWLObjectPropertyExpression property : properties) {
+                out.write(property);
+            }
+        }
+        
+    },
     DISJOINT_OBJECT_PROPERTIES_AXIOM {
 
         @Override
@@ -864,6 +935,61 @@ public enum OWLObjectType {
             OWLDataPropertyRangeAxiom axiom = (OWLDataPropertyRangeAxiom) o;
             out.write(axiom.getProperty());
             out.write(axiom.getRange());
+        }
+        
+    },
+    FUNCTIONAL_DATA_PROPERTY_AXIOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLDataPropertyExpression property = (OWLDataPropertyExpression) in.read();
+            return in.getOWLDataFactory().getOWLFunctionalDataPropertyAxiom(property);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLFunctionalDataPropertyAxiom axiom = (OWLFunctionalDataPropertyAxiom) o;
+            out.write(axiom.getProperty());
+        }
+        
+    },
+    SUB_DATA_PROPERTY_OF{
+        
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            OWLDataPropertyExpression subProperty = (OWLDataPropertyExpression) in.read();
+            OWLDataPropertyExpression superProperty = (OWLDataPropertyExpression) in.read();
+            return in.getOWLDataFactory().getOWLSubDataPropertyOfAxiom(subProperty, superProperty);
+        }
+    
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLSubDataPropertyOfAxiom axiom = (OWLSubDataPropertyOfAxiom) o;
+            out.write(axiom.getSubProperty());
+            out.write(axiom.getSuperProperty());
+        }
+        
+    }, 
+    EQUIVALENT_DATA_PROPERTIES_AXIOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            int count = IOUtils.readInt(in.getInputStream());
+            Set<OWLDataPropertyExpression> properties = new TreeSet<OWLDataPropertyExpression>();
+            for (int i = 0; i < count; i++) {
+                properties.add((OWLDataPropertyExpression) in.read());
+            }
+            return in.getOWLDataFactory().getOWLEquivalentDataPropertiesAxiom(properties);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLEquivalentDataPropertiesAxiom axiom = (OWLEquivalentDataPropertiesAxiom) o;
+            Set<OWLDataPropertyExpression> properties = axiom.getProperties();
+            IOUtils.writeInt(out.getOutputStream(), properties.size());
+            for (OWLDataPropertyExpression property : properties) {
+                out.write(property);
+            }
         }
         
     },
@@ -1364,7 +1490,31 @@ public enum OWLObjectType {
             out.write(axiom.getObject());
         }
         
-    }    
+    },
+    
+    SAME_INDIVIDUALS_AXIOM {
+
+        @Override
+        public Object read(OWLInputStream in) throws IOException {
+            Set<OWLIndividual> individuals = new TreeSet<OWLIndividual>();
+            int count = IOUtils.readInt(in.getInputStream());
+            for (int i = 0; i < count; i++) {
+                individuals.add((OWLIndividual) in.read());
+            }
+            return in.getOWLDataFactory().getOWLSameIndividualAxiom(individuals);
+        }
+
+        @Override
+        public void write(OWLOutputStream out, Object o) throws IOException {
+            OWLSameIndividualAxiom axiom = (OWLSameIndividualAxiom) o;
+            Set<OWLIndividual> individuals = axiom.getIndividuals();
+            IOUtils.writeInt(out.getOutputStream(), individuals.size());
+            for (OWLIndividual i : individuals) {
+                out.write(i);
+            }
+        }
+        
+    }
     
     ;
     
