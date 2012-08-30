@@ -17,6 +17,7 @@ import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.RemoteServerDirectory;
 import org.protege.owl.server.api.RemoteServerDocument;
 import org.protege.owl.server.api.RevisionPointer;
+import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
@@ -152,7 +153,7 @@ public class RMIClient extends AbstractClient {
 
 	@Override
 	public void commit(RemoteOntologyDocument doc,
-	                    ChangeHistory changes) throws OWLServerException {
+	                    SingletonChangeHistory changes) throws OWLServerException {
 	    try {
 	        server.commit(authToken, doc.createServerDocument(), changes);
 	    }

@@ -14,6 +14,7 @@ import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.ServerTransport;
+import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.exception.ConflictException;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.util.CollectingChangeVisitor;
@@ -36,7 +37,7 @@ public class ConflictManager extends ServerFilterAdapter {
     }
     
     @Override
-    public void commit(AuthToken u, ServerOntologyDocument doc, ChangeHistory proposedChanges) throws OWLServerException {
+    public void commit(AuthToken u, ServerOntologyDocument doc, SingletonChangeHistory proposedChanges) throws OWLServerException {
         List<OWLOntologyChange> conflicts = getConflicts(u, doc, proposedChanges);
         if (!conflicts.isEmpty()) {
             ChangeHistory history = getDocumentFactory().createChangeDocument(conflicts, new ChangeMetaData("Conflicts Found"), proposedChanges.getStartRevision());

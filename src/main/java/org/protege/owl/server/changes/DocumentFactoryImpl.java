@@ -17,6 +17,7 @@ import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RemoteOntologyDocument;
+import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.protege.owl.server.changes.format.OWLInputStream;
 import org.semanticweb.owlapi.model.IRI;
@@ -33,10 +34,10 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
     }
     
 	@Override
-	public ChangeHistory createChangeDocument(List<OWLOntologyChange> changes,
+	public SingletonChangeHistory createChangeDocument(List<OWLOntologyChange> changes,
 											   ChangeMetaData metaData, 
 											   OntologyDocumentRevision start) {
-		return new ChangeHistoryImpl(this, start, changes, metaData);
+		return new SingletonChangeHistoryImpl(this, start, changes, metaData);
 	}
 	
 	@Override

@@ -32,6 +32,6 @@ public interface ServerExports {
      * @return
      * @throws OWLServerException
      */
-    void commit(AuthToken u, ServerOntologyDocument doc, ChangeHistory changes) throws OWLServerException;
+    void commit(AuthToken u, ServerOntologyDocument doc, SingletonChangeHistory changes) throws OWLServerException;
 
 }

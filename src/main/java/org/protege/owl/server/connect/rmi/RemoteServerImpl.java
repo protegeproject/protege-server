@@ -13,6 +13,7 @@ import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.ServerPath;
+import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.IRI;
 
@@ -92,7 +93,7 @@ public class RemoteServerImpl implements RemoteServer {
 
 	@Override
 	public void commit(AuthToken u, ServerOntologyDocument doc,
-	                    ChangeHistory changes)
+	                    SingletonChangeHistory changes)
 			throws RemoteException {
 		try {
 		    server.commit(u, doc, changes);

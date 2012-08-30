@@ -14,6 +14,7 @@ import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.ServerPath;
+import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
@@ -101,7 +102,7 @@ public class LocalClient extends AbstractClient {
 
 	@Override
 	public void commit(RemoteOntologyDocument document,
-	                    ChangeHistory changes)
+	                    SingletonChangeHistory changes)
 			throws OWLServerException {
 	    server.commit(authToken, document.createServerDocument(), changes);
 	}

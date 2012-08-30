@@ -87,5 +87,5 @@ public interface Client {
 	 * @param changes
 	 */
 	void commit(RemoteOntologyDocument document, 
-	             ChangeHistory changes) throws OWLServerException;
+	             SingletonChangeHistory changes) throws OWLServerException;
 }

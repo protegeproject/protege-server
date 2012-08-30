@@ -25,6 +25,7 @@ import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.ServerTransport;
+import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.exception.DocumentAlreadyExistsException;
 import org.protege.owl.server.api.exception.DocumentNotFoundException;
 import org.protege.owl.server.api.exception.OWLServerException;
@@ -199,7 +200,7 @@ public class ServerImpl implements Server {
 
 	@Override
 	public void commit(AuthToken u, ServerOntologyDocument doc,
-	                    ChangeHistory changesFromClient) throws OWLServerException {
+	                    SingletonChangeHistory changesFromClient) throws OWLServerException {
 	    changesFromClient.getMetaData(changesFromClient.getStartRevision()).setUser(u);
 	    OntologyDocumentRevision head = evaluateRevisionPointer(u, doc, RevisionPointer.HEAD_REVISION);
 		OWLOntology fakeOntology;

@@ -12,6 +12,7 @@ import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.ServerOntologyDocument;
+import org.protege.owl.server.api.SingletonChangeHistory;
 import org.semanticweb.owlapi.model.IRI;
 
 public interface RemoteServer  extends Remote {
@@ -28,6 +29,6 @@ public interface RemoteServer  extends Remote {
 	ChangeHistory getChanges(AuthToken u, ServerOntologyDocument doc, RevisionPointer start, RevisionPointer end) throws RemoteException;
 
 	void commit(AuthToken u, ServerOntologyDocument doc, 
-	             ChangeHistory changes) throws RemoteException;
+	             SingletonChangeHistory changes) throws RemoteException;
 		
 }

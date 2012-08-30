@@ -1,26 +1,24 @@
 package org.protege.owl.server.util;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Map;
-import java.util.SortedSet;
 
+import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RevisionPointer;
-import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.ServerFilter;
+import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.ServerTransport;
-import org.protege.owl.server.api.AuthToken;
+import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.semanticweb.owlapi.model.IRI;
 
 public class ServerFilterAdapter extends ServerFilter {
     
@@ -60,7 +58,7 @@ public class ServerFilterAdapter extends ServerFilter {
 
     @Override
     public void commit(AuthToken u, ServerOntologyDocument doc, 
-                        ChangeHistory changes) throws OWLServerException {
+                        SingletonChangeHistory changes) throws OWLServerException {
         getDelegate().commit(u, doc, changes);
     }
 

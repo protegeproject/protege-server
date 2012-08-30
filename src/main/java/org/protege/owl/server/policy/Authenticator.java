@@ -28,6 +28,7 @@ import org.protege.owl.server.api.ServerFilter;
 import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.ServerTransport;
+import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.exception.AuthenticationFailedException;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.connect.local.LocalTransport;
@@ -162,7 +163,7 @@ public class Authenticator extends ServerFilter {
     @Override
     public void commit(AuthToken u, 
                                   ServerOntologyDocument doc, 
-                                  ChangeHistory clientChanges) throws OWLServerException {
+                                  SingletonChangeHistory clientChanges) throws OWLServerException {
         ensureUserIdCorrect(u);
         ChangeMetaData commitComment = clientChanges.getMetaData(clientChanges.getStartRevision());
         if (commitComment == null) {
