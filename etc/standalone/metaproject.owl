@@ -43,7 +43,7 @@
         <NamedIndividual IRI="#defaultConflictManager"/>
     </ClassAssertion>
     <ClassAssertion>
-        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#RMI"/>
+        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#RMITransport"/>
         <NamedIndividual IRI="#rmiTransport"/>
     </ClassAssertion>
     <ClassAssertion>

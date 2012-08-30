@@ -31,6 +31,7 @@ import org.protege.owl.server.api.ServerTransport;
 import org.protege.owl.server.api.exception.AuthenticationFailedException;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.connect.local.LocalTransport;
+import org.protege.owl.server.connect.local.LocalTransportImpl;
 import org.protege.owl.server.connect.rmi.RMITransport;
 import org.protege.owl.server.policy.generated.UsersAndGroupsLexer;
 import org.protege.owl.server.policy.generated.UsersAndGroupsParser;

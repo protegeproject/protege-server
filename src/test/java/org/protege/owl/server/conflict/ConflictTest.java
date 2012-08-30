@@ -23,7 +23,7 @@ import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.protege.owl.server.api.exception.ConflictException;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.connect.local.LocalClient;
-import org.protege.owl.server.connect.local.LocalTransport;
+import org.protege.owl.server.connect.local.LocalTransportImpl;
 import org.protege.owl.server.core.ServerImpl;
 import org.protege.owl.server.policy.Authenticator;
 import org.protege.owl.server.util.ClientUtilities;
@@ -37,7 +37,7 @@ import org.testng.annotations.Test;
 
 public class ConflictTest {
     public static final IRI SERVER_TEST_ONT = IRI.create(LocalClient.SCHEME + "://localhost/Test" + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
-    private LocalTransport transport;
+    private LocalTransportImpl transport;
     private Client client1, client2;
     private VersionedOntologyDocument vont1, vont2;
     private OWLOntology ontology1, ontology2;
@@ -48,7 +48,7 @@ public class ConflictTest {
         TestUtilities.initializeServerRoot();
         Server coreServer =  new ServerImpl(TestUtilities.ROOT_DIRECTORY, TestUtilities.CONFIGURATION_DIRECTORY);
         Server server = new Authenticator(new ConflictManager(coreServer));
-        transport = new LocalTransport();
+        transport = new LocalTransportImpl();
         List<ServerTransport> transports = new ArrayList<ServerTransport>();
         transports.add(transport);
         transport.start(server);

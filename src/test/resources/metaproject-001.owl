@@ -29,7 +29,7 @@
         <NamedIndividual IRI="#testServer"/>
     </Declaration>
     <ClassAssertion>
-        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#RMI"/>
+        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#RMITransport"/>
         <NamedIndividual IRI="#testRMITransport"/>
     </ClassAssertion>
     <ClassAssertion>
