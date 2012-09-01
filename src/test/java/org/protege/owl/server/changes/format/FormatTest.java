@@ -41,7 +41,7 @@ public class FormatTest {
         long startTime = System.currentTimeMillis();
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         ontology = manager.loadOntologyFromOntologyDocument(new File(ontologyFile));
-        logger.info("Initial ontology load took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
+        logger.fine("Initial ontology load took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
     }
     
     @Test
@@ -72,7 +72,7 @@ public class FormatTest {
         new OWLOutputStream(os).write(changes);
         os.flush();
         os.close();
-        logger.info("Write to history file took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
+        logger.fine("Write to history file took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
     }
     
     @SuppressWarnings("unchecked")
@@ -81,7 +81,7 @@ public class FormatTest {
         long startTime = System.currentTimeMillis();        
         List<OWLOntologyChange> changes = (List<OWLOntologyChange>) new OWLInputStream(is).read();
         is.close();
-        logger.info("Read of history file took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
+        logger.fine("Read of history file took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
         ReplaceChangedOntologyVisitor visitor = new ReplaceChangedOntologyVisitor(ontology);
         List<OWLOntologyChange> adjustedChanges = new ArrayList<OWLOntologyChange>();
         for (OWLOntologyChange change : changes) {

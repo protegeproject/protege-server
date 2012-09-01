@@ -215,7 +215,7 @@
         <path refid="project.classpath"/>
       </classpath>
       <jvmarg value = "-Xmx1G"/>
-      <jvmarg value="-Djava.util.logging.config.file=./logging.properties"/>
+      <jvmarg value="-Djava.util.logging.config.file=./logging-test.properties"/>
       <jvmarg value="-Djava.util.logging.SimpleFormatter.format=%4$s: %5$s%n"/>
       <arg    value="src/test/resources/unit-tests.xml"/>
       <arg    value="-d"/>

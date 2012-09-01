@@ -32,13 +32,8 @@ import org.semanticweb.owlapi.model.SetOntologyID;
 public class ChangeUtilities {
 	
 	private ChangeUtilities() {
-	}
-	
-	
-	public static List<OWLOntologyChange> invertChanges(List<OWLOntologyChange> changes) {
-	    throw new IllegalStateException("not implemented yet");
-	}
-	
+	}	
+
     /**
      * The purpose of this routine is to calculate a minimal set of changes that will have the 
      * same effect on a collection of ontologies as the given changes.  Note that this routine
@@ -51,6 +46,85 @@ public class ChangeUtilities {
      */
     public static List<OWLOntologyChange> normalizeChangeDelta(List<OWLOntologyChange> changes) {
         return ChangeNormalizer.normalizeChangeDelta(changes);
+    }
+    
+    
+    public static List<OWLOntologyChange> invertChanges(List<OWLOntologyChange> baseline, List<OWLOntologyChange> changes) {
+        InvertChangesVisitor minimizingVisitor = new InvertChangesVisitor(baseline);
+        for (OWLOntologyChange change : changes) {
+            change.accept(minimizingVisitor);
+        }
+        return minimizingVisitor.getMinimalInvertedChanges();
+    }
+    
+    private static class InvertChangesVisitor implements OWLOntologyChangeVisitor {
+        List<OWLOntologyChange> minimizedInvertedChanges = new ArrayList<OWLOntologyChange>();
+        private CollectingChangeVisitor collectedFirstChanges;
+        
+        public InvertChangesVisitor(List<OWLOntologyChange> firstChanges) {
+            collectedFirstChanges = CollectingChangeVisitor.collectChanges(firstChanges);
+        }
+
+        public List<OWLOntologyChange> getMinimalInvertedChanges() {
+            return minimizedInvertedChanges;
+        }
+        
+        @Override
+        public void visit(AddAxiom change) {
+            OWLOntologyChange baselineChange = collectedFirstChanges.getLastAxiomChangeMap().get(change.getAxiom());
+            if (baselineChange == null || !baselineChange.equals(change)) {
+                minimizedInvertedChanges.add(new RemoveAxiom(change.getOntology(), change.getAxiom()));
+            }
+        }
+
+        @Override
+        public void visit(RemoveAxiom change) {
+            OWLOntologyChange baselineChange = collectedFirstChanges.getLastAxiomChangeMap().get(change.getAxiom());
+            if (baselineChange == null || !baselineChange.equals(change)) {
+                minimizedInvertedChanges.add(new AddAxiom(change.getOntology(), change.getAxiom()));
+            }
+        }
+
+        @Override
+        public void visit(SetOntologyID change) {
+            SetOntologyID baselineChange = collectedFirstChanges.getLastOntologyIDChange();
+            if (baselineChange != null) {
+                minimizedInvertedChanges.add(baselineChange);
+            }
+        }
+
+        @Override
+        public void visit(AddImport change) {
+            OWLOntologyChange baselineChange = collectedFirstChanges.getLastImportChangeMap().get(change.getImportDeclaration());
+            if (baselineChange == null || !baselineChange.equals(change)) {
+                minimizedInvertedChanges.add(new RemoveImport(change.getOntology(), change.getImportDeclaration()));
+            }
+        }
+
+        @Override
+        public void visit(RemoveImport change) {
+            OWLOntologyChange baselineChange = collectedFirstChanges.getLastImportChangeMap().get(change.getImportDeclaration());
+            if (baselineChange == null || !baselineChange.equals(change)) {
+                minimizedInvertedChanges.add(new AddImport(change.getOntology(), change.getImportDeclaration()));
+            }
+        }
+
+        @Override
+        public void visit(AddOntologyAnnotation change) {
+            OWLOntologyChange baselineChange = collectedFirstChanges.getLastOntologyAnnotationChangeMap().get(change.getAnnotation());
+            if (baselineChange == null || !baselineChange.equals(change)) {
+                minimizedInvertedChanges.add(new RemoveOntologyAnnotation(change.getOntology(), change.getAnnotation()));
+            }
+        }
+
+        @Override
+        public void visit(RemoveOntologyAnnotation change) {
+            OWLOntologyChange baselineChange = collectedFirstChanges.getLastOntologyAnnotationChangeMap().get(change.getAnnotation());
+            if (baselineChange == null || !baselineChange.equals(change)) {
+                minimizedInvertedChanges.add(new AddOntologyAnnotation(change.getOntology(), change.getAnnotation()));
+            }
+        }
+        
     }
     
     public static ChangeHistory swapOrderOfChangeLists(DocumentFactory factory, ChangeHistory doc1, ChangeHistory doc2) {
@@ -251,7 +325,7 @@ public class ChangeUtilities {
         @Override
         public void visit(RemoveOntologyAnnotation change) {
             logger.log(level, "\t" + change);
-        }
+       }
         
     }
 

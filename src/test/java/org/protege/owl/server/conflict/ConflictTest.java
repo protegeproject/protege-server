@@ -32,27 +32,35 @@ import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class ConflictTest {
     public static final IRI SERVER_TEST_ONT = IRI.create(LocalClient.SCHEME + "://localhost/Test" + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
+    private Server server;
     private LocalTransportImpl transport;
+    
     private Client client1, client2;
     private VersionedOntologyDocument vont1, vont2;
-    private OWLOntology ontology1, ontology2;
     
 
     @BeforeMethod
     public void startServer() throws IOException, RecognitionException, OWLServerException {
         TestUtilities.initializeServerRoot();
         Server coreServer =  new ServerImpl(TestUtilities.ROOT_DIRECTORY, TestUtilities.CONFIGURATION_DIRECTORY);
-        Server server = new Authenticator(new ConflictManager(coreServer));
+        server = new Authenticator(new ConflictManager(coreServer));
         transport = new LocalTransportImpl();
         List<ServerTransport> transports = new ArrayList<ServerTransport>();
         transports.add(transport);
         transport.start(server);
         server.setTransports(transports);
+    }
+    
+    @AfterMethod
+    public void shutdownServer() {
+        server.shutdown();
     }
     
     @Test
@@ -64,7 +72,7 @@ public class ConflictTest {
                              new AddAxiom(vont1.getOntology(), HAS_TOPPING_DOMAIN));
         boolean foundConflict = false;
         try {
-            TestUtilities.commit(client1, vont2,
+            TestUtilities.commit(client2, vont2,
                                  new AddAxiom(vont2.getOntology(), CHEESEY_PIZZA_DEFINITION),
                                  new AddAxiom(vont2.getOntology(), NOT_CHEESEY_PIZZA_DEFINITION));
         }
@@ -72,6 +80,23 @@ public class ConflictTest {
             foundConflict = true;
         }
         Assert.assertTrue(foundConflict);
+    }
+    
+    @Test
+    public void testSelfConflict() throws OWLOntologyCreationException, OWLServerException {
+        setupClient1();
+        TestUtilities.commit(client1, vont1,
+                             new AddAxiom(vont1.getOntology(), CHEESEY_PIZZA_DEFINITION),
+                             new AddAxiom(vont1.getOntology(), HAS_TOPPING_DOMAIN));
+        boolean foundConflict = false;
+        try {
+            TestUtilities.commit(client1, vont1,
+                                 new RemoveAxiom(vont1.getOntology(), CHEESEY_PIZZA_DEFINITION));
+        }
+        catch (ConflictException ce) {
+            foundConflict = true;
+        }
+        Assert.assertFalse(foundConflict);
     }
     
 

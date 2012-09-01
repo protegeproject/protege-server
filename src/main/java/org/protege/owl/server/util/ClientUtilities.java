@@ -123,8 +123,9 @@ public class ClientUtilities {
 		    manager.applyChanges(updates.getChanges(localOntology));
 		}
 		else { // invert the changes
+		    ChangeHistory baseline = getChanges(client, openOntology, OntologyDocumentRevision.START_REVISION.asPointer(), targetRevisionPointer);
             ChangeHistory updates = getChanges(client, openOntology, targetRevisionPointer, currentRevision.asPointer());	 
-            manager.applyChanges(ChangeUtilities.invertChanges(updates.getChanges(localOntology)));
+            manager.applyChanges(ChangeUtilities.invertChanges(baseline.getChanges(localOntology), updates.getChanges(localOntology)));
 		}
 		openOntology.setRevision(targetRevision);
 	}

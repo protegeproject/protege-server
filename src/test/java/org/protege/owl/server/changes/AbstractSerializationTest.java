@@ -70,7 +70,7 @@ public abstract class AbstractSerializationTest {
 		ChangeHistory doc2 = documentFactory.createChangeDocument(changes2, null, revision2);
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");
-		logs.info("Using file " + tmp);
+		logs.fine("Using file " + tmp);
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(tmp));
 		out.writeObject(doc1);
 		out.writeObject(doc2);
@@ -102,7 +102,7 @@ public abstract class AbstractSerializationTest {
 		ChangeHistory doc4 = documentFactory.createChangeDocument(changes2, null, revision2);
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");
-		logs.info("Using file " + tmp);
+		logs.fine("Using file " + tmp);
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(tmp));
 		Integer int1 = new Integer(42);
 		out.writeObject(int1);
@@ -167,7 +167,7 @@ public abstract class AbstractSerializationTest {
 		ChangeHistory doc = docFactory.createChangeDocument(changes, null, new OntologyDocumentRevision(r.nextInt(500)));
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");
-		logs.info("Using file " + tmp);
+		logs.fine("Using file " + tmp);
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(tmp));
 		out.writeObject(doc);
 		out.flush();

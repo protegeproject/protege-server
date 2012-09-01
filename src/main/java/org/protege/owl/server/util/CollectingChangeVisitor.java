@@ -34,7 +34,7 @@ public class CollectingChangeVisitor implements OWLOntologyChangeVisitor {
         return visitor;
     }
     
-    public CollectingChangeVisitor() {
+    private CollectingChangeVisitor() {
         lastImportChangeMap = new TreeMap<OWLImportsDeclaration, ImportChange>();
         lastOntologyAnnotationChangeMap = new TreeMap<OWLAnnotation, OWLOntologyChange>();
         lastAxiomChangeMap = new HashMap<OWLAxiom, OWLAxiomChange>();    
