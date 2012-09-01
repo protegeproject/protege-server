@@ -1,6 +1,8 @@
 package org.protege.owl.server.connect.rmi;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -12,6 +14,7 @@ import org.protege.owl.server.api.exception.AuthenticationFailedException;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
 import org.protege.owl.server.connect.RootUtils;
+import org.protege.owl.server.policy.RMILoginUtility;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -72,5 +75,9 @@ public abstract class AbstractRMIClientFactory implements ClientFactory {
     }
     
     protected abstract AuthToken login(IRI serverLocation);
+    
+    protected AuthToken login(IRI serverLocation, String username, String password) throws RemoteException, NotBoundException {
+        return RMILoginUtility.login(serverLocation, username, password);
+    }
 
 }
