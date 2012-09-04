@@ -163,7 +163,7 @@
     <copy file="${protege.common}/org.apache.felix.scr.jar" todir="${server.bundles}"/>
     <copy file="${protege.plugins}/org.semanticweb.owl.owlapi.jar" todir="${server.bundles}"/>
     <copy todir="${server.dir}">
-      <fileset dir="./etc/standalone"/>
+      <fileset dir="./etc/server.template"/>
     </copy>
   </target>
 
