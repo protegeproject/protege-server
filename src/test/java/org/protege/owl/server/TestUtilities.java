@@ -12,6 +12,9 @@ import org.osgi.framework.launch.Framework;
 import org.protege.osgi.framework.Launcher;
 import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.Client;
+import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.api.RemoteOntologyDocument;
+import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.util.ClientUtilities;
@@ -64,6 +67,15 @@ public class TestUtilities {
     }
 	
 	
+    public static void rawCommit(Client client, RemoteOntologyDocument doc, OntologyDocumentRevision revision, OWLOntologyChange... changes) throws OWLServerException {
+        List<OWLOntologyChange> changeList = new ArrayList<OWLOntologyChange>();
+        for (OWLOntologyChange change : changes) {
+            changeList.add(change);
+        }
+        SingletonChangeHistory changeHistory = client.getDocumentFactory().createChangeDocument(changeList, new ChangeMetaData(), revision);
+        client.commit(doc, changeHistory);
+    }
+
     private static void delete(File f) {
         if (f.isDirectory()) {
             for (File child : f.listFiles()) {
