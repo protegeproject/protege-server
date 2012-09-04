@@ -110,25 +110,6 @@ public interface ServerExports {
      *       <i>sh<sub>2</sub></i> &#8226;<i>sh<sub>3</sub></i>&#8226;<i>uh<sub>2</sub></i>'
      * </center>
      * </p>
-     * This computation can be made simpler by using routines that given histories 
-     * <i>uh<sub>1</sub></i> and <i>sh<sub>2</sub></i> will calculate a history 
-     * <i>uh<sub>1</sub>'</i>  such that 
-     * <center>
-     *    <i>sh<sub>1</sub></i>&#8226;<i>uh<sub>1</sub></i>&#8226;<i>sh<sub>2</sub></i>
-     *       = <i>sh<sub>1</sub></i>&#8226;<i>sh<sub>2</sub></i>&#8226;<i>uh<sub>1</sub>'</i>
-     * </center>
-     * holds for any history <i>sh<sub>1</sub></i>.  After using this routine the histories
-     * <i>uh<sub>1</sub>'</i> and <i>uh<sub>2</sub>'</i> can be made minimal with respect with respect 
-     * to the change histories that they are getting added to:
-     * <center>
-     *       <i>sh<sub>1</sub></i> &#8226;<i>sh<sub>2</sub></i>
-     * </center>
-     * and 
-     * <center>
-     *       <i>sh<sub>1</sub></i> &#8226;<i>sh<sub>2</sub></i>
-     *         &#8226;<i>uh<sub>1</sub>'</i>&#8226;<i>sh<sub>3</sub></i>
-     * </center>
-     * respectively.
      *
      * @param u
      * @param doc
