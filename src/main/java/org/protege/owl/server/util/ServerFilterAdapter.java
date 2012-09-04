@@ -63,6 +63,11 @@ public class ServerFilterAdapter extends ServerFilter {
     }
 
     @Override
+    public void shutdown(AuthToken u) throws OWLServerException {
+        getDelegate().shutdown(u);
+    }
+    
+    @Override
     public void shutdown() {
         getDelegate().shutdown();
     }

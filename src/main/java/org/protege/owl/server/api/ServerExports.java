@@ -140,4 +140,6 @@ public interface ServerExports {
      */
     void commit(AuthToken u, ServerOntologyDocument doc, SingletonChangeHistory changes) throws OWLServerException;
 
+    
+    void shutdown(AuthToken u) throws OWLServerException;
 }

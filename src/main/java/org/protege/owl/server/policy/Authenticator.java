@@ -174,6 +174,12 @@ public class Authenticator extends ServerFilter {
     }
 
     @Override
+    public void shutdown(AuthToken u) throws OWLServerException {
+        ensureUserIdCorrect(u);
+        getDelegate().shutdown(u);
+    }
+    
+    @Override
     public void shutdown() {
         getDelegate().shutdown();
     }

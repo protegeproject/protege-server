@@ -30,5 +30,7 @@ public interface RemoteServer  extends Remote {
 
 	void commit(AuthToken u, ServerOntologyDocument doc, 
 	             SingletonChangeHistory changes) throws RemoteException;
+	
+	void shutdown(AuthToken u) throws RemoteException;
 		
 }

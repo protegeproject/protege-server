@@ -247,10 +247,14 @@ public class ServerImpl implements Server {
 	}
 
 	@Override
+	public void shutdown(AuthToken u) {
+	    shutdown();
+	}
+	
+	@Override
 	public void shutdown() {
 	    pool.dispose();
 	}
-	
 
 
 	private File parseServerIRI(ServerPath path, ServerObjectStatus expected) throws DocumentNotFoundException {

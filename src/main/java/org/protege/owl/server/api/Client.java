@@ -88,4 +88,6 @@ public interface Client {
 	 */
 	void commit(RemoteOntologyDocument document, 
 	             SingletonChangeHistory changes) throws OWLServerException;
+	
+	void shutdown() throws OWLServerException;
 }

@@ -28,7 +28,6 @@ import org.semanticweb.owlapi.model.IRI;
 public class RMIClient extends AbstractClient {
 	public static final String SCHEME = "rmi-owl2-server";
 	
-	private Logger logger = Logger.getLogger(RMIClient.class.getCanonicalName());
 	private String host;
 	private int port;
 	private AuthToken authToken;
@@ -162,6 +161,14 @@ public class RMIClient extends AbstractClient {
 	    }
 	}
 
-
+	@Override
+	public void shutdown() throws OWLServerException {
+	    try {
+	        server.shutdown(authToken);
+	    }
+	    catch (RemoteException re) {
+	        throw processException(re);
+	    }
+	}
 
 }

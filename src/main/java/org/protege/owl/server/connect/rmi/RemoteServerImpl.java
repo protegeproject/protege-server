@@ -102,5 +102,15 @@ public class RemoteServerImpl implements RemoteServer {
 			throw new RemoteException(ioe.getMessage(), ioe);
 		}
 	}
+	
+	@Override
+	public void shutdown(AuthToken u) throws RemoteException {
+	    try {
+	        server.shutdown(u);
+	    }
+	    catch (OWLServerException ioe) {
+	        throw new RemoteException(ioe.getMessage(), ioe);
+	    }
+	}
 
 }

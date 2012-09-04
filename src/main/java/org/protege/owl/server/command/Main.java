@@ -29,6 +29,9 @@ public class Main {
         else if ("mkdir".equals(args[0])) {
             mkdir(args);
         }
+        else if ("checkout".equals(args[0])) {
+            // checkout, update and commit are the obvious remaining guys
+        }
         else {
             usage();
         } 

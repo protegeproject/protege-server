@@ -106,5 +106,10 @@ public class LocalClient extends AbstractClient {
 			throws OWLServerException {
 	    server.commit(authToken, document.createServerDocument(), changes);
 	}
+	
+	@Override
+	public void shutdown() throws OWLServerException {
+	    server.shutdown(authToken);
+	}
 
 }
