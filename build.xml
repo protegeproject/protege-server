@@ -26,6 +26,9 @@
   
   <property name = "lib.testng"        location = "./tools/testng-5.14.7.jar"/>
   <property name = "lib.antlr"         location = "./lib/antlr-3.4-complete-no-antlrv2.jar"/>
+
+  <property name = "server.install.dir" location="/usr/local/protege/server"/>
+  <property name = "server.data.dir"    location="/usr/local/protege/data"/>
   
   <taskdef name="check.dependencies"
   	       classname="org.protege.ant.ProtegeDependencies">
@@ -102,7 +105,9 @@
       <classpath refid = "project.classpath"/>  
     </rmic>
   	<copy todir="${classes}/lib">
-      <fileset dir="./lib" includes="**/*.jar"/>
+      <fileset dir="./lib" 
+               includes="**/*.jar"
+               excludes="/>
   	</copy>
 
   </target>
@@ -183,7 +188,7 @@
          manifest = "${manifest}"/>
   </target>
   
-  <target name = "install" depends = "jar,setup.server.framework">
+  <target name = "build" depends = "jar,setup.server.framework">
     <!-- flush cache -->
     <delete dir = "${protege.home}/configuration/org.eclipse.core.runtime"/>
     <delete dir = "${protege.home}/configuration/org.eclipse.osgi"/>
@@ -196,13 +201,21 @@
           todir="${protege.home}"/>
   </target>
 
+  <target name = "install" depends="build">
+    <copy todir="${server.install.dir}">
+      <fileset dir="${server.dir}"/>
+    </copy>
+    <mkdir dir="${server.data.dir}"/>
+  </target>
+
+
   <target name = "clean">
     <delete dir="${build}"/>
   </target>
 
   <!-- Testing -->
 
-  <target name="unit.test" depends="install,testng.compile">
+  <target name="unit.test" depends="build,testng.compile">
     <mkdir dir="${build}/test-output"/>
     <java classname="org.testng.TestNG"
           fork = "true">
@@ -223,7 +236,7 @@
     </java>
   </target>
   
-  <target name="debug.unit.test" depends="install, testng.compile">
+  <target name="debug.unit.test" depends="build, testng.compile">
     <mkdir dir="${build}/test-output"/>
     <java classname="org.testng.TestNG"
           fork = "true">
