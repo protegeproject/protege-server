@@ -190,6 +190,32 @@ public abstract class AbstractBasicServerTest {
 	    Assert.assertEquals(redundantChangeList.get(0), new AddAxiom(versionedPizza1.getOntology(), PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 	    return versionedPizza1.getServerDocument();
 	}
+	
+    @Test
+    public void testUserIdAdded() throws OWLOntologyCreationException, OWLServerException {
+        VersionedOntologyDocument versionedPizza = loadPizza();
+        OntologyDocumentRevision revisionBeforeCommit = versionedPizza.getRevision();
+        RemoteOntologyDocument testDoc = versionedPizza.getServerDocument();
+        OWLOntology ontology1 = versionedPizza.getOntology();
+        List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
+        changes.add(new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
+        client.commit(testDoc, client.getDocumentFactory().createChangeDocument(changes, new ChangeMetaData(), versionedPizza.getRevision()));
+        ChangeHistory committedChange = client.getChanges(testDoc, revisionBeforeCommit.asPointer(), revisionBeforeCommit.next().asPointer());
+        Assert.assertEquals(1, committedChange.getChanges(ontology1).size());
+        Assert.assertEquals(client.getUserId(), committedChange.getMetaData(revisionBeforeCommit).getUserId());
+    }
+    
+    @Test
+    public void testEvaluateRevisionPointer() throws OWLOntologyCreationException, OWLServerException {
+        VersionedOntologyDocument versionedPizza1 = loadPizza();
+        OWLOntology ontology = versionedPizza1.getOntology();
+        OntologyDocumentRevision revision = versionedPizza1.getRevision();
+        Assert.assertEquals(client.evaluateRevisionPointer(versionedPizza1.getServerDocument(), RevisionPointer.HEAD_REVISION), revision);
+        TestUtilities.rawCommit(client, versionedPizza1.getServerDocument(), revision,
+                                new AddAxiom(ontology, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION),
+                                new RemoveAxiom(ontology, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
+        Assert.assertEquals(client.evaluateRevisionPointer(versionedPizza1.getServerDocument(), RevisionPointer.HEAD_REVISION), revision.next());
+    }
 
 	protected VersionedOntologyDocument loadPizza() throws OWLOntologyCreationException, OWLServerException {
 		IRI pizzaLocation = IRI.create(testDirectory.getServerLocation().toString() + "/pizza" + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
