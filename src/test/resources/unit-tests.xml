@@ -7,6 +7,7 @@
         <classes>
             <class name="org.protege.owl.server.LocalBasicServerTest"/>
             <class name="org.protege.owl.server.RemoteBasicServerTest"/>
+            <class name="org.protege.owl.server.AuthenticatedTest"/>
             <class name="org.protege.owl.server.changes.BasicSerializationTest"/> 
             <class name="org.protege.owl.server.changes.ChangeUtilitiesTest"/>
             <class name="org.protege.owl.server.changes.VOntSerializationTest"/>
