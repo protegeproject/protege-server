@@ -45,5 +45,17 @@ public class RevisionPointer implements Serializable {
         }
         return revision;
     }
+    
+    @Override
+    public String toString() {
+        switch (type) {
+        case DOCUMENT_REVISION:
+            return revision.toString();
+        case HEAD:
+            return "Head Revision";
+        default:
+           return "Strange Revision Type";     
+        }
+    }
 
 }
