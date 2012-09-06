@@ -17,5 +17,5 @@ Import-Package: org.xml.sax.helpers;version="0.0.0"
 Excluded-Exports: org.antlr.*,
  org.stringtemplate.*,
  lib
-Excluded-Imports: junit.framework.*, org.stringtemplate.*,org.antlr.*
-
+Excluded-Imports: junit.framework.*, org.stringtemplate.*,org.antlr.*,
+ org.apache.commons.cli.*

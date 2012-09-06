@@ -1,0 +1,28 @@
+#!/bin/bash -x
+
+. /etc/default/protege
+
+start()
+{
+   touch /var/log/protege.log
+   chown ${PROTEGE_SANDBOX_USER} /var/log/protege.log
+   cd ${PROTEGE_SERVER_PREFIX}/server
+
+   su ${PROTEGE_SANDBOX_USER} <<-END
+     nohup \
+        "${JAVA_HOME}/bin/java
+         -Djava.awt.headless=true \
+         ${JAVA_HOME}/bin/java -server -Djava.rmi.server.hostname=${HOSTNAME} \
+         -DentityExpansionLimit=1000000 -Dfile.encoding=UTF-8 \
+         -Dorg.protege.owl.server.configuration=metaproject.owl \
+         -Djava.util.logging.config.file=logging-unix.properties \
+         -classpath lib/felix.jar:lib/ProtegeLauncher.jar \
+         org.protege.osgi.Launcher" &
+END
+}
+
+case "$1" in
+start)
+	start
+	;;
+esac

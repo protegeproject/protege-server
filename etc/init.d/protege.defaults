@@ -1,0 +1,12 @@
+#
+# This file goes into /etc/default/protege and holds the default
+# settings for the Protege Server.
+#
+
+HOSTNAME=`hostname`
+PROTEGE_SERVER_PREFIX=/usr/local/protege
+PROTEGE_SANDBOX_USER=tredmond
+SERVER_ADMIN_ACCOUNT=tredmond
+SERVER_ADMIN_PASSWORD=troglodyte
+SERVER_HOST=localhost:5100
+JAVA_HOME=/usr/local/java/jdk1.7.0_06

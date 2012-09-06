@@ -1,5 +1,5 @@
 <?xml version = "1.0" encoding = "utf-8"?>
-<project name = "OWL Ontology Server Project" default = "install" basedir = ".">    
+<project name = "OWL Ontology Server Project" default = "build" basedir = ".">    
 
   <property environment="env"/>
   <property name = "protege.home"      location="${env.PROTEGE_HOME}"/>
@@ -27,8 +27,7 @@
   <property name = "lib.testng"        location = "./tools/testng-5.14.7.jar"/>
   <property name = "lib.antlr"         location = "./lib/antlr-3.4-complete-no-antlrv2.jar"/>
 
-  <property name = "server.install.dir" location="/usr/local/protege/server"/>
-  <property name = "server.data.dir"    location="/usr/local/protege/data"/>
+  <property name = "install.prefix"    location = "/usr/local/protege"/>
   
   <taskdef name="check.dependencies"
   	       classname="org.protege.ant.ProtegeDependencies">
@@ -106,8 +105,7 @@
     </rmic>
   	<copy todir="${classes}/lib">
       <fileset dir="./lib" 
-               includes="**/*.jar"
-               excludes="/>
+               includes="**/*.jar"/>
   	</copy>
 
   </target>
@@ -170,6 +168,7 @@
     <copy todir="${server.dir}">
       <fileset dir="./etc/server.template"/>
     </copy>
+    <copy todir="${server.dir}/bin" file="./tools/commons-cli-1.2.jar"/>
   </target>
 
   <target name="copy.resources">
@@ -202,10 +201,15 @@
   </target>
 
   <target name = "install" depends="build">
-    <copy todir="${server.install.dir}">
-      <fileset dir="${server.dir}"/>
+    <copy todir="${install.prefix}/server">
+      <fileset dir="${server.dir}" excludes="metaproject.owl"/>
     </copy>
-    <mkdir dir="${server.data.dir}"/>
+    <copy file="./etc/metaproject-data.owl"
+          tofile="${install.prefix}/server/metaproject.owl"/>
+    <copy file="./etc/init.d/logging-unix.properties"
+          todir="${install.prefix}/server"/>
+    <mkdir dir="${install.prefix}/bin"/>
+    <mkdir dir="${install.prefix}/data"/>
   </target>
 
 
