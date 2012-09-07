@@ -4,20 +4,21 @@
 
 start()
 {
-   touch /var/log/protege.log
-   chown ${PROTEGE_SANDBOX_USER} /var/log/protege.log
-   cd ${PROTEGE_SERVER_PREFIX}/server
+   mkdir --parents /var/log/protege
+   chown ${PROTEGE_SANDBOX_USER} /var/log/protege
+   SERVER_DIR=${PROTEGE_SERVER_PREFIX}/server
+   cd ${SERVER_DIR}
 
    su ${PROTEGE_SANDBOX_USER} <<-END
      nohup \
-        "${JAVA_HOME}/bin/java
+       ${JAVA_HOME}/bin/java \
          -Djava.awt.headless=true \
-         ${JAVA_HOME}/bin/java -server -Djava.rmi.server.hostname=${HOSTNAME} \
+         -server -Djava.rmi.server.hostname=${HOSTNAME} \
          -DentityExpansionLimit=1000000 -Dfile.encoding=UTF-8 \
          -Dorg.protege.owl.server.configuration=metaproject.owl \
          -Djava.util.logging.config.file=logging-unix.properties \
          -classpath lib/felix.jar:lib/ProtegeLauncher.jar \
-         org.protege.osgi.Launcher" &
+         org.protege.osgi.framework.Launcher > /dev/null &
 END
 }
 

@@ -82,7 +82,7 @@
     <property name="parser.dir" 
               location="${gensrc}/org/protege/owl/server/policy/generated"/>
   	<mkdir dir="${parser.dir}"/>
-    <java classname="org.antlr.Tool" dir="./etc" fork="true">
+    <java classname="org.antlr.Tool" dir="./etc/lang" fork="true">
       <classpath>
         <pathelement location="${lib.antlr}"/>
       </classpath>
@@ -206,7 +206,7 @@
     </copy>
     <copy file="./etc/metaproject-data.owl"
           tofile="${install.prefix}/server/metaproject.owl"/>
-    <copy file="./etc/init.d/logging-unix.properties"
+    <copy file="./etc/unix.scripts/init.d/logging-unix.properties"
           todir="${install.prefix}/server"/>
     <mkdir dir="${install.prefix}/bin"/>
     <mkdir dir="${install.prefix}/data"/>
