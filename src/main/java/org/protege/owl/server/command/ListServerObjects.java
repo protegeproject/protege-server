@@ -6,11 +6,11 @@ import org.protege.owl.server.api.RemoteServerDocument;
 import org.protege.owl.server.util.ClientRegistry;
 import org.semanticweb.owlapi.model.IRI;
 
-public class List implements Runnable {
+public class ListServerObjects implements Runnable {
     private ClientRegistry registry;
     private IRI serverLoc;
     
-    public List(ClientRegistry registry, IRI serverLoc) {
+    public ListServerObjects(ClientRegistry registry, IRI serverLoc) {
         this.registry = registry;
         this.serverLoc = serverLoc;
     }

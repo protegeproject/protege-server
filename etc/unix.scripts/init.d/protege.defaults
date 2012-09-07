@@ -9,4 +9,4 @@ PROTEGE_SANDBOX_USER=tredmond
 SERVER_ADMIN_ACCOUNT=tredmond
 SERVER_ADMIN_PASSWORD=troglodyte
 SERVER_HOST=localhost:5100
-JAVA_HOME=/usr/local/java/jdk1.7.0_06
+JAVA_CMD=/usr/local/java/jdk1.7.0_06/bin/java

@@ -202,14 +202,20 @@
 
   <target name = "install" depends="build">
     <copy todir="${install.prefix}/server">
-      <fileset dir="${server.dir}" excludes="metaproject.owl"/>
+      <fileset dir="${server.dir}"/>
     </copy>
-    <copy file="./etc/metaproject-data.owl"
-          tofile="${install.prefix}/server/metaproject.owl"/>
     <copy file="./etc/unix.scripts/init.d/logging-unix.properties"
           todir="${install.prefix}/server"/>
     <mkdir dir="${install.prefix}/bin"/>
     <mkdir dir="${install.prefix}/data"/>
+    <java classname="org.protege.owl.server.command.SetMetaprojectDataDir">
+        <classpath>
+          <pathelement path="${classes}"/>
+          <path refid="project.classpath"/>
+        </classpath>
+    	<arg value="${install.prefix}/server/metaproject.owl"/>
+    	<arg value="../data"/>
+  	</java>
   </target>
 
 

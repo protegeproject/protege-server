@@ -1,29 +1,50 @@
-#!/bin/bash -x
+#!/bin/bash
 
 . /etc/default/protege
+SERVER_DIR=${PROTEGE_SERVER_PREFIX}/server
+
 
 start()
 {
-   mkdir --parents /var/log/protege
+   mkdir -p /var/log/protege
    chown ${PROTEGE_SANDBOX_USER} /var/log/protege
-   SERVER_DIR=${PROTEGE_SERVER_PREFIX}/server
    cd ${SERVER_DIR}
 
    su ${PROTEGE_SANDBOX_USER} <<-END
      nohup \
-       ${JAVA_HOME}/bin/java \
+       ${JAVA_CMD} \
          -Djava.awt.headless=true \
          -server -Djava.rmi.server.hostname=${HOSTNAME} \
          -DentityExpansionLimit=1000000 -Dfile.encoding=UTF-8 \
          -Dorg.protege.owl.server.configuration=metaproject.owl \
          -Djava.util.logging.config.file=logging-unix.properties \
          -classpath lib/felix.jar:lib/ProtegeLauncher.jar \
-         org.protege.osgi.framework.Launcher > /dev/null &
+         org.protege.osgi.framework.Launcher &> /var/log/protege/cmdline &
 END
 }
+
+stop() 
+{
+   cd ${SERVER_DIR}
+   su ${PROTEGE_SANDBOX_USER} <<-END
+   ${JAVA_CMD} \
+         -Djava.awt.headless=true \
+         -server -Djava.rmi.server.hostname=${HOSTNAME} \
+         -DentityExpansionLimit=1000000 -Dfile.encoding=UTF-8 \
+         -Dorg.protege.owl.server.configuration=metaproject.owl \
+         -Djava.util.logging.config.file=logging.properties \
+         -classpath bundles/org.semanticweb.owl.owlapi.jar:bundles/org.protege.owl.server.jar \
+         org.protege.owl.server.command.Shutdown \
+          ${SERVER_ADMIN_ACCOUNT} ${SERVER_ADMIN_PASSWORD} ${SERVER_HOST} 
+END
+}
+
 
 case "$1" in
 start)
 	start
 	;;
+stop)
+    stop
+    ;;
 esac

@@ -42,7 +42,7 @@ public class Main {
     }
     
     private void list(String[] args) {
-        new List(registry, IRI.create(args[2])).run();
+        new ListServerObjects(registry, IRI.create(args[2])).run();
     }
     
     private void upload(String[] args) {

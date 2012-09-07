@@ -8,17 +8,15 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerComponentFactory;
-import org.protege.owl.server.api.ServerFilter;
-import org.protege.owl.server.api.ServerTransport;
 import org.protege.owl.server.core.ServerImpl;
+import org.protege.owl.server.util.ServerComponentFactoryAdapter;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 
-public class CoreServerFactory implements ServerComponentFactory {
+public class CoreServerFactory extends ServerComponentFactoryAdapter {
 	public static Logger logger = Logger.getLogger(CoreServerFactory.class.getCanonicalName());
 	private OWLOntology ontology;
 	private OWLDataFactory factory;
@@ -56,28 +54,6 @@ public class CoreServerFactory implements ServerComponentFactory {
 	        }
 	        return new File("configuration");
 	}
-
-	@Override
-	public boolean hasSuitableServerFilter(OWLIndividual i) {
-		return false;
-	}
-
-	@Override
-	public ServerFilter createServerFilter(OWLIndividual i, Server server) {
-		return null;
-	}
-
-
-	
-	@Override
-    public boolean hasSuitableServerTransport(OWLIndividual i) {
-        return false;
-    }
-
-    @Override
-    public ServerTransport createServerTransport(OWLIndividual i) {
-        return null;
-    }
 
     @Override
     public String toString() {
