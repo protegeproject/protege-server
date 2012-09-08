@@ -52,6 +52,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
  */
 
 public class ServerImpl implements Server {
+    public static final int POOL_TIMEOUT = 60 * 1000;
 	
 	public enum ServerObjectStatus {
 		OBJECT_NOT_FOUND {
@@ -108,7 +109,7 @@ public class ServerImpl implements Server {
 		}
 		this.root = root;
 		this.configurationDir = configurationDir;
-		this.pool = new ChangeDocumentPool(factory, 60 * 1000);
+		this.pool = new ChangeDocumentPool(factory, POOL_TIMEOUT);
 	}
 	
 	@Override
@@ -266,19 +267,6 @@ public class ServerImpl implements Server {
 		return null;
 	}
 	
-	private IRI createIRI(IRI model, String path) {
-		URI modelUri = model.toURI();
-		StringBuffer iriBuffer = new StringBuffer();
-		iriBuffer.append(model.getScheme());
-		iriBuffer.append("://");
-		iriBuffer.append(modelUri.getAuthority());
-		if (!path.startsWith("/")) {
-			iriBuffer.append('/');
-		}
-		iriBuffer.append(path);
-		return IRI.create(iriBuffer.toString());
-	}
-
 	/* Interfaces that are not visible to the client. */
 
 	@Override

@@ -2,8 +2,6 @@ package org.protege.owl.server.configuration.factories;
 
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.LOCAL_TRANSPORT;
 
-import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerFilter;
 import org.protege.owl.server.api.ServerTransport;
 import org.protege.owl.server.connect.local.LocalTransportImpl;
 import org.protege.owl.server.util.ServerComponentFactoryAdapter;
