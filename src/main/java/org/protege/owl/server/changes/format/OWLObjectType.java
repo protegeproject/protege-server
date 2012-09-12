@@ -1164,7 +1164,7 @@ public enum OWLObjectType {
 
         @Override
         public OWLObjectSomeValuesFrom read(OWLInputStream in) throws IOException {
-            OWLObjectProperty property = (OWLObjectProperty) in.read();
+            OWLObjectPropertyExpression property = (OWLObjectPropertyExpression) in.read();
             OWLClassExpression classExpression = (OWLClassExpression) in.read();
             return in.getOWLDataFactory().getOWLObjectSomeValuesFrom(property, classExpression);
         }
@@ -1181,7 +1181,7 @@ public enum OWLObjectType {
 
         @Override
         public OWLObjectAllValuesFrom read(OWLInputStream in) throws IOException {
-            OWLObjectProperty property = (OWLObjectProperty) in.read();
+            OWLObjectPropertyExpression property = (OWLObjectPropertyExpression) in.read();
             OWLClassExpression classExpression = (OWLClassExpression) in.read();
             return in.getOWLDataFactory().getOWLObjectAllValuesFrom(property, classExpression);
         }
@@ -1238,7 +1238,7 @@ public enum OWLObjectType {
 
         @Override
         public Object read(OWLInputStream in) throws IOException {
-            OWLObjectProperty p = (OWLObjectProperty) in.read();
+            OWLObjectPropertyExpression p = (OWLObjectPropertyExpression) in.read();
             int cardinality = IOUtils.readInt(in.getInputStream());
             OWLClassExpression filler = (OWLClassExpression) in.read();
             return in.getOWLDataFactory().getOWLObjectExactCardinality(cardinality, p, filler);
