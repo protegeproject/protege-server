@@ -1,2 +1,3 @@
 
-install.prefix="C:/Program Files/Protege Server/"
+install.prefix=C:/Program Files/Protege Server/
+install.port=5100
