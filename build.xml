@@ -209,7 +209,8 @@
           todir="${install.prefix}/server"/>
     <mkdir dir="${install.prefix}/bin"/>
     <mkdir dir="${install.prefix}/data"/>
-    <java classname="org.protege.owl.server.command.SetMetaprojectDataDir">
+    <java classname="org.protege.owl.server.command.SetMetaprojectDataDir"
+    	  failonerror="true">
         <classpath>
           <pathelement path="${classes}"/>
           <path refid="project.classpath"/>
@@ -217,7 +218,8 @@
     	<arg value="${install.prefix}/server/metaproject.owl"/>
     	<arg value="../data"/>
   	</java>
-    <java classname="org.protege.owl.server.command.SetMetaProjectPort">
+    <java classname="org.protege.owl.server.command.SetMetaProjectPort"
+    	  failonerror="true">
         <classpath>
           <pathelement path="${classes}"/>
           <path refid="project.classpath"/>

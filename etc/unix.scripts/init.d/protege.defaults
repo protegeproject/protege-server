@@ -10,3 +10,4 @@ SERVER_ADMIN_ACCOUNT=tredmond
 SERVER_ADMIN_PASSWORD=troglodyte
 SERVER_HOST=localhost:5100
 JAVA_CMD=/usr/local/java/jdk1.7.0_06/bin/java
+PID=/var/log/protege/PID
