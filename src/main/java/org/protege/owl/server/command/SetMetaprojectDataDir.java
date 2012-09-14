@@ -5,6 +5,7 @@ import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_ROO
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -28,6 +29,7 @@ import org.semanticweb.owlapi.model.RemoveAxiom;
  *
  */
 public class SetMetaprojectDataDir {
+    private static final Logger LOGGER = Logger.getLogger(SetMetaprojectDataDir.class.getCanonicalName());
 
     /**
      * @param args
@@ -50,6 +52,7 @@ public class SetMetaprojectDataDir {
         }
         manager.applyChanges(changes);
         manager.saveOntology(ontology);
+        LOGGER.info("Set data directory to " + dataDir);
     }
 
 }
