@@ -28,7 +28,7 @@
   <property name = "lib.antlr"         location = "./lib/antlr-3.4-complete-no-antlrv2.jar"/>
 
   <property name = "install.prefix"    location = "/usr/local/protege"/>
-  <property name = "install.port"      value    = "5100"/>
+  <property name = "install.port"      value    = "4875"/>
   
   <taskdef name="check.dependencies"
   	       classname="org.protege.ant.ProtegeDependencies">
@@ -216,7 +216,7 @@
           <path refid="project.classpath"/>
         </classpath>
     	<arg value="${install.prefix}/server/metaproject.owl"/>
-    	<arg value="../data"/>
+    	<arg value="${install.prefix}/data"/>
   	</java>
     <java classname="org.protege.owl.server.command.SetMetaProjectPort"
     	  failonerror="true">
