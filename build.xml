@@ -156,19 +156,16 @@
 
 
   <target name="setup.server.framework">
-    <mkdir dir="${server.dir}/configuration"/>
-    <mkdir dir="${server.dir}/lib"/>
-    <mkdir dir="${server.dir}/plugins"/>
-    <mkdir dir="${server.dir}/root"/>
+    <mkdir dir="${server.dir}"/>
+    <copy todir="${server.dir}">
+      <fileset dir="./etc/server.template"/>
+    </copy>
     <copy file="./logging.properties" todir="${server.dir}"/>
     <copy file="${protege.osgi}" todir="${server.dir}/lib"/>
     <copy file="${protege.launcher}" todir="${server.dir}/lib"/>
     <copy file="${protege.common}/org.apache.felix.configadmin.jar" todir="${server.bundles}"/>
     <copy file="${protege.common}/org.apache.felix.scr.jar" todir="${server.bundles}"/>
     <copy file="${protege.plugins}/org.semanticweb.owl.owlapi.jar" todir="${server.bundles}"/>
-    <copy todir="${server.dir}">
-      <fileset dir="./etc/server.template"/>
-    </copy>
     <copy todir="${server.dir}/bin" file="./tools/commons-cli-1.2.jar"/>
   </target>
 
