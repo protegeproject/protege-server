@@ -1,8 +1,17 @@
 #!/bin/bash
 
+### BEGIN INIT INFO
+# Provides:          protege
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start Protege OWL Server at boot time
+# Description:       Provide OWL Server Services.
+### END INIT INFO
+
 . /etc/default/protege
 SERVER_DIR=${PROTEGE_SERVER_PREFIX}/server
-
 
 start()
 {
@@ -41,6 +50,25 @@ stop()
     rm ${PID}
 }
 
+status() 
+{
+   if [ ! -f ${PID} ]
+   then 
+     echo Protege Server not running
+     exit 1
+   fi
+   pid=`cat ${PID}`
+   if [ "x`ps --noheaders --pid $pid`" != "x" ]
+   then  
+      echo "Protege Server up (pid = ${pid})"
+      exit 0
+   else
+      echo Protege Server does not appear to be running
+      echo You may need to clean up the ${PID} file.
+      exit 1
+   fi
+}
+
 
 case "$1" in
 start)
@@ -48,5 +76,14 @@ start)
 	;;
 stop)
     stop
+    ;;
+restart)
+    stop ; start
+    ;;
+force-reload)
+    stop ; start
+    ;;
+status)
+    status
     ;;
 esac
