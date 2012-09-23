@@ -20,16 +20,27 @@ public final class ServerPath implements Comparable<ServerPath>, Serializable {
     }
     
     public ServerPath(URI uri) {
-        String uriPath = uri.getPath();
-        if (uriPath.startsWith("/")) {
-            uriPath = uriPath.substring(1);
-        }
-        components = new ArrayList<String>();
-        for (String component : uriPath.split("/")) {
-            components.add(component);
-        }
+        this(uri.getPath());
     }
     
+    public ServerPath(String path) {
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        components = new ArrayList<String>();
+        for (String component : path.split("/")) {
+            components.add(component);
+        }  
+    }
+    
+    public ServerPath getParent() {
+        return new ServerPath(components.subList(0, components.size() - 1));
+    }
+    
+    public boolean isRoot() {
+        return components.isEmpty();
+    }
+
     public List<String> getComponents() {
         return components;
     }

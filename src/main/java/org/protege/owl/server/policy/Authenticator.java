@@ -32,18 +32,25 @@ import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.exception.AuthenticationFailedException;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.connect.local.LocalTransport;
-import org.protege.owl.server.connect.local.LocalTransportImpl;
 import org.protege.owl.server.connect.rmi.RMITransport;
 import org.protege.owl.server.policy.generated.UsersAndGroupsLexer;
 import org.protege.owl.server.policy.generated.UsersAndGroupsParser;
 
 public class Authenticator extends ServerFilter {
     public static final String LOCAL_BASIC_LOGIN_KEY = "Basic Login key for Local Transport";
+    private static UserDatabase userDatabase = null;
     
     private Logger logger = Logger.getLogger(Authenticator.class.getCanonicalName());
     private BasicLoginService loginService;
 
-    public static UserDatabase parseUsersAndGroups(Server server) throws IOException, RecognitionException, OWLServerException {
+    public enum GetUserAndGroupOption {
+        USE_CACHE, RELOAD;
+    }
+    
+    public static UserDatabase parseUsersAndGroups(Server server, GetUserAndGroupOption option) throws IOException, RecognitionException, OWLServerException {
+        if (option == GetUserAndGroupOption.USE_CACHE && userDatabase != null) {
+            return userDatabase;
+        }
         InputStream fis = server.getConfigurationInputStream("UsersAndGroups");
         try {
             ANTLRInputStream input = new ANTLRInputStream(fis);
@@ -51,7 +58,8 @@ public class Authenticator extends ServerFilter {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             UsersAndGroupsParser parser = new UsersAndGroupsParser(tokens);
             parser.top();
-            return parser.getUserDatabase();
+            userDatabase = parser.getUserDatabase();
+            return userDatabase;
         }
         finally {
             fis.close();
@@ -64,7 +72,7 @@ public class Authenticator extends ServerFilter {
     }
 
     public Authenticator(Server delegate) throws IOException, RecognitionException, OWLServerException {
-        this(delegate, parseUsersAndGroups(delegate));
+        this(delegate, parseUsersAndGroups(delegate, GetUserAndGroupOption.USE_CACHE));
     }
     
     public Authenticator(Server delegate, UserDatabase userDb) {

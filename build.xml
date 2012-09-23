@@ -90,6 +90,13 @@
       <arg value="-o"/> <arg value="${parser.dir}"/>
       <arg value="UsersAndGroups.g"/>
     </java>
+    <java classname="org.antlr.Tool" dir="./etc/lang" fork="true">
+      <classpath>
+        <pathelement location="${lib.antlr}"/>
+      </classpath>
+      <arg value="-o"/> <arg value="${parser.dir}"/>
+      <arg value="Policy.g"/>
+    </java>
   </target>
 
   

@@ -16,9 +16,9 @@ public class Permission {
     }
     
     
-    public boolean isAllowed(UserDatabase db, UserId owner, UserId requestingUser, Operation op) {
+    public boolean isAllowed(UserDatabase db, UserId requestingUser, Operation op) {
         UserContainer container = permissionMap.get(op);
-        return container != null && container.contains(db, owner, requestingUser);
+        return container != null && container.contains(db, requestingUser);
     }
 
     public void write(Writer writer) throws IOException {
@@ -42,7 +42,7 @@ public class Permission {
             return false;
         }
         Permission other = (Permission) obj;
-        return permissionMap.equals(permissionMap);
+        return permissionMap.equals(other.permissionMap);
     }
     
     @Override
@@ -63,7 +63,7 @@ public class Permission {
         }
         finally {
             try {
-            writer.close();
+                writer.close();
             }
             catch (IOException e) {
                 return "Unknown Permission";

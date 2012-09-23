@@ -1,12 +1,15 @@
 package org.protege.owl.server.policy;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
+import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.UserId;
 
 /*
@@ -14,8 +17,6 @@ import org.protege.owl.server.api.UserId;
  */
 
 public class UserDatabase {
-    private Permission defaultDocPolicy;
-    private Map<UserId, Permission> docPolicyMap = new TreeMap<UserId, Permission>();
     private Map<UserId, String> passwordMap = new TreeMap<UserId, String>();
     private Map<UserId, Collection<Group>> userToGroupsMap = new TreeMap<UserId, Collection<Group>>();
     private Map<UserId, SimpleAuthToken> tokenMap = new TreeMap<UserId, SimpleAuthToken>();
@@ -25,23 +26,6 @@ public class UserDatabase {
         Map<Operation, UserContainer> permissionMap = new TreeMap<Operation, UserContainer>();
         permissionMap.put(Operation.READ, UserContainer.EVERYONE);
         permissionMap.put(Operation.WRITE, UserContainer.EVERYONE);
-        defaultDocPolicy = new Permission(permissionMap);
-    }
-    
-    public void setDefaultDocPolicy(Permission defaultDocPolicy) {
-        this.defaultDocPolicy = defaultDocPolicy;
-    }
-    
-    public void setDefaultDocPolicy(UserId u, Permission p) {
-        docPolicyMap.put(u, p);
-    }
-    
-    public Permission getDocumentPolicy(UserId u) {
-        Permission p = docPolicyMap.get(u);
-        if (p == null) {
-            p = defaultDocPolicy;
-        }
-        return p;
     }
     
     public UserId addUser(String userName, String password) {
@@ -59,8 +43,32 @@ public class UserDatabase {
         groups.add(g);
     }
     
+    void write(Writer writer) throws IOException {
+        for (Entry<UserId, String> entry : passwordMap.entrySet()) {
+            UserId u = entry.getKey();
+            String password = entry.getValue();
+            writer.write("User: ");
+            writer.write(u.getUserName());
+            writer.write(" Password: ");
+            writer.write(password);
+            Collection<Group> groups = getGroups(u);
+            if (!groups.isEmpty()) {
+                writer.write("\n    Groups: ");
+                for (Group group : groups) {
+                    writer.write(' ');
+                    writer.write(group.getGroupName());
+                }
+            }
+            writer.write(" ;\n");
+        }
+    }
+    
     public Collection<Group> getGroups(UserId u) {
-        return userToGroupsMap.get(u);
+        Collection<Group> groups = userToGroupsMap.get(u);
+        if (groups == null) {
+            return Collections.emptySet();
+        }
+        return new TreeSet<Group>(groups);
     }
     
     public Collection<UserId> getUsers() {
@@ -84,5 +92,18 @@ public class UserDatabase {
         return tokenMap.values().contains(token);
     }
     
+    @Override
+    public int hashCode() {
+        return passwordMap.hashCode() + 42 * userToGroupsMap.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof UserDatabase)) {
+            return false;
+        }
+        UserDatabase other = (UserDatabase) obj;
+        return passwordMap.equals(other.passwordMap) && userToGroupsMap.equals(other.userToGroupsMap);
+    }
 
 }
