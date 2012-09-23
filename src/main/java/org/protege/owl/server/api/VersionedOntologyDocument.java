@@ -1,7 +1,6 @@
 package org.protege.owl.server.api;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 

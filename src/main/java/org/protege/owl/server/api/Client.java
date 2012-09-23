@@ -1,7 +1,6 @@
 package org.protege.owl.server.api;
 
 import java.util.Collection;
-import java.util.SortedSet;
 
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.IRI;

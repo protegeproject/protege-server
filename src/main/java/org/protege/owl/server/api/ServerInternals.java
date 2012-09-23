@@ -1,6 +1,5 @@
 package org.protege.owl.server.api;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;

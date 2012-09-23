@@ -5,11 +5,10 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
-import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.UserId;
 
 /*

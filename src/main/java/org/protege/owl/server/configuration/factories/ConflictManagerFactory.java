@@ -4,7 +4,6 @@ import static org.protege.owl.server.configuration.MetaprojectVocabulary.BASIC_C
 
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerFilter;
-import org.protege.owl.server.api.ServerTransport;
 import org.protege.owl.server.conflict.ConflictManager;
 import org.protege.owl.server.util.ServerComponentFactoryAdapter;
 import org.semanticweb.owlapi.model.OWLDataFactory;

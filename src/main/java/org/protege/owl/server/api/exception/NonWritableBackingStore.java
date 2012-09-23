@@ -1,6 +1,5 @@
 package org.protege.owl.server.api.exception;
 
-import java.io.IOException;
 
 public class NonWritableBackingStore extends OWLServerException {
 	private static final long serialVersionUID = -7599963185053848128L;

@@ -1,8 +1,5 @@
 package org.protege.owl.server.policy;
 
-import java.rmi.RemoteException;
-import java.util.UUID;
-
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.UserId;
 

@@ -3,16 +3,12 @@ package org.protege.owl.server.changes;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.ChangeHistory;
@@ -185,10 +181,6 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 	    startRevision = doc.getStartRevision();
 	    listOfRevisionChanges = doc.listOfRevisionChanges;
 	    metaDataMap = doc.metaDataMap;
-	}
-	
-	private void readObjectNoData() throws ObjectStreamException {
-		throw new IllegalStateException("huh?");
 	}
 	
 	@Override

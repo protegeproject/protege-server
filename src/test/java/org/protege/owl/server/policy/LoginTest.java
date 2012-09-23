@@ -3,7 +3,6 @@ package org.protege.owl.server.policy;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 

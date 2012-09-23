@@ -1,7 +1,5 @@
 package org.protege.owl.server.core;
 
-import java.io.Serializable;
-
 import org.protege.owl.server.api.RemoteServerDirectory;
 import org.protege.owl.server.api.RemoteServerDocument;
 import org.protege.owl.server.api.ServerDirectory;
