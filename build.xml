@@ -111,13 +111,12 @@
           classname="org.protege.owl.server.connect.rmi.RemoteServerImpl">
       <classpath refid = "project.classpath"/>  
     </rmic>
-  	<copy todir="${classes}/lib">
+    <copy todir="${classes}/lib">
       <fileset dir="./lib" 
                includes="**/*.jar"/>
-  	</copy>
-
+    </copy>
   </target>
-  
+
   <target name = "testng.compile" depends="init,checkProtegeLibsAndReport">
     <javac srcdir = "${testng.src}"
            destdir = "${testng.classes}" 
@@ -186,13 +185,13 @@
   </target>
   
   
-  <target name = "jar" depends = "compile, use.existing.manifest, bundlor.manifest,copy.resources">
+  <target name = "jar" depends = "compile,use.existing.manifest, bundlor.manifest,copy.resources,setup.server.framework">
     <jar jarfile = "${server.bundles}/${plugin}.jar"
          basedir = "${classes}" 
          manifest = "${manifest}"/>
   </target>
   
-  <target name = "build" depends = "jar,setup.server.framework">
+  <target name = "protege.install" depends = "jar">
     <!-- flush cache -->
     <delete dir = "${protege.home}/configuration/org.eclipse.core.runtime"/>
     <delete dir = "${protege.home}/configuration/org.eclipse.osgi"/>
@@ -205,7 +204,7 @@
           todir="${protege.home}"/>
   </target>
 
-  <target name = "install" depends="build">
+  <target name = "install" depends="protege.install">
     <copy todir="${install.prefix}/server">
       <fileset dir="${server.dir}"/>
     </copy>
@@ -242,7 +241,7 @@
 
   <!-- Testing -->
 
-  <target name="unit.test" depends="build,testng.compile">
+  <target name="unit.test" depends="jar,testng.compile">
     <mkdir dir="${build}/test-output"/>
     <java classname="org.testng.TestNG"
           fork = "true">
@@ -263,7 +262,7 @@
     </java>
   </target>
   
-  <target name="debug.unit.test" depends="build, testng.compile">
+  <target name="debug.unit.test" depends="jar,testng.compile">
     <mkdir dir="${build}/test-output"/>
     <java classname="org.testng.TestNG"
           fork = "true">
