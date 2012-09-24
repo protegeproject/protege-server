@@ -253,6 +253,10 @@ public class ServerImpl implements Server {
 	
 	@Override
 	public void shutdown() {
+	    for (ServerTransport transport : transports) {
+	        transport.dispose();
+	    }
+	    transports.clear();
 	    pool.dispose();
 	}
 

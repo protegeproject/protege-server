@@ -54,9 +54,6 @@ public class BuilderImpl implements Builder {
 			if (isUp() && metaOntology != null) {
 				logger.info("Resetting server");
 				server.shutdown();
-				for (ServerTransport serverTransport : serverTransports) {
-					serverTransport.dispose();
-				}
 				server = null;
 				serverTransports.clear();
 				satisfyConstraints();

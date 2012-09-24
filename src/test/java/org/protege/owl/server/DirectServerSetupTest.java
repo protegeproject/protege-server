@@ -59,9 +59,6 @@ public class DirectServerSetupTest {
     public void stopServer() {
         Collection<ServerTransport> transports = new ArrayList<ServerTransport>(server.getTransports());
         server.shutdown();
-        for (ServerTransport transport : transports) {
-            transport.dispose();
-        }
     }
     
     @Test
