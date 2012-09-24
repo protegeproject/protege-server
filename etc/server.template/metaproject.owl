@@ -29,6 +29,9 @@
         <NamedIndividual IRI="#defaultConflictManager"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#localTransport"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#osgiCleanShutdownFilter"/>
     </Declaration>
     <Declaration>
@@ -44,6 +47,10 @@
     <ClassAssertion>
         <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicConflictManager"/>
         <NamedIndividual IRI="#defaultConflictManager"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#LocalTransport"/>
+        <NamedIndividual IRI="#localTransport"/>
     </ClassAssertion>
     <ClassAssertion>
         <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#OSGiShutdownFilter"/>
@@ -76,6 +83,15 @@
         <ObjectProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasTransport"/>
         <NamedIndividual IRI="#server"/>
         <NamedIndividual IRI="#rmiTransport"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+            <Literal datatypeIRI="&rdf;PlainLiteral">This object property assertion is put here so that plugins can access the server through the local transport if they like.</Literal>
+        </Annotation>
+        <ObjectProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasTransport"/>
+        <NamedIndividual IRI="#server"/>
+        <NamedIndividual IRI="#localTransport"/>
     </ObjectPropertyAssertion>
     <DataPropertyAssertion>
         <DataProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasRegistryPort"/>
