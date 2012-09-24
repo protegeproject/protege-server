@@ -11,7 +11,7 @@ import org.protege.owl.server.api.ServerTransport;
 /*
  * ToDo - it would be nice to add a factory so that this auto-configures in OSGi.
  */
-public class LocalTransportImpl implements ServerTransport, LocalTransport {
+public class LocalTransportImpl implements LocalTransport {
     private Server server;
     private Map<String, Object> registeredObjectMap = new TreeMap<String, Object>();
 
