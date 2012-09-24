@@ -17,13 +17,16 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class UserParserTest {
+    public static final UserId FERGERSON = new UserId("fergerson");
+    public static final UserId GUEST     = new UserId("guest");
+    public static final UserId REDMOND   = new UserId("redmond");
+    public static final UserId TANIA     = new UserId("ttania");
 
     @Test
     public void basicUserParseTest() throws FileNotFoundException, IOException, RecognitionException {
         UserDatabase db = parseUserDatabase("src/test/resources/parser/UsersAndGroups01");
-        UserId redmond = new UserId("redmond");
-        Assert.assertTrue(db.checkPassword(redmond, "troglodyte"));
-        Assert.assertEquals(2, db.getGroups(redmond).size());
+        Assert.assertTrue(db.checkPassword(REDMOND, "troglodyte"));
+        Assert.assertEquals(2, db.getGroups(REDMOND).size());
     }
    
     
@@ -48,7 +51,7 @@ public class UserParserTest {
     }
     
     
-    private UserDatabase parseUserDatabase(String fileName) throws RecognitionException, FileNotFoundException, IOException {
+    public static UserDatabase parseUserDatabase(String fileName) throws RecognitionException, FileNotFoundException, IOException {
         File usersAndGroups = new File(fileName);
         ANTLRInputStream input = new ANTLRInputStream(new FileInputStream(usersAndGroups));
         UsersAndGroupsLexer lexer = new UsersAndGroupsLexer(input);

@@ -10,12 +10,30 @@ import java.io.Writer;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
+import org.protege.owl.server.api.ServerPath;
+import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.policy.generated.PolicyLexer;
 import org.protege.owl.server.policy.generated.PolicyParser;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class PolicyParserTest {
+    public static final ServerPath FERGERSON_PIZZA = new ServerPath("/pizza-fergerson.history");
+    public static final ServerPath OTHER_PIZZA     = new ServerPath("/pizza.history");
+    
+    @Test
+    public void testPolicy0() throws FileNotFoundException, RecognitionException, IOException {
+        Policy policy = parsePolicy("src/test/resources/parser/Policy01");
+        UserDatabase userDb = UserParserTest.parseUserDatabase("src/test/resources/parser/UsersAndGroups01");
+        
+        Assert.assertTrue(policy.checkPermission(userDb, UserParserTest.TANIA, FERGERSON_PIZZA, Operation.READ));
+        Assert.assertTrue(policy.checkPermission(userDb, UserParserTest.TANIA, FERGERSON_PIZZA, Operation.WRITE));
+        
+        Assert.assertTrue(policy.checkPermission(userDb, UserParserTest.GUEST, FERGERSON_PIZZA, Operation.READ));
+        Assert.assertFalse(policy.checkPermission(userDb, UserParserTest.GUEST, FERGERSON_PIZZA, Operation.WRITE));
+        
+        Assert.assertTrue(policy.checkPermission(userDb, UserParserTest.FERGERSON, FERGERSON_PIZZA, Operation.WRITE));
+    }
 
     
     @Test
