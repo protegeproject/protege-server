@@ -58,12 +58,9 @@ public abstract class AbstractRMIClientFactory implements ClientFactory {
             if (authToken == null) {
                 authToken = login(serverLocation);
             }
-            RMIClient client = null;
-            if (authToken != null) {
-                client = new RMIClient(authToken, serverLocation);
-                client.initialise();
-                authMap.put(serverLocation, authToken);
-            }
+            RMIClient client = new RMIClient(authToken, serverLocation);
+            client.initialise();
+            authMap.put(serverRoot, authToken);
             return client;
         }
         catch (NotBoundException nbe) {
@@ -77,6 +74,17 @@ public abstract class AbstractRMIClientFactory implements ClientFactory {
         }
     }
     
+    /**
+     * Obtain an authentication token.  Does not return null.
+     * <p/>
+     * This method allows subtypes to customize how authentication is performed.  Subtypes can use wired in authentication
+     * (as is done by some unit tests), use a swing dialog to ask for credentials from the user, or get credentials from the 
+     * command line.
+     * 
+     * @param serverLocation
+     * @return
+     * @throws AuthenticationFailedException
+     */
     protected abstract AuthToken login(IRI serverLocation) throws AuthenticationFailedException;
     
     protected AuthToken login(IRI serverLocation, String username, String password) throws RemoteException, NotBoundException {
