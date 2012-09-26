@@ -25,4 +25,15 @@ public class RMILoginUtility {
         LoginService server = (LoginService) registry.lookup(LoginService.SERVICE);
         return server.login(username, password);
     }
+    
+    public static boolean verify(IRI serverLocation, AuthToken token) throws RemoteException, NotBoundException {
+        URI uri = serverLocation.toURI();
+        return verify(uri.getHost(), uri.getPort(), token);
+    }
+    
+    public static boolean verify(String host, int port, AuthToken token) throws RemoteException, NotBoundException {
+        Registry registry = LocateRegistry.getRegistry(host, port);
+        LoginService server = (LoginService) registry.lookup(LoginService.SERVICE);
+        return server.checkAuthentication(token);
+    }
 }
