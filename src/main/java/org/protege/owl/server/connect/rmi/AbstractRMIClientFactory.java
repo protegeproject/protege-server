@@ -1,6 +1,7 @@
 package org.protege.owl.server.connect.rmi;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Map;
@@ -48,33 +49,35 @@ public abstract class AbstractRMIClientFactory implements ClientFactory {
     @Override
     public RMIClient connectToServer(IRI serverLocation) throws OWLServerException {
         try {
-            boolean existingAuthToken = true;
             IRI serverRoot = RootUtils.getRoot(serverLocation);
             AuthToken authToken = authMap.get(serverRoot);
+            if (authToken != null && !RMILoginUtility.verify(serverLocation, authToken)) {
+                authMap.remove(serverRoot);
+                authToken = null;
+            }
             if (authToken == null) {
                 authToken = login(serverLocation);
-                authMap.put(serverRoot, authToken);
-                existingAuthToken = false;
             }
-            RMIClient client = new RMIClient(authToken, serverLocation);
-            client.initialise();
-            if (existingAuthToken) {
-                try {
-                    client.getServerDocument(serverRoot);
-                }
-                catch (AuthenticationFailedException ae) {
-                    authMap.remove(serverRoot);
-                    client = connectToServer(serverLocation);
-                }
+            RMIClient client = null;
+            if (authToken != null) {
+                client = new RMIClient(authToken, serverLocation);
+                client.initialise();
+                authMap.put(serverLocation, authToken);
             }
             return client;
         }
-        catch (Exception e) {
-            throw new OWLServerException(e);
+        catch (NotBoundException nbe) {
+            throw new OWLServerException(nbe);
+        }
+        catch (RemoteException re) {
+            throw new OWLServerException(re);
+        }
+        catch (URISyntaxException use) {
+            throw new OWLServerException(use);
         }
     }
     
-    protected abstract AuthToken login(IRI serverLocation);
+    protected abstract AuthToken login(IRI serverLocation) throws AuthenticationFailedException;
     
     protected AuthToken login(IRI serverLocation, String username, String password) throws RemoteException, NotBoundException {
         return RMILoginUtility.login(serverLocation, username, password);
