@@ -140,16 +140,12 @@ public class ClientUtilities {
 	}
 	
 	public static ChangeHistory getChanges(Client client, VersionedOntologyDocument ontologyDoc, RevisionPointer start, RevisionPointer end) throws OWLServerException {
-		if (start.isSymbolic() || end.isSymbolic() || end.asOntologyDocumentRevision().compareTo(ontologyDoc.getLocalHistory().getEndRevision()) > 0) {
-	          ChangeHistory newChanges = client.getChanges(ontologyDoc.getServerDocument(), start, end);
-	          OntologyDocumentRevision realStart = newChanges.getStartRevision();
-	          if (ontologyDoc.getLocalHistory().getEndRevision().compareTo(realStart) >= 0) {
-	            ontologyDoc.appendLocalHistory(newChanges);
-	          }
-	          return newChanges;
+	    OntologyDocumentRevision realStart = client.evaluateRevisionPointer(ontologyDoc.getServerDocument(), start);
+	    OntologyDocumentRevision realEnd   = client.evaluateRevisionPointer(ontologyDoc.getServerDocument(), end);
+		if (realEnd.compareTo(ontologyDoc.getLocalHistory().getEndRevision()) > 0) {
+	          ChangeHistory newChanges = client.getChanges(ontologyDoc.getServerDocument(), ontologyDoc.getLocalHistory().getEndRevision().asPointer(), realEnd.asPointer());
+	          ontologyDoc.appendLocalHistory(newChanges);
 		}
-		OntologyDocumentRevision realStart = start.asOntologyDocumentRevision();
-		OntologyDocumentRevision realEnd   = end.asOntologyDocumentRevision();
 		return ontologyDoc.getLocalHistory().cropChanges(realStart, realEnd);
 	}
 	
