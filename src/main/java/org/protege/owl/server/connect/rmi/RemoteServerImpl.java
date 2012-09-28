@@ -19,6 +19,8 @@ import org.semanticweb.owlapi.model.IRI;
 
 public class RemoteServerImpl implements RemoteServer {
 	private Server server;
+	public static final int NETWORK_COMPRESSION_LIMIT = 1000;
+
 	
 	public RemoteServerImpl(Server server) {
 		this.server = server;
@@ -84,7 +86,9 @@ public class RemoteServerImpl implements RemoteServer {
 		try {
 		    OntologyDocumentRevision start = server.evaluateRevisionPointer(u, doc, startPointer);
 		    OntologyDocumentRevision end   = server.evaluateRevisionPointer(u, doc, endPointer);
-			return server.getChanges(u, doc, start, end);
+			ChangeHistory history = server.getChanges(u, doc, start, end);
+			history.setCompressionLimit(NETWORK_COMPRESSION_LIMIT);
+			return history;
 		}
 		catch (OWLServerException ioe) {
 			throw new RemoteException(ioe.getMessage(), ioe);
