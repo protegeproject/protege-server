@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
@@ -20,9 +21,14 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
 	public static final String VERSION_DOCUMENT_DIRECTORY = ".owlserver";
 	public static final String VERSION_DOCUMENT_EXTENSION = ".vontology";
 
-	public static File getHistoryFile(File ontologyFile) {
+	public static File getMetaDataFile(File ontologyFile) {
 		File versionInfoDir = getVersionInfoDirectory(ontologyFile);
 		return new File(versionInfoDir, ontologyFile.getName() + VERSION_DOCUMENT_EXTENSION);
+	}
+	
+	public static File getHistoryFile(File ontologyFile) {
+        File versionInfoDir = getVersionInfoDirectory(ontologyFile);
+        return new File(versionInfoDir, ontologyFile.getName() + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);	    
 	}
 
 	public static File getVersionInfoDirectory(File ontologyFile) {
@@ -30,7 +36,7 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
 		return new File(dir, VERSION_DOCUMENT_DIRECTORY);
 	}
 	
-    static public File getBackingStore(OWLOntology ontology) {
+    public static File getBackingStore(OWLOntology ontology) {
 		OWLOntologyManager manager = ontology.getOWLOntologyManager();
 		IRI documentLocation = manager.getOntologyDocumentIRI(ontology);
 		if (!documentLocation.getScheme().equals("file")) {
@@ -43,12 +49,13 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
 	private RemoteOntologyDocument serverDocument;
 	private OntologyDocumentRevision revision;
 	private ChangeHistory localHistory;
+	private boolean isHistoryDirty = false;
 	
 	
 	public VersionedOntologyDocumentImpl(OWLOntology ontology,
-								    RemoteOntologyDocument serverDocument,
-								    OntologyDocumentRevision revision,
-								    ChangeHistory localHistory) {
+	                                     RemoteOntologyDocument serverDocument,
+	                                     OntologyDocumentRevision revision,
+	                                     ChangeHistory localHistory) {
 		this.ontology = ontology;
 		this.serverDocument = serverDocument;
 		this.revision = revision;
@@ -74,6 +81,7 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
 	@Override
 	public void appendLocalHistory(ChangeHistory changes) {
 		localHistory = localHistory.appendChanges(changes);
+		isHistoryDirty = true;
 	}
 
 	@Override
@@ -92,19 +100,41 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
 		if (ontologyFile == null) {
 			return false;
 		}
-		File historyFile = getHistoryFile(ontologyFile);
-		historyFile.getParentFile().mkdirs();
-		ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(historyFile)));
+		File metadataFile = getMetaDataFile(ontologyFile);
+		metadataFile.getParentFile().mkdirs();
+		ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(metadataFile)));
 		try {
 		    oos.writeObject(serverDocument);
 		    oos.writeObject(revision);
-		    oos.writeObject(localHistory);
 		}
 		finally {
 		    oos.flush();
 		    oos.close();
 		}
+		saveLocalHistory();
 		return true;
+	}
+	
+	@Override
+	public boolean saveLocalHistory() throws IOException {
+        File ontologyFile = getBackingStore(ontology);
+        if (ontologyFile == null) {
+            return false;
+        }
+        File historyFile = getHistoryFile(ontologyFile);
+	    if (isHistoryDirty || !historyFile.exists()) {
+	        historyFile.getParentFile().mkdirs();
+	        OutputStream os = new BufferedOutputStream(new FileOutputStream(historyFile));
+	        try {
+	            localHistory.writeChangeDocument(os);
+	        }
+	        finally {
+	            os.flush();
+	            os.close();
+	        }
+	        isHistoryDirty = false;
+	    }
+        return true;
 	}
 
 	@Override
