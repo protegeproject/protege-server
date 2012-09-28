@@ -53,6 +53,15 @@ public class FormatTest {
         Assert.assertEquals(changes, changes2);
     }
     
+    @Test
+    public void testCompressedSerialization() throws IOException {
+        File serializedFile = File.createTempFile("FormatTest", ".ser");
+        List<OWLOntologyChange> changes = getChanges();
+        writeChangesWithCompression(changes, serializedFile);
+        List<OWLOntologyChange> changes2 = readChanges(serializedFile);
+        Assert.assertEquals(changes, changes2);
+    }
+    
     private List<OWLOntologyChange> getChanges() {
         List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
         changes.add(new SetOntologyID(ontology, ontology.getOntologyID()));
@@ -73,6 +82,17 @@ public class FormatTest {
         os.flush();
         os.close();
         logger.fine("Write to history file took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
+    }
+    
+    private void writeChangesWithCompression(List<OWLOntologyChange> changes, File output) throws IOException {
+        long startTime = System.currentTimeMillis();
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(output));
+        OWLOutputStream owlOut = new OWLOutputStream(os);
+        owlOut.setCompressionLimit(1);
+        owlOut.writeWithCompression(changes);
+        os.flush();
+        os.close();
+        logger.fine("Compressed Write to history file took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
     }
     
     @SuppressWarnings("unchecked")
