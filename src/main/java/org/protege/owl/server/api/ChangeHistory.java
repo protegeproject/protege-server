@@ -80,4 +80,6 @@ public interface ChangeHistory {
 	List<OWLOntologyChange> getChanges(OWLOntology ontology);	
 	
 	void writeChangeDocument(OutputStream out) throws IOException;
+	
+	void setCompressionLimit(int compressionLimit);
 }
