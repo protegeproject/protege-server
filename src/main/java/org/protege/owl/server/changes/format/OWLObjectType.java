@@ -1,11 +1,13 @@
 package org.protege.owl.server.changes.format;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.zip.GZIPInputStream;
 
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.vocab.OWLFacet;
@@ -20,12 +22,22 @@ public enum OWLObjectType {
     COMPRESSED {
         @Override
         public Object read(OWLInputStream in) throws IOException {
-            throw new IllegalStateException("Not implemented yet");
+            int compressedLength = IOUtils.readInt(in.getInputStream());
+            byte[] compressedData = IOUtils.readBytes(in.getInputStream(), compressedLength);
+            ByteArrayInputStream compressedInputStream = new ByteArrayInputStream(compressedData);
+            GZIPInputStream decompressingInputStream = new GZIPInputStream(compressedInputStream);
+            OWLInputStream decompressingOwlInputStream = new OWLInputStream(decompressingInputStream);
+            try {
+                return decompressingOwlInputStream.read();
+            }
+            finally {
+                decompressingInputStream.close();
+            }
         }
 
         @Override
         public void write(OWLOutputStream out, Object o) throws IOException {
-            throw new IllegalStateException("Programmer should not have used this method.");            
+            throw new IllegalStateException("Programmer should not have called this method");
         }
     },
     LIST_OF_CHANGES {
