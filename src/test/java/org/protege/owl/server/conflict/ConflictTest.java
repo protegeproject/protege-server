@@ -104,7 +104,7 @@ public class ConflictTest {
     private void setupClient1() throws OWLOntologyCreationException, OWLServerException {
         client1 = getClient("redmond", "troglodyte");
         OWLOntology ontology1 = OWLManager.createOWLOntologyManager().createOntology();
-        vont1 = ClientUtilities.createServerOntology(client1, SERVER_TEST_ONT, new ChangeMetaData(), ontology1);
+        vont1 = ClientUtilities.createAndGetServerOntology(client1, SERVER_TEST_ONT, new ChangeMetaData(), ontology1);
     }
     
     private void setupClient2() throws  OWLOntologyCreationException, OWLServerException {

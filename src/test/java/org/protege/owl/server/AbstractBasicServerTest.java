@@ -220,7 +220,7 @@ public abstract class AbstractBasicServerTest {
 	protected VersionedOntologyDocument loadPizza() throws OWLOntologyCreationException, OWLServerException {
 		IRI pizzaLocation = IRI.create(testDirectory.getServerLocation().toString() + "/pizza" + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
 		OWLOntology ontology = PizzaVocabulary.loadPizza();
-		VersionedOntologyDocument versionedOntology = ClientUtilities.createServerOntology(client, pizzaLocation, new ChangeMetaData("A tasty pizza"), ontology);
+		VersionedOntologyDocument versionedOntology = ClientUtilities.createAndGetServerOntology(client, pizzaLocation, new ChangeMetaData("A tasty pizza"), ontology);
 		return versionedOntology;
 	}
 }

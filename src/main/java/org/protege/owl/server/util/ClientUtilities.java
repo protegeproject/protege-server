@@ -46,13 +46,23 @@ public class ClientUtilities {
 	 */
 	
 	
-	public static VersionedOntologyDocument createServerOntology(Client client, IRI serverIRI, ChangeMetaData metaData, OWLOntology ontology) throws OWLServerException {
+	public static void createServerOntology(Client client, IRI serverIRI, ChangeMetaData metaData, OWLOntology ontology) throws OWLServerException {
+	    createServerOntologyInternal(client, serverIRI, metaData, ontology);
+	}
+
+	
+	public static VersionedOntologyDocument createAndGetServerOntology(Client client, IRI serverIRI, ChangeMetaData metaData, OWLOntology ontology) throws OWLServerException {
+	    VersionedOntologyDocument  versionedOntology = createServerOntologyInternal(client, serverIRI, metaData, ontology); 
+	    update(client, versionedOntology);
+	    return versionedOntology;
+	}
+	
+	private static VersionedOntologyDocument createServerOntologyInternal(Client client, IRI serverIRI, ChangeMetaData metaData, OWLOntology ontology) throws OWLServerException {
         DocumentFactory factory = client.getDocumentFactory();
-	    RemoteOntologyDocument doc = client.createRemoteOntology(serverIRI);
-		VersionedOntologyDocument versionedOntology = factory.createVersionedOntology(ontology, doc, OntologyDocumentRevision.START_REVISION);
-		commit(client, metaData, versionedOntology);
-		update(client, versionedOntology);
-		return versionedOntology;
+        RemoteOntologyDocument doc = client.createRemoteOntology(serverIRI);
+        VersionedOntologyDocument versionedOntology = factory.createVersionedOntology(ontology, doc, OntologyDocumentRevision.START_REVISION);
+        commit(client, metaData, versionedOntology);
+        return versionedOntology;
 	}
 
 	public static VersionedOntologyDocument loadOntology(Client client, OWLOntologyManager manager, RemoteOntologyDocument doc) throws OWLOntologyCreationException, OWLServerException {
