@@ -20,7 +20,8 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class WriteAndReadNCI {
-    public static final String ONTOLOGY_LOCATION = "/home/redmond/work/Shared/ontologies/NCI/Thesaurus-11.01e-fixed-annotations.owl";
+    public static final String ONTOLOGY_LOCATION = "/Users/tredmond/work/Shared/ontologies/NCI/Thesaurus-11.01e-fixed-annotations.owl";
+    private static int fileCounter = 0;
     
     /*
      * Matthew's work should make this a couple of orders of magnitude faster!
@@ -88,7 +89,7 @@ public class WriteAndReadNCI {
     
     public static File writeAxioms(OWLOntology ontology, DocumentFactory factory) throws IOException, OWLOntologyCreationException {
         System.out.println("\tWriting history file");
-        File tmp = File.createTempFile("Thesaurus", ".history");
+        File tmp = getTempFile();
         List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
         for (OWLAxiom axiom : ontology.getAxioms()) {
             changes.add(new AddAxiom(ontology, axiom));
@@ -117,5 +118,10 @@ public class WriteAndReadNCI {
         startTime = System.currentTimeMillis();
         ChangeHistoryUtilities.readChanges(factory, tmp, new OntologyDocumentRevision(12345), new OntologyDocumentRevision(13456));
         System.out.println("\tTook " + (System.currentTimeMillis() - startTime) + " ms.");
+    }
+    
+    private static File getTempFile() throws IOException {
+        return File.createTempFile("Thesaurus", ".history");
+        // return new File("/Users/tredmond/work/Shared/tmp" + (fileCounter++) + ".history");
     }
 }
