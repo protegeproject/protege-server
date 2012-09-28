@@ -28,17 +28,5 @@
     <true/>
     <key>Debug</key>
     <true/>
-    <key>Sockets</key>
-    <dict>
-      <key>Listeners</key>
-      <dict>
-        <key>SockServiceName</key>
-        <string>4875</string>
-        <key>SockType</key>
-        <string>stream</string>
-        <key>SockFamily</key>
-        <string>IPv4</string>
-      </dict>
-    </dict>
 </dict>
 </plist>
