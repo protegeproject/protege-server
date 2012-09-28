@@ -84,7 +84,7 @@ public class VOntSerializationTest {
         manager.setOntologyDocumentIRI(vont.getOntology(), IRI.create(ontologyFile));
         boolean saveSucceeded = vont.saveMetaData();
         Assert.assertTrue(saveSucceeded);
-        Assert.assertTrue(VersionedOntologyDocumentImpl.getHistoryFile(ontologyFile).exists());
+        Assert.assertTrue(VersionedOntologyDocumentImpl.getMetaDataFile(ontologyFile).exists());
         return ontologyFile;
     }
     
