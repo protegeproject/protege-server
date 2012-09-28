@@ -1,10 +1,12 @@
 package org.protege.owl.server.changes.format;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.GZIPOutputStream;
 
 import org.protege.owl.server.api.exception.RuntimeIOException;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -63,6 +65,24 @@ public class OWLOutputStream {
         }
         catch (RuntimeIOException rioe) {
             throw rioe.getCause();
+        }
+    }
+    
+    public void writeWithCompression(List<OWLOntologyChange> changes) throws IOException {
+        if (compressionLimit > 0 && changes.size() > compressionLimit) {
+            outputStream.write(OWLObjectType.COMPRESSED.ordinal());
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            GZIPOutputStream compressingOutputStream = new GZIPOutputStream(bout);
+            OWLOutputStream compressingOwlOutputStream = new OWLOutputStream(compressingOutputStream);
+            compressingOwlOutputStream.write(changes);
+            compressingOutputStream.flush();
+            compressingOutputStream.close();
+            byte[] bytes = bout.toByteArray();
+            IOUtils.writeInt(outputStream, bytes.length);
+            outputStream.write(bytes);
+        }
+        else {
+            write(changes);
         }
     }
     
