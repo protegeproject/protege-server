@@ -157,6 +157,11 @@ public abstract class AbstractSerializationTest {
 	}
 	
 	@Test
+	public void testEmptyChangeHistory() throws OWLOntologyCreationException, IOException, ClassNotFoundException {
+	    verifyRoundTrip(new ArrayList<OWLOntologyChange>());
+	}
+	
+	@Test
 	public void testRollingCropped() throws OWLOntologyCreationException, IOException {
 	    DocumentFactory factory = createDocumentFactory();
 	    testRollingCropped(factory, 100);
