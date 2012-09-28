@@ -29,6 +29,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 	private static final long serialVersionUID = -3842895051205436375L;
 	public static Logger logger = Logger.getLogger(ChangeHistoryImpl.class.getCanonicalName());
+	private transient int compressionLimit = -1;
 	private OntologyDocumentRevision startRevision;
 	private List<List<OWLOntologyChange>> listOfRevisionChanges = new ArrayList<List<OWLOntologyChange>>();
 	private SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
@@ -61,6 +62,11 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 		    this.metaDataMap.put(startRevision, metaData);
 		}
 		this.documentFactory = documentFactory;
+	}
+	
+	@Override
+	public void setCompressionLimit(int compressionLimit) {
+	    this.compressionLimit = compressionLimit;
 	}
 
 	@Override
@@ -164,8 +170,9 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 		oos.writeObject(metaDataMap);
 		oos.writeInt(listOfRevisionChanges.size());
 		OWLOutputStream owlstream = new OWLOutputStream(oos);
+		owlstream.setCompressionLimit(compressionLimit);
 		for (List<OWLOntologyChange> changeSet : listOfRevisionChanges) {
-		    owlstream.write(changeSet);
+		    owlstream.writeWithCompression(changeSet);
 		}
 		oos.flush();
 	}
