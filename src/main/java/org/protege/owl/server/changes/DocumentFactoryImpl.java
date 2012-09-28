@@ -54,7 +54,7 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 		if (ontologyFile == null) {
 			return false;
 		}
-		return VersionedOntologyDocumentImpl.getHistoryFile(ontologyFile).exists();
+		return VersionedOntologyDocumentImpl.getMetaDataFile(ontologyFile).exists();
 	}
 	
 	@Override
@@ -62,7 +62,7 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	    try {
 
 	        File ontologyFile = VersionedOntologyDocumentImpl.getBackingStore(ontology);
-	        File historyFile = VersionedOntologyDocumentImpl.getHistoryFile(ontologyFile);
+	        File historyFile = VersionedOntologyDocumentImpl.getMetaDataFile(ontologyFile);
 	        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(historyFile));
 	        RemoteOntologyDocument serverDocument = (RemoteOntologyDocument) ois.readObject();
 	        return serverDocument.getServerLocation();
@@ -76,13 +76,20 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	public VersionedOntologyDocument getVersionedOntologyDocument(OWLOntology ontology) throws IOException {
 	    try {
 	        File ontologyFile = VersionedOntologyDocumentImpl.getBackingStore(ontology);
-	        File historyFile = VersionedOntologyDocumentImpl.getHistoryFile(ontologyFile);
-	        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(historyFile));
+	        File metaDataFile = VersionedOntologyDocumentImpl.getMetaDataFile(ontologyFile);
+	        File historyFile  = VersionedOntologyDocumentImpl.getHistoryFile(ontologyFile);
+	        
+	        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(metaDataFile));
 	        
 	        RemoteOntologyDocument serverDocument = (RemoteOntologyDocument) ois.readObject();
 	        OntologyDocumentRevision revision = (OntologyDocumentRevision) ois.readObject();
-	        ChangeHistory localChanges = (ChangeHistory) ois.readObject();
-	        
+	        ChangeHistory localChanges;
+	        if (historyFile.exists()) {
+	            localChanges = new BackgroundLoadChangeHistory(this, historyFile);
+	        }
+	        else {
+	            localChanges = createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION);
+	        }
 	        return new VersionedOntologyDocumentImpl(ontology, serverDocument, revision, localChanges);
 	    }
 	    catch (ClassNotFoundException cnfe) {
