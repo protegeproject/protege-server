@@ -1,5 +1,5 @@
 <?xml version = "1.0" encoding = "utf-8"?>
-<project name = "OWL Ontology Server Project" default = "build" basedir = ".">    
+<project name = "OWL Ontology Server Project" default = "jar" basedir = ".">    
 
   <property environment="env"/>
   <property name = "protege.home"      location="${env.PROTEGE_HOME}"/>
@@ -204,7 +204,7 @@
           todir="${protege.home}"/>
   </target>
 
-  <target name = "install" depends="protege.install">
+  <target name = "install" depends="jar">
     <copy todir="${install.prefix}/server">
       <fileset dir="${server.dir}"/>
     </copy>
