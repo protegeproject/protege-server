@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -57,7 +56,6 @@ public class DirectServerSetupTest {
     
     @AfterMethod
     public void stopServer() {
-        Collection<ServerTransport> transports = new ArrayList<ServerTransport>(server.getTransports());
         server.shutdown();
     }
     
