@@ -6,7 +6,6 @@ import java.util.TreeMap;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerTransport;
 
 /*
  * ToDo - it would be nice to add a factory so that this auto-configures in OSGi.
