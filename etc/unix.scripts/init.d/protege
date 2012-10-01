@@ -24,7 +24,7 @@ start()
    chown ${PROTEGE_SANDBOX_USER} /var/log/protege
    cd ${SERVER_DIR}
 
-   su ${PROTEGE_SANDBOX_USER} <<-END
+   su ${PROTEGE_SANDBOX_USER} -s /bin/bash <<-END
      nohup \
        ${JAVA_CMD} \
          -Djava.awt.headless=true \
