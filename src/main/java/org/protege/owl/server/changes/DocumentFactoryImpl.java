@@ -102,6 +102,7 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	public ChangeHistory readChangeDocument(InputStream in,
 											 OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException {
         ObjectInputStream ois;
+        long startTime = System.currentTimeMillis();
 	    try {
 			if (in instanceof ObjectInputStream) {
 				ois = (ObjectInputStream) in;
@@ -109,28 +110,7 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 			else {
 				ois = new ObjectInputStream(in);
 			}
-			OntologyDocumentRevision startRevision = (OntologyDocumentRevision) ois.readObject();
-			if (start == null) {
-			    start = startRevision;
-			}
-			@SuppressWarnings("unchecked")
-			SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData = (SortedMap<OntologyDocumentRevision, ChangeMetaData>) ois.readObject();
-			List<List<OWLOntologyChange>> changes = new ArrayList<List<OWLOntologyChange>>();
-			OWLInputStream owlStream = new OWLInputStream(ois);
-			int count = ois.readInt();
-			OntologyDocumentRevision revision = startRevision;
-			for (int i = 0; i < count; i++,revision = revision.next()) {
-			    @SuppressWarnings("unchecked")
-                List<OWLOntologyChange> changeList = (List<OWLOntologyChange>) owlStream.read();
-			    if (revision.compareTo(start) >= 0 && (end == null || revision.compareTo(end) < 0)) {
-			        changes.add(changeList);
-			    }
-			}
-			if (end == null) {
-			    end = start.add(changes.size());
-			}
-			metaData = metaData.tailMap(start).headMap(end);
-            return new ChangeHistoryImpl(start, this, changes, metaData); 
+			return readChangeDocument(ois, start, end);
 		}
 		catch (IOException ioe) {
 			logger.log(Level.WARNING, "Exception caught deserializing change document", ioe);
@@ -144,6 +124,43 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
 			throw e;
 		}
+	    finally {
+	        logLongRead(System.currentTimeMillis() - startTime);
+	    }
+	}
+	
+	@SuppressWarnings("deprecation")
+	private ChangeHistory readChangeDocument(ObjectInputStream ois,
+	                                        OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException, ClassNotFoundException  {
+        OntologyDocumentRevision startRevision = (OntologyDocumentRevision) ois.readObject();
+        if (start == null) {
+            start = startRevision;
+        }
+        @SuppressWarnings("unchecked")
+        SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData = (SortedMap<OntologyDocumentRevision, ChangeMetaData>) ois.readObject();
+        List<List<OWLOntologyChange>> changes = new ArrayList<List<OWLOntologyChange>>();
+        OWLInputStream owlStream = new OWLInputStream(ois);
+        int count = ois.readInt();
+        OntologyDocumentRevision revision = startRevision;
+        for (int i = 0; i < count; i++,revision = revision.next()) {
+            @SuppressWarnings("unchecked")
+            List<OWLOntologyChange> changeList = (List<OWLOntologyChange>) owlStream.read();
+            if (revision.compareTo(start) >= 0 && (end == null || revision.compareTo(end) < 0)) {
+                changes.add(changeList);
+            }
+        }
+        if (end == null) {
+            end = start.add(changes.size());
+        }
+        metaData = metaData.tailMap(start).headMap(end);
+        return new ChangeHistoryImpl(start, this, changes, metaData); 
+
+	}
+	
+	private void logLongRead(long interval) {
+	    if (interval > 1000) {
+	        logger.info("Read of change list took " + (interval/1000) + " seconds.");
+	    }
 	}
 
 

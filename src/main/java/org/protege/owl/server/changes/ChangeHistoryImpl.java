@@ -159,6 +159,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 	
 	@Override
 	public void writeChangeDocument(OutputStream out) throws IOException {
+	    long startTime = System.currentTimeMillis();
 		ObjectOutputStream oos;
 		if (out instanceof ObjectOutputStream) {
 			oos = (ObjectOutputStream) out;
@@ -175,6 +176,17 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 		    owlstream.writeWithCompression(changeSet);
 		}
 		oos.flush();
+		logLongWrite(System.currentTimeMillis() - startTime);
+	}
+	
+	private void logLongWrite(long interval) {
+	    if (interval > 1000) {
+	        int totalChanges = 0;
+	        for (List<OWLOntologyChange> changeList : listOfRevisionChanges) {
+	            totalChanges += changeList.size();
+	        }
+	        logger.info("Write of change history (" + totalChanges + " changes) took " + (interval/1000) + " seconds (compression limit = " + compressionLimit + ").");
+	    }
 	}
 	
 	private void writeObject(ObjectOutputStream out) throws IOException {
