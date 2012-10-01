@@ -24,7 +24,7 @@ start()
    chown ${PROTEGE_SANDBOX_USER} /var/log/protege
    cd ${SERVER_DIR}
 
-   su ${PROTEGE_SANDBOX_USER} -s /bin/bash <<-END
+   su ${PROTEGE_SANDBOX_USER} -s /bin/sh <<-END
      nohup \
        ${JAVA_CMD} \
          -Djava.awt.headless=true \
@@ -34,7 +34,7 @@ start()
          -Dorg.protege.owl.server.configuration=metaproject.owl \
          -Djava.util.logging.config.file=logging-unix.properties \
          -classpath lib/felix.jar:lib/ProtegeLauncher.jar \
-         org.protege.osgi.framework.Launcher &> /var/log/protege/cmdline &
+         org.protege.osgi.framework.Launcher > /var/log/protege/cmdline 2>&1 &
      echo \$! > ${PID}
 END
 }
