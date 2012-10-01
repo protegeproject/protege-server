@@ -19,7 +19,24 @@ import org.semanticweb.owlapi.model.IRI;
 
 public class RemoteServerImpl implements RemoteServer {
 	private Server server;
-	public static final int NETWORK_COMPRESSION_LIMIT = 1000;
+	public static final String NETWORK_COMPRESSION_PROPERTY="org.protege.owl.compressionLimit";
+	public static final int NETWORK_COMPRESSION_LIMIT;
+	static {
+	    int cl = -1;
+	    String propertyValue = System.getProperty(NETWORK_COMPRESSION_PROPERTY);
+	    if (propertyValue != null) {
+	        try {
+	            cl = Integer.parseInt(propertyValue);
+	        }
+	        catch (Error e) {
+	            ;
+	        }
+	        catch (RuntimeException re) {
+	            ;
+	        }
+	    }
+        NETWORK_COMPRESSION_LIMIT = cl;
+	}
 
 	
 	public RemoteServerImpl(Server server) {

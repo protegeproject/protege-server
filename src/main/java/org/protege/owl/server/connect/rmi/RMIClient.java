@@ -26,8 +26,6 @@ import org.semanticweb.owlapi.model.IRI;
 
 public class RMIClient extends AbstractClient {
 	public static final String SCHEME = "rmi-owl2-server";
-	public static final int NETWORK_COMPRESSION_LIMIT = 1000;
-
 	
 	private String host;
 	private int port;
@@ -155,7 +153,7 @@ public class RMIClient extends AbstractClient {
 	public void commit(RemoteOntologyDocument doc,
 	                    SingletonChangeHistory changes) throws OWLServerException {
 	    try {
-	        changes.setCompressionLimit(NETWORK_COMPRESSION_LIMIT);
+	        changes.setCompressionLimit(RemoteServerImpl.NETWORK_COMPRESSION_LIMIT);
 	        server.commit(authToken, doc.createServerDocument(), changes);
 	    }
 	    catch (RemoteException re) {
