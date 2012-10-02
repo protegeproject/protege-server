@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -12,6 +13,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ChangeHistory;
@@ -22,6 +25,7 @@ import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
+import org.protege.owl.server.api.ServerListener;
 import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.ServerTransport;
@@ -96,11 +100,13 @@ public class ServerImpl implements Server {
 		public abstract boolean isStatusOf(File f, boolean pooledDocumentFound);
 	}
 	
+	private Logger logger = Logger.getLogger(ServerImpl.class.getCanonicalName());
 	private File root;
 	private File configurationDir;
 	private DocumentFactory factory = new DocumentFactoryImpl();
 	private ChangeDocumentPool pool;
 	private Collection<ServerTransport> transports = new ArrayList<ServerTransport>();
+	private List<ServerListener> listeners = new ArrayList<ServerListener>();
 	
 	public ServerImpl(File root, File configurationDir) {
 		if (!root.isDirectory() || !root.exists()) {
@@ -293,7 +299,7 @@ public class ServerImpl implements Server {
 	}
 	
     @Override
-    public InputStream getConfigurationInputStream(ServerDocument doc, String extension) throws OWLServerException {
+    public InputStream getConfigurationInputStream(ServerDocument doc, final String extension) throws OWLServerException {
         try {
             return new FileInputStream(getConfiguration(doc, extension));
         }
@@ -303,9 +309,15 @@ public class ServerImpl implements Server {
     }
     
     @Override
-    public OutputStream getConfigurationOutputStream(ServerDocument doc, String extension) throws OWLServerException {
+    public OutputStream getConfigurationOutputStream(ServerDocument doc, final String extension) throws OWLServerException {
         try {
-            return new FileOutputStream(getConfiguration(doc, extension));
+            return new FileOutputStream(getConfiguration(doc, extension)) {
+                @Override
+                public void close() throws IOException {
+                    fireConfigurationChanged(extension);
+                    super.close();
+                }
+            };
         }
         catch (FileNotFoundException fnfe) {
             throw new DocumentNotFoundException(fnfe);
@@ -330,6 +342,30 @@ public class ServerImpl implements Server {
 	@Override
 	public Collection<ServerTransport> getTransports() {
 	    return Collections.unmodifiableCollection(transports);
+	}
+	
+	@Override
+	public void addServerListener(ServerListener listener) {
+	    listeners.add(listener);
+	}
+	
+	@Override
+	public void removeServerListener(ServerListener listener) {
+	    listeners.remove(listener);
+	}
+	
+	private void fireConfigurationChanged(String configFile) {
+	    for (ServerListener listener : listeners) {
+	        try {
+	            listener.configurationChanged(configFile);
+	        }
+	        catch (Error e) {
+	            logger.log(Level.WARNING, "Listener error", e);
+	        }
+	        catch (RuntimeException e) {
+	            logger.log(Level.WARNING, "Listener bug", e);
+	        }
+	    }
 	}
 	
 	@Override
