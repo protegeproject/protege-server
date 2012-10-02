@@ -14,6 +14,7 @@ import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.ServerFilter;
+import org.protege.owl.server.api.ServerListener;
 import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.ServerTransport;
@@ -95,6 +96,16 @@ public class ServerFilterAdapter extends ServerFilter {
     @Override
     public void setTransports(Collection<ServerTransport> transports) {
         getDelegate().setTransports(transports);
+    }
+    
+    @Override
+    public void addServerListener(ServerListener listener) {
+        getDelegate().addServerListener(listener);
+    }
+    
+    @Override
+    public void removeServerListener(ServerListener listener) {
+        getDelegate().removeServerListener(listener);
     }
 
     @Override
