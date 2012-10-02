@@ -1,6 +1,7 @@
 package org.protege.owl.server.policy;
 
-import static org.protege.owl.server.policy.UserParserTest.REDMOND;
+import static org.protege.owl.server.TestUtilities.REDMOND;
+import static org.protege.owl.server.TestUtilities.PASSWORD_MAP;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -55,7 +56,7 @@ public class LoginTest {
     @Test
     public void testLogin() throws RemoteException, NotBoundException {
         Assert.assertNotNull(RMILoginUtility.login(IRI.create(RMIClient.SCHEME + "://localhost:" + rmiPort + "/testdirectory/pizza.owl"), "redmond", "troglodyte"));
-        Assert.assertNotNull(RMILoginUtility.login("localhost", rmiPort, REDMOND.getUserName(), "troglodyte"));
+        Assert.assertNotNull(RMILoginUtility.login("localhost", rmiPort, REDMOND.getUserName(), PASSWORD_MAP.get(REDMOND)));
     }
     
     @Test

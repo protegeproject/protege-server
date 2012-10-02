@@ -1,5 +1,8 @@
 package org.protege.owl.server;
 
+import static org.protege.owl.server.TestUtilities.REDMOND;
+import static org.protege.owl.server.TestUtilities.PASSWORD_MAP;
+
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -24,7 +27,6 @@ import org.protege.owl.server.connect.rmi.RMITransport;
 import org.protege.owl.server.core.ServerImpl;
 import org.protege.owl.server.policy.Authenticator;
 import org.protege.owl.server.policy.RMILoginUtility;
-import org.protege.owl.server.policy.UserParserTest;
 import org.semanticweb.owlapi.model.IRI;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -61,7 +63,7 @@ public class DirectServerSetupTest {
     
     @Test
     public void accessLocally() throws OWLServerException {
-        AuthToken token = Authenticator.localLogin(localTransport, UserParserTest.REDMOND.getUserName(), "troglodyte");
+        AuthToken token = Authenticator.localLogin(localTransport, REDMOND.getUserName(), PASSWORD_MAP.get(REDMOND));
         Client client = localTransport.getClient(token);
         checkClientOk(client);
     }
@@ -69,7 +71,7 @@ public class DirectServerSetupTest {
     @Parameters({ "rmiPort" })
     @Test
     public void accessRemotely(int rmiPort) throws OWLServerException, RemoteException, NotBoundException {
-        AuthToken tim = RMILoginUtility.login("localhost", rmiPort, UserParserTest.REDMOND.getUserName(), "troglodyte");
+        AuthToken tim = RMILoginUtility.login("localhost", rmiPort, REDMOND.getUserName(), PASSWORD_MAP.get(REDMOND));
         RMIClient client = new RMIClient(tim, "localhost", rmiPort);
         client.initialise();
         checkClientOk(client);

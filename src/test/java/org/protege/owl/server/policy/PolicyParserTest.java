@@ -1,5 +1,9 @@
 package org.protege.owl.server.policy;
 
+import static org.protege.owl.server.TestUtilities.FERGERSON;
+import static org.protege.owl.server.TestUtilities.GUEST;
+import static org.protege.owl.server.TestUtilities.TANIA;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,13 +29,13 @@ public class PolicyParserTest {
         Policy policy = parsePolicy("src/test/resources/parser/Policy01");
         UserDatabase userDb = UserParserTest.parseUserDatabase("src/test/resources/parser/UsersAndGroups01");
         
-        Assert.assertTrue(policy.checkPermission(userDb, UserParserTest.TANIA, FERGERSON_PIZZA, Operation.READ));
-        Assert.assertTrue(policy.checkPermission(userDb, UserParserTest.TANIA, FERGERSON_PIZZA, Operation.WRITE));
+        Assert.assertTrue(policy.checkPermission(userDb, TANIA, FERGERSON_PIZZA, Operation.READ));
+        Assert.assertTrue(policy.checkPermission(userDb, TANIA, FERGERSON_PIZZA, Operation.WRITE));
         
-        Assert.assertTrue(policy.checkPermission(userDb, UserParserTest.GUEST, FERGERSON_PIZZA, Operation.READ));
-        Assert.assertFalse(policy.checkPermission(userDb, UserParserTest.GUEST, FERGERSON_PIZZA, Operation.WRITE));
+        Assert.assertTrue(policy.checkPermission(userDb, GUEST, FERGERSON_PIZZA, Operation.READ));
+        Assert.assertFalse(policy.checkPermission(userDb, GUEST, FERGERSON_PIZZA, Operation.WRITE));
         
-        Assert.assertTrue(policy.checkPermission(userDb, UserParserTest.FERGERSON, FERGERSON_PIZZA, Operation.WRITE));
+        Assert.assertTrue(policy.checkPermission(userDb, FERGERSON, FERGERSON_PIZZA, Operation.WRITE));
     }
 
     
