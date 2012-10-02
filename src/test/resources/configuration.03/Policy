@@ -1,0 +1,11 @@
+Policy (
+   Allow [
+	 User fergerson;
+     Group administrator;
+   ] to write ;
+   Allow [
+     All
+   ] to read ;
+) on /pizza-fergerson.history;
+
+     
