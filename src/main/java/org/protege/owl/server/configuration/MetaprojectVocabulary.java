@@ -49,7 +49,7 @@ public class MetaprojectVocabulary {
 		
 		BASIC_CONFLICT_MANAGER       = factory.getOWLClass(IRI.create(NS + "#BasicConflictManager"));
         BASIC_AUTHENTICATION_MANAGER = factory.getOWLClass(IRI.create(NS + "#BasicAuthenticationManager"));
-        BASIC_AUTHORIZATION_MANAGER = factory.getOWLClass(IRI.create(NS + "#BasicAuthenticationManager"));
+        BASIC_AUTHORIZATION_MANAGER  = factory.getOWLClass(IRI.create(NS + "#BasicAuthorizationManager"));
 		OSGI_SHUTDOWN_FILTER         = factory.getOWLClass(IRI.create(NS + "#OSGiShutdownFilter"));
 		
 		LOCAL_TRANSPORT   = factory.getOWLClass(IRI.create(NS + "#LocalTransport"));
