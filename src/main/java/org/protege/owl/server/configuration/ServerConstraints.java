@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerComponentFactory;
@@ -14,6 +16,7 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public class ServerConstraints {
+    private Logger logger = Logger.getLogger(ServerConstraints.class.getCanonicalName());
 	private OWLIndividual serverIndividual;
 
 	private FilterConstraint containingFilterConstraint;
@@ -40,11 +43,16 @@ public class ServerConstraints {
 				return false;
 			}
 		}
-		
 		for (ServerComponentFactory factory : factories) {
 			if (factory.hasSuitableServer(serverIndividual)) {
+			    if (logger.isLoggable(Level.FINE)) {
+			        logger.fine("Using " + factory + " to satisfy " + serverIndividual);
+			    }
 				return true;
 			}
+		}
+		if (logger.isLoggable(Level.FINE)) {
+		    logger.fine("No factory can create a core server matching the constraint: " + serverIndividual);
 		}
 		return false;
 	}
