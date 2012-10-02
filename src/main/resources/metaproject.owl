@@ -19,6 +19,8 @@ Declaration(Class(<http://protege.stanford.edu/ontologies/owl.server/metaproject
 AnnotationAssertion(rdfs:comment <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicAuthenticationManager> "This authentication manager depends on the RMI transport component because it uses
 a back channel for login.")
 SubClassOf(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicAuthenticationManager> <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#PolicyManager>)
+Declaration(Class(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicAuthorizationManager>))
+SubClassOf(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicAuthorizationManager> <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#PolicyManager>)
 Declaration(Class(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicConflictManager>))
 AnnotationAssertion(rdfs:comment <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicConflictManager> "Conflict managers in this class trigger a conflict when two users both make a change that involves either the ontology id, the same imports declaration, the same ontology annotation or the same axiom."^^xsd:string)
 SubClassOf(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicConflictManager> <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#ConflictManager>)
@@ -63,6 +65,9 @@ ObjectPropertyDomain(<http://protege.stanford.edu/ontologies/owl.server/metaproj
 ObjectPropertyRange(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasTransport> <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#ServerTransport>)
 Declaration(ObjectProperty(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#serverComponent>))
 ObjectPropertyRange(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#serverComponent> <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#ServerComponent>)
+Declaration(DataProperty(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasCompressionLimit>))
+DataPropertyDomain(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasCompressionLimit> <http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#Server>)
+DataPropertyRange(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasCompressionLimit> xsd:integer)
 Declaration(DataProperty(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasConfigurationDir>))
 Declaration(DataProperty(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasHostName>))
 FunctionalDataProperty(<http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasHostName>)
