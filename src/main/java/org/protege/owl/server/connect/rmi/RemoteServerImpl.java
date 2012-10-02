@@ -18,7 +18,6 @@ import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.IRI;
 
 public class RemoteServerImpl implements RemoteServer {
-	private Server server;
 	public static final String NETWORK_COMPRESSION_PROPERTY="org.protege.owl.compressionLimit";
 	public static final int NETWORK_COMPRESSION_LIMIT;
 	static {
@@ -37,10 +36,17 @@ public class RemoteServerImpl implements RemoteServer {
 	    }
         NETWORK_COMPRESSION_LIMIT = cl;
 	}
+	
+	private Server server;
+	private int networkCompressionLimit = NETWORK_COMPRESSION_LIMIT;
 
 	
 	public RemoteServerImpl(Server server) {
 		this.server = server;
+	}
+	
+	public void setNetworkCompressionLimit(int networkCompressionLimit) {
+	    this.networkCompressionLimit = networkCompressionLimit;
 	}
 	
 	@Override
