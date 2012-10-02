@@ -28,6 +28,7 @@ public class MetaprojectVocabulary {
 	
 	public static final OWLClass BASIC_CONFLICT_MANAGER;
 	public static final OWLClass BASIC_AUTHENTICATION_MANAGER;
+	public static final OWLClass BASIC_AUTHORIZATION_MANAGER;
 	public static final OWLClass OSGI_SHUTDOWN_FILTER;
 	
 	public static final OWLObjectProperty HAS_SERVER_FILTER;
@@ -47,7 +48,8 @@ public class MetaprojectVocabulary {
 		STANDARD_SERVER   = factory.getOWLClass(IRI.create(NS + "#StandardOWL2Server"));
 		
 		BASIC_CONFLICT_MANAGER       = factory.getOWLClass(IRI.create(NS + "#BasicConflictManager"));
-		BASIC_AUTHENTICATION_MANAGER = factory.getOWLClass(IRI.create(NS + "#BasicAuthenticationManager"));
+        BASIC_AUTHENTICATION_MANAGER = factory.getOWLClass(IRI.create(NS + "#BasicAuthenticationManager"));
+        BASIC_AUTHORIZATION_MANAGER = factory.getOWLClass(IRI.create(NS + "#BasicAuthenticationManager"));
 		OSGI_SHUTDOWN_FILTER         = factory.getOWLClass(IRI.create(NS + "#OSGiShutdownFilter"));
 		
 		LOCAL_TRANSPORT   = factory.getOWLClass(IRI.create(NS + "#LocalTransport"));
