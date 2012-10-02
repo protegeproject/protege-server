@@ -23,5 +23,9 @@ public interface ServerInternals {
    
    Collection<ServerTransport> getTransports();
    
+   void addServerListener(ServerListener listener);
+   
+   void removeServerListener(ServerListener listener);
+   
    void shutdown();
 }
