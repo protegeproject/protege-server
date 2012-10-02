@@ -24,7 +24,6 @@ import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerDirectory;
 import org.protege.owl.server.api.ServerDocument;
-import org.protege.owl.server.api.ServerFilter;
 import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.ServerTransport;
@@ -35,8 +34,9 @@ import org.protege.owl.server.connect.local.LocalTransport;
 import org.protege.owl.server.connect.rmi.RMITransport;
 import org.protege.owl.server.policy.generated.UsersAndGroupsLexer;
 import org.protege.owl.server.policy.generated.UsersAndGroupsParser;
+import org.protege.owl.server.util.ServerFilterAdapter;
 
-public class Authenticator extends ServerFilter {
+public class Authenticator extends ServerFilterAdapter {
     public static final String LOCAL_BASIC_LOGIN_KEY = "Basic Login key for Local Transport";
     private static UserDatabase userDatabase = null;
     
