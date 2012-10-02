@@ -1,9 +1,10 @@
 package org.protege.owl.server.connect.local;
 
 import org.protege.owl.server.api.AuthToken;
+import org.protege.owl.server.api.ServerInternals;
 import org.protege.owl.server.api.ServerTransport;
 
-public interface LocalTransport extends ServerTransport {
+public interface LocalTransport extends ServerTransport, ServerInternals {
 
     LocalClient getClient(AuthToken token);
     

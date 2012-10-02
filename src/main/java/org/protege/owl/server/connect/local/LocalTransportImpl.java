@@ -1,16 +1,29 @@
 package org.protege.owl.server.connect.local;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.protege.owl.server.api.AuthToken;
+import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.Server;
+import org.protege.owl.server.api.ServerDocument;
+import org.protege.owl.server.api.ServerListener;
+import org.protege.owl.server.api.ServerTransport;
+import org.protege.owl.server.api.exception.OWLServerException;
 
 /*
  * ToDo - it would be nice to add a factory so that this auto-configures in OSGi.
  */
 public class LocalTransportImpl implements LocalTransport {
+
+    public void shutdown() {
+        server.shutdown();
+    }
+
     private Server server;
     private Map<String, Object> registeredObjectMap = new TreeMap<String, Object>();
 
@@ -39,5 +52,55 @@ public class LocalTransportImpl implements LocalTransport {
         server = null;
         registeredObjectMap.clear();
     }
+    
+    /*
+     * Server internals methods so that plugins and such will not have to make a filter just to get access to these methods.
+     */
+    
+    @Override
+    public DocumentFactory getDocumentFactory() {
+        return server.getDocumentFactory();
+    }
+
+    @Override
+    public InputStream getConfigurationInputStream(String fileName) throws OWLServerException {
+        return server.getConfigurationInputStream(fileName);
+    }
+
+    @Override
+    public OutputStream getConfigurationOutputStream(String fileName) throws OWLServerException {
+        return server.getConfigurationOutputStream(fileName);
+    }
+
+    @Override
+    public InputStream getConfigurationInputStream(ServerDocument doc, String extension) throws OWLServerException {
+        return server.getConfigurationInputStream(doc, extension);
+    }
+
+    @Override
+    public OutputStream getConfigurationOutputStream(ServerDocument doc, String extension) throws OWLServerException {
+        return server.getConfigurationOutputStream(doc, extension);
+    }
+
+    @Override
+    public void setTransports(Collection<ServerTransport> transports) {
+        server.setTransports(transports);
+    }
+
+    @Override
+    public Collection<ServerTransport> getTransports() {
+        return server.getTransports();
+    }
+
+    @Override
+    public void addServerListener(ServerListener listener) {
+        server.addServerListener(listener);
+    }
+
+    @Override
+    public void removeServerListener(ServerListener listener) {
+        server.removeServerListener(listener);
+    }
+
 
 }
