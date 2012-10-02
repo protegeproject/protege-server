@@ -4,6 +4,7 @@ import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_SER
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.Server;
@@ -39,8 +40,14 @@ public class FilterConstraint {
         }
         for (ServerComponentFactory factory : factories) {
             if (factory.hasSuitableServerFilter(i)) {
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine("Using " + factory + " to satisfy constraint: " + i);
+                }
                 return true;
             }
+        }
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Could not find factory to satisfy constraint: " + i);
         }
         return false;
     }
