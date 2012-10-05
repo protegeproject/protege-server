@@ -32,5 +32,10 @@ public final class Operation implements Comparable<Operation> {
     public int compareTo(Operation o) {
         return name.compareTo(o.name);
     }
+    
+    @Override
+    public String toString() {
+        return name;
+    }
 
 }
