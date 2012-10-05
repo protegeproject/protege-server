@@ -23,9 +23,10 @@ import org.testng.annotations.Test;
 public class PolicyParserTest {
     public static final ServerPath FERGERSON_PIZZA = new ServerPath("/pizza-fergerson.history");
     public static final ServerPath OTHER_PIZZA     = new ServerPath("/pizza.history");
+    public static final ServerPath REDMONDS_DIR    = new ServerPath("/redmonds-private-directory");
     
     @Test
-    public void testPolicy0() throws FileNotFoundException, RecognitionException, IOException {
+    public void testPolicy00() throws FileNotFoundException, RecognitionException, IOException {
         Policy policy = parsePolicy("src/test/resources/parser/Policy01");
         UserDatabase userDb = UserParserTest.parseUserDatabase("src/test/resources/parser/UsersAndGroups01");
         
@@ -36,6 +37,15 @@ public class PolicyParserTest {
         Assert.assertFalse(policy.checkPermission(userDb, GUEST, FERGERSON_PIZZA, Operation.WRITE));
         
         Assert.assertTrue(policy.checkPermission(userDb, FERGERSON, FERGERSON_PIZZA, Operation.WRITE));
+    }
+    
+    @Test
+    public void testPolicy01() throws FileNotFoundException, RecognitionException, IOException {
+        Policy policy = parsePolicy("src/test/resources/configuration.03/Policy");
+        UserDatabase userDb = UserParserTest.parseUserDatabase("src/test/resources/parser/UsersAndGroups01");
+
+        Assert.assertFalse(policy.checkPermission(userDb, GUEST, REDMONDS_DIR, Operation.READ));
+
     }
 
     
@@ -61,8 +71,8 @@ public class PolicyParserTest {
     }
     
     private Policy parsePolicy(String fileName) throws RecognitionException, FileNotFoundException, IOException {
-        File usersAndGroups = new File(fileName);
-        ANTLRInputStream input = new ANTLRInputStream(new FileInputStream(usersAndGroups));
+        File policyFile = new File(fileName);
+        ANTLRInputStream input = new ANTLRInputStream(new FileInputStream(policyFile));
         PolicyLexer lexer = new PolicyLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         PolicyParser parser = new PolicyParser(tokens);
