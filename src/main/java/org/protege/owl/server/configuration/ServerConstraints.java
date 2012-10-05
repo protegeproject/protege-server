@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerComponentFactory;
 import org.protege.owl.server.api.ServerTransport;
+import org.protege.owl.server.core.SynchronizationFilter;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -75,15 +76,17 @@ public class ServerConstraints {
 				baseServer = factory.createServer(serverIndividual);
 			}
 		}
+		Server filteredServer = null;
 		if (baseServer == null) {
 		    throw new IllegalStateException("Expected to be ready to build the server...");
 		}
 		else if (containingFilterConstraint != null) {
-		    return containingFilterConstraint.build(baseServer, factories);
+		    filteredServer = containingFilterConstraint.build(baseServer, factories);
 		}
 		else {
-		    return baseServer;
+		    filteredServer = baseServer;
 		}
+		return new SynchronizationFilter(filteredServer);
 	}
 	
 
