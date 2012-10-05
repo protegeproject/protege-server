@@ -208,27 +208,32 @@ public class ServerImpl implements Server {
 	public void commit(AuthToken u, ServerOntologyDocument doc,
 	                    SingletonChangeHistory changesFromClient) throws OWLServerException {
 	    changesFromClient.getMetaData(changesFromClient.getStartRevision()).setUser(u);
-	    OntologyDocumentRevision head = evaluateRevisionPointer(u, doc, RevisionPointer.HEAD_REVISION);
 		OWLOntology fakeOntology;
-		ChangeMetaData metaData = changesFromClient.getMetaData(changesFromClient.getStartRevision());
 		try {
 			fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
 		}
 		catch (OWLOntologyCreationException e) {
 			throw new IllegalStateException("Why me?", e);
 		}
-		List<OWLOntologyChange> clientChanges = changesFromClient.getChanges(fakeOntology);
-		List<OWLOntologyChange> serverChanges =  adjustServerAndClientChanges(u, 
-		                                                                      clientChanges, 
-		                                                                      getChanges(u, doc, changesFromClient.getStartRevision(), head), 
-		                                                                      fakeOntology);
-		ChangeHistory fullHistory = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, head);
-		
-		OntologyDocumentRevision latestRevision = fullHistory.getEndRevision();
-		List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);
-		ChangeHistory changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaData, latestRevision);
-		ChangeHistory fullHistoryAfterCommit = fullHistory.appendChanges(changeDocumentToAppend);
+
+		ChangeHistory fullHistoryAfterCommit = getChangesAfterCommit(u, doc, changesFromClient, fakeOntology);
 		pool.setChangeDocument(doc, parseServerIRI(doc.getServerPath(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT), fullHistoryAfterCommit);
+	}
+	
+	private ChangeHistory getChangesAfterCommit(AuthToken u, ServerOntologyDocument doc, SingletonChangeHistory changesFromClient, OWLOntology fakeOntology) throws OWLServerException {
+	    ChangeMetaData metaData = changesFromClient.getMetaData(changesFromClient.getStartRevision());
+	    OntologyDocumentRevision head = evaluateRevisionPointer(u, doc, RevisionPointer.HEAD_REVISION);
+	    List<OWLOntologyChange> clientChanges = changesFromClient.getChanges(fakeOntology);
+	    List<OWLOntologyChange> serverChanges =  adjustServerAndClientChanges(u, 
+	                                                                          clientChanges, 
+	                                                                          getChanges(u, doc, changesFromClient.getStartRevision(), head), 
+	                                                                          fakeOntology);
+	    ChangeHistory fullHistory = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, head);
+
+	    OntologyDocumentRevision latestRevision = fullHistory.getEndRevision();
+	    List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);
+	    ChangeHistory changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaData, latestRevision);
+	    return fullHistory.appendChanges(changeDocumentToAppend);
 	}
 	
 	private List<OWLOntologyChange> adjustServerAndClientChanges(AuthToken u, 
