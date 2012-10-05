@@ -49,7 +49,7 @@ policy: 'Policy' '('
        { allowedOpMap.put(new Operation($operation.getText()), container); }
         )*  
        { perm = new Permission(allowedOpMap); }
-   ')' 'on' object=ID { policy.addPolicyEntry($object.getText(), perm); }
+   ')' 'on' object=ID { policy.addPolicyEntry($object.getText(), perm); } ';'
   ;
 
 usercontainer returns [UserContainer container]:
