@@ -1,11 +1,20 @@
+
 Policy (
    Allow [
 	 User fergerson;
      Group administrator;
    ] to write ;
    Allow [
-     All
+     Group administrator;
    ] to read ;
-) on /pizza-fergerson.history;
+) on /pizza-fergerson.history ;
 
-     
+Policy (
+  Allow [
+    User redmond;
+  ] to read;
+  Allow [
+    User redmond;
+  ] to write;
+) on /redmonds-private-directory ;
+
