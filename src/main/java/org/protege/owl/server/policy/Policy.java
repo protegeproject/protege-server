@@ -66,7 +66,7 @@ public class Policy {
             return true;
         }
         ServerPath parent = p.getParent();
-        return parent.isRoot() || (isDirectlyAllowed(db, requestingUser, p, Operation.READ) && checkReadParents(db, requestingUser, parent));
+        return parent.isRoot() || (isDirectlyAllowed(db, requestingUser, parent, Operation.READ) && checkReadParents(db, requestingUser, parent));
     }
     
     @Override
