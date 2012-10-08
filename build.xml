@@ -27,7 +27,7 @@
   <property name = "lib.testng"        location = "./tools/testng-5.14.7.jar"/>
   <property name = "lib.antlr"         location = "./lib/antlr-3.4-complete-no-antlrv2.jar"/>
 
-  <property name = "sever.prefix"      location = "/usr/local/protege.server"/>
+  <property name = "server.prefix"      location = "/usr/local/protege.server"/>
   <property name = "install.port"      value    = "4875"/>
   
   <taskdef name="check.dependencies"
@@ -192,9 +192,6 @@
   </target>
   
   <target name = "protege.install" depends = "jar">
-    <!-- flush cache -->
-    <delete dir = "${protege.home}/configuration/org.eclipse.core.runtime"/>
-    <delete dir = "${protege.home}/configuration/org.eclipse.osgi"/>
     <copy file="${server.bundles}/${plugin}.jar" 
           todir = "${protege.plugins}"
           overwrite = "true"/>
@@ -205,6 +202,7 @@
   </target>
 
   <target name = "install" depends="jar">
+    <mkdir dir="${server.prefix}"/>
     <copy todir="${server.prefix}">
       <fileset dir="${server.dir}"/>
     </copy>
