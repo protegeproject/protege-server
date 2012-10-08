@@ -27,7 +27,7 @@
   <property name = "lib.testng"        location = "./tools/testng-5.14.7.jar"/>
   <property name = "lib.antlr"         location = "./lib/antlr-3.4-complete-no-antlrv2.jar"/>
 
-  <property name = "install.prefix"    location = "/usr/local/protege"/>
+  <property name = "sever.prefix"      location = "/usr/local/protege.server"/>
   <property name = "install.port"      value    = "4875"/>
   
   <taskdef name="check.dependencies"
@@ -205,33 +205,9 @@
   </target>
 
   <target name = "install" depends="jar">
-    <copy todir="${install.prefix}/server">
+    <copy todir="${server.prefix}">
       <fileset dir="${server.dir}"/>
     </copy>
-    <copy file="./etc/unix.scripts/init.d/logging-unix.properties"
-          todir="${install.prefix}/server"/>
-    <mkdir dir="${install.prefix}/bin"/>
-    <mkdir dir="${install.prefix}/data"/>
-    <java classname="org.protege.owl.server.command.SetMetaprojectDataDir"
-	  fork="true"
-    	  failonerror="true">
-        <classpath>
-          <pathelement path="${classes}"/>
-          <path refid="project.classpath"/>
-        </classpath>
-    	<arg value="${install.prefix}/server/metaproject.owl"/>
-    	<arg value="${install.prefix}/data"/>
-  	</java>
-    <java classname="org.protege.owl.server.command.SetMetaProjectPort"
-	  fork="true"
-    	  failonerror="true">
-        <classpath>
-          <pathelement path="${classes}"/>
-          <path refid="project.classpath"/>
-        </classpath>
-    	<arg value="${install.prefix}/server/metaproject.owl"/>
-    	<arg value="${install.port}"/>
-  	</java>
   </target>
 
 
