@@ -8,6 +8,7 @@
             <class name="org.protege.owl.server.AuthenticatedTest"/>
             <class name="org.protege.owl.server.DirectServerSetupTest"/>
             <class name="org.protege.owl.server.LocalBasicServerTest"/>
+            <class name="org.protege.owl.server.QuickConnectTest"/> 
             <class name="org.protege.owl.server.RemoteBasicServerTest"/>
             <class name="org.protege.owl.server.changes.BasicSerializationTest"/> 
             <class name="org.protege.owl.server.changes.ChangeUtilitiesTest"/>

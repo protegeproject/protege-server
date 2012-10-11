@@ -20,7 +20,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class WriteAndReadNCI {
-    public static final String ONTOLOGY_LOCATION = "/Users/tredmond/work/Shared/ontologies/NCI/Thesaurus-11.01e-fixed-annotations.owl";
+    public static final String ONTOLOGY_LOCATION = "/home/redmond/work/Shared/ontologies/NCI/Thesaurus-11.01e-fixed-annotations.owl";
     private static int fileCounter = 0;
     
     /*
@@ -75,7 +75,7 @@ public class WriteAndReadNCI {
         
         System.out.println("Without buffering...");
         DocumentFactoryImpl factory1 = new DocumentFactoryImpl();
-        File f1 = writeAxioms(ontology, factory1);
+        File f1 = writeAxioms(ontology, factory1, false);
         breath();
         readAxioms(f1, factory1);
         readAxioms(f1, factory1);
@@ -87,15 +87,18 @@ public class WriteAndReadNCI {
         return manager.loadOntologyFromOntologyDocument(new File(ONTOLOGY_LOCATION));
     }
     
-    public static File writeAxioms(OWLOntology ontology, DocumentFactory factory) throws IOException, OWLOntologyCreationException {
-        System.out.println("\tWriting history file");
+    public static File writeAxioms(OWLOntology ontology, DocumentFactory factory, boolean compress) throws IOException, OWLOntologyCreationException {
         File tmp = getTempFile();
+        System.out.println("\tWriting history file (" + tmp + ").");
         List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
         for (OWLAxiom axiom : ontology.getAxioms()) {
             changes.add(new AddAxiom(ontology, axiom));
         }
         long startTime = System.currentTimeMillis();
         ChangeHistory doc = factory.createChangeDocument(changes, new ChangeMetaData(),OntologyDocumentRevision.START_REVISION);
+        if (compress) {
+            doc.setCompressionLimit(1);
+        }
         ChangeHistoryUtilities.writeChanges(doc, tmp);
         System.out.println("\tTook " + (System.currentTimeMillis() - startTime) + " ms.");
 

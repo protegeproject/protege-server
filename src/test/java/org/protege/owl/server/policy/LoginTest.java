@@ -1,7 +1,7 @@
 package org.protege.owl.server.policy;
 
-import static org.protege.owl.server.TestUtilities.REDMOND;
 import static org.protege.owl.server.TestUtilities.PASSWORD_MAP;
+import static org.protege.owl.server.TestUtilities.REDMOND;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -16,7 +16,6 @@ import junit.framework.Assert;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.protege.owl.server.TestUtilities;
-import org.protege.owl.server.RemoteBasicServerTest.TestRMIClientFactory;
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.ClientFactory;
@@ -133,42 +132,6 @@ public class LoginTest {
         return validLogin;
     }
     
-    @Test
-    public void testQuickConnect() throws OWLServerException, URISyntaxException {
-        String root = RMIClient.SCHEME + "://localhost:" + rmiPort + "/";
-        TestRMIClientFactory factory = new TestRMIClientFactory();
-        Client firstClient = factory.connectToServer(IRI.create(root + "first/time"));
-        Assert.assertNotNull(firstClient);
-        Assert.assertTrue(factory.getReadyConnections().contains(RootUtils.getRoot(IRI.create(root))));
-        Assert.assertTrue(factory.hasReadyConnection(IRI.create(root + "second/time")));
-        Client secondClient = factory.quickConnectToServer(IRI.create(root + "third/time"));
-        Assert.assertNotNull(secondClient);
-    }
 
-    public static class TestRMIClientFactory extends AbstractRMIClientFactory {
-        boolean firstTime=true;
-        protected AuthToken login(IRI serverLocation) throws org.protege.owl.server.api.exception.AuthenticationFailedException {
-            try {
-                if (firstTime) {
-                    return login(serverLocation, TestUtilities.REDMOND.getUserName(), TestUtilities.PASSWORD_MAP.get(TestUtilities.REDMOND));
-                }
-                else {
-                    Assert.fail();
-                    return null;
-                }
-            }
-            catch (RemoteException e) {
-                Assert.fail();
-                return null;
-            }
-            catch (NotBoundException e) {
-                Assert.fail();
-                return null;
-            }
-            finally {
-                firstTime = false;
-            }
-        }
-    }
     
 }
