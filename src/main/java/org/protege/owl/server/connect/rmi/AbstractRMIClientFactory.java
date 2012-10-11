@@ -5,7 +5,10 @@ import java.net.URISyntaxException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ClientFactory;
@@ -20,6 +23,7 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public abstract class AbstractRMIClientFactory implements ClientFactory {
+    private Logger logger = Logger.getLogger(AbstractRMIClientFactory.class.getCanonicalName());
     private Map<IRI, AuthToken> authMap = new TreeMap<IRI, AuthToken>();
     private DocumentFactory factory = new DocumentFactoryImpl();
     
@@ -89,6 +93,56 @@ public abstract class AbstractRMIClientFactory implements ClientFactory {
     
     protected AuthToken login(IRI serverLocation, String username, String password) throws RemoteException, NotBoundException {
         return RMILoginUtility.login(serverLocation, username, password);
+    }
+    
+    @Override
+    public boolean hasReadyConnection(IRI serverLocation) {
+        try {
+            IRI rootLocation = RootUtils.getRoot(serverLocation);
+            return authMap.containsKey(rootLocation);
+        }
+        catch (URISyntaxException e) {
+            logger.log(Level.WARNING, "IRI has invalid format: " + serverLocation, e);
+            return false;
+        }
+    }
+    
+    @Override
+    public Set<IRI> getReadyConnections() {
+        return authMap.keySet();
+    }
+    
+    @Override
+    public RMIClient quickConnectToServer(IRI serverLocation) {
+        IRI serverRoot = null;
+        try {
+            serverRoot = RootUtils.getRoot(serverLocation);
+            AuthToken authToken = authMap.get(serverRoot);
+            if (authToken == null) {
+                return null;
+            }
+            else if (!RMILoginUtility.verify(serverLocation, authToken)) {
+                authMap.remove(serverRoot);
+                return null;
+            }
+            RMIClient client = new RMIClient(authToken, serverLocation);
+            client.initialise();
+            return client;
+        }
+        catch (NotBoundException nbe) {
+            logger.warning("Server connection to " + serverLocation + " lost.");
+            authMap.remove(serverRoot);
+            return null;
+        }
+        catch (RemoteException re) {
+            logger.warning("Server connection to " + serverLocation + " lost.");
+            authMap.remove(serverRoot);
+            return null;
+        }
+        catch (URISyntaxException use) {
+            logger.log(Level.WARNING, "IRI has invalid format: " + serverLocation, use);
+            return null;
+        }
     }
 
 }
