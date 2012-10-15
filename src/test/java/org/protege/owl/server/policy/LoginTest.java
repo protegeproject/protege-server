@@ -4,7 +4,6 @@ import static org.protege.owl.server.TestUtilities.PASSWORD_MAP;
 import static org.protege.owl.server.TestUtilities.REDMOND;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,7 +21,6 @@ import org.protege.owl.server.api.ClientFactory;
 import org.protege.owl.server.api.RemoteServerDirectory;
 import org.protege.owl.server.api.exception.AuthenticationFailedException;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.connect.RootUtils;
 import org.protege.owl.server.connect.rmi.AbstractRMIClientFactory;
 import org.protege.owl.server.connect.rmi.RMIClient;
 import org.semanticweb.owlapi.model.IRI;

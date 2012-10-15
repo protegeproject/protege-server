@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerDocument;
 import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.exception.OWLServerException;

@@ -1,8 +1,6 @@
 package org.protege.owl.server.policy;
 
 import static org.protege.owl.server.TestUtilities.REDMOND;
-import static org.protege.owl.server.TestUtilities.TANIA;
-import static org.protege.owl.server.TestUtilities.PASSWORD_MAP;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,13 +8,10 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.policy.generated.UsersAndGroupsLexer;
 import org.protege.owl.server.policy.generated.UsersAndGroupsParser;
 import org.testng.Assert;
