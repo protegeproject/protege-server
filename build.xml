@@ -178,14 +178,6 @@
           todir="${protege.home}"/>
   </target>
 
-  <target name = "install" depends="jar">
-    <mkdir dir="${server.prefix}"/>
-    <copy todir="${server.prefix}">
-      <fileset dir="${server.dir}"/>
-    </copy>
-  </target>
-
-
   <target name = "clean">
     <delete dir="${build}"/>
   </target>
