@@ -97,7 +97,6 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	    }
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public ChangeHistory readChangeDocument(InputStream in,
 											 OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException {
