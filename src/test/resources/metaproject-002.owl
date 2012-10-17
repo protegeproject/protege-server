@@ -22,6 +22,10 @@
     <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
     <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
     <Import>http://protege.stanford.edu/ontologies/owl.server/metaproject.owl</Import>
+    <Annotation>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <Literal datatypeIRI="&rdf;PlainLiteral">This metaproject is used by the LoginTest and the QuickConnectTest.  It is distinguished by the fact that the server uses an authentication server filter and the configuration directory contains a UserAndGroups file.  Both tests involve authentication.  The QuickConnectTest tests that the ClientRepository can remember what clients it has previously authenticated to.</Literal>
+    </Annotation>
     <Declaration>
         <NamedIndividual IRI="#testAuthentication"/>
     </Declaration>
