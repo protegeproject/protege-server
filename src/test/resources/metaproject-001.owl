@@ -22,6 +22,10 @@
     <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
     <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
     <Import>http://protege.stanford.edu/ontologies/owl.server/metaproject.owl</Import>
+    <Annotation>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <Literal datatypeIRI="&rdf;PlainLiteral">This metaproject is the most basic rmi based metaproject possible.  It has no server filters and only uses the RMI transport.  The configuration file is therefore not relevant.</Literal>
+    </Annotation>
     <Declaration>
         <NamedIndividual IRI="#testRMITransport"/>
     </Declaration>
