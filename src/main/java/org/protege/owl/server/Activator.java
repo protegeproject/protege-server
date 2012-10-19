@@ -30,6 +30,7 @@ public class Activator implements BundleActivator {
 	
     private void displayPlatform(BundleContext context) {
     	logger.info("Server configuration started.");
+    	logger.info("    User id: " + System.getProperty("user.name"));
         logger.info("    Java: JVM " + System.getProperty("java.runtime.version") +
                 " Memory: " + (Runtime.getRuntime().maxMemory() / 1000000) + "M");
         logger.info("    Language: " + Locale.getDefault().getLanguage() +
