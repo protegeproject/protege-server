@@ -130,30 +130,31 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	
 	@SuppressWarnings("deprecation")
 	private ChangeHistory readChangeDocument(ObjectInputStream ois,
-	                                        OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException, ClassNotFoundException  {
-        OntologyDocumentRevision startRevision = (OntologyDocumentRevision) ois.readObject();
-        if (start == null) {
-            start = startRevision;
-        }
-        @SuppressWarnings("unchecked")
-        SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData = (SortedMap<OntologyDocumentRevision, ChangeMetaData>) ois.readObject();
-        List<List<OWLOntologyChange>> changes = new ArrayList<List<OWLOntologyChange>>();
-        OWLInputStream owlStream = new OWLInputStream(ois);
-        int count = ois.readInt();
-        OntologyDocumentRevision revision = startRevision;
-        for (int i = 0; i < count; i++,revision = revision.next()) {
-            @SuppressWarnings("unchecked")
-            List<OWLOntologyChange> changeList = (List<OWLOntologyChange>) owlStream.read();
-            if (revision.compareTo(start) >= 0 && (end == null || revision.compareTo(end) < 0)) {
-                changes.add(changeList);
-            }
-        }
-        if (end == null) {
-            end = start.add(changes.size());
-        }
-        metaData = metaData.tailMap(start).headMap(end);
-        return new ChangeHistoryImpl(start, this, changes, metaData); 
-
+	                                         OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException, ClassNotFoundException  {
+	    OntologyDocumentRevision startRevision = (OntologyDocumentRevision) ois.readObject();
+	    if (start == null) {
+	        start = startRevision;
+	    }
+	    @SuppressWarnings("unchecked")
+	    SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData = (SortedMap<OntologyDocumentRevision, ChangeMetaData>) ois.readObject();
+	    List<List<OWLOntologyChange>> changes = new ArrayList<List<OWLOntologyChange>>();
+	    OWLInputStream owlStream = new OWLInputStream(ois);
+	    int count = ois.readInt();
+	    OntologyDocumentRevision revision = startRevision;
+	    for (int i = 0; i < count; i++,revision = revision.next()) {
+	        @SuppressWarnings("unchecked")
+	        List<OWLOntologyChange> changeList = (List<OWLOntologyChange>) owlStream.read();
+	        if (revision.compareTo(start) >= 0 && (end == null || revision.compareTo(end) < 0)) {
+	            changes.add(changeList);
+	        }
+	    }
+	    if (end == null) {
+	        end = start.add(changes.size());
+	    }
+	    if (!metaData.isEmpty()) {
+	        metaData = metaData.tailMap(start).headMap(end);
+	    }
+	    return new ChangeHistoryImpl(start, this, changes, metaData); 
 	}
 	
 	private void logLongRead(long interval) {
