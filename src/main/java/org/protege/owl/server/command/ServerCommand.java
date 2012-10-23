@@ -8,6 +8,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RevisionPointer;
+import org.protege.owl.server.connect.rmi.RMIClient;
 import org.protege.owl.server.util.ClientRegistry;
 import org.semanticweb.owlapi.io.OWLFunctionalSyntaxOntologyFormat;
 import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
@@ -87,8 +88,11 @@ public abstract class ServerCommand {
     }
     
     protected String showFormats() {
-        return "Available Ontology formats are rdfxml, owlxml, functional";
-        
+        return "Available Ontology formats are rdfxml, owlxml, functional";   
+    }
+    
+    protected String showIRI() {
+        return "A typical server IRI looks like this: " + RMIClient.SCHEME + "://tania12g:4875/";
     }
     
     public abstract boolean parse(String[] args) throws ParseException;

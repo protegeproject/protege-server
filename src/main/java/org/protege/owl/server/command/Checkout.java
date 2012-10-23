@@ -90,7 +90,7 @@ public class Checkout extends ServerCommand {
     
     public void usage() {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(80, "Checkout <options> serverIRI savedLocation", "Checkout", options, showFormats());
+        formatter.printHelp(80, "Checkout <options> serverIRI savedLocation", "", options, showFormats() + "\n" + showIRI());
     }
 
     /**

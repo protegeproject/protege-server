@@ -56,7 +56,7 @@ public class ListDirectory extends ServerCommand {
     @Override
     public void usage() {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(80, "List <options> server-directory-irib", "", options, "");
+        formatter.printHelp(80, "List <options> server-directory-irib", "", options, showIRI());
     }
 
     /**
