@@ -1,7 +1,7 @@
 package org.protege.owl.server.command;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.Console;
+import java.io.PrintWriter;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.connect.rmi.AbstractRMIClientFactory;
@@ -14,11 +14,12 @@ public class CRMIClientFactory extends AbstractRMIClientFactory {
         try {
             String username;
             String password;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            System.out.print("User: ");
-            username = reader.readLine();
-            System.out.print("Password: ");
-            password = reader.readLine();
+            Console console = System.console();
+            PrintWriter writer = console.writer();
+            writer.print("User: ");
+            writer.flush();
+            username = console.readLine();
+            password = new String(console.readPassword("%s", "Password: "));
             return login(serverLocation, username, password);
         }
         catch (Exception e) {
