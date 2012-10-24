@@ -14,20 +14,10 @@ import org.protege.owl.server.api.DocumentFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
 import org.semanticweb.owlapi.io.StringDocumentTarget;
-import org.semanticweb.owlapi.model.AddAxiom;
-import org.semanticweb.owlapi.model.AddImport;
-import org.semanticweb.owlapi.model.AddOntologyAnnotation;
-import org.semanticweb.owlapi.model.ImportChange;
-import org.semanticweb.owlapi.model.OWLAxiomChange;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyChangeVisitor;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
-import org.semanticweb.owlapi.model.RemoveAxiom;
-import org.semanticweb.owlapi.model.RemoveImport;
-import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
-import org.semanticweb.owlapi.model.SetOntologyID;
 
 public class ChangeUtilities {
 	
@@ -50,81 +40,12 @@ public class ChangeUtilities {
     
     
     public static List<OWLOntologyChange> invertChanges(List<OWLOntologyChange> baseline, List<OWLOntologyChange> changes) {
-        InvertChangesVisitor minimizingVisitor = new InvertChangesVisitor(baseline);
-        for (OWLOntologyChange change : changes) {
-            change.accept(minimizingVisitor);
+        List<OWLOntologyChange> normalizedChanges = normalizeChangeDelta(changes);
+        InvertChangesVisitor invertingVisitor = new InvertChangesVisitor(baseline);
+        for (OWLOntologyChange change : normalizedChanges) {
+            change.accept(invertingVisitor);
         }
-        return minimizingVisitor.getMinimalInvertedChanges();
-    }
-    
-    private static class InvertChangesVisitor implements OWLOntologyChangeVisitor {
-        List<OWLOntologyChange> minimizedInvertedChanges = new ArrayList<OWLOntologyChange>();
-        private CollectingChangeVisitor collectedFirstChanges;
-        
-        public InvertChangesVisitor(List<OWLOntologyChange> firstChanges) {
-            collectedFirstChanges = CollectingChangeVisitor.collectChanges(firstChanges);
-        }
-
-        public List<OWLOntologyChange> getMinimalInvertedChanges() {
-            return minimizedInvertedChanges;
-        }
-        
-        @Override
-        public void visit(AddAxiom change) {
-            OWLOntologyChange baselineChange = collectedFirstChanges.getLastAxiomChangeMap().get(change.getAxiom());
-            if (baselineChange == null || !baselineChange.equals(change)) {
-                minimizedInvertedChanges.add(new RemoveAxiom(change.getOntology(), change.getAxiom()));
-            }
-        }
-
-        @Override
-        public void visit(RemoveAxiom change) {
-            OWLOntologyChange baselineChange = collectedFirstChanges.getLastAxiomChangeMap().get(change.getAxiom());
-            if (baselineChange == null || !baselineChange.equals(change)) {
-                minimizedInvertedChanges.add(new AddAxiom(change.getOntology(), change.getAxiom()));
-            }
-        }
-
-        @Override
-        public void visit(SetOntologyID change) {
-            SetOntologyID baselineChange = collectedFirstChanges.getLastOntologyIDChange();
-            if (baselineChange != null) {
-                minimizedInvertedChanges.add(baselineChange);
-            }
-        }
-
-        @Override
-        public void visit(AddImport change) {
-            OWLOntologyChange baselineChange = collectedFirstChanges.getLastImportChangeMap().get(change.getImportDeclaration());
-            if (baselineChange == null || !baselineChange.equals(change)) {
-                minimizedInvertedChanges.add(new RemoveImport(change.getOntology(), change.getImportDeclaration()));
-            }
-        }
-
-        @Override
-        public void visit(RemoveImport change) {
-            OWLOntologyChange baselineChange = collectedFirstChanges.getLastImportChangeMap().get(change.getImportDeclaration());
-            if (baselineChange == null || !baselineChange.equals(change)) {
-                minimizedInvertedChanges.add(new AddImport(change.getOntology(), change.getImportDeclaration()));
-            }
-        }
-
-        @Override
-        public void visit(AddOntologyAnnotation change) {
-            OWLOntologyChange baselineChange = collectedFirstChanges.getLastOntologyAnnotationChangeMap().get(change.getAnnotation());
-            if (baselineChange == null || !baselineChange.equals(change)) {
-                minimizedInvertedChanges.add(new RemoveOntologyAnnotation(change.getOntology(), change.getAnnotation()));
-            }
-        }
-
-        @Override
-        public void visit(RemoveOntologyAnnotation change) {
-            OWLOntologyChange baselineChange = collectedFirstChanges.getLastOntologyAnnotationChangeMap().get(change.getAnnotation());
-            if (baselineChange == null || !baselineChange.equals(change)) {
-                minimizedInvertedChanges.add(new AddOntologyAnnotation(change.getOntology(), change.getAnnotation()));
-            }
-        }
-        
+        return invertingVisitor.getInvertedChanges();
     }
     
     public static ChangeHistory swapOrderOfChangeLists(DocumentFactory factory, ChangeHistory doc1, ChangeHistory doc2) {
@@ -186,70 +107,6 @@ public class ChangeUtilities {
     	return overlapping;
     }
 
-    protected static class OverlapVisitor implements OWLOntologyChangeVisitor {
-        private OWLOntologyChange testChange;
-        private boolean overlapping;
-        
-        public OverlapVisitor(OWLOntologyChange change) {
-            testChange = change;
-            overlapping = false;
-        }
-        
-        public boolean isOverlapping() {
-            return overlapping;
-        }
-    
-        
-        public void visit(AddAxiom change) {
-            overlapping = testChange instanceof OWLAxiomChange 
-                                && ((OWLAxiomChange) testChange).getAxiom().equals(change.getAxiom());
-        }
-    
-        
-        public void visit(RemoveAxiom change) {
-            overlapping = testChange instanceof OWLAxiomChange 
-                                && ((OWLAxiomChange) testChange).getAxiom().equals(change.getAxiom());
-        }
-    
-        
-        public void visit(SetOntologyID change) {
-            overlapping = testChange instanceof SetOntologyID;
-        }
-    
-        
-        public void visit(AddImport change) {
-            overlapping = testChange instanceof ImportChange 
-                               && ((ImportChange) testChange).getImportDeclaration().equals(change.getImportDeclaration());
-        }
-    
-        
-        public void visit(RemoveImport change) {
-            overlapping = testChange instanceof ImportChange 
-                              && ((ImportChange) testChange).getImportDeclaration().equals(change.getImportDeclaration());
-        }
-    
-        
-        public void visit(AddOntologyAnnotation change) {
-            if (testChange instanceof AddOntologyAnnotation) {
-                overlapping = ((AddOntologyAnnotation) testChange).getAnnotation().equals(change.getAnnotation());
-            }
-            else if (testChange instanceof RemoveOntologyAnnotation) {
-                overlapping = ((RemoveOntologyAnnotation) testChange).getAnnotation().equals(change.getAnnotation());
-            }
-        }
-    
-        
-        public void visit(RemoveOntologyAnnotation change) {
-            if (testChange instanceof AddOntologyAnnotation) {
-                overlapping = ((AddOntologyAnnotation) testChange).getAnnotation().equals(change.getAnnotation());
-            }
-            else if (testChange instanceof RemoveOntologyAnnotation) {
-                overlapping = ((RemoveOntologyAnnotation) testChange).getAnnotation().equals(change.getAnnotation());
-            }
-        }
-        
-    }
-    
     public static Set<OWLOntology> getChangedOntologies(List<OWLOntologyChange> changes) {
         Set<OWLOntology> ontologies = new HashSet<OWLOntology>();
         for (OWLOntologyChange change : changes) {
@@ -280,53 +137,6 @@ public class ChangeUtilities {
                 change.accept(visitor);
             }
         }
-    }
-    
-    private static class LogChangesVisitor implements OWLOntologyChangeVisitor {
-        private Logger logger;
-        private Level level;
-
-        public LogChangesVisitor(Logger logger, Level level) {
-            this.logger = logger;
-            this.level = level;
-        }
-
-        @Override
-        public void visit(AddAxiom change) {
-            logger.log(level, "\tAdding " + change.getAxiom());
-        }
-
-        @Override
-        public void visit(RemoveAxiom change) {
-            logger.log(level, "\tRemoving " + change.getAxiom());
-        }
-
-        @Override
-        public void visit(SetOntologyID change) {
-            logger.log(level, "\t" + change);
-        }
-
-        @Override
-        public void visit(AddImport change) {
-            logger.log(level, "\t" + change);
-        }
-
-        @Override
-        public void visit(RemoveImport change) {
-            logger.log(level, "\t" + change);
-
-        }
-
-        @Override
-        public void visit(AddOntologyAnnotation change) {
-            logger.log(level, "\t" + change);
-        }
-
-        @Override
-        public void visit(RemoveOntologyAnnotation change) {
-            logger.log(level, "\t" + change);
-       }
-        
     }
 
 }
