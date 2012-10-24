@@ -93,15 +93,6 @@ public class ClientUtilities {
 	    ChangeHistory historyToClientRevision = getChanges(client, ontologyDoc, OntologyDocumentRevision.START_REVISION.asPointer(), revision.asPointer());
 	    OWLOntology ontology = ontologyDoc.getOntology();
 	    List<OWLOntologyChange> baselineHistory = historyToClientRevision.getChanges(ontology);
-	    ChangeHistory historyFromClientRevision = getChanges(client, ontologyDoc, revision.asPointer(), RevisionPointer.HEAD_REVISION);
-	    for (OntologyDocumentRevision possiblePastCommitRevision = historyFromClientRevision.getStartRevision();
-	            possiblePastCommitRevision.compareTo(historyFromClientRevision.getEndRevision()) < 0;
-	            possiblePastCommitRevision = possiblePastCommitRevision.next()) {
-	        if (historyFromClientRevision.getMetaData(possiblePastCommitRevision).getUserId().equals(client.getUserId())) {
-	            ChangeHistory pastCommit = historyFromClientRevision.cropChanges(possiblePastCommitRevision, possiblePastCommitRevision.next());
-	            baselineHistory.addAll(pastCommit.getChanges(ontology));
-	        }
-	    }
 	    return getUncommittedChanges(ontologyDoc.getOntology(), baselineHistory);
 	}
 	
