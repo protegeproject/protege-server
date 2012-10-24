@@ -96,7 +96,7 @@ public class ConflictTest {
         catch (ConflictException ce) {
             foundConflict = true;
         }
-        Assert.assertFalse(foundConflict);
+        Assert.assertTrue(foundConflict);
     }
     
 

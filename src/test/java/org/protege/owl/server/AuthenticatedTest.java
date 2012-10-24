@@ -82,8 +82,19 @@ public class AuthenticatedTest {
         Assert.assertEquals(0, secondChanges.size());
     }
     
+    /**
+     * Test self conflict.
+     * <p/>
+     * Originally I had thought that a user should not have conflicts with himself.  But this led to problems with the getUncommittedChanges
+     * and reverse updates (e.g., a reverse update by a user past commits from the same user will lead to a report of uncommitted changes).
+     * The current strategy simplifies the definition of the server side commit at the expense of some additional complexity in complicated 
+     * clients that do several commits in sequence.
+     * 
+     * @throws OWLOntologyCreationException
+     * @throws OWLServerException
+     */
     @Test
-    public void testNoSelfConflict() throws OWLOntologyCreationException, OWLServerException {
+    public void testSelfConflict() throws OWLOntologyCreationException, OWLServerException {
         setupClient1();
         RemoteOntologyDocument testDoc = vont1.getServerDocument();
         OWLOntology ontology1 = vont1.getOntology();
@@ -100,8 +111,8 @@ public class AuthenticatedTest {
         Assert.assertEquals(new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION), firstChanges.get(0));
         
         List<OWLOntologyChange> secondChanges = fullHistory.cropChanges(revisionBeforeCommits.add(1), revisionBeforeCommits.add(2)).getChanges(ontology1);
-        Assert.assertEquals(1, secondChanges.size());
-        Assert.assertEquals(new RemoveAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION), secondChanges.get(0));
+        Assert.assertEquals(0, secondChanges.size());
+        //Assert.assertEquals(new RemoveAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION), secondChanges.get(0));
     }
     
     @Test

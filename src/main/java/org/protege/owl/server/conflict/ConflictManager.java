@@ -62,11 +62,9 @@ public class ConflictManager extends ServerFilterAdapter {
         for (OntologyDocumentRevision revision = proposedChanges.getStartRevision();
                 revision.compareTo(head) < 0;
                 revision = revision.next()) {
-          if (!fullServerHistory.getMetaData(revision).getUserId().equals(u.getUserId())) {
-                List<OWLOntologyChange> serverChanges = fullServerHistory.cropChanges(revision, revision.next()).getChanges(fakeOntology);
-                CollectingChangeVisitor collectedServerChanges = CollectingChangeVisitor.collectChanges(serverChanges);
-                addConflicts(collectedClientChanges, collectedServerChanges, conflicts);
-          }
+            List<OWLOntologyChange> serverChanges = fullServerHistory.cropChanges(revision, revision.next()).getChanges(fakeOntology);
+            CollectingChangeVisitor collectedServerChanges = CollectingChangeVisitor.collectChanges(serverChanges);
+            addConflicts(collectedClientChanges, collectedServerChanges, conflicts);
         }
         return conflicts;
     }

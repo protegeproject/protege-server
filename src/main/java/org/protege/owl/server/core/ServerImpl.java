@@ -224,37 +224,12 @@ public class ServerImpl implements Server {
 	    ChangeMetaData metaData = changesFromClient.getMetaData(changesFromClient.getStartRevision());
 	    OntologyDocumentRevision head = evaluateRevisionPointer(u, doc, RevisionPointer.HEAD_REVISION);
 	    List<OWLOntologyChange> clientChanges = changesFromClient.getChanges(fakeOntology);
-	    List<OWLOntologyChange> serverChanges =  adjustServerAndClientChanges(u, 
-	                                                                          clientChanges, 
-	                                                                          getChanges(u, doc, changesFromClient.getStartRevision(), head), 
-	                                                                          fakeOntology);
+	    List<OWLOntologyChange> serverChanges =  getChanges(u, doc, changesFromClient.getStartRevision(), head).getChanges(fakeOntology);
 	    ChangeHistory fullHistory = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, head);
 
-	    OntologyDocumentRevision latestRevision = fullHistory.getEndRevision();
 	    List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);
-	    ChangeHistory changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaData, latestRevision);
+	    ChangeHistory changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaData, head);
 	    return fullHistory.appendChanges(changeDocumentToAppend);
-	}
-	
-	private List<OWLOntologyChange> adjustServerAndClientChanges(AuthToken u, 
-	                                                              List<OWLOntologyChange> clientChanges, 
-	                                                              ChangeHistory serverChanges, 
-	                                                              OWLOntology fakeOntology) {
-	    List<OWLOntologyChange> serverChangeList = new ArrayList<OWLOntologyChange>();
-	    for (OntologyDocumentRevision revision = serverChanges.getStartRevision();
-	            revision.compareTo(serverChanges.getEndRevision()) < 0;
-	            revision = revision.next()) {
-	        ChangeHistory singleRevisionJump = serverChanges.cropChanges(revision, revision.next());
-	        if (singleRevisionJump.getMetaData(revision).getUserId().equals(u.getUserId())) {
-	            // this is somewhat cosmetic but we don't want to see the same commit twice
-	            clientChanges.removeAll(singleRevisionJump.getChanges(fakeOntology));
-	        }
-	        else {
-	            // only add changes from other users - we don't want previous changes from our user to block new changes from our user.
-	            serverChangeList.addAll(singleRevisionJump.getChanges(fakeOntology));
-	        }
-	    }    
-	    return serverChangeList;
 	}
 
 	@Override

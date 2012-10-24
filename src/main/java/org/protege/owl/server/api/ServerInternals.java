@@ -19,6 +19,19 @@ public interface ServerInternals {
    
    OutputStream getConfigurationOutputStream(ServerDocument doc, String extension) throws OWLServerException;
    
+   /**
+    * Inform the server and its filters about the transports that are being used.
+    * <p/>
+    * ServerFilters can use this to add their own functionality to the transport mechanism and 
+    * to determine that the initialization sequence has been completed.
+    * This is used in conjuction with the ServerTransport.start function.  The right sequence is
+    * <pre>
+    *        transport.start(server);
+    *        server.setTransports(transports);
+    * </pre>
+    *  
+    * @param transports
+    */
    void setTransports(Collection<ServerTransport> transports);
    
    Collection<ServerTransport> getTransports();
