@@ -8,6 +8,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RevisionPointer;
+import org.protege.owl.server.api.exception.AuthenticationFailedException;
+import org.protege.owl.server.api.exception.ConflictException;
 import org.protege.owl.server.connect.rmi.RMIClient;
 import org.protege.owl.server.util.ClientRegistry;
 import org.semanticweb.owlapi.io.OWLFunctionalSyntaxOntologyFormat;
@@ -36,6 +38,12 @@ public abstract class ServerCommand {
             System.out.println("Could not parse the command line");
             pe.printStackTrace();
             usage();
+        }
+        catch (AuthenticationFailedException afe) {
+            System.out.println("Authentication failed.");
+        }
+        catch (ConflictException ce) {
+            System.out.println("Conflict with another user detected.");
         }
     }
     
