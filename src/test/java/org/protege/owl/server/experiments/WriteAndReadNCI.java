@@ -1,4 +1,4 @@
-package org.protege.owl.server.changes.experiments;
+package org.protege.owl.server.experiments;
 
 import java.io.File;
 import java.io.IOException;

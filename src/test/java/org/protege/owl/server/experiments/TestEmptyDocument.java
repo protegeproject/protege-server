@@ -1,4 +1,4 @@
-package org.protege.owl.server.changes.experiments;
+package org.protege.owl.server.experiments;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
