@@ -82,25 +82,6 @@ public class ConflictTest {
         Assert.assertTrue(foundConflict);
     }
     
-    @Test
-    public void testSelfConflict() throws OWLOntologyCreationException, OWLServerException {
-        setupClient1();
-        TestUtilities.commit(client1, vont1,
-                             new AddAxiom(vont1.getOntology(), CHEESEY_PIZZA_DEFINITION),
-                             new AddAxiom(vont1.getOntology(), HAS_TOPPING_DOMAIN));
-        boolean foundConflict = false;
-        try {
-            TestUtilities.commit(client1, vont1,
-                                 new RemoveAxiom(vont1.getOntology(), CHEESEY_PIZZA_DEFINITION));
-        }
-        catch (ConflictException ce) {
-            foundConflict = true;
-        }
-        Assert.assertTrue(foundConflict);
-    }
-    
-
-    
     private void setupClient1() throws OWLOntologyCreationException, OWLServerException {
         client1 = getClient("redmond", "troglodyte");
         OWLOntology ontology1 = OWLManager.createOWLOntologyManager().createOntology();
