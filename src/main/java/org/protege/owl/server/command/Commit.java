@@ -53,6 +53,7 @@ public class Commit extends ServerCommand {
             VersionedOntologyDocument vont = registry.getVersionedOntologyDocument(ontology);
             ChangeMetaData metaData = getCommitComment();
             ClientUtilities.commit(client, metaData, vont);
+            System.out.println("Changes committed.");
         }
         else {
             System.out.println("Could not connect to appropriate server - no known server metadata found.");
@@ -65,7 +66,7 @@ public class Commit extends ServerCommand {
         console.writer().flush();
         StringBuffer sb = new StringBuffer();
         boolean firstTime = true;
-        for (String line = console.readLine(); line != null; line = console.readLine()) {
+        for (String line = console.readLine(); line != null && !line.isEmpty(); line = console.readLine()) {
             if (firstTime) {
                 firstTime = false;
             }
