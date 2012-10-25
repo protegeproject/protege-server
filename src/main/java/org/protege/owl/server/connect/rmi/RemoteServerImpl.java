@@ -110,7 +110,7 @@ public class RemoteServerImpl implements RemoteServer {
 		    OntologyDocumentRevision start = server.evaluateRevisionPointer(u, doc, startPointer);
 		    OntologyDocumentRevision end   = server.evaluateRevisionPointer(u, doc, endPointer);
 			ChangeHistory history = server.getChanges(u, doc, start, end);
-			history.setCompressionLimit(NETWORK_COMPRESSION_LIMIT);
+			history.setCompressionLimit(networkCompressionLimit);
 			return history;
 		}
 		catch (OWLServerException ioe) {

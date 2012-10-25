@@ -21,7 +21,6 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class WriteAndReadNCI {
     public static final String ONTOLOGY_LOCATION = "/home/redmond/work/Shared/ontologies/NCI/Thesaurus-11.01e-fixed-annotations.owl";
-    private static int fileCounter = 0;
     
     /*
      * Matthew's work should make this a couple of orders of magnitude faster!

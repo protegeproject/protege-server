@@ -2,7 +2,6 @@ package org.protege.owl.server.command;
 
 import static org.protege.owl.server.command.P4OWLServerOptions.NEEDS_HELP_OPTION;
 
-import java.io.Console;
 import java.io.File;
 
 import org.apache.commons.cli.CommandLine;
@@ -10,12 +9,10 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.protege.owl.server.util.ClientRegistry;
-import org.protege.owl.server.util.ClientUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;

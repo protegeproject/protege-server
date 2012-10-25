@@ -19,7 +19,6 @@ import org.protege.owl.server.changes.format.OWLOutputStream;
 import org.protege.owl.server.render.RenderOntologyChangeVisitor;
 import org.protege.owl.server.util.ChangeUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.io.OWLObjectRenderer;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
