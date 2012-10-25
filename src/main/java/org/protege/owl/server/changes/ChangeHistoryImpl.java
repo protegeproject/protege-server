@@ -16,8 +16,10 @@ import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.changes.format.OWLOutputStream;
+import org.protege.owl.server.render.RenderOntologyChangeVisitor;
 import org.protege.owl.server.util.ChangeUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.io.OWLObjectRenderer;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -248,7 +250,30 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 
     @Override
     public String toString() {
-    	return "{" + startRevision + " --> " + getEndRevision() + ": " + listOfRevisionChanges + "}";
+        StringBuffer sb = new StringBuffer();
+        sb.append("{");
+        sb.append(startRevision);
+        sb.append(" --> ");
+        sb.append(getEndRevision());
+        sb.append(": ");
+        for (List<OWLOntologyChange> changesAtRevision : listOfRevisionChanges) {
+            sb.append("[");
+            boolean firstTime = true;
+            for (OWLOntologyChange particularChangeAtRevision : changesAtRevision) {
+                if (firstTime) {
+                    firstTime = false;
+                }
+                else {
+                    sb.append(", ");
+                }
+                RenderOntologyChangeVisitor renderingVisitor = new RenderOntologyChangeVisitor(documentFactory.getOWLRenderer());
+                particularChangeAtRevision.accept(renderingVisitor);
+                sb.append(renderingVisitor.getRendering());
+            }
+            sb.append("]");
+        }
+        sb.append("}");
+    	return sb.toString();
     }
 
 }
