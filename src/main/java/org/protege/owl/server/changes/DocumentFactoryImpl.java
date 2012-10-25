@@ -20,13 +20,17 @@ import org.protege.owl.server.api.RemoteOntologyDocument;
 import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.VersionedOntologyDocument;
 import org.protege.owl.server.changes.format.OWLInputStream;
+import org.semanticweb.owlapi.io.OWLObjectRenderer;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
+import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
+
 public class DocumentFactoryImpl implements DocumentFactory, Serializable {
     private static final long serialVersionUID = -4952738108103836430L;
     public static Logger logger = Logger.getLogger(DocumentFactoryImpl.class.getCanonicalName());
+    private transient OWLObjectRenderer renderer;
 	
     @Override
     public ChangeHistory createEmptyChangeDocument(OntologyDocumentRevision revision) {
@@ -163,6 +167,12 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	    }
 	}
 
-
+	@Override
+	public OWLObjectRenderer getOWLRenderer() {
+	    if (renderer == null) {
+	        renderer = new ManchesterOWLSyntaxOWLObjectRendererImpl();
+	    }
+	    return renderer;
+	}
 
 }
