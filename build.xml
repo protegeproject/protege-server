@@ -4,6 +4,7 @@
   <property file="local.properties"/>
   <property file="version.properties"/>
   
+  <property environment="env"/>
   <property name = "bundlor.home"      location="${env.BUNDLOR_HOME}"/>
   
   <property name = "plugin"          value = "org.protege.owl.server"/>
