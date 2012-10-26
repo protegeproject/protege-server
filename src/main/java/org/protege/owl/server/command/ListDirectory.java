@@ -7,7 +7,6 @@ import java.util.TreeSet;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.protege.owl.server.api.Client;
@@ -26,8 +25,9 @@ public class ListDirectory extends ServerCommand {
     @Override
     public boolean parse(String[] args) throws ParseException {
         CommandLine cmd = new GnuParser().parse(options, args, true);
+        loadCommandLine(cmd);
         String[] remainingArgs = cmd.getArgs();
-        if (!needsHelp(cmd) && remainingArgs.length == 1) {
+        if (!needsHelp() && remainingArgs.length == 1) {
             serverLocation = IRI.create(remainingArgs[0]);
         }
         return serverLocation != null;
@@ -55,8 +55,7 @@ public class ListDirectory extends ServerCommand {
 
     @Override
     public void usage() {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(80, "List <options> server-directory-irib", "", options, showIRI());
+        usage("List <options> server-directory-irib", showIRI(), options);
     }
 
     /**

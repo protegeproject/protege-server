@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.protege.owl.server.api.Client;
@@ -36,19 +34,14 @@ public class Update extends ServerCommand {
 
     @Override
     public boolean parse(String[] args) throws ParseException {
-        boolean goForIt = false;
-        CommandLine cmd = new GnuParser().parse(options, args, true);
+        ontologyFile = parseSingleExistingFile(args, options);
+        return ontologyFile != null && ontologyFile.isFile();
+    }
+    
+    @Override
+    protected void loadCommandLine(CommandLine cmd) {
+        super.loadCommandLine(cmd);
         revision = parseRevision(cmd);
-        String[] remainingArgs = cmd.getArgs();
-        if (!needsHelp(cmd) && remainingArgs.length == 1) {
-            ontologyFile = new File(remainingArgs[0]);
-            goForIt = true;
-        }
-        if (ontologyFile != null && !ontologyFile.exists()) {
-            System.out.println("File " + ontologyFile + " not found and cannot be updated.");
-            goForIt = false;
-        }
-        return goForIt;
     }
 
     @Override
@@ -72,8 +65,7 @@ public class Update extends ServerCommand {
 
     @Override
     public void usage() {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(80, "Update <options> ontology-file", "", options, "");
+        usage("Update <options> ontology-file", "", options);
     }
 
     /**

@@ -6,9 +6,6 @@ import java.io.Console;
 import java.io.File;
 import java.util.List;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.protege.owl.server.api.Client;
@@ -31,18 +28,8 @@ public class Uncommitted extends ServerCommand {
 
     @Override
     public boolean parse(String[] args) throws ParseException {
-        boolean goForIt = false;
-        CommandLine cmd = new GnuParser().parse(options, args, true);
-        String[] remainingArgs = cmd.getArgs();
-        if (!needsHelp(cmd) && remainingArgs.length == 1) {
-            ontologyFile = new File(remainingArgs[0]);
-            goForIt = true;
-        }
-        if (ontologyFile != null && !ontologyFile.exists()) {
-            System.out.println("File " + ontologyFile + " not found and cannot be analyzed.");
-            goForIt = false;
-        }
-        return goForIt;
+        ontologyFile = parseSingleExistingFile(args, options);
+        return ontologyFile != null && ontologyFile.isFile();
     }
 
     @Override
@@ -64,8 +51,7 @@ public class Uncommitted extends ServerCommand {
 
     @Override
     public void usage() {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(80, "Uncommitted <options> ontology-file", "", options, "");
+        usage("Uncommitted <options> ontology-file", "", options);
     }
 
     /**

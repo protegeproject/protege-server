@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.protege.owl.server.api.Client;
@@ -38,17 +37,16 @@ public class Checkout extends ServerCommand {
     private IRI serverIRI;
     private File savedLocation;
     private OWLOntologyFormat format;
-    private RevisionPointer revision;
+    RevisionPointer revision = RevisionPointer.HEAD_REVISION;
     
     @Override
     public boolean parse(String[] args) throws ParseException {
         try {
             boolean goForIt = false;
             CommandLine cmd = new GnuParser().parse(options, args, true);
-            format = parseFormat(cmd);
-            revision = parseRevision(cmd);
+            loadCommandLine(cmd);
             String[] remainingArgs = cmd.getArgs();
-            if (!needsHelp(cmd) && remainingArgs.length == 2) {
+            if (!needsHelp() && remainingArgs.length == 2) {
                 String iriString = remainingArgs[0];
                 serverIRI = IRI.create(iriString);
                 savedLocation = new File(remainingArgs[1]);
@@ -66,6 +64,13 @@ public class Checkout extends ServerCommand {
         catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }
+    }
+    
+    @Override
+    protected void loadCommandLine(CommandLine cmd) {
+        super.loadCommandLine(cmd);
+        format = parseFormat(cmd);
+        revision = parseRevision(cmd);
     }
     
     @Override
@@ -89,8 +94,7 @@ public class Checkout extends ServerCommand {
     }
     
     public void usage() {
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(80, "Checkout <options> serverIRI savedLocation", "", options, showFormats() + "\n" + showIRI());
+        usage("Checkout <options> serverIRI savedLocation", showFormats() + "\n" + showIRI(), options);
     }
 
     /**
