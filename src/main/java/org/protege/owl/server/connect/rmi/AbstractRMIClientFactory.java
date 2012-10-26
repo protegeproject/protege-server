@@ -5,12 +5,14 @@ import java.net.URISyntaxException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.AuthToken;
+import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.ClientFactory;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.VersionedOntologyDocument;
@@ -76,6 +78,37 @@ public abstract class AbstractRMIClientFactory implements ClientFactory {
         catch (URISyntaxException use) {
             throw new OWLServerException(use);
         }
+    }
+    
+    @Override
+    public Client connectToServer(IRI serverLocation, Properties info) throws OWLServerException {
+        String username = info.getProperty(ClientFactory.USERNAME_KEY);
+        String password = info.getProperty(ClientFactory.PASSWORD_KEY);
+        if (username == null || password == null) {
+            throw new AuthenticationFailedException("No credentials supplied.");
+        }
+        AuthToken authToken;
+        try {
+            authToken = login(serverLocation, username, password);
+        }
+        catch (NotBoundException e) {
+            throw new AuthenticationFailedException("Internal failure processing authentication credentials", e);
+        }
+        catch (RemoteException e) {
+            throw new AuthenticationFailedException("Internal failure processing authentication credentials", e);
+        }
+        RMIClient client = new RMIClient(authToken, serverLocation);
+        try {
+            client.initialise();
+        }
+        catch (RemoteException re) {
+            throw new OWLServerException(re);
+        }
+        catch (NotBoundException nbe) {
+            throw new OWLServerException(nbe);
+        }
+        authMap.put(serverLocation, authToken);
+        return client;
     }
     
     /**

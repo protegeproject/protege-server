@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import org.protege.owl.server.api.Client;
@@ -68,6 +69,23 @@ public class ClientRegistry implements ClientFactory {
             }
         }
         return null;
+    }
+    
+    @Override
+    public Client connectToServer(IRI serverLocation, Properties info) throws OWLServerException {
+        for (ClientFactory factory : factories) {
+            if (factory.isSuitable(serverLocation)) {
+                return factory.connectToServer(serverLocation, info);
+            }
+        }
+        return null;
+    }
+    
+    public Client connectToServer(IRI serverLocation, String username, String password) throws OWLServerException {
+        Properties p = new Properties();
+        p.setProperty(ClientFactory.USERNAME_KEY, username);
+        p.setProperty(ClientFactory.PASSWORD_KEY, password);
+        return connectToServer(serverLocation, p);
     }
     
     @Override

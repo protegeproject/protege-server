@@ -2,6 +2,7 @@ package org.protege.owl.server.api;
 
 
 import java.io.IOException;
+import java.util.Properties;
 import java.util.Set;
 
 import org.protege.owl.server.api.exception.OWLServerException;
@@ -37,6 +38,8 @@ import org.semanticweb.owlapi.model.OWLOntology;
  *
  */
 public interface ClientFactory {
+    public static final String USERNAME_KEY = "username";
+    public static final String PASSWORD_KEY = "password";
     
     /**
      * Look at the storage location of the ontology to determine if there is metadata associated with this ontology indicating
@@ -92,6 +95,8 @@ public interface ClientFactory {
      * @throws OWLServerException
      */
     Client connectToServer(IRI serverLocation) throws OWLServerException;
+    
+    Client connectToServer(IRI serverLocation, Properties info) throws OWLServerException;
     
     /**
      * This does a quick check to see if it looks like a client can be provided quickly without, in particular,
