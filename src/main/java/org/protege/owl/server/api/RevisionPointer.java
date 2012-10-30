@@ -15,6 +15,8 @@ public class RevisionPointer implements Serializable {
         HEAD_REVISION.type = RevisionPointerType.HEAD;
     }
     
+    public static final RevisionPointer START_REVISION = OntologyDocumentRevision.START_REVISION.asPointer();
+    
     private RevisionPointerType type;
     private OntologyDocumentRevision revision;
     
