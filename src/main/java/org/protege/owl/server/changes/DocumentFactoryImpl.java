@@ -2,6 +2,7 @@ package org.protege.owl.server.changes;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -55,25 +56,46 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	@Override
 	public boolean hasServerMetadata(OWLOntology ontology) {
 		File ontologyFile = VersionedOntologyDocumentImpl.getBackingStore(ontology);
-		if (ontologyFile == null) {
-			return false;
-		}
-		return VersionedOntologyDocumentImpl.getMetaDataFile(ontologyFile).exists();
+		return ontologyFile != null && VersionedOntologyDocumentImpl.getMetaDataFile(ontologyFile).exists();
+	}
+	
+	@Override
+	public boolean hasServerMetadata(IRI ontologyDocumentLocation) {
+	    if (!ontologyDocumentLocation.getScheme().equals("file")) {
+	        return false;
+	    }
+	    File ontologyFile = new File(ontologyDocumentLocation.toURI());
+	    return VersionedOntologyDocumentImpl.getMetaDataFile(ontologyFile).exists();
 	}
 	
 	@Override
 	public IRI getServerLocation(OWLOntology ontology) throws IOException {
-	    try {
-
-	        File ontologyFile = VersionedOntologyDocumentImpl.getBackingStore(ontology);
-	        File historyFile = VersionedOntologyDocumentImpl.getMetaDataFile(ontologyFile);
-	        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(historyFile));
-	        RemoteOntologyDocument serverDocument = (RemoteOntologyDocument) ois.readObject();
-	        return serverDocument.getServerLocation();
-	    }
-	    catch (ClassNotFoundException cnfe) {
-	        throw new IOException("Class Loader issues when hydrating ontology history document", cnfe);
-	    }
+        File ontologyFile = VersionedOntologyDocumentImpl.getBackingStore(ontology);
+        return getServerLocation(ontologyFile);
+	}
+	
+	@Override
+	public IRI getServerLocation(IRI ontologyDocumentLocation) throws FileNotFoundException, IOException {
+	    File ontologyFile = new File(ontologyDocumentLocation.toURI());
+	    return getServerLocation(ontologyFile);
+	}
+	
+	private IRI getServerLocation(File ontologyFile) throws FileNotFoundException, IOException {
+        ObjectInputStream ois = null;
+        try {
+            File historyFile = VersionedOntologyDocumentImpl.getMetaDataFile(ontologyFile);
+            ois = new ObjectInputStream(new FileInputStream(historyFile));
+            RemoteOntologyDocument serverDocument = (RemoteOntologyDocument) ois.readObject();
+            return serverDocument.getServerLocation();
+        }
+        catch (ClassNotFoundException cnfe) {
+            throw new IOException("Class Loader issues when hydrating ontology history document", cnfe);
+        }
+        finally {
+            if (ois != null) {
+                ois.close();
+            }
+        }	    
 	}
 
 	@Override
