@@ -38,6 +38,26 @@ public class ClientRegistry implements ClientFactory {
     }
     
     @Override
+    public boolean hasServerMetadata(IRI ontologyDocumentLocation) {
+        for (ClientFactory factory : factories) {
+            if (factory.hasServerMetadata(ontologyDocumentLocation)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    @Override
+    public IRI getServerLocation(IRI ontologyDocumentLocation) throws IOException {
+        for (ClientFactory factory : factories) {
+            if (factory.hasServerMetadata(ontologyDocumentLocation)) {
+                return factory.getServerLocation(ontologyDocumentLocation);
+            }
+        }
+        return null;
+    }
+    
+    @Override
     public Client connectToServer(OWLOntology ontology) throws OWLServerException, IOException {
         for (ClientFactory factory : factories) {
             if (factory.hasSuitableMetaData(ontology)) {
