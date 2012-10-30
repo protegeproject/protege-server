@@ -64,6 +64,26 @@ public interface ClientFactory {
     VersionedOntologyDocument getVersionedOntologyDocument(OWLOntology ontology) throws IOException;
     
     /**
+     * This will determine if the the given ontology document location has metadata that this client factory can recognize.
+     * <p/>
+     * It is possible that the client factory will be able to recognize the meta data and come up with a server location but that 
+     * location may not be suitable for the particular client.
+     * 
+     * @param ontologyDocumentLocation
+     * @return
+     */
+    boolean hasServerMetadata(IRI ontologyDocumentLocation);
+    
+    /**
+     * Assuming that the client knows how to read the metadata associated with the given ontology location, this will return the location provided.
+     * It is possible for the result of this call not to work with this client factory. 
+     * @param ontologyDocumentLocation
+     * @return
+     * @throws IOException
+     */
+    IRI getServerLocation(IRI ontologyDocumentLocation) throws IOException;
+    
+    /**
      * If an ontology has metadata indicating that it is associated with a server ontology then this method will create a client to connect to that server.
      * <p/>
      * This call may result in some factory specific interaction with a user to authenticate to the server.
