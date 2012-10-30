@@ -46,6 +46,16 @@ public abstract class AbstractRMIClientFactory implements ClientFactory {
    public RMIClient connectToServer(OWLOntology ontology) throws OWLServerException, IOException {
         return connectToServer(factory.getServerLocation(ontology));
     }
+   
+   @Override
+   public boolean hasServerMetadata(IRI ontologyDocumentLocation) {
+       return factory.hasServerMetadata(ontologyDocumentLocation);
+   }
+   
+   @Override
+   public IRI getServerLocation(IRI ontologyDocumentLocation) throws IOException {
+       return factory.getServerLocation(ontologyDocumentLocation);
+   }
 
     @Override
     public boolean isSuitable(IRI serverLocation) {
