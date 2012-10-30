@@ -1,8 +1,10 @@
 package org.protege.owl.server.command;
 
+import static org.protege.owl.server.command.P4OWLServerOptions.AXIOM_COUNT_OPTION;
 import static org.protege.owl.server.command.P4OWLServerOptions.NEEDS_HELP_OPTION;
 import static org.protege.owl.server.command.P4OWLServerOptions.ONTOLOGY_FORMAT_OPTION;
 import static org.protege.owl.server.command.P4OWLServerOptions.REVISION_OPTION;
+import static org.protege.owl.server.command.P4OWLServerOptions.REVISION_RANGE_OPTION;
 
 import java.io.Console;
 import java.io.File;
@@ -10,6 +12,7 @@ import java.io.File;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.protege.owl.server.api.ChangeMetaData;
@@ -25,7 +28,6 @@ import org.semanticweb.owlapi.io.RDFXMLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLOntologyFormat;
 
 public abstract class ServerCommand {
-    private ClientRegistry registry;
     private boolean needsHelp = false;
     
     public ServerCommand() {
@@ -63,6 +65,8 @@ public abstract class ServerCommand {
         needsHelp = cmd.hasOption(NEEDS_HELP_OPTION.getArgName()) || cmd.hasOption(NEEDS_HELP_OPTION.getLongOpt());
     }
     
+    private ClientRegistry registry;
+
     protected File parseSingleExistingFile(String[] args, Options options) throws ParseException {
         File f = null;
         CommandLine cmd = new GnuParser().parse(options, args, true);
@@ -80,10 +84,7 @@ public abstract class ServerCommand {
     
     protected OWLOntologyFormat parseFormat(CommandLine cmd) {
         OWLOntologyFormat format = new RDFXMLOntologyFormat();
-        String formatString = cmd.getOptionValue(ONTOLOGY_FORMAT_OPTION.getArgName());
-        if (formatString == null) {
-            formatString = cmd.getOptionValue(ONTOLOGY_FORMAT_OPTION.getLongOpt());
-        }
+        String formatString = getOptionValue(cmd, ONTOLOGY_FORMAT_OPTION);
         if (formatString == null) {
             ;
         }
@@ -104,10 +105,7 @@ public abstract class ServerCommand {
     
     protected RevisionPointer parseRevision(CommandLine cmd) {
         RevisionPointer rp = RevisionPointer.HEAD_REVISION;
-        String formatString = cmd.getOptionValue(REVISION_OPTION.getArgName());
-        if (formatString == null) {
-            formatString = cmd.getOptionValue(REVISION_OPTION.getLongOpt());
-        }
+        String formatString = getOptionValue(cmd, REVISION_OPTION);
         if (formatString == null) {
             ;
         }
@@ -116,6 +114,50 @@ public abstract class ServerCommand {
             rp = new OntologyDocumentRevision(revision).asPointer();
         }
         return rp;
+    }
+    
+    protected RevisionPointer[] parseRevisionRange(CommandLine cmd) {
+        RevisionPointer[] range = { OntologyDocumentRevision.START_REVISION.next().asPointer(), RevisionPointer.HEAD_REVISION };
+        String revisionString = getOptionValue(cmd, REVISION_RANGE_OPTION);
+        if (revisionString != null) {
+             String[] revisionStrings = revisionString.split(":");
+             if (revisionStrings.length == 2) {
+                 parseRevisionRange(range, revisionStrings);
+             }
+             else {
+                 System.out.println("Invalid revision range: " + revisionString);
+             }
+        }
+        return range;
+    }
+    
+    private void parseRevisionRange(RevisionPointer[] range, String[] revisionStrings) {
+        int startRevision = Integer.parseInt(revisionStrings[0]);
+        range[0] = new OntologyDocumentRevision(startRevision).asPointer();
+        if (revisionStrings[1].toLowerCase().equals("head")) {
+            range[1] = RevisionPointer.HEAD_REVISION;
+        }
+        else {
+            int endRevision   = Integer.parseInt(revisionStrings[1]);
+            range[1] = new OntologyDocumentRevision(endRevision).asPointer();
+        }
+    }
+    
+    protected int parseAxiomCount(CommandLine cmd) {
+        int axiomCount = -1;
+        String axiomCountString = getOptionValue(cmd, AXIOM_COUNT_OPTION);
+        if (axiomCountString != null) {
+            axiomCount = Integer.parseInt(axiomCountString); 
+        }
+        return axiomCount;
+    }
+    
+    private String getOptionValue(CommandLine cmd, Option option) {
+        String value = cmd.getOptionValue(option.getArgName());
+        if (value == null) {
+            value = cmd.getOptionValue(option.getLongOpt());
+        }
+        return value;
     }
     
     protected ChangeMetaData getCommitComment() {
