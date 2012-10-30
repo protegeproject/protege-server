@@ -36,6 +36,7 @@ public class DiffRenderer {
         writeRegularAxioms();
         writeMissingAnnotations();
         writeGeneralizedAxioms();
+        writeDone();
         writer.flush();
     }
     
@@ -51,7 +52,8 @@ public class DiffRenderer {
     private void writeOntologyAnnotations() {
         for (OWLOntologyChange change : diffs.getUncategorizedChanges()) {
             if (change instanceof AddOntologyAnnotation || change instanceof RemoveOntologyAnnotation) {
-                if (limit > 0 && counter++ >= limit) {
+                counter++;
+                if (writingStopped()) {
                     break;
                 }
                 writeChange(change);
@@ -63,12 +65,16 @@ public class DiffRenderer {
         for (Entry<OWLEntity, Set<OWLOntologyChange>> entry : diffs.getReferencedEntityMap().entrySet()) {
             OWLEntity entity = entry.getKey();
             Set<OWLOntologyChange> changes = entry.getValue();
-            writer.write(" ------------------- ");
-            writer.write(renderer.render(entity));
-            writer.write(" -------------------\n");
+            if (!writingStopped()) {
+                writer.write(" ------------------- ");
+                writer.write(renderer.render(entity));
+                writer.write(" -------------------\n");
+            }
             writeIriAnnotations(entity.getIRI());
             writeChanges(changes);
-            writer.write('\n');
+            if (!writingStopped()) {
+                writer.write('\n');
+            }
         }
     }
     
@@ -85,7 +91,8 @@ public class DiffRenderer {
     private void writeGeneralizedAxioms() {
         for (OWLOntologyChange change : diffs.getUncategorizedChanges()) {
             if (!(change instanceof AddOntologyAnnotation) && !(change instanceof RemoveOntologyAnnotation)) {
-                if (limit > 0 && counter++ >= limit) {
+                counter++;
+                if (writingStopped()) {
                     break;
                 }
                 writeChange(change);
@@ -103,7 +110,8 @@ public class DiffRenderer {
     
     private void writeChanges(Collection<OWLOntologyChange> changes) {
         for (OWLOntologyChange change : changes) {
-            if (limit > 0 && counter++ >= limit) {
+            counter++;
+            if (writingStopped()) {
                 break;
             }
             writeChange(change);
@@ -116,4 +124,15 @@ public class DiffRenderer {
         writer.write(visitor.getRendering());
         writer.write('\n');
     }
+    
+    private void writeDone() {
+        if (counter >= limit) {
+            writer.write("...more\n");
+        }
+    }
+    
+    private boolean writingStopped() {
+        return limit > 0 && counter >= limit;
+    }
+    
 }
