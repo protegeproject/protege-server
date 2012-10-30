@@ -28,6 +28,10 @@ public interface DocumentFactory {
 	boolean hasServerMetadata(OWLOntology ontology);
 	
 	IRI getServerLocation(OWLOntology ontology) throws IOException;
+	
+	boolean hasServerMetadata(IRI ontologyDocumentLocation);
+	
+	IRI getServerLocation(IRI ontologyDocumentLocation) throws IOException;
 
 	VersionedOntologyDocument getVersionedOntologyDocument(OWLOntology ontology) throws IOException;
 	
