@@ -57,7 +57,7 @@ public final class OntologyDocumentRevision implements Comparable<OntologyDocume
 	
 	@Override
 	public String toString() {
-		return "<Revision " + revision + ">";
+		return "" + revision;
 	}
 
 }
