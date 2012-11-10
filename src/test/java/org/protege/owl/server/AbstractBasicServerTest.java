@@ -1,5 +1,6 @@
 package org.protege.owl.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.util.ArrayList;
@@ -19,17 +20,32 @@ import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.util.ClientUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddAxiom;
+import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.model.RemoveImport;
+import org.semanticweb.owlapi.util.SimpleIRIMapper;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public abstract class AbstractBasicServerTest {
+    public static final String IMPORT_TEST_DIR = "src/test/resources/import";
+    public static final File IMPORTING_LOC = new File(IMPORT_TEST_DIR, "Importer.owl");
+    public static final File IMPORTED_LOC = new File(IMPORT_TEST_DIR, "Imported.owl");
+    public static final String IMPORTING_NS = "http://protege.org/ImportTest/Importer";
+    public static final String IMPORTED_NS  = "http://protege.org/ImportTest/Imported";
+    
+    public final IRI importingServerIRI = IRI.create(getServerRoot() + "Importing.history");
+    
 	private Client client;
 	private RemoteServerDirectory testDirectory;
 	
@@ -235,5 +251,120 @@ public abstract class AbstractBasicServerTest {
 		OWLOntology ontology = PizzaVocabulary.loadPizza();
 		VersionedOntologyDocument versionedOntology = ClientUtilities.createAndGetServerOntology(client, pizzaLocation, new ChangeMetaData("A tasty pizza"), ontology);
 		return versionedOntology;
+	}
+	
+	@Test
+	public void testLateImport() throws OWLOntologyCreationException, OWLServerException {
+	    testEarlyOrLateImport(false);
+	}
+	
+	@Test
+	public void testEarlyImport() throws OWLOntologyCreationException, OWLServerException {
+	    testEarlyOrLateImport(true);
+	}
+
+	private void testEarlyOrLateImport(boolean importAlreadyLoaded) throws OWLOntologyCreationException, OWLServerException {
+	    installImportingOntology();
+	    RemoteOntologyDocument importedDoc = (RemoteOntologyDocument) client.getServerDocument(importingServerIRI);
+	    OWLOntologyManager manager = createImportingOntologyManager();
+	    if (importAlreadyLoaded) {
+	        // here the imported ontology is already loaded before we retrieve the addAxiom from the server.
+	        manager.loadOntologyFromOntologyDocument(IMPORTED_LOC);
+	    }
+	    VersionedOntologyDocument vont = ClientUtilities.loadOntology(client, manager, importedDoc);
+	    assertImportFound(vont.getOntology());
+	}
+	
+	@Test
+	public void testUpdateAddImportLate() throws OWLServerException, OWLOntologyCreationException {
+	    testUpdateAddImport(false);
+	}
+
+	@Test
+	public void testUpdateAddImportEarly() throws OWLServerException, OWLOntologyCreationException {
+	    testUpdateAddImport(true);
+	}
+	
+	private void testUpdateAddImport(boolean importAlreadyLoaded) throws OWLServerException, OWLOntologyCreationException {
+	    OWLDataFactory factory = OWLManager.getOWLDataFactory();
+	    OWLImportsDeclaration decl = factory.getOWLImportsDeclaration(IRI.create(IMPORTED_NS));
+	    Client client1 = createClient();
+	    RemoteOntologyDocument doc = client1.createRemoteOntology(importingServerIRI);
+	    
+	    Client client2 = createClient();
+	    OWLOntologyManager manager2 = createImportingOntologyManager();
+	    VersionedOntologyDocument vont2 = ClientUtilities.loadOntology(client2, manager2, doc);
+	    Assert.assertEquals(1, manager2.getOntologies().size());
+	    Assert.assertEquals(0, manager2.getOntologies().iterator().next().getImportsDeclarations().size());
+	    if (importAlreadyLoaded) {
+	        // here the imported ontology is already loaded before we retrieve the addAxiom from the server.
+	        manager2.loadOntologyFromOntologyDocument(IMPORTED_LOC);
+	        Assert.assertEquals(2, manager2.getOntologies().size());
+	    }
+	    
+	    TestUtilities.rawCommit(client1, doc, OntologyDocumentRevision.START_REVISION, new AddImport(vont2.getOntology(), decl));
+	    
+	    ClientUtilities.update(client2, vont2);
+	    assertImportFound(vont2.getOntology());
+	}
+	
+	@Test
+	public void testReverseUpdateAddImportLate() throws OWLOntologyCreationException, OWLServerException {
+	    testReverseUpdateAddImport(false);
+	}
+
+	@Test
+	public void testReverseUpdateAddImportEarly() throws OWLOntologyCreationException, OWLServerException {
+	    testReverseUpdateAddImport(true);
+	}
+	
+	private void testReverseUpdateAddImport(boolean importAlreadyLoaded) throws OWLServerException, OWLOntologyCreationException {
+	    OWLDataFactory factory = OWLManager.getOWLDataFactory();
+	    OWLImportsDeclaration decl = factory.getOWLImportsDeclaration(IRI.create(IMPORTED_NS));
+	    Client client1 = createClient();
+	    RemoteOntologyDocument doc = client1.createRemoteOntology(importingServerIRI);
+
+	    Client client2 = createClient();
+	    OWLOntologyManager manager2 = createImportingOntologyManager();
+	    VersionedOntologyDocument vont2 = ClientUtilities.loadOntology(client2, manager2, doc);
+	    Assert.assertEquals(1, manager2.getOntologies().size());
+	    Assert.assertEquals(0, manager2.getOntologies().iterator().next().getImportsDeclarations().size());
+	    if (importAlreadyLoaded) {
+	        // here the imported ontology is already loaded before we retrieve the addAxiom from the server.
+	        manager2.loadOntologyFromOntologyDocument(IMPORTED_LOC);
+	        Assert.assertEquals(2, manager2.getOntologies().size());
+	    }
+
+	    TestUtilities.rawCommit(client1, doc, OntologyDocumentRevision.START_REVISION, new AddImport(vont2.getOntology(), decl));
+	    TestUtilities.rawCommit(client1, doc, OntologyDocumentRevision.START_REVISION.next(), new RemoveImport(vont2.getOntology(), decl));
+
+	    ClientUtilities.update(client2, vont2);
+	    Assert.assertEquals(importAlreadyLoaded ? 2 : 1, manager2.getOntologies().size());
+	    // a reverse update...
+	    ClientUtilities.update(client2, vont2, OntologyDocumentRevision.START_REVISION.next().asPointer());
+
+        Assert.assertEquals(2, manager2.getOntologies().size());	    
+	    assertImportFound(vont2.getOntology());
+	}
+	
+	private void installImportingOntology() throws OWLServerException, OWLOntologyCreationException {
+	    Client founder = createClient();
+	    OWLOntologyManager manager = createImportingOntologyManager();
+	    OWLOntology ontology = manager.loadOntologyFromOntologyDocument(IMPORTING_LOC);
+	    ClientUtilities.createServerOntology(founder, importingServerIRI, new ChangeMetaData(), ontology);
+	}
+	
+	private OWLOntologyManager createImportingOntologyManager() {
+	    OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+        OWLOntologyIRIMapper mapper = new SimpleIRIMapper(IRI.create(IMPORTED_NS), IRI.create(IMPORTED_LOC));
+        manager.addIRIMapper(mapper);
+        return manager;
+	}
+	
+	private void assertImportFound(OWLOntology importingOntology) {
+	    Assert.assertEquals(1, importingOntology.getImportsDeclarations().size());
+	    Assert.assertEquals(IRI.create(IMPORTED_NS), importingOntology.getImportsDeclarations().iterator().next().getIRI());
+	    Assert.assertEquals(1, importingOntology.getImports().size());
+	    Assert.assertEquals(IRI.create(IMPORTED_NS), importingOntology.getImports().iterator().next().getOntologyID().getOntologyIRI());
 	}
 }
