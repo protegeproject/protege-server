@@ -158,10 +158,10 @@ public class ServerImpl implements Server {
 		URI rootUri = root.toURI();
 		for (File child : parent.listFiles()) {
 			ServerPath serverPath = new ServerPath(rootUri.relativize(child.toURI()));
-			if (child.isDirectory()) {
+			if (ServerObjectStatus.OBJECT_IS_DIRECTORY.isStatusOf(child, false)) {
 				documents.add(new ServerDirectoryImpl(serverPath));
 			}
-			else {
+			else if (ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT.isStatusOf(child, false)){
 				documents.add(new ServerOntologyDocumentImpl(serverPath));
 			}
 		}
