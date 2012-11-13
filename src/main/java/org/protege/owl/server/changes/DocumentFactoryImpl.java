@@ -100,12 +100,13 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 
 	@Override
 	public VersionedOntologyDocument getVersionedOntologyDocument(OWLOntology ontology) throws IOException {
+	    ObjectInputStream ois = null;
 	    try {
 	        File ontologyFile = VersionedOntologyDocumentImpl.getBackingStore(ontology);
 	        File metaDataFile = VersionedOntologyDocumentImpl.getMetaDataFile(ontologyFile);
 	        File historyFile  = VersionedOntologyDocumentImpl.getHistoryFile(ontologyFile);
 	        
-	        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(metaDataFile));
+	        ois = new ObjectInputStream(new FileInputStream(metaDataFile));
 	        
 	        RemoteOntologyDocument serverDocument = (RemoteOntologyDocument) ois.readObject();
 	        OntologyDocumentRevision revision = (OntologyDocumentRevision) ois.readObject();
@@ -120,6 +121,11 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 	    }
 	    catch (ClassNotFoundException cnfe) {
 	        throw new IOException("Class Loader issues when hydrating ontology history document", cnfe);
+	    }
+	    finally {
+	        if (ois != null) {
+	            ois.close();
+	        }
 	    }
 	}
 	

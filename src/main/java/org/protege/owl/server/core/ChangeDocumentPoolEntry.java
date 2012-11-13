@@ -19,6 +19,7 @@ import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.ChangeHistoryUtilities;
 
 public class ChangeDocumentPoolEntry {
+    
     private Logger logger = Logger.getLogger(ChangeDocumentPoolEntry.class.getCanonicalName());
     private DocumentFactory factory;
     private ChangeHistory changeDocument;
@@ -101,7 +102,26 @@ public class ChangeDocumentPoolEntry {
     private class ReadChangeDocument implements Callable<ChangeHistory> {
         @Override
         public ChangeHistory call() throws IOException {
-            return ChangeHistoryUtilities.readChanges(factory, historyFile, OntologyDocumentRevision.START_REVISION, null);
+            File backup = getBackupHistoryFile(historyFile);
+            try {
+                return ChangeHistoryUtilities.readChanges(factory, historyFile, OntologyDocumentRevision.START_REVISION, null);
+            }
+            catch (RuntimeException err) {
+                if (backup.exists()) {
+                    return ChangeHistoryUtilities.readChanges(factory, backup, OntologyDocumentRevision.START_REVISION, null);
+                }
+                else {
+                    throw err;
+                }
+            }
+            catch (IOException ioe) {
+                if (backup.exists()) {
+                    return ChangeHistoryUtilities.readChanges(factory, backup, OntologyDocumentRevision.START_REVISION, null);
+                }
+                else {
+                    throw ioe;
+                }
+            }
         }
     }
     
@@ -116,8 +136,10 @@ public class ChangeDocumentPoolEntry {
         public Boolean call() {
             try {
                 if (changeDocument == newChangeDocument) {
-                    long startTime = System.currentTimeMillis();
+                    prepareToSave(historyFile);
                     
+                    long startTime = System.currentTimeMillis();
+                                        
                     ChangeHistoryUtilities.writeChanges(newChangeDocument, historyFile);
                     
                     long interval = System.currentTimeMillis() - startTime;
@@ -132,6 +154,21 @@ public class ChangeDocumentPoolEntry {
                 return false;
             }
         }
+        
+        private void prepareToSave(File historyFile) {
+            File backup = getBackupHistoryFile(historyFile);
+            if (historyFile.exists() && backup.exists()) {
+                backup.delete();
+            }
+            if (historyFile.exists()) {
+                historyFile.renameTo(backup);
+            }
+        }
+    }
+    
+    private File getBackupHistoryFile(File historyFile) {
+        String path = historyFile.getAbsolutePath();
+        return new File(path + ".~");
     }
     
         

@@ -78,11 +78,16 @@ public abstract class AbstractSerializationTest {
 		out.close();
 		
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(tmp));
-		ChangeHistory doc3 = (ChangeHistory) in.readObject();
-		ChangeHistory doc4 = (ChangeHistory) in.readObject();
-		
-		Assert.assertEquals(doc3, doc1);
-		Assert.assertEquals(doc4, doc2);
+		try {
+		    ChangeHistory doc3 = (ChangeHistory) in.readObject();
+		    ChangeHistory doc4 = (ChangeHistory) in.readObject();     
+	        Assert.assertEquals(doc3, doc1);
+	        Assert.assertEquals(doc4, doc2);
+		}
+		finally {
+		    in.close();
+		}
+
 		
 	}
 	
@@ -116,17 +121,22 @@ public abstract class AbstractSerializationTest {
 		out.close();
 		
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(tmp));
-		Integer int6 = (Integer) in.readObject();
-		ChangeHistory doc7 = (ChangeHistory) in.readObject();
-		String str8 = (String) in.readObject();
-		ChangeHistory doc9 = (ChangeHistory) in.readObject();
-		Date d10 = (Date) in.readObject();
-		
-		Assert.assertEquals(int6, int1);
-		Assert.assertEquals(doc7, doc2);
-		Assert.assertEquals(str8, str3);
-		Assert.assertEquals(doc9, doc4);
-		Assert.assertEquals(d10, d5);
+		try {
+		    Integer int6 = (Integer) in.readObject();
+		    ChangeHistory doc7 = (ChangeHistory) in.readObject();
+		    String str8 = (String) in.readObject();
+		    ChangeHistory doc9 = (ChangeHistory) in.readObject();
+		    Date d10 = (Date) in.readObject();
+
+		    Assert.assertEquals(int6, int1);
+		    Assert.assertEquals(doc7, doc2);
+		    Assert.assertEquals(str8, str3);
+		    Assert.assertEquals(doc9, doc4);
+		    Assert.assertEquals(d10, d5);
+		}
+		finally {
+		    in.close();
+		}
 		
 	}
 	
@@ -179,9 +189,14 @@ public abstract class AbstractSerializationTest {
 		out.close();
 		
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(tmp));
-		ChangeHistory doc2 = (ChangeHistory) in.readObject();
-		
-		Assert.assertEquals(doc, doc2);
+		try {
+		    ChangeHistory doc2 = (ChangeHistory) in.readObject();
+
+		    Assert.assertEquals(doc, doc2);
+		}
+		finally {
+		    in.close();
+		}
 	}
 
 	

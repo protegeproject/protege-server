@@ -38,6 +38,7 @@ public class FileIOExperiments {
                     break;
                 }
                 */
+                @SuppressWarnings("resource")
                 InputStream bufIn = buffering ? new BufferedInputStream(in) : in;
                 int bytesRead = 0;
                 do {

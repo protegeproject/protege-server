@@ -18,6 +18,11 @@ public interface ServerTransport {
      */
 	void start(Server server) throws IOException;
 	
+	/**
+	 * Disposes the transport mechanism.
+	 * <p>
+	 * This is taken care of by the server shutdown implementation.
+	 */
 	void dispose();
 
 }
