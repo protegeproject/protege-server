@@ -19,4 +19,5 @@ Excluded-Exports: org.antlr.*,
  org.stringtemplate.*,
  lib
 Excluded-Imports: junit.framework.*, org.stringtemplate.*,org.antlr.*,
- org.apache.commons.cli.*,org.testng.*
+ org.apache.commons.cli.*,org.testng.*,
+ org.protege.osgi.framework

@@ -27,8 +27,7 @@
   <property name = "protege.launcher"  location = "./etc/server.template/lib/ProtegeLauncher.jar"/>
   <property name = "owl.lib"           location = "./etc/server.template/bundles/org.semanticweb.owl.owlapi.jar"/>
 
-  <property name = "server.prefix"      location = "/usr/local/protege.server"/>
-  <property name = "install.port"      value    = "4875"/>
+  <property name = "dist.zip"           location = "./build/protege-owl-server.zip"/>
 
   <path id = "project.classpath">    
     <pathelement location="${osgi.lib}"/>
@@ -164,6 +163,15 @@
     <jar jarfile = "${server.bundles}/${plugin}.jar"
          basedir = "${classes}" 
          manifest = "${manifest}"/>
+  </target>
+
+  <target name = "dist" depends = "jar">
+    <zip destfile="${dist.zip}" basedir="${build}" includes="server/**"/>
+  </target>
+
+  <target name="test.unzip">
+    <delete file="${build}/test"/>
+    <mkdir dir="${build}/test"/>
   </target>
   
   <target name = "protege.install" depends = "jar">
