@@ -27,7 +27,10 @@
   <property name = "protege.launcher"  location = "./etc/server.template/lib/ProtegeLauncher.jar"/>
   <property name = "owl.lib"           location = "./etc/server.template/bundles/org.semanticweb.owl.owlapi.jar"/>
 
-  <property name = "dist.zip"           location = "./build/protege-owl-server.zip"/>
+  <property name="src.win"       location="./src/windows/java"/>
+  <property name="classes.win"   location="${build}/classes.windows"/>
+  <property name="jar.win"       location="${build}/winsvc.jar"/>
+  <property name = "dist.zip"    location = "./build/protege-owl-server.zip"/>
 
   <path id = "project.classpath">    
     <pathelement location="${osgi.lib}"/>
@@ -165,10 +168,6 @@
          manifest = "${manifest}"/>
   </target>
 
-  <target name = "dist" depends = "jar">
-    <zip destfile="${dist.zip}" basedir="${build}" includes="server/**"/>
-  </target>
-
   <target name="test.unzip">
     <delete file="${build}/test"/>
     <mkdir dir="${build}/test"/>
@@ -191,6 +190,27 @@
     <delete dir="${build}"/>
   </target>
 
+  <!-- Distribution Stuff -->
+	
+	  <target name="compile.win">
+	  	    <mkdir dir="${classes.win}"/>
+	        <javac srcdir="${src.win}" destdir="${classes.win}"
+	               debug="true" includeantruntime="false">
+	            <classpath>
+	            	<path refid="project.classpath"/>
+	                <pathelement path="${protege.launcher}"/>
+	            </classpath>
+	        </javac>
+	  </target>
+	    
+	  <target name="jar.win" depends="compile.win">
+	        <jar destfile="${jar.win}" basedir="${classes.win}"/>
+	  </target>
+
+	  <target name = "dist" depends = "jar, jar.win">
+	    <zip destfile="${dist.zip}" basedir="${build}" includes="server/**"/>
+	  </target>	
+	
   <!-- Testing -->
 
   <target name="unit.test" depends="jar,testng.compile">
