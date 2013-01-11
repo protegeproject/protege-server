@@ -67,15 +67,17 @@ public class MetaprojectVocabulary {
 	}
 
 	public static void addIRIMapper(OWLOntologyManager manager) {
-		URL metaprojectURL = MetaprojectVocabulary.class.getClassLoader().getResource("/metaproject.owl");
-		IRI metaprojectIRI;
-		try {
-			metaprojectIRI = IRI.create(metaprojectURL.toURI());
+		URL metaprojectURL = MetaprojectVocabulary.class.getClassLoader().getResource("metaproject.owl");
+		if (metaprojectURL != null) {
+			IRI metaprojectIRI;
+			try {
+				metaprojectIRI = IRI.create(metaprojectURL.toURI());
+			}
+			catch (URISyntaxException use) {
+				throw new RuntimeException("Unexpected class loader exception", use);
+			}
+			manager.addIRIMapper(new SimpleIRIMapper(IRI.create(NS), metaprojectIRI));
 		}
-		catch (URISyntaxException use) {
-			throw new RuntimeException("Unexpected class loader exception", use);
-		}
-		manager.addIRIMapper(new SimpleIRIMapper(IRI.create(NS), metaprojectIRI));		
 	}
 	
 	public static Set<OWLIndividual> getIndividuals(OWLOntology ontology, OWLClass cls) {

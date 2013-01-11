@@ -172,7 +172,7 @@ public class ServerImpl implements Server {
 	public ServerOntologyDocument createOntologyDocument(AuthToken u, ServerPath serverPath, Map<String, Object> settings) throws OWLServerException {
 		File historyFile = parseServerIRI(serverPath, ServerObjectStatus.OBJECT_NOT_FOUND);
 		if (historyFile == null) {
-			throw new DocumentAlreadyExistsException("Could not create directory at " + serverPath);
+			throw new DocumentAlreadyExistsException("Could not create document at " + serverPath);
 		}
 		if (!historyFile.getName().endsWith(ChangeHistory.CHANGE_DOCUMENT_EXTENSION)) {
 			throw new IllegalArgumentException("Server side IRI's must have the " + ChangeHistory.CHANGE_DOCUMENT_EXTENSION + " extension");

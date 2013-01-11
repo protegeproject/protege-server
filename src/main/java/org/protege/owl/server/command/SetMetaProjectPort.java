@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.protege.owl.server.configuration.MetaprojectVocabulary;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AxiomType;
@@ -42,6 +43,7 @@ public class SetMetaProjectPort {
         int port = Integer.parseInt(args[1]);
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         OWLDataFactory factory = manager.getOWLDataFactory();
+        MetaprojectVocabulary.addIRIMapper(manager);
         OWLOntology ontology = manager.loadOntologyFromOntologyDocument(metaprojectLocation);
         List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
         for (OWLDataPropertyAssertionAxiom axiom : ontology.getAxioms(AxiomType.DATA_PROPERTY_ASSERTION)) {
