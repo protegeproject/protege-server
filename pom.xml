@@ -69,7 +69,7 @@
                 <classpath/>
                 <argument>org.antlr.Tool</argument>
                 <argument>-o</argument>
-                <argument>../../target/generated-sources/org/protege/owl/server/policy</argument>
+                <argument>../../target/generated-sources/org/protege/owl/server/policy/generated</argument>
                 <argument>UsersAndGroups.g</argument>
               </arguments>
             </configuration>
