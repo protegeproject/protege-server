@@ -2,16 +2,18 @@
 
 <launch>
   <bundles verbose = "true">
-    <search path="build/server/bundles"/>
+    <search path="target/server-distribution/server/bundles"/>
     <bundle name="org.apache.felix.configadmin.jar"/>
+    <bundle name="org.apache.felix.log.jar"/>
+    <bundle name="org.apache.felix.metatype.jar"/>
     <bundle name="org.apache.felix.scr.jar"/>
     <bundle name="org.semanticweb.owl.owlapi.jar"/>
   </bundles>
   <bundles verbose = "true">
-    <search path="build/server/bundles"/>
+    <search path="target/server-distribution/server/bundles"/>
     <bundle name="org.protege.owl.server.jar"/>
   </bundles>
   <bundles>
-    <search path="build/server/plugins"/>
+    <search path="target/server-distribution/server/plugins"/>
   </bundles>
 </launch>

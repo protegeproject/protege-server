@@ -35,9 +35,9 @@ import org.xml.sax.SAXException;
 
 public class TestUtilities {
     
-	
-	public static final File ROOT_DIRECTORY = new File("build/server/root");
-	public static final File CONFIGURATION_DIRECTORY = new File("build/server/configuration");
+	public static final File SERVER_ROOT = new File("target/server-distribution/server");
+	public static final File ROOT_DIRECTORY = new File(SERVER_ROOT, "root");
+	public static final File CONFIGURATION_DIRECTORY = new File(SERVER_ROOT, "configuration");
 	public static final String PREFIX;
 	static {
 		StringBuffer sb = new StringBuffer();

@@ -4,6 +4,8 @@
   <bundles verbose = "true">
     <search path="bundles"/>
     <bundle name="org.apache.felix.configadmin.jar"/>
+    <bundle name="org.apache.felix.log.jar"/>
+    <bundle name="org.apache.felix.metatype.jar"/>
     <bundle name="org.apache.felix.scr.jar"/>
     <bundle name="org.semanticweb.owl.owlapi.jar"/>
   </bundles>

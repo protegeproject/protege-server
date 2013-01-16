@@ -102,10 +102,10 @@ public abstract class AbstractRMIClientFactory implements ClientFactory {
             authToken = login(serverLocation, username, password);
         }
         catch (NotBoundException e) {
-            throw new AuthenticationFailedException("Internal failure processing authentication credentials", e);
+            throw new AuthenticationFailedException("Internal failure processing authentication credentials: " + e.getMessage(), e);
         }
         catch (RemoteException e) {
-            throw new AuthenticationFailedException("Internal failure processing authentication credentials", e);
+            throw new AuthenticationFailedException("Internal failure processing authentication credentials: " + e.getMessage(), e);
         }
         RMIClient client = new RMIClient(authToken, serverLocation);
         try {

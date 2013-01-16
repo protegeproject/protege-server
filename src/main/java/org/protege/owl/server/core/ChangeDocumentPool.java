@@ -63,11 +63,11 @@ public class ChangeDocumentPool {
                     consecutiveCleanupFailures = 0;
                 }
                 catch (Error t) {
-                    logger.log(Level.SEVERE, "Exception caught cleaning memory pool.", t);
+                    logger.log(Level.SEVERE, "Exception caught cleaning open ontology pool.", t);
                     consecutiveCleanupFailures++;
                 }
                 catch (RuntimeException re) {
-                    logger.log(Level.SEVERE, "Exception caught cleaning memory pool.", re);
+                    logger.log(Level.SEVERE, "Exception caught cleaning open ontology pool.", re);
                     consecutiveCleanupFailures++;
                 }
                 finally {
