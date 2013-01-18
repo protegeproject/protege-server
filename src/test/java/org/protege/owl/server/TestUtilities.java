@@ -53,13 +53,13 @@ public class TestUtilities {
     public static final UserId FERGERSON = new UserId("fergerson");
     public static final UserId GUEST     = new UserId("guest");
     public static final UserId REDMOND   = new UserId("redmond");
-    public static final UserId TANIA     = new UserId("ttania");
+    public static final UserId VENDETTI  = new UserId("vendetti");
     public static final Map<UserId, String> PASSWORD_MAP = new TreeMap<UserId, String>();
     static {
-        PASSWORD_MAP.put(FERGERSON, "claudia");
-        PASSWORD_MAP.put(GUEST, "guest");
-        PASSWORD_MAP.put(REDMOND, "troglodyte");
-        PASSWORD_MAP.put(TANIA, "ttania");
+        PASSWORD_MAP.put(FERGERSON, "ncbo");
+        PASSWORD_MAP.put(GUEST,     "guest");
+        PASSWORD_MAP.put(REDMOND,   "bicycle");
+        PASSWORD_MAP.put(VENDETTI,  "protege");
     }
 
 	private TestUtilities() {

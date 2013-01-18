@@ -18,6 +18,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.testng.annotations.Test;
 
+@Test(groups = { "unit.test" })
 public class ChangeUtilitiesTest {
     
     @Test

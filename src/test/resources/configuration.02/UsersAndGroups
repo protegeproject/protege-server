@@ -1,18 +1,12 @@
 
-User: fergerson Password: claudia
+User: fergerson Password: ncbo
   Groups: administrator fergerson ;
 
-User: redmond Password: troglodyte
+User: redmond Password: bicycle
   Groups: administrator redmond ;
 
-User: ttania Password: tania
-  Groups: administrator ttania ;
-
-User: vendetti Password: jenny
+User: vendetti Password: protege
   Groups: administrator vendetti ;
-
-User: noy Password: natalia
-  Groups: administrator noy ;
 
 User: guest Password: guest
   Groups: guest;

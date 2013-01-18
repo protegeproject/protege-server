@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@Test(groups = {"unit.test" })
 @SuppressWarnings("deprecation")
 public class SimpleTest {
     

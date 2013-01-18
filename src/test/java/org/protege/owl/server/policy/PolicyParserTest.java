@@ -2,7 +2,7 @@ package org.protege.owl.server.policy;
 
 import static org.protege.owl.server.TestUtilities.FERGERSON;
 import static org.protege.owl.server.TestUtilities.GUEST;
-import static org.protege.owl.server.TestUtilities.TANIA;
+import static org.protege.owl.server.TestUtilities.VENDETTI;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,8 +30,8 @@ public class PolicyParserTest {
         Policy policy = parsePolicy("src/test/resources/parser/Policy01");
         UserDatabase userDb = UserParserTest.parseUserDatabase("src/test/resources/parser/UsersAndGroups01");
         
-        Assert.assertTrue(policy.checkPermission(userDb, TANIA, FERGERSON_PIZZA, Operation.READ));
-        Assert.assertTrue(policy.checkPermission(userDb, TANIA, FERGERSON_PIZZA, Operation.WRITE));
+        Assert.assertTrue(policy.checkPermission(userDb, VENDETTI, FERGERSON_PIZZA, Operation.READ));
+        Assert.assertTrue(policy.checkPermission(userDb, VENDETTI, FERGERSON_PIZZA, Operation.WRITE));
         
         Assert.assertTrue(policy.checkPermission(userDb, GUEST, FERGERSON_PIZZA, Operation.READ));
         Assert.assertFalse(policy.checkPermission(userDb, GUEST, FERGERSON_PIZZA, Operation.WRITE));

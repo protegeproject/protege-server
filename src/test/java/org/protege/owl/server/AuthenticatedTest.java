@@ -1,5 +1,9 @@
 package org.protege.owl.server;
 
+import static org.protege.owl.server.TestUtilities.REDMOND;
+import static org.protege.owl.server.TestUtilities.VENDETTI;
+import static org.protege.owl.server.TestUtilities.PASSWORD_MAP;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,13 +135,13 @@ public class AuthenticatedTest {
     
     
     private void setupClient1() throws OWLOntologyCreationException, OWLServerException {
-        client1 = getClient("redmond", "troglodyte");
+        client1 = getClient(REDMOND.getUserName(), PASSWORD_MAP.get(REDMOND));
         OWLOntology ontology1 = OWLManager.createOWLOntologyManager().createOntology();
         vont1 = ClientUtilities.createAndGetServerOntology(client1, SERVER_TEST_ONT, new ChangeMetaData(), ontology1);
     }
     
     private void setupClient2() throws  OWLOntologyCreationException, OWLServerException {
-        client2 = getClient("vendetti", "jenny");
+        client2 = getClient(VENDETTI.getUserName(), PASSWORD_MAP.get(VENDETTI));
     }
     
     private LocalClient getClient(String username, String password) {

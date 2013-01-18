@@ -16,7 +16,36 @@
             <class name="org.protege.owl.server.policy.LoginTest"/>
             <class name="org.protege.owl.server.policy.PolicyTest"/>          
             <class name="org.protege.owl.server.policy.UserParserTest"/>
-            <class name="org.protege.owl.server.policy.PolicyParserTest"/>              </classes>
+            <class name="org.protege.owl.server.policy.PolicyParserTest"/>
+         </classes>
+    </test>
+    
+    <test name="Unit Tests">
+      <classes>
+            <class name="org.protege.owl.server.changes.BasicSerializationTest"/> 
+            <class name="org.protege.owl.server.changes.ChangeUtilitiesTest"/>
+            <class name="org.protege.owl.server.changes.format.SimpleTest"/>
+      </classes>
     </test>
 
+    <test name="Deprecated Serialization Test">
+    	<parameter name="ontologyFile" value="src/test/resources/allconstructs.owl"/>
+        <classes>
+            <class name="org.protege.owl.server.changes.format.FormatTest"/>
+        </classes>
+    </test>	
+
+    <test name="Deprecated Serialization Test (SWRLDataRangeAtom)">
+    	<parameter name="ontologyFile" value="src/test/resources/SWRLDataRangeAtom.owl"/>
+        <classes>
+            <class name="org.protege.owl.server.changes.format.FormatTest"/>
+        </classes>
+    </test>	
+    
+    <test name="Deprecated Serialization Test (Pizza)">
+        <parameter name="ontologyFile" value="src/test/resources/pizza.owl"/>
+        <classes>
+            <class name="org.protege.owl.server.changes.format.FormatTest"/>
+        </classes>
+    </test>
 </suite>

@@ -36,6 +36,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+@Test(groups = {"unit.test" })
 public abstract class AbstractSerializationTest {
 	private Logger logs = Logger.getLogger(AbstractSerializationTest.class.getCanonicalName());
 	

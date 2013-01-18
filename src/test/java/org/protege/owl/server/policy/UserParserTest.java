@@ -1,6 +1,7 @@
 package org.protege.owl.server.policy;
 
 import static org.protege.owl.server.TestUtilities.REDMOND;
+import static org.protege.owl.server.TestUtilities.PASSWORD_MAP;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +23,7 @@ public class UserParserTest {
     @Test
     public void basicUserParseTest() throws FileNotFoundException, IOException, RecognitionException {
         UserDatabase db = parseUserDatabase("src/test/resources/parser/UsersAndGroups01");
-        Assert.assertTrue(db.checkPassword(REDMOND, "troglodyte"));
+        Assert.assertTrue(db.checkPassword(REDMOND, PASSWORD_MAP.get(REDMOND)));
         Assert.assertEquals(2, db.getGroups(REDMOND).size());
     }
    

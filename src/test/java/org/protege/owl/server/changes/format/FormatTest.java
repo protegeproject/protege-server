@@ -30,6 +30,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+@Test(groups={"unit.test"})
 @SuppressWarnings("deprecation")
 public class FormatTest {
     private Logger logger = Logger.getLogger(FormatTest.class.getCanonicalName());
