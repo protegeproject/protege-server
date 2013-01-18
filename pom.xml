@@ -170,7 +170,7 @@
             <configuration>
               <skip>false</skip>
               <suiteXmlFiles>
-                <suiteXmlFile>src/test/resources/integration-tests.xml</suiteXmlFile>
+                <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
               </suiteXmlFiles>
               <groups>unit.test</groups>
             </configuration>
@@ -184,7 +184,7 @@
             <configuration>
               <skip>false</skip>
               <suiteXmlFiles>
-                <suiteXmlFile>src/test/resources/integration-tests.xml</suiteXmlFile>
+                <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
               </suiteXmlFiles>
             </configuration>
           </execution>
