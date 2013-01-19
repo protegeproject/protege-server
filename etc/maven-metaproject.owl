@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE Ontology [
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY xml "http://www.w3.org/XML/1998/namespace" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<Ontology xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://protege.stanford.edu/ontologies/owl.server/metaproject-standalone"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     ontologyIRI="http://protege.stanford.edu/ontologies/owl.server/metaproject-standalone">
+    <Prefix name="" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
+    <Import>http://protege.stanford.edu/ontologies/owl.server/metaproject.owl</Import>
+    <Declaration>
+        <NamedIndividual IRI="#authenticationManager"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#defaultConflictManager"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#localTransport"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#osgiCleanShutdownFilter"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#rmiTransport"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#server"/>
+    </Declaration>
+    <ClassAssertion>
+        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicAuthenticationManager"/>
+        <NamedIndividual IRI="#authenticationManager"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#BasicConflictManager"/>
+        <NamedIndividual IRI="#defaultConflictManager"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#LocalTransport"/>
+        <NamedIndividual IRI="#localTransport"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#OSGiShutdownFilter"/>
+        <NamedIndividual IRI="#osgiCleanShutdownFilter"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#RMITransport"/>
+        <NamedIndividual IRI="#rmiTransport"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#StandardOWL2Server"/>
+        <NamedIndividual IRI="#server"/>
+    </ClassAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasServerFilter"/>
+        <NamedIndividual IRI="#defaultConflictManager"/>
+        <NamedIndividual IRI="#authenticationManager"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasServerFilter"/>
+        <NamedIndividual IRI="#osgiCleanShutdownFilter"/>
+        <NamedIndividual IRI="#defaultConflictManager"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasServerFilter"/>
+        <NamedIndividual IRI="#server"/>
+        <NamedIndividual IRI="#osgiCleanShutdownFilter"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+            <Literal datatypeIRI="&rdf;PlainLiteral">This object property assertion is put here so that plugins can access the server through the local transport if they like.</Literal>
+        </Annotation>
+        <ObjectProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasTransport"/>
+        <NamedIndividual IRI="#server"/>
+        <NamedIndividual IRI="#localTransport"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasTransport"/>
+        <NamedIndividual IRI="#server"/>
+        <NamedIndividual IRI="#rmiTransport"/>
+    </ObjectPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasRegistryPort"/>
+        <NamedIndividual IRI="#rmiTransport"/>
+        <Literal datatypeIRI="&xsd;integer">5100</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasServerPort"/>
+        <NamedIndividual IRI="#rmiTransport"/>
+        <Literal datatypeIRI="&xsd;integer">5100</Literal>
+    </DataPropertyAssertion>
+    <DataPropertyAssertion>
+        <Annotation>
+            <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+            <Literal datatypeIRI="&rdf;PlainLiteral">This path must correspond to the directory given in the TestUtilities class.</Literal>
+        </Annotation>
+        <DataProperty IRI="http://protege.stanford.edu/ontologies/owl.server/metaproject.owl#hasServerRootPath"/>
+        <NamedIndividual IRI="#server"/>
+        <Literal datatypeIRI="&xsd;string">target/server-distribution/server/root</Literal>
+    </DataPropertyAssertion>
+</Ontology>
+
+
+
+<!-- Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net -->
+

@@ -91,6 +91,10 @@ public abstract class AbstractBasicServerTest {
 		Assert.assertEquals(PizzaVocabulary.CHEESEY_PIZZA.getEquivalentClasses(ontology2).size(), 1);
 	}
 	
+	/*
+	 * This used to be a test of the ClientUtilities commit code.  But I have changed that code so that it does an update
+	 * after any commit.  Therefore in order to get the no update flavor of this test I need to use a raw commit.
+	 */
 	@Test
 	public void testBackAndForthNoUpdate() throws IOException, OWLOntologyCreationException, OWLServerException {
 	    VersionedOntologyDocument versionedPizza1 = loadPizza();
@@ -103,25 +107,17 @@ public abstract class AbstractBasicServerTest {
 	    Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	    Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 
-	    List<OWLOntologyChange> changes1 = new ArrayList<OWLOntologyChange>();
-	    changes1.add(new RemoveAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
-	    changes1.add(new AddAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
-	    ontology1.getOWLOntologyManager().applyChanges(changes1);
-	    ClientUtilities.commit(client, new ChangeMetaData("back"), versionedPizza1);  
-	    // this second change is in conflict with the previous commit.
-	    // making it work as expected without a commit leads to other problems 
-	    // (reverse update does not work because it looks like there are uncommitted changes)
-	    // I am retaining this test in case somebody gets here again.
+	    OntologyDocumentRevision currentPizza1Revision = versionedPizza1.getRevision();
+	    TestUtilities.rawCommit(client, versionedPizza1.getServerDocument(), currentPizza1Revision, 
+	                            new RemoveAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION), new AddAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
+
 
 	    ClientUtilities.update(client2, versionedPizza2);
 	    Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 	    Assert.assertTrue(ontology2.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
 
-	    List<OWLOntologyChange> changes2 = new ArrayList<OWLOntologyChange>();
-	    changes2.add(new RemoveAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
-	    changes2.add(new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
-	    ontology1.getOWLOntologyManager().applyChanges(changes2);
-	    ClientUtilities.commit(client, new ChangeMetaData("forth"), versionedPizza1);
+	    TestUtilities.rawCommit(client, versionedPizza1.getServerDocument(), currentPizza1Revision, 
+	                            new RemoveAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION), new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
 
 	    ClientUtilities.update(client, versionedPizza2);
 	    Assert.assertFalse(ontology2.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));

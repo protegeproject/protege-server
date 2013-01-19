@@ -81,39 +81,26 @@ public class ClientUtilities {
 		List<OWLOntologyChange> uncommittedChanges = getUncommittedChanges(client, ontologyDoc);
 		client.commit(serverDoc, 
 		              factory.createChangeDocument(uncommittedChanges, metaData, revision));
+		update(client, ontologyDoc);
 	}
 	
 	public static List<OWLOntologyChange> getUncommittedChanges(Client client, VersionedOntologyDocument ontologyDoc) throws OWLServerException {
 	    OntologyDocumentRevision revision = ontologyDoc.getRevision();
 	    ChangeHistory historyToClientRevision = getChanges(client, ontologyDoc, OntologyDocumentRevision.START_REVISION.asPointer(), revision.asPointer());
-	    ChangeHistory historyAfterClientRevision = getChanges(client, ontologyDoc, revision.asPointer(), RevisionPointer.HEAD_REVISION);
 	    OWLOntology ontology = ontologyDoc.getOntology();
 	    List<OWLOntologyChange> baselineHistory = historyToClientRevision.getChanges(ontology);
-	    return getUncommittedChanges(ontologyDoc.getOntology(), baselineHistory, client.getUserId(), historyAfterClientRevision);
+	    return getUncommittedChanges(ontologyDoc.getOntology(), baselineHistory);
 	}
 	
-	private static List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology, List<OWLOntologyChange> toBaseline,
-	                                                               UserId user, ChangeHistory historyAfterClientRevision) {
+	private static List<OWLOntologyChange> getUncommittedChanges(OWLOntology ontology, List<OWLOntologyChange> toBaseline) {
 	    List<OWLOntologyChange> reversedList = new ArrayList<OWLOntologyChange>(toBaseline);
-	    Collections.reverse(reversedList);
+	    Collections.reverse(reversedList); 
 	    GetUncommittedChangesVisitor visitor = new GetUncommittedChangesVisitor(ontology);
 	    for (OWLOntologyChange change : toBaseline) {
 	        change.accept(visitor);
 	    }
 	    List<OWLOntologyChange> uncommitted = visitor.getChanges();
-	    removeFutureCommits(uncommitted, ontology, user, historyAfterClientRevision);
 	    return uncommitted;
-	}
-	
-	private static void removeFutureCommits(List<OWLOntologyChange> uncommitted, OWLOntology ontology, UserId user, ChangeHistory historyAfterClientRevision) {
-	    for (OntologyDocumentRevision revision = historyAfterClientRevision.getStartRevision();
-	            revision.compareTo(historyAfterClientRevision.getEndRevision()) < 0;
-	            revision = revision.next()) {
-	        if (historyAfterClientRevision.getMetaData(revision).getUserId().equals(user)) {
-	            List<OWLOntologyChange> previousCommit = historyAfterClientRevision.cropChanges(revision, revision.next()).getChanges(ontology);
-	            uncommitted.removeAll(previousCommit);
-	        }
-	    }
 	}
 	
 	public static void update(Client client, VersionedOntologyDocument ontology) throws OWLServerException {
