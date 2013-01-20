@@ -1,7 +1,6 @@
 package org.protege.owl.server.command;
 
-import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_REGISTRY_PORT;
-import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_SERVER_PORT;
+import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_CONFIGURATION_PATH;
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.STANDARD_SERVER;
 
 import java.io.File;
@@ -23,16 +22,8 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 
-
-/**
- * Sets the data directory for the a Protege Server metaproject.  This is intended to be 
- * used as a helper command for the ant scripts.
- * 
- * @author tredmond
- *
- */
-public class SetMetaProjectPort {
-    private static final Logger LOGGER = Logger.getLogger(SetMetaProjectPort.class.getCanonicalName());
+public class SetConfigurationDir {
+    private static final Logger LOGGER = Logger.getLogger(SetConfigurationDir.class.getCanonicalName());
 
     /**
      * @param args
@@ -41,26 +32,24 @@ public class SetMetaProjectPort {
      */
     public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException {
         File metaprojectLocation = new File(args[0]);
-        int port = Integer.parseInt(args[1]);
+        String configurationDir = args[1];
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         OWLDataFactory factory = manager.getOWLDataFactory();
         MetaprojectVocabulary.addIRIMapper(manager);
         OWLOntology ontology = manager.loadOntologyFromOntologyDocument(metaprojectLocation);
         List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
         for (OWLDataPropertyAssertionAxiom axiom : ontology.getAxioms(AxiomType.DATA_PROPERTY_ASSERTION)) {
-            if (axiom.getProperty().equals(HAS_REGISTRY_PORT) || axiom.getProperty().equals(HAS_SERVER_PORT)) {
+            if (axiom.getProperty().equals(HAS_CONFIGURATION_PATH)) {
                 OWLIndividual server = axiom.getSubject();
                 changes.add(new RemoveAxiom(ontology, axiom));
-                changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(axiom.getProperty(), server, port)));
+                changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_CONFIGURATION_PATH, server, configurationDir)));
             }
         }
         for (OWLIndividual server : STANDARD_SERVER.getIndividuals(ontology)) {
-            changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_SERVER_PORT, server, port)));
-            changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_REGISTRY_PORT, server, port)));
+            changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_CONFIGURATION_PATH, server, configurationDir)));
         }
         manager.applyChanges(changes);
         manager.saveOntology(ontology);
-        LOGGER.info("Port set to " + port);
+        LOGGER.info("Set configuration directory to " + configurationDir);
     }
-
 }

@@ -1,6 +1,7 @@
 package org.protege.owl.server.command;
 
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_ROOT_PATH;
+import static org.protege.owl.server.configuration.MetaprojectVocabulary.STANDARD_SERVER;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,6 +52,9 @@ public class SetMetaprojectDataDir {
                 changes.add(new RemoveAxiom(ontology, axiom));
                 changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_ROOT_PATH, server, dataDir)));
             }
+        }
+        for (OWLIndividual server : STANDARD_SERVER.getIndividuals(ontology)) {
+            changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_ROOT_PATH, server, dataDir)));
         }
         manager.applyChanges(changes);
         manager.saveOntology(ontology);
