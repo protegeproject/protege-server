@@ -72,9 +72,12 @@ public class ChangeDocumentPoolEntry {
     }
     
     public void setChangeDocument(final ChangeHistory newChangeDocument) {
+    	if (logger.isLoggable(Level.FINE)) {
+    		logger.fine("Setting change document for " + historyFile + " to change doc ending at revision " + newChangeDocument.getEndRevision());
+    	}
         touch();
-        executor.submit(new WriteChanges(newChangeDocument));
         this.changeDocument = newChangeDocument;
+        executor.submit(new WriteChanges(newChangeDocument));
     }
     
     public long getLastTouch() {
@@ -130,6 +133,9 @@ public class ChangeDocumentPoolEntry {
         
         public WriteChanges(ChangeHistory newChangeDocument) {
             this.newChangeDocument = newChangeDocument;
+            if (logger.isLoggable(Level.FINE)) {
+            	logger.fine("Created writer for " + historyFile + " and change document ending at " + newChangeDocument.getEndRevision());
+            }
         }
         
         @Override
@@ -146,6 +152,14 @@ public class ChangeDocumentPoolEntry {
                     if (interval > 1000) {
                         logger.info("Save of " + historyFile + " took " + (interval / 1000) + " seconds.");
                     }
+                    else if (logger.isLoggable(Level.FINE)) {
+                    	logger.fine("Wrote new " + historyFile);
+                    }
+                }
+                else if (logger.isLoggable(Level.FINE)) {
+                	logger.fine("This is not the latest change document");
+                	logger.fine("Was supposed to save doc with end revision " + newChangeDocument.getEndRevision());
+                	logger.fine("But now have new save doc with end revision " + changeDocument.getEndRevision());
                 }
                 return true;
             }
@@ -156,12 +170,21 @@ public class ChangeDocumentPoolEntry {
         }
         
         private void prepareToSave(File historyFile) {
+        	if (logger.isLoggable(Level.FINE)) {
+        		logger.fine("Preparing backup for " + historyFile);
+        	}
             File backup = getBackupHistoryFile(historyFile);
             if (historyFile.exists() && backup.exists()) {
                 backup.delete();
+                if (logger.isLoggable(Level.FINE)) {
+                	logger.fine("Old backup removed");
+                }
             }
             if (historyFile.exists()) {
                 historyFile.renameTo(backup);
+                if (logger.isLoggable(Level.FINE)) {
+                	logger.fine("Moved " + historyFile + " to " + backup);
+                }
             }
         }
     }

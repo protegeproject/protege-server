@@ -52,48 +52,9 @@ public class Activator implements BundleActivator {
 		}, 
 		new Hashtable<String, String>());
 	}
-
-	/*
-	private void loadConfiguration(final BundleContext context, final OWLOntology configuration) {
-		ServiceReference<Builder> builderSr = context.getServiceReference(Builder.class);
-		if (builderSr != null) {
-			Builder builder = context.getService(builderSr);
-			try {
-				builder.setConfiguration(configuration);
-			}
-			finally {
-				context.ungetService(builderSr);
-			}
-		}
-		else {
-			final ServiceListener listener = new ServiceListener() {
-
-				@Override
-				public void serviceChanged(ServiceEvent e) {
-					if (e.getType() == ServiceEvent.REGISTERED) {
-						Object o = context.getService(e.getServiceReference());
-						if (o instanceof Builder) {
-							Builder builder = (Builder) o;
-							builder.setConfiguration(configuration);
-							context.ungetService(e.getServiceReference());
-						}
-					}
-				}
-
-			};
-			try {
-				context.addServiceListener(listener, "(" + Constants.OBJECTCLASS + "=" + Builder.class.getCanonicalName() + ")");
-			}
-			catch (InvalidSyntaxException ise) {
-				throw new RuntimeException("Unexpected service exception", ise);
-			}
-		}
-	}
-	*/
 	
 	@Override
 	public void stop(BundleContext context) {
-		// TODO Auto-generated method stub
 
 	}
 
