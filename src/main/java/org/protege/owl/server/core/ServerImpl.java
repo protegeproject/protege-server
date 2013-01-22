@@ -228,8 +228,15 @@ public class ServerImpl implements Server {
 	    ChangeHistory fullHistory = getChanges(u, doc, OntologyDocumentRevision.START_REVISION, head);
 
 	    List<OWLOntologyChange> changesToCommit = ChangeUtilities.swapOrderOfChangeLists(clientChanges, serverChanges);
-	    ChangeHistory changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaData, head);
-	    return fullHistory.appendChanges(changeDocumentToAppend);
+	    ChangeHistory fullHistoryAfterCommit;
+	    if (changesToCommit.isEmpty()) {
+	    	fullHistoryAfterCommit = fullHistory;
+	    }
+	    else {
+	    	ChangeHistory changeDocumentToAppend = factory.createChangeDocument(changesToCommit, metaData, head);
+	    	fullHistoryAfterCommit = fullHistory.appendChanges(changeDocumentToAppend);
+	    }
+	    return fullHistoryAfterCommit;
 	}
 
 	@Override

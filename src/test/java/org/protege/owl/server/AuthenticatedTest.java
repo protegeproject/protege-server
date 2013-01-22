@@ -6,6 +6,7 @@ import static org.protege.owl.server.TestUtilities.PASSWORD_MAP;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -77,13 +78,10 @@ public class AuthenticatedTest {
         
         ChangeHistory fullHistory = client1.getChanges(testDoc, OntologyDocumentRevision.START_REVISION.asPointer(), RevisionPointer.HEAD_REVISION);
         
-        Assert.assertEquals(revisionBeforeCommits.add(2), fullHistory.getEndRevision());
+        Assert.assertEquals(revisionBeforeCommits.add(1), fullHistory.getEndRevision());
         List<OWLOntologyChange> firstChanges = fullHistory.cropChanges(revisionBeforeCommits, revisionBeforeCommits.next()).getChanges(ontology1);
         Assert.assertEquals(1, firstChanges.size());
         Assert.assertEquals(new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION), firstChanges.get(0));
-        
-        List<OWLOntologyChange> secondChanges = fullHistory.cropChanges(revisionBeforeCommits.add(1), revisionBeforeCommits.add(2)).getChanges(ontology1);
-        Assert.assertEquals(0, secondChanges.size());
     }
     
     /**
@@ -109,14 +107,10 @@ public class AuthenticatedTest {
         
         ChangeHistory fullHistory = client1.getChanges(testDoc, OntologyDocumentRevision.START_REVISION.asPointer(), RevisionPointer.HEAD_REVISION);
         
-        Assert.assertEquals(revisionBeforeCommits.add(2), fullHistory.getEndRevision());
+        Assert.assertEquals(revisionBeforeCommits.add(1), fullHistory.getEndRevision());
         List<OWLOntologyChange> firstChanges = fullHistory.cropChanges(revisionBeforeCommits, revisionBeforeCommits.next()).getChanges(ontology1);
         Assert.assertEquals(1, firstChanges.size());
         Assert.assertEquals(new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION), firstChanges.get(0));
-        
-        List<OWLOntologyChange> secondChanges = fullHistory.cropChanges(revisionBeforeCommits.add(1), revisionBeforeCommits.add(2)).getChanges(ontology1);
-        Assert.assertEquals(0, secondChanges.size());
-        //Assert.assertEquals(new RemoveAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION), secondChanges.get(0));
     }
     
     @Test
@@ -132,6 +126,52 @@ public class AuthenticatedTest {
         Assert.assertEquals(1, committedChange.getChanges(ontology1).size());
         Assert.assertEquals(client1.getUserId(), committedChange.getMetaData(revisionBeforeCommit).getUserId());
     }
+    
+    /**
+     * Test that a commit implies an update.
+     * <p/>
+     * This could change in a future version of this server but changing it would add some complexity to the server.
+     * If this changes the VersionedOntologyDocument would need to include some information about what changes have already 
+     * been committed.  Things to think about if we change the commit implying update are the following cases
+     * <ol>
+     * <li>a user replaces axiom1 with axiom2, commits and then replaces axiom 2 with axiom3 and commits</li/>
+     * <li>the user performs the above changes and then update to the head and then updates back two revisions.  How 
+     *     should his state be different after updating back than it was when making the changes?  What should happen if
+     *     he then replaces axiom1 with axiom4?
+     * <li> the user performs the steps in step 1, updates to head, replaces axiom3 with axiom 4 but does not commit and then 
+     *      reverts two revisions back.
+     * </ol>
+     * 
+     * 
+     * @throws OWLOntologyCreationException
+     * @throws OWLServerException
+     */
+    @Test
+    public void testCommitImpliesUpdate() throws OWLOntologyCreationException, OWLServerException {
+    	setupClient1();
+    	setupClient2();
+    	RemoteOntologyDocument testDoc = vont1.getServerDocument();
+    	OWLOntology ontology1 = vont1.getOntology();
+    	
+    	Assert.assertFalse(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION.equals(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
+    	Assert.assertFalse(ontology1.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
+    	Assert.assertFalse(ontology1.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
+    	Assert.assertEquals(OntologyDocumentRevision.START_REVISION, vont1.getRevision());
+    	Assert.assertEquals(OntologyDocumentRevision.START_REVISION, client1.evaluateRevisionPointer(testDoc, RevisionPointer.HEAD_REVISION));
+    	
+    	TestUtilities.rawCommit(client2, testDoc, vont1.getRevision(), new AddAxiom(ontology1, PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
+    	Assert.assertEquals(OntologyDocumentRevision.START_REVISION.add(1), client1.evaluateRevisionPointer(testDoc, RevisionPointer.HEAD_REVISION));
+    	
+    	List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
+    	changes.add(new AddAxiom(ontology1, PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
+    	ontology1.getOWLOntologyManager().applyChanges(changes);
+    	ClientUtilities.commit(client1, new ChangeMetaData("commit after client2's commit"), vont1);
+    	Assert.assertEquals(OntologyDocumentRevision.START_REVISION.add(2), client1.evaluateRevisionPointer(testDoc, RevisionPointer.HEAD_REVISION));
+    	Assert.assertTrue(ontology1.containsAxiom(PizzaVocabulary.NOT_CHEESEY_PIZZA_DEFINITION));
+    	Assert.assertTrue(ontology1.containsAxiom(PizzaVocabulary.CHEESEY_PIZZA_DEFINITION));
+    }
+    
+    
     
     
     private void setupClient1() throws OWLOntologyCreationException, OWLServerException {
