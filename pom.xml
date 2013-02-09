@@ -30,6 +30,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.0</version>
         <configuration>
           <source>1.6</source>
           <target>1.6</target>
@@ -63,6 +64,38 @@
         <version>1.2.1</version>
         <executions>
           <execution>
+            <!-- 
+               this execution doesn't work but I am keeping it here
+               in case it can be fixed.  The idea is to run the
+               server with exec:exec.  The configuration has to be
+               taken out of the executions block in order to be seen
+               but that doesn't fix it.
+              -->
+            <id>run-server</id>
+            <phase/>
+            <goals> 
+              <goal>exec</goal> 
+            </goals>
+            <configuration>
+              <workingDirectory>target/server-distribution/server</workingDirectory>
+              <classpathScope>compile</classpathScope>
+              <executable>java</executable>
+              <arguments>
+                <argument>-Djava.rmi.server.hostname=localhost</argument>
+                <argument>-DentityExpansionLimit=1000000</argument>
+                <argument>-Dorg.protege.osl.server.configuration=metaproject.owl</argument>
+                <argument>-Djava.util.logging.config.file=logging-test.properties</argument>
+                <argument>-Dorg.protege.launch.config=config.xml</argument>
+                <argument>-classpath</argument>
+                <classpath>
+                  <dependency>org.apache.felix:org.apache.felix.main</dependency>
+                  <dependency>edu.stanford.protege:ProtegeLauncher</dependency>
+                </classpath>
+                <argument>org.protege.osgi.framework.Launcher</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
             <id>generate-users-and-groups-parser</id>
             <phase>generate-sources</phase>
             <goals>
@@ -73,7 +106,11 @@
               <workingDirectory>${basedir}/etc/lang</workingDirectory>
               <arguments>
                 <argument>-classpath</argument>
-                <classpath/>
+                <classpath>
+                  <dependency>org.antlr:antlr</dependency>
+                  <dependency>org.antlr:antlr-runtime</dependency>
+                  <dependency>org.antlr:stringtemplate</dependency>
+                </classpath>
                 <argument>org.antlr.Tool</argument>
                 <argument>-o</argument>
                 <argument>../../target/generated-sources/org/protege/owl/server/policy/generated</argument>
@@ -92,7 +129,11 @@
               <workingDirectory>${basedir}/etc/lang</workingDirectory>
               <arguments>
                 <argument>-classpath</argument>
-                <classpath/>
+                <classpath>
+                  <dependency>org.antlr:antlr</dependency>
+                  <dependency>org.antlr:antlr-runtime</dependency>
+                  <dependency>org.antlr:stringtemplate</dependency>
+                </classpath>
                 <argument>org.antlr.Tool</argument>
                 <argument>-o</argument>
                 <argument>../../target/generated-sources/org/protege/owl/server/policy/generated</argument>
@@ -105,6 +146,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
         <extensions>true</extensions>
         <configuration>
           <instructions>
@@ -164,6 +206,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.13</version>
         <!-- Weird! -->
         <configuration>
           <skip>true</skip>
@@ -194,6 +237,12 @@
               <suiteXmlFiles>
                 <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
               </suiteXmlFiles>
+              <systemProperties>
+                <property>
+                  <name>java.util.logging.config.file</name>
+                  <value>${project.build.directory}/logging-test.properties</value>
+                </property>
+              </systemProperties>
             </configuration>
           </execution>
         </executions>
@@ -282,7 +331,7 @@
       <version>6.8</version>
     </dependency>
     <dependency>
-      <groupId>org.protege.osgi</groupId>
+      <groupId>edu.stanford.protege</groupId>
       <artifactId>ProtegeLauncher</artifactId>
       <version>0.9.9</version>
       <scope>system</scope>
