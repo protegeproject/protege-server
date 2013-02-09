@@ -50,5 +50,10 @@
       <outputDirectory>bundles</outputDirectory>
       <destName>org.protege.owl.server.jar</destName>
     </file>
+    <file>
+      <source>logging.properties</source>
+      <outputDirectory>.</outputDirectory>
+      <destName>logging.properties</destName>
+    </file>
   </files>
 </assembly>
