@@ -1,0 +1,71 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<project name = "Helper scripts for the maven build" default = "install" basedir = ".">    
+   <property environment="env"/>
+   <property file = "local.properties"/>
+   <property name = "protege.home" location="${env.PROTEGE_HOME}"/>
+   <property name = "memory"       value   ="2G"/>
+
+   <target name="init">
+     <condition property="protege.home.set">
+       <and>
+         <available file="${protege.home}"                  type = "dir"/>
+         <available file="${protege.home}/build.properties" type = "file"/>
+       </and>
+     </condition>
+   </target>
+
+   <target name="debug">
+     <java classname="org.protege.osgi.framework.Launcher" 
+           dir="target/server-distribution/server"
+           fork="true">
+       <jvmarg value="-Xmx${memory}"/>
+       <jvmarg value="-Djava.util.logging.config.file=./logging.properties"/>
+       <jvmarg value="-DentityExpansionLimit=100000000"/>
+       <jvmarg value="-Dfile.encoding=UTF-8"/>
+       <jvmarg value="-Dorg.protege.owl.server.configuration=metaproject.owl"/>
+       <jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8100,server=y,suspend=y"/>
+       <classpath>
+         <pathelement location="target/server-distribution/server/lib/felix.jar"/>
+         <pathelement location="target/server-distribution/server/lib/ProtegeLauncher.jar"/>
+       </classpath>
+     </java>
+   </target>
+
+   <target name="run">
+     <java classname="org.protege.osgi.framework.Launcher" 
+           dir="target/server-distribution/server"
+           fork="true">
+       <jvmarg value="-Xmx${memory}"/>
+       <jvmarg value="-Djava.util.logging.config.file=./logging.properties"/>
+       <jvmarg value="-DentityExpansionLimit=100000000"/>
+       <jvmarg value="-Dfile.encoding=UTF-8"/>
+       <jvmarg value="-Dorg.protege.owl.server.configuration=metaproject.owl"/>
+       <classpath>
+         <pathelement location="target/server-distribution/server/lib/felix.jar"/>
+         <pathelement location="target/server-distribution/server/lib/ProtegeLauncher.jar"/>
+       </classpath>
+     </java>
+   </target>
+
+   <target name="install" depends="init" if="protege.home.set">
+     <property file = "${protege.home}/build.properties"/>
+     <copy todir="${protege.plugins}">
+       <fileset dir="target" includes="org.protege.owl.server-*.jar"/>
+       <globmapper from="*" to="org.protege.owl.server.jar"/>
+     </copy>
+   </target>
+
+   <target name="usage">
+     <echo message="This is a helper script for the maven build."/>
+     <echo message="The main build is done from maven"/>
+     <echo/>
+     <echo message="install - after a mvn package or better, installs the server"/>
+     <echo message="          into the Protege installation located at ${PROTEGE_HOME}"/>
+     <echo message="run     - after a mvn verify or better, runs the server"/>
+     <echo message="debug   - after a mvn verify or better, runs the server but"/>
+     <echo message="          waits for a debugger to connect on port 8100"/>
+     <echo/>
+     <echo message="You can set a location for protege.home or an amount of"/>
+     <echo message="memory in a local.properties file"/>
+   </target>
+</project>
