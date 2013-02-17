@@ -64,38 +64,6 @@
         <version>1.2.1</version>
         <executions>
           <execution>
-            <!-- 
-               this execution doesn't work but I am keeping it here
-               in case it can be fixed.  The idea is to run the
-               server with exec:exec.  The configuration has to be
-               taken out of the executions block in order to be seen
-               but that doesn't fix it.
-              -->
-            <id>run-server</id>
-            <phase/>
-            <goals> 
-              <goal>exec</goal> 
-            </goals>
-            <configuration>
-              <workingDirectory>target/server-distribution/server</workingDirectory>
-              <classpathScope>compile</classpathScope>
-              <executable>java</executable>
-              <arguments>
-                <argument>-Djava.rmi.server.hostname=localhost</argument>
-                <argument>-DentityExpansionLimit=1000000</argument>
-                <argument>-Dorg.protege.osl.server.configuration=metaproject.owl</argument>
-                <argument>-Djava.util.logging.config.file=logging-test.properties</argument>
-                <argument>-Dorg.protege.launch.config=config.xml</argument>
-                <argument>-classpath</argument>
-                <classpath>
-                  <dependency>org.apache.felix:org.apache.felix.main</dependency>
-                  <dependency>edu.stanford.protege:ProtegeLauncher</dependency>
-                </classpath>
-                <argument>org.protege.osgi.framework.Launcher</argument>
-              </arguments>
-            </configuration>
-          </execution>
-          <execution>
             <id>generate-users-and-groups-parser</id>
             <phase>generate-sources</phase>
             <goals>
@@ -252,16 +220,29 @@
         <version>1.7</version>
         <executions>
           <execution>
+            <id>test-cleanup</id>
             <phase>post-integration-test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
             <configuration>
               <target>
                 <delete dir="target/server-distribution/server/root"/>
                 <mkdir dir="target/server-distribution/server/root"/>
               </target>
             </configuration>
+          </execution>
+          <execution>
+            <id>copy-to-protege</id>
+            <phase>install</phase>
             <goals>
               <goal>run</goal>
             </goals>
+            <configuration>
+              <target>
+                <ant antfile="build.xml" target="install"/>
+              </target>
+            </configuration>
           </execution>
         </executions>
       </plugin>

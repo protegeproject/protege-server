@@ -61,6 +61,7 @@
      <echo/>
      <echo message="install - after a mvn package or better, installs the server"/>
      <echo message="          into the Protege installation located at ${PROTEGE_HOME}"/>
+     <echo message="          This target is executed at the maven install phase."/>
      <echo message="run     - after a mvn verify or better, runs the server"/>
      <echo message="debug   - after a mvn verify or better, runs the server but"/>
      <echo message="          waits for a debugger to connect on port 8100"/>
