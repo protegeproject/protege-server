@@ -8,13 +8,13 @@ import java.util.Collections;
 
 import junit.framework.Assert;
 
-import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.RemoteOntologyDocument;
-import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerTransport;
-import org.protege.owl.server.api.VersionedOntologyDocument;
+import org.protege.owl.server.api.client.Client;
+import org.protege.owl.server.api.client.RemoteOntologyDocument;
+import org.protege.owl.server.api.client.VersionedOntologyDocument;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.api.server.Server;
+import org.protege.owl.server.api.server.ServerTransport;
 import org.protege.owl.server.connect.local.LocalClient;
 import org.protege.owl.server.connect.local.LocalTransport;
 import org.protege.owl.server.connect.local.LocalTransportImpl;

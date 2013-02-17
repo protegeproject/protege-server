@@ -8,15 +8,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerDirectory;
-import org.protege.owl.server.api.ServerDocument;
-import org.protege.owl.server.api.ServerFilter;
-import org.protege.owl.server.api.ServerOntologyDocument;
-import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.api.server.Server;
+import org.protege.owl.server.api.server.ServerDirectory;
+import org.protege.owl.server.api.server.ServerDocument;
+import org.protege.owl.server.api.server.ServerFilter;
+import org.protege.owl.server.api.server.ServerOntologyDocument;
+import org.protege.owl.server.api.server.ServerPath;
 import org.protege.owl.server.util.ServerFilterAdapter;
 
 public class DocumentPropertiesFilter extends ServerFilterAdapter {

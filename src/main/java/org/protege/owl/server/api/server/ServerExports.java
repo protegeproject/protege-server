@@ -1,8 +1,13 @@
-package org.protege.owl.server.api;
+package org.protege.owl.server.api.server;
 
 import java.util.Collection;
 import java.util.Map;
 
+import org.protege.owl.server.api.AuthToken;
+import org.protege.owl.server.api.ChangeHistory;
+import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.api.RevisionPointer;
+import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.exception.OWLServerException;
 
 public interface ServerExports {

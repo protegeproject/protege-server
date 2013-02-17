@@ -8,8 +8,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerTransport;
+import org.protege.owl.server.api.server.Server;
+import org.protege.owl.server.api.server.ServerTransport;
 import org.protege.owl.server.connect.ConfigurableCompression;
 
 /*

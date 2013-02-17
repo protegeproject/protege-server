@@ -14,7 +14,7 @@ import java.io.Writer;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.protege.owl.server.api.ServerPath;
+import org.protege.owl.server.api.server.ServerPath;
 import org.protege.owl.server.policy.generated.PolicyLexer;
 import org.protege.owl.server.policy.generated.PolicyParser;
 import org.testng.Assert;

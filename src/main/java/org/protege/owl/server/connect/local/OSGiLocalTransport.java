@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.protege.owl.server.api.Server;
+import org.protege.owl.server.api.server.Server;
 
 public class OSGiLocalTransport extends LocalTransportImpl {
     private BundleContext context;

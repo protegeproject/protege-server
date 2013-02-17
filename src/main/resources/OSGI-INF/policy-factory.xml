@@ -2,6 +2,6 @@
 <scr:component name="policy.components.factory" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
 	<implementation class="org.protege.owl.server.configuration.factories.PolicyComponentFactory"/>
 	<service>
-		<provide interface="org.protege.owl.server.api.ServerComponentFactory"/>
+		<provide interface="org.protege.owl.server.api.server.ServerComponentFactory"/>
 	</service>
 </scr:component>

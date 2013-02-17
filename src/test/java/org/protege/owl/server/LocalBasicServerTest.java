@@ -1,10 +1,10 @@
 package org.protege.owl.server;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.Client;
-import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.UserId;
+import org.protege.owl.server.api.client.Client;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.connect.local.LocalClient;
 import org.protege.owl.server.core.ServerImpl;
 

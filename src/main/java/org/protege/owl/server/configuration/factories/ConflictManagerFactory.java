@@ -2,8 +2,8 @@ package org.protege.owl.server.configuration.factories;
 
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.BASIC_CONFLICT_MANAGER;
 
-import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerFilter;
+import org.protege.owl.server.api.server.Server;
+import org.protege.owl.server.api.server.ServerFilter;
 import org.protege.owl.server.conflict.ConflictManager;
 import org.protege.owl.server.util.ServerComponentFactoryAdapter;
 import org.semanticweb.owlapi.model.OWLDataFactory;

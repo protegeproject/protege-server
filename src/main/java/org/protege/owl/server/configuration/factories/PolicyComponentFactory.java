@@ -3,8 +3,8 @@ package org.protege.owl.server.configuration.factories;
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.BASIC_AUTHENTICATION_MANAGER;
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.BASIC_AUTHORIZATION_MANAGER;
 
-import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerFilter;
+import org.protege.owl.server.api.server.Server;
+import org.protege.owl.server.api.server.ServerFilter;
 import org.protege.owl.server.policy.Authenticator;
 import org.protege.owl.server.policy.PolicyFilter;
 import org.protege.owl.server.util.ServerComponentFactoryAdapter;

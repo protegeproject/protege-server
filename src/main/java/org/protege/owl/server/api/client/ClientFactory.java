@@ -1,4 +1,4 @@
-package org.protege.owl.server.api;
+package org.protege.owl.server.api.client;
 
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package org.protege.owl.server.api;
+package org.protege.owl.server.api.server;
 
 import java.io.Serializable;
 import java.net.URI;

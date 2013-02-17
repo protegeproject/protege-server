@@ -1,6 +1,6 @@
 package org.protege.owl.server.policy;
 
-import org.protege.owl.server.api.ServerPath;
+import org.protege.owl.server.api.server.ServerPath;
 
 public class ProtectedServerDocument implements ProtectedObject {
     private ServerPath path;

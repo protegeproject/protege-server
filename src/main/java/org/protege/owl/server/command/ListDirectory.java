@@ -9,10 +9,10 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.protege.owl.server.api.Client;
-import org.protege.owl.server.api.RemoteOntologyDocument;
-import org.protege.owl.server.api.RemoteServerDirectory;
-import org.protege.owl.server.api.RemoteServerDocument;
+import org.protege.owl.server.api.client.Client;
+import org.protege.owl.server.api.client.RemoteOntologyDocument;
+import org.protege.owl.server.api.client.RemoteServerDirectory;
+import org.protege.owl.server.api.client.RemoteServerDocument;
 import org.semanticweb.owlapi.model.IRI;
 
 public class ListDirectory extends ServerCommand {

@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-import org.protege.owl.server.api.ServerConfiguration;
+import org.protege.owl.server.api.server.ServerConfiguration;
 import org.protege.owl.server.configuration.MetaprojectVocabulary;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;

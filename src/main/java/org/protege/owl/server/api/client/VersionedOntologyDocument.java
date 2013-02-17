@@ -1,7 +1,9 @@
-package org.protege.owl.server.api;
+package org.protege.owl.server.api.client;
 
 import java.io.IOException;
 
+import org.protege.owl.server.api.ChangeHistory;
+import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 /**

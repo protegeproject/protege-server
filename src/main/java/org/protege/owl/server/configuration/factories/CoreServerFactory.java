@@ -7,7 +7,7 @@ import static org.protege.owl.server.configuration.MetaprojectVocabulary.STANDAR
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.protege.owl.server.api.Server;
+import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.core.ServerImpl;
 import org.protege.owl.server.util.ServerComponentFactoryAdapter;
 import org.semanticweb.owlapi.model.OWLAxiom;

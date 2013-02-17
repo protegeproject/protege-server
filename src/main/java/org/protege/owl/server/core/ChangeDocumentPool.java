@@ -16,9 +16,9 @@ import java.util.logging.Logger;
 
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.ServerOntologyDocument;
-import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.api.server.ServerOntologyDocument;
+import org.protege.owl.server.api.server.ServerPath;
 
 public class ChangeDocumentPool {
     private Logger logger = Logger.getLogger(ChangeDocumentPool.class.getCanonicalName());

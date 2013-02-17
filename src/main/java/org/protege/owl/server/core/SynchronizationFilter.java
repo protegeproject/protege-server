@@ -6,10 +6,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerOntologyDocument;
 import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.api.server.Server;
+import org.protege.owl.server.api.server.ServerOntologyDocument;
 import org.protege.owl.server.util.ServerFilterAdapter;
 
 /**

@@ -4,9 +4,9 @@ import static org.protege.owl.server.configuration.MetaprojectVocabulary.LOCAL_T
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.OSGI_SHUTDOWN_FILTER;
 
 import org.osgi.framework.BundleContext;
-import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerFilter;
-import org.protege.owl.server.api.ServerTransport;
+import org.protege.owl.server.api.server.Server;
+import org.protege.owl.server.api.server.ServerFilter;
+import org.protege.owl.server.api.server.ServerTransport;
 import org.protege.owl.server.connect.local.OSGiLocalTransport;
 import org.protege.owl.server.osgi.OSGiAware;
 import org.protege.owl.server.osgi.OSGiShutdownFilter;

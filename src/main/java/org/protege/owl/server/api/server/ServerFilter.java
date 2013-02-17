@@ -1,4 +1,5 @@
-package org.protege.owl.server.api;
+package org.protege.owl.server.api.server;
+
 
 /**
  * A server filter is a wrapper around an existing implementation of a server that adds some functionality.

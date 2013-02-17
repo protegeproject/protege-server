@@ -13,12 +13,12 @@ import junit.framework.Assert;
 
 import org.antlr.runtime.RecognitionException;
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.Client;
-import org.protege.owl.server.api.RemoteServerDirectory;
-import org.protege.owl.server.api.RemoteServerDocument;
-import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerTransport;
+import org.protege.owl.server.api.client.Client;
+import org.protege.owl.server.api.client.RemoteServerDirectory;
+import org.protege.owl.server.api.client.RemoteServerDocument;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.api.server.Server;
+import org.protege.owl.server.api.server.ServerTransport;
 import org.protege.owl.server.conflict.ConflictManager;
 import org.protege.owl.server.connect.local.LocalTransport;
 import org.protege.owl.server.connect.local.LocalTransportImpl;

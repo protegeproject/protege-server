@@ -1,9 +1,9 @@
 package org.protege.owl.server.core;
 
-import org.protege.owl.server.api.RemoteServerDirectory;
-import org.protege.owl.server.api.RemoteServerDocument;
-import org.protege.owl.server.api.ServerDirectory;
-import org.protege.owl.server.api.ServerPath;
+import org.protege.owl.server.api.client.RemoteServerDirectory;
+import org.protege.owl.server.api.client.RemoteServerDocument;
+import org.protege.owl.server.api.server.ServerDirectory;
+import org.protege.owl.server.api.server.ServerPath;
 import org.semanticweb.owlapi.model.IRI;
 
 public class ServerDirectoryImpl extends ServerDocumentImpl implements ServerDirectory {

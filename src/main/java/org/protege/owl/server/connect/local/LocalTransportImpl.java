@@ -9,11 +9,11 @@ import java.util.TreeMap;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerDocument;
-import org.protege.owl.server.api.ServerListener;
-import org.protege.owl.server.api.ServerTransport;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.api.server.Server;
+import org.protege.owl.server.api.server.ServerDocument;
+import org.protege.owl.server.api.server.ServerListener;
+import org.protege.owl.server.api.server.ServerTransport;
 
 /*
  * ToDo - it would be nice to add a factory so that this auto-configures in OSGi.

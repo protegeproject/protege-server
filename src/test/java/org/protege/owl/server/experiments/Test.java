@@ -4,10 +4,10 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.RemoteOntologyDocument;
-import org.protege.owl.server.api.RemoteServerDirectory;
-import org.protege.owl.server.api.RemoteServerDocument;
-import org.protege.owl.server.api.VersionedOntologyDocument;
+import org.protege.owl.server.api.client.RemoteOntologyDocument;
+import org.protege.owl.server.api.client.RemoteServerDirectory;
+import org.protege.owl.server.api.client.RemoteServerDocument;
+import org.protege.owl.server.api.client.VersionedOntologyDocument;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.connect.rmi.RMIClient;
 import org.protege.owl.server.policy.RMILoginUtility;

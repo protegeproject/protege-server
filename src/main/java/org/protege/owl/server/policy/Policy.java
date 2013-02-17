@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.UserId;
+import org.protege.owl.server.api.server.ServerPath;
 
 public class Policy {
     private Map<ProtectedObject, Permission> permissionMap = new HashMap<ProtectedObject, Permission>();

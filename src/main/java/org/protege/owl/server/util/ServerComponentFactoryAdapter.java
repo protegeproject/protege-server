@@ -1,9 +1,9 @@
 package org.protege.owl.server.util;
 
-import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerComponentFactory;
-import org.protege.owl.server.api.ServerFilter;
-import org.protege.owl.server.api.ServerTransport;
+import org.protege.owl.server.api.server.Server;
+import org.protege.owl.server.api.server.ServerComponentFactory;
+import org.protege.owl.server.api.server.ServerFilter;
+import org.protege.owl.server.api.server.ServerTransport;
 import org.semanticweb.owlapi.model.OWLIndividual;
 
 public abstract class ServerComponentFactoryAdapter implements ServerComponentFactory {

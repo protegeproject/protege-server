@@ -9,13 +9,13 @@ import java.util.UUID;
 
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
-import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.RemoteOntologyDocument;
-import org.protege.owl.server.api.RemoteServerDirectory;
-import org.protege.owl.server.api.RemoteServerDocument;
 import org.protege.owl.server.api.RevisionPointer;
-import org.protege.owl.server.api.VersionedOntologyDocument;
+import org.protege.owl.server.api.client.Client;
+import org.protege.owl.server.api.client.RemoteOntologyDocument;
+import org.protege.owl.server.api.client.RemoteServerDirectory;
+import org.protege.owl.server.api.client.RemoteServerDocument;
+import org.protege.owl.server.api.client.VersionedOntologyDocument;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.util.ClientUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;

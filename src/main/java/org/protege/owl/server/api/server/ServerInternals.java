@@ -1,9 +1,10 @@
-package org.protege.owl.server.api;
+package org.protege.owl.server.api.server;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 
+import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.exception.OWLServerException;
 
 public interface ServerInternals {

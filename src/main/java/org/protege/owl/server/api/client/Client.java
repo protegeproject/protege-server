@@ -1,7 +1,13 @@
-package org.protege.owl.server.api;
+package org.protege.owl.server.api.client;
 
 import java.util.Collection;
 
+import org.protege.owl.server.api.ChangeHistory;
+import org.protege.owl.server.api.DocumentFactory;
+import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.api.RevisionPointer;
+import org.protege.owl.server.api.SingletonChangeHistory;
+import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.IRI;
 

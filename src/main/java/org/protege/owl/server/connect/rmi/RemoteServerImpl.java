@@ -8,13 +8,13 @@ import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RevisionPointer;
-import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.ServerDirectory;
-import org.protege.owl.server.api.ServerDocument;
-import org.protege.owl.server.api.ServerOntologyDocument;
-import org.protege.owl.server.api.ServerPath;
 import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.api.server.Server;
+import org.protege.owl.server.api.server.ServerDirectory;
+import org.protege.owl.server.api.server.ServerDocument;
+import org.protege.owl.server.api.server.ServerOntologyDocument;
+import org.protege.owl.server.api.server.ServerPath;
 import org.semanticweb.owlapi.model.IRI;
 
 public class RemoteServerImpl implements RemoteServer {

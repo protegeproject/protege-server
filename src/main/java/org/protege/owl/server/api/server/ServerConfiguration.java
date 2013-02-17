@@ -1,4 +1,4 @@
-package org.protege.owl.server.api;
+package org.protege.owl.server.api.server;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 

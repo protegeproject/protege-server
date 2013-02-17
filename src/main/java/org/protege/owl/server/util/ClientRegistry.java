@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.protege.owl.server.api.Client;
-import org.protege.owl.server.api.ClientFactory;
-import org.protege.owl.server.api.VersionedOntologyDocument;
+import org.protege.owl.server.api.client.Client;
+import org.protege.owl.server.api.client.ClientFactory;
+import org.protege.owl.server.api.client.VersionedOntologyDocument;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;

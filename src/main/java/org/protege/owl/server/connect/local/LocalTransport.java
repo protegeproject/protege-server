@@ -1,8 +1,8 @@
 package org.protege.owl.server.connect.local;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.ServerInternals;
-import org.protege.owl.server.api.ServerTransport;
+import org.protege.owl.server.api.server.ServerInternals;
+import org.protege.owl.server.api.server.ServerTransport;
 
 public interface LocalTransport extends ServerTransport, ServerInternals {
 

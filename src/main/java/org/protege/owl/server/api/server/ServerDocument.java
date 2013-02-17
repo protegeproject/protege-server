@@ -1,4 +1,6 @@
-package org.protege.owl.server.api;
+package org.protege.owl.server.api.server;
+
+import org.protege.owl.server.api.client.RemoteServerDocument;
 
 
 public interface ServerDocument extends Comparable<ServerDocument> {

@@ -12,7 +12,7 @@ import junit.framework.Assert;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.Client;
+import org.protege.owl.server.api.client.Client;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.connect.RootUtils;
 import org.protege.owl.server.connect.rmi.AbstractRMIClientFactory;

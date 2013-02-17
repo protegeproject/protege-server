@@ -7,8 +7,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.util.ServerFilterAdapter;
 
 public class OSGiShutdownFilter extends ServerFilterAdapter {

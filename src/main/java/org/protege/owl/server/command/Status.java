@@ -6,9 +6,9 @@ import java.io.File;
 
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.protege.owl.server.api.Client;
 import org.protege.owl.server.api.RevisionPointer;
-import org.protege.owl.server.api.VersionedOntologyDocument;
+import org.protege.owl.server.api.client.Client;
+import org.protege.owl.server.api.client.VersionedOntologyDocument;
 import org.protege.owl.server.util.ClientRegistry;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;

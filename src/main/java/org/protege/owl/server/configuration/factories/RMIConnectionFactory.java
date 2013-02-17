@@ -7,7 +7,7 @@ import static org.protege.owl.server.configuration.MetaprojectVocabulary.RMI_TRA
 import java.rmi.registry.Registry;
 import java.util.logging.Logger;
 
-import org.protege.owl.server.api.ServerTransport;
+import org.protege.owl.server.api.server.ServerTransport;
 import org.protege.owl.server.connect.rmi.RMITransport;
 import org.protege.owl.server.util.ServerComponentFactoryAdapter;
 import org.semanticweb.owlapi.model.OWLAxiom;

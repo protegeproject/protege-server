@@ -4,14 +4,14 @@
 			   xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
 	<implementation class="org.protege.owl.server.configuration.BuilderImpl"/>
 	<service>
-		<provide interface="org.protege.owl.server.api.Builder"/>
+		<provide interface="org.protege.owl.server.api.server.Builder"/>
 	</service>
 	<reference name="CONFIGURATION"
-	    interface="org.protege.owl.server.api.ServerConfiguration"
+	    interface="org.protege.owl.server.api.server.ServerConfiguration"
 	    bind="initialise"
 	    cardinality="1..1"/>
 	<reference name="FACTORY"
-		interface="org.protege.owl.server.api.ServerComponentFactory"
+		interface="org.protege.owl.server.api.server.ServerComponentFactory"
 		bind="addServerComponentFactory"
 		unbind="removeServerComponentFactory"
 		cardinality="0..n"
