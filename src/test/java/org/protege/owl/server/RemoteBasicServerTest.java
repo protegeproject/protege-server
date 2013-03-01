@@ -37,16 +37,7 @@ public class RemoteBasicServerTest extends AbstractBasicServerTest {
 
 	@Override
 	public void stopServer() throws OWLServerException {
-		try {
-			framework.stop();
-			framework.waitForStop(60 * 60 * 1000);
-		}
-		catch (InterruptedException ie) {
-		    throw new OWLServerException(ie);
-		}
-		catch (BundleException be) {
-			throw new OWLServerException(be);
-		}
+	    TestUtilities.stopServer(framework);
 	}
 
 	@Override

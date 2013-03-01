@@ -78,6 +78,19 @@ public class TestUtilities {
 		return launcher.getFramework();
 	}
 	
+	public static void stopServer(Framework framework) throws OWLServerException {
+	    try {
+	        framework.stop();
+	        framework.waitForStop(60 * 60 * 1000);
+	    }
+	    catch (InterruptedException ie) {
+	        throw new OWLServerException(ie);
+	    }
+	    catch (BundleException be) {
+	        throw new OWLServerException(be);
+	    }
+	}
+	
 	public static Client createClient(int rmiPort, UserId u) throws RemoteException, NotBoundException {
 	    AuthToken auth = RMILoginUtility.login("localhost", rmiPort, u.getUserName(), PASSWORD_MAP.get(u));
 	    RMIClient client = new RMIClient(auth, "localhost", rmiPort);

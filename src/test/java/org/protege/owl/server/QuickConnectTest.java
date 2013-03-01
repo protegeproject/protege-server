@@ -44,8 +44,8 @@ public class QuickConnectTest {
     }
     
     @AfterMethod
-    public void stopServer() throws BundleException {
-        framework.stop();
+    public void stopServer() throws OWLServerException {
+        TestUtilities.stopServer(framework);
     }
     
     @Test
