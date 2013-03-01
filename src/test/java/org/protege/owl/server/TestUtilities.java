@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -34,6 +35,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.xml.sax.SAXException;
 
 public class TestUtilities {
+    private static Logger logger = Logger.getLogger(TestUtilities.class.getCanonicalName());
     
 	public static final File SERVER_ROOT = new File("target/server-distribution/server");
 	public static final File ROOT_DIRECTORY = new File(SERVER_ROOT, "root");
@@ -131,5 +133,28 @@ public class TestUtilities {
             }
         }
         f.delete();
+    }
+
+    /**
+     * This routine creates a temporary directory and then creates a file inside that directory.
+     * <p/>
+     * This routine is sometimes needed when running a test that needs a temporary file but then also needs to
+     * be able to write to the containing directory.  When we created the temporary file with File.createTempFile(), 
+     * it was noticed that when certain tests (e.g. the tests that serialize server side ontologies) were run by different 
+     * users the second run would sometimes fail because the second user would fail to have write access to all the contents of 
+     * the containing directory (e.g. the .owlserver directory).
+     * 
+     * @param name
+     * @return
+     * @throws IOException
+     */
+    public static File createFileInTempDirectory(String name) throws IOException {
+        File tmpDirectory = File.createTempFile("Save", "test");
+        tmpDirectory.delete();
+        if (!tmpDirectory.mkdir()) {
+            throw new IOException("Coud not create temporary directory " + tmpDirectory);
+        }
+        logger.info("Created temporary directory " + tmpDirectory + " for the file " + name);
+        return new File(tmpDirectory, name);
     }
 }

@@ -70,7 +70,7 @@ public class VOntSerializationTest {
         client.initialise();
         RemoteOntologyDocument doc = (RemoteOntologyDocument) client.getServerDocument(serverLocation);
         VersionedOntologyDocument vont = ClientUtilities.loadOntology(client, manager, doc);
-        File ontologyFile = File.createTempFile("Pizza", ".owl");
+        File ontologyFile = TestUtilities.createFileInTempDirectory("Pizza.owl");
         manager.saveOntology(vont.getOntology(), IRI.create(ontologyFile));
         manager.setOntologyDocumentIRI(vont.getOntology(), IRI.create(ontologyFile));
         boolean saveSucceeded = vont.saveMetaData();

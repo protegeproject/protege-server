@@ -136,7 +136,7 @@ public class RobustnessTest {
      */
     @Test
     public void restoreFromClient() throws OWLOntologyCreationException, IOException, OWLServerException, OWLOntologyStorageException {
-        File clientCopy = File.createTempFile("ClientRestore", ".owl");
+        File clientCopy = TestUtilities.createFileInTempDirectory("CorruptPizza.owl");
         
         twoForcedSaves();
         
