@@ -343,9 +343,7 @@
     <dependency>
       <groupId>edu.stanford.protege</groupId>
       <artifactId>ProtegeLauncher</artifactId>
-      <version>0.9.9</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/etc/server.template/lib/ProtegeLauncher.jar</systemPath>
+      <version>4.2.0-rc1</version>
     </dependency>
   </dependencies>
 
