@@ -51,7 +51,7 @@
      <property file = "${protege.home}/build.properties"/>
      <copy todir="${protege.plugins}">
        <fileset dir="target" includes="org.protege.owl.server-*.jar"/>
-       <globmapper from="*" to="org.protege.owl.server.jar"/>
+       <mergemapper to="org.protege.owl.server.jar"/>
      </copy>
    </target>
 
