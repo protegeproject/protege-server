@@ -280,6 +280,9 @@
         <version>2.9</version>
         <configuration>
           <pde>true</pde>
+          <sourceExcludes>
+            <sourceExclude>**/command/*.java</sourceExclude>
+          </sourceExcludes>
         </configuration>
       </plugin>
     </plugins>
