@@ -187,7 +187,8 @@
 						</Export-Package>
 						<Import-Package>
 							!org.antlr.stringtemplate, 
-							!org.apache.commons.cli, 
+							!org.apache.commons.cli,
+                            org.osgi.framework;version="1",
 							*
 						</Import-Package>
 						<Service-Component>OSGI-INF/*.xml</Service-Component>
