@@ -9,7 +9,7 @@
 	
 	<groupId>edu.stanford.protege</groupId>
 	<artifactId>org.protege.owl.server</artifactId>
-	<version>2.0.1-SNAPSHOT</version>
+	<version>2.0.1</version>
 	<packaging>bundle</packaging>
 
 	<name>OWL Ontology Server</name>
@@ -291,8 +291,8 @@
 						</goals>
 						<configuration>
 							<target>
-								<delete dir = "target/server-distribution/server/root"/>
-								<mkdir dir = "target/server-distribution/server/root"/>
+								<delete dir="target/server-distribution/server/root" />
+								<mkdir dir="target/server-distribution/server/root" />
 							</target>
 						</configuration>
 					</execution>
@@ -304,7 +304,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<ant antfile = "build.xml" target = "install"/>
+								<ant antfile="build.xml" target="install" />
 							</target>
 						</configuration>
 					</execution>
