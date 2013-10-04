@@ -228,20 +228,6 @@
 							<finalName>server</finalName>
 						</configuration>
 					</execution>
-					<execution>
-						<!-- A distribution. -->
-						<id>create-distro</id>
-						<phase>install</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>src/main/assembly/server-as-zip.xml</descriptor>
-							</descriptors>
-							<outputDirectory>target</outputDirectory>
-						</configuration>
-					</execution>
 				</executions>
 			</plugin>
       
@@ -334,4 +320,37 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>distribution</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>2.4</version>
+						<executions>
+							<execution>
+								<!-- Create a distribution of the OWL Ontology Server. -->
+								<id>create-distro</id>
+								<phase>install</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<descriptors>
+										<descriptor>src/main/assembly/server-as-zip.xml</descriptor>
+									</descriptors>
+									<outputDirectory>target</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
