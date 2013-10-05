@@ -35,6 +35,13 @@
     </dependencySet>
     <dependencySet>
       <includes>
+        <include>edu.stanford.protege:ProtegeLauncher:jar</include>
+      </includes>
+      <outputFileNameMapping>ProtegeLauncher.jar</outputFileNameMapping>
+      <outputDirectory>lib</outputDirectory>
+    </dependencySet>
+    <dependencySet>
+      <includes>
         <include>org.apache.felix:org.apache.felix.configadmin:jar</include>
         <include>org.apache.felix:org.apache.felix.log:jar</include>
         <include>org.apache.felix:org.apache.felix.metatype:jar</include>
@@ -43,6 +50,15 @@
       <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
       <outputDirectory>bundles</outputDirectory>
     </dependencySet>
+
+    <dependencySet>
+      <includes>
+        <include>net.sourceforge.owlapi:owlapi-distribution:jar</include>
+      </includes>
+      <outputFileNameMapping>org.semanticweb.owl.owlapi.jar</outputFileNameMapping>
+      <outputDirectory>bundles</outputDirectory>
+    </dependencySet>
+
   </dependencySets>
   <files>
     <file>
