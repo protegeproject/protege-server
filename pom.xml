@@ -1,356 +1,366 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
-	
-	<groupId>edu.stanford.protege</groupId>
-	<artifactId>org.protege.owl.server</artifactId>
-	<version>2.0.6-SNAPSHOT</version>
-	<packaging>bundle</packaging>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+    
+    <groupId>edu.stanford.protege</groupId>
+    <artifactId>org.protege.owl.server</artifactId>
+    <version>2.0.6-SNAPSHOT</version>
+    <packaging>bundle</packaging>
 
-	<name>OWL Ontology Server</name>
-	<description>An OWL ontology server for OWL API programs including the Protege Desktop ontology editor (versions 5 and above).</description>
+    <name>OWL Ontology Server</name>
+    <description>An OWL ontology server for OWL API programs including the Protege Desktop ontology editor (versions 5 and above).</description>
  
-	<developers>
-		<developer>
-			<name>Timothy Redmond</name>
-			<email>tredmond@stanford.edu</email>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <name>Timothy Redmond</name>
+            <email>tredmond@stanford.edu</email>
+        </developer>
+    </developers>
 
-	<scm>
-		<connection>scm:git:git@github.com:protegeproject/org.protege.owl.server.git</connection>
-		<developerConnection>scm:git:git@github.com:protegeproject/org.protege.owl.server.git</developerConnection>
-		<url>https://github.com/protegeproject/org.protege.owl.server</url>
-	  <tag>HEAD</tag>
+    <scm>
+        <connection>scm:git:git@github.com:protegeproject/org.protege.owl.server.git</connection>
+        <developerConnection>scm:git:git@github.com:protegeproject/org.protege.owl.server.git</developerConnection>
+        <url>https://github.com/protegeproject/org.protege.owl.server</url>
+      <tag>HEAD</tag>
   </scm>
-	
-	<dependencies>
-		<dependency>
-			<groupId>edu.stanford.protege</groupId>
-			<artifactId>ProtegeLauncher</artifactId>
-			<version>4.3.0</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>net.sourceforge.owlapi</groupId>
-			<artifactId>owlapi-distribution</artifactId>
-			<version>3.4.5</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>6.8.5</version>
-		</dependency>
-				
-		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr</artifactId>
-			<version>3.5</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>antlr-runtime</artifactId>
-			<version>3.5</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>stringtemplate</artifactId>
-			<version>4.0.2</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>commons-cli</groupId>
-			<artifactId>commons-cli</artifactId>
-			<version>1.2</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.configadmin</artifactId>
-			<version>1.6.0</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.log</artifactId>
-			<version>1.0.1</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.metatype</artifactId>
-			<version>1.0.6</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.scr</artifactId>
-			<version>1.6.2</version>
-		</dependency>
+    
+    <dependencies>
+        <dependency>
+            <groupId>edu.stanford.protege</groupId>
+            <artifactId>ProtegeLauncher</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>net.sourceforge.owlapi</groupId>
+            <artifactId>owlapi-distribution</artifactId>
+            <version>3.4.5</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8.5</version>
+        </dependency>
+                
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <version>3.5</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr-runtime</artifactId>
+            <version>3.5</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>stringtemplate</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.2</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.configadmin</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.log</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.metatype</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr</artifactId>
+            <version>1.6.2</version>
+        </dependency>
   </dependencies>
 
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-release-plugin</artifactId>
-					<version>2.4.1</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-					<execution>
-						<id>add-generated-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>target/generated-sources</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.4.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    
+        <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <version>3.0</version>
+              <configuration>
+                <source>1.6</source>
+                <target>1.6</target>
+              </configuration>
+            </plugin>
 
-			<plugin>
-			<!-- The antlr plugin would be simpler.  Reexamine this. -->
-			<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.2.1</version>
-				<executions>
-					<execution>
-						<id>generate-users-and-groups-parser</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>java</executable>
-							<workingDirectory>${basedir}/etc/lang</workingDirectory>
-							<arguments>
-								<argument>-classpath</argument>
-								<classpath>
-									<dependency>org.antlr:antlr</dependency>
-									<dependency>org.antlr:antlr-runtime</dependency>
-									<dependency>org.antlr:stringtemplate</dependency>
-								</classpath>
-								<argument>org.antlr.Tool</argument>
-								<argument>-o</argument>
-								<argument>../../target/generated-sources/org/protege/owl/server/policy/generated</argument>
-								<argument>UsersAndGroups.g</argument>
-							</arguments>
-						</configuration>
-					</execution>
-					<execution>
-						<id>generate-policy-parser</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>java</executable>
-							<workingDirectory>${basedir}/etc/lang</workingDirectory>
-							<arguments>
-								<argument>-classpath</argument>
-								<classpath>
-									<dependency>org.antlr:antlr</dependency>
-									<dependency>org.antlr:antlr-runtime</dependency>
-									<dependency>org.antlr:stringtemplate</dependency>
-								</classpath>
-								<argument>org.antlr.Tool</argument>
-								<argument>-o</argument>
-								<argument>../../target/generated-sources/org/protege/owl/server/policy/generated</argument>
-								<argument>Policy.g</argument>
-							</arguments>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>add-generated-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/generated-sources</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-Activator>org.protege.owl.server.Activator</Bundle-Activator>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
-						<Embed-Dependency>antlr, antlr-runtime, stringtemplate</Embed-Dependency>
-						<Export-Package>
-							${project.artifactId}*;version=${project.version}
-						</Export-Package>
-						<Import-Package>
-							!org.antlr.stringtemplate, 
-							!org.apache.commons.cli,
+            <plugin>
+            <!-- The antlr plugin would be simpler.  Reexamine this. -->
+            <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-users-and-groups-parser</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <workingDirectory>${basedir}/etc/lang</workingDirectory>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <classpath>
+                                    <dependency>org.antlr:antlr</dependency>
+                                    <dependency>org.antlr:antlr-runtime</dependency>
+                                    <dependency>org.antlr:stringtemplate</dependency>
+                                </classpath>
+                                <argument>org.antlr.Tool</argument>
+                                <argument>-o</argument>
+                                <argument>../../target/generated-sources/org/protege/owl/server/policy/generated</argument>
+                                <argument>UsersAndGroups.g</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-policy-parser</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <workingDirectory>${basedir}/etc/lang</workingDirectory>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <classpath>
+                                    <dependency>org.antlr:antlr</dependency>
+                                    <dependency>org.antlr:antlr-runtime</dependency>
+                                    <dependency>org.antlr:stringtemplate</dependency>
+                                </classpath>
+                                <argument>org.antlr.Tool</argument>
+                                <argument>-o</argument>
+                                <argument>../../target/generated-sources/org/protege/owl/server/policy/generated</argument>
+                                <argument>Policy.g</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Activator>org.protege.owl.server.Activator</Bundle-Activator>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
+                        <Embed-Dependency>antlr, antlr-runtime, stringtemplate</Embed-Dependency>
+                        <Export-Package>
+                            ${project.artifactId}*;version=${project.version}
+                        </Export-Package>
+                        <Import-Package>
+                            !org.antlr.stringtemplate, 
+                            !org.apache.commons.cli,
                             org.osgi.framework;version="1",
-							*
-						</Import-Package>
-						<Service-Component>OSGI-INF/*.xml</Service-Component>
-					</instructions>
-				</configuration>
-			</plugin>
+                            *
+                        </Import-Package>
+                        <Service-Component>OSGI-INF/*.xml</Service-Component>
+                    </instructions>
+                </configuration>
+            </plugin>
       
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.4</version>
-				<executions>
-					<execution>
-						<!-- We need to build a working server before the integration tests. -->
-						<id>create-server</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>src/main/assembly/server-as-directory.xml</descriptor>
-							</descriptors>
-							<outputDirectory>target</outputDirectory>
-							<finalName>server</finalName>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <!-- We need to build a working server before the integration tests. -->
+                        <id>create-server</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/server-as-directory.xml</descriptor>
+                            </descriptors>
+                            <outputDirectory>target</outputDirectory>
+                            <finalName>server</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
       
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.13</version>
-				<!-- Weird! -->
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-				<executions>
-					<execution>
-						<id>unit-tests</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<skip>false</skip>
-							<suiteXmlFiles>
-								<suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
-							</suiteXmlFiles>
-							<groups>unit.test</groups>
-						</configuration>
-					</execution>
-					<execution>
-						<id>integration-tests</id>
-						<phase>integration-test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<skip>false</skip>
-							<suiteXmlFiles>
-								<suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
-							</suiteXmlFiles>
-							<systemProperties>
-								<property>
-									<name>java.util.logging.config.file</name>
-									<value>${project.build.directory}/logging-test.properties</value>
-								</property>
-							</systemProperties>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.13</version>
+                <!-- Weird! -->
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>unit-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <skip>false</skip>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <groups>unit.test</groups>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>integration-tests</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <skip>false</skip>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <systemProperties>
+                                <property>
+                                    <name>java.util.logging.config.file</name>
+                                    <value>${project.build.directory}/logging-test.properties</value>
+                                </property>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
       
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<id>test-cleanup</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-								<delete dir="target/server-distribution/server/root" />
-								<mkdir dir="target/server-distribution/server/root" />
-							</target>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-to-protege</id>
-						<phase>install</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-								<ant antfile="build.xml" target="install" />
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<pde>true</pde>
-					<sourceExcludes>
-						<sourceExclude>**/command/*.java</sourceExclude>
-					</sourceExcludes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	
-	<profiles>
-		<profile>
-			<id>distribution</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.4</version>
-						<executions>
-							<execution>
-								<!-- Create a distribution of the OWL Ontology Server. -->
-								<id>create-distro</id>
-								<phase>install</phase>
-								<goals>
-									<goal>single</goal>
-								</goals>
-								<configuration>
-									<descriptors>
-										<descriptor>src/main/assembly/server-as-zip.xml</descriptor>
-									</descriptors>
-									<outputDirectory>target</outputDirectory>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>test-cleanup</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete dir="target/server-distribution/server/root" />
+                                <mkdir dir="target/server-distribution/server/root" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-to-protege</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <ant antfile="build.xml" target="install" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <pde>true</pde>
+                    <sourceExcludes>
+                        <sourceExclude>**/command/*.java</sourceExclude>
+                    </sourceExcludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <profiles>
+        <profile>
+            <id>distribution</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>2.4</version>
+                        <executions>
+                            <execution>
+                                <!-- Create a distribution of the OWL Ontology Server. -->
+                                <id>create-distro</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <descriptors>
+                                        <descriptor>src/main/assembly/server-as-zip.xml</descriptor>
+                                    </descriptors>
+                                    <outputDirectory>target</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
