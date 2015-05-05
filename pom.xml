@@ -26,14 +26,14 @@
         <connection>scm:git:git@github.com:protegeproject/org.protege.owl.server.git</connection>
         <developerConnection>scm:git:git@github.com:protegeproject/org.protege.owl.server.git</developerConnection>
         <url>https://github.com/protegeproject/org.protege.owl.server</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
     
     <dependencies>
         <dependency>
             <groupId>edu.stanford.protege</groupId>
             <artifactId>ProtegeLauncher</artifactId>
-            <version>4.3.0</version>
+            <version>5.0.0-beta-17</version>
         </dependency>
         
         <dependency>
@@ -51,13 +51,13 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr</artifactId>
-            <version>3.5</version>
+            <version>3.5.2</version>
         </dependency>
         
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
-            <version>3.5</version>
+            <version>3.5.2</version>
         </dependency>
         
         <dependency>
@@ -139,59 +139,21 @@
                 </executions>
             </plugin>
 
-            <plugin>
-            <!-- The antlr plugin would be simpler.  Reexamine this. -->
-            <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <id>generate-users-and-groups-parser</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>java</executable>
-                            <workingDirectory>${basedir}/etc/lang</workingDirectory>
-                            <arguments>
-                                <argument>-classpath</argument>
-                                <classpath>
-                                    <dependency>org.antlr:antlr</dependency>
-                                    <dependency>org.antlr:antlr-runtime</dependency>
-                                    <dependency>org.antlr:stringtemplate</dependency>
-                                </classpath>
-                                <argument>org.antlr.Tool</argument>
-                                <argument>-o</argument>
-                                <argument>../../target/generated-sources/org/protege/owl/server/policy/generated</argument>
-                                <argument>UsersAndGroups.g</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>generate-policy-parser</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>java</executable>
-                            <workingDirectory>${basedir}/etc/lang</workingDirectory>
-                            <arguments>
-                                <argument>-classpath</argument>
-                                <classpath>
-                                    <dependency>org.antlr:antlr</dependency>
-                                    <dependency>org.antlr:antlr-runtime</dependency>
-                                    <dependency>org.antlr:stringtemplate</dependency>
-                                </classpath>
-                                <argument>org.antlr.Tool</argument>
-                                <argument>-o</argument>
-                                <argument>../../target/generated-sources/org/protege/owl/server/policy/generated</argument>
-                                <argument>Policy.g</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
+			<plugin>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr3-maven-plugin</artifactId>
+				<version>3.5.2</version>
+				<configuration>
+					<sourceDirectory>${basedir}/etc/lang</sourceDirectory>
+					<outputDirectory>${basedir}/target/generated-sources/org/protege/owl/server/policy/generated</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>antlr</goal>
+						</goals>
+					</execution>
+				</executions>
             </plugin>
 
             <plugin>
