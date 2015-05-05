@@ -144,7 +144,7 @@
 				<artifactId>antlr3-maven-plugin</artifactId>
 				<version>3.5.2</version>
 				<configuration>
-					<sourceDirectory>${basedir}/etc/lang</sourceDirectory>
+					<sourceDirectory>${basedir}/src/main/resources/lang</sourceDirectory>
 					<outputDirectory>${basedir}/target/generated-sources/org/protege/owl/server/policy/generated</outputDirectory>
 				</configuration>
 				<executions>
