@@ -7,7 +7,7 @@
   </formats>
   <fileSets>
     <fileSet>
-      <directory>src/main/resources/server.template</directory>
+      <directory>src/main/resources/server-template</directory>
       <outputDirectory></outputDirectory>
     </fileSet>
   </fileSets>
@@ -67,7 +67,7 @@
       <destName>org.protege.owl.server.jar</destName>
     </file>
     <file>
-      <source>logging.properties</source>
+      <source>src/main/resources/logging.properties</source>
       <outputDirectory>.</outputDirectory>
       <destName>logging.properties</destName>
     </file>
