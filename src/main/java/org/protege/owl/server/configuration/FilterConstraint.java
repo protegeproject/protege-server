@@ -12,6 +12,7 @@ import org.protege.owl.server.api.server.ServerComponentFactory;
 import org.protege.owl.server.api.server.ServerFilter;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 public class FilterConstraint {
     public static final Logger logger = Logger.getLogger(FilterConstraint.class.getCanonicalName());
@@ -19,7 +20,7 @@ public class FilterConstraint {
     private FilterConstraint containingFilterConstraint;
     
     public static FilterConstraint getDelegateConstraint(OWLOntology configuration, OWLIndividual i) {
-        Collection<OWLIndividual> subFilters = i.getObjectPropertyValues(HAS_SERVER_FILTER, configuration);
+        Collection<OWLIndividual> subFilters = EntitySearcher.getObjectPropertyValues(i, HAS_SERVER_FILTER, configuration);
         if (subFilters == null || subFilters.size() == 0) {
             return null;
         }

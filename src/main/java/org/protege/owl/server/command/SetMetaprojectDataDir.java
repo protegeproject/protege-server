@@ -21,6 +21,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 
 /**
@@ -53,7 +54,7 @@ public class SetMetaprojectDataDir {
                 changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_ROOT_PATH, server, dataDir)));
             }
         }
-        for (OWLIndividual server : STANDARD_SERVER.getIndividuals(ontology)) {
+        for (OWLIndividual server : EntitySearcher.getIndividuals(STANDARD_SERVER, ontology)) {
             changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_ROOT_PATH, server, dataDir)));
         }
         manager.applyChanges(changes);

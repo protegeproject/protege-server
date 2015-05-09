@@ -15,6 +15,7 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.util.SimpleIRIMapper;
 
 public class MetaprojectVocabulary {
@@ -90,8 +91,8 @@ public class MetaprojectVocabulary {
 	private static void addIndividuals(OWLOntology ontology, OWLClass cls, Set<OWLIndividual> individuals, Set<OWLClass> includedClasses) {
 		if (!includedClasses.contains(cls)) {
 			includedClasses.add(cls);
-			individuals.addAll(cls.getIndividuals(ontology.getImportsClosure()));
-			for (OWLClassExpression subCls : cls.getSubClasses(ontology.getImportsClosure())) {
+			individuals.addAll(EntitySearcher.getIndividuals(cls, ontology.getImportsClosure()));
+			for (OWLClassExpression subCls : EntitySearcher.getSubClasses(cls, ontology.getImportsClosure())) {
 				if (!subCls.isAnonymous()) {
 					addIndividuals(ontology, subCls.asOWLClass(), individuals, includedClasses);
 				}

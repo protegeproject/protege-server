@@ -15,6 +15,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 public class CoreServerFactory extends ServerComponentFactoryAdapter {
 	public static Logger logger = Logger.getLogger(CoreServerFactory.class.getCanonicalName());
@@ -40,7 +41,7 @@ public class CoreServerFactory extends ServerComponentFactoryAdapter {
 	}
 	
 	private File getRootPath(OWLIndividual i) {
-	    for (OWLLiteral rootPathLiteral : i.getDataPropertyValues(HAS_ROOT_PATH, ontology)) {
+	    for (OWLLiteral rootPathLiteral : EntitySearcher.getDataPropertyValues(i, HAS_ROOT_PATH, ontology)) {
 	        String rootPath = rootPathLiteral.getLiteral();
 	        return new File(rootPath);
 	    }
@@ -48,7 +49,7 @@ public class CoreServerFactory extends ServerComponentFactoryAdapter {
 	}
 	
 	private File getConfigurationPath(OWLIndividual i) {
-	       for (OWLLiteral rootPathLiteral : i.getDataPropertyValues(HAS_CONFIGURATION_PATH, ontology)) {
+	       for (OWLLiteral rootPathLiteral : EntitySearcher.getDataPropertyValues(i, HAS_CONFIGURATION_PATH, ontology)) {
 	            String configurationPath = rootPathLiteral.getLiteral();
 	            return new File(configurationPath);
 	        }

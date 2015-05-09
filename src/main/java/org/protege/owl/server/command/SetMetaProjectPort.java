@@ -22,6 +22,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 
 /**
@@ -54,7 +55,7 @@ public class SetMetaProjectPort {
                 changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(axiom.getProperty(), server, port)));
             }
         }
-        for (OWLIndividual server : STANDARD_SERVER.getIndividuals(ontology)) {
+        for (OWLIndividual server : EntitySearcher.getIndividuals(STANDARD_SERVER, ontology)) {
             changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_SERVER_PORT, server, port)));
             changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_REGISTRY_PORT, server, port)));
         }

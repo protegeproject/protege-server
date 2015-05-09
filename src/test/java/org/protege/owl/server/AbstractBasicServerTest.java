@@ -31,6 +31,7 @@ import org.semanticweb.owlapi.model.OWLOntologyIRIMapper;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
+import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.util.SimpleIRIMapper;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -88,7 +89,7 @@ public abstract class AbstractBasicServerTest {
 		OWLOntology ontology2 = versionedOntology2.getOntology();
 		Assert.assertEquals(ontology1.getOntologyID(), ontology2.getOntologyID());
 		Assert.assertEquals(ontology1.getAxioms(), ontology2.getAxioms());
-		Assert.assertEquals(PizzaVocabulary.CHEESEY_PIZZA.getEquivalentClasses(ontology2).size(), 1);
+		Assert.assertEquals(EntitySearcher.getEquivalentClasses(PizzaVocabulary.CHEESEY_PIZZA, ontology2).size(), 1);
 	}
 	
 	/*

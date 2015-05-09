@@ -21,6 +21,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 public class SetConfigurationDir {
     private static final Logger LOGGER = Logger.getLogger(SetConfigurationDir.class.getCanonicalName());
@@ -45,7 +46,7 @@ public class SetConfigurationDir {
                 changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_CONFIGURATION_PATH, server, configurationDir)));
             }
         }
-        for (OWLIndividual server : STANDARD_SERVER.getIndividuals(ontology)) {
+        for (OWLIndividual server : EntitySearcher.getIndividuals(STANDARD_SERVER, ontology)) {
             changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_CONFIGURATION_PATH, server, configurationDir)));
         }
         manager.applyChanges(changes);

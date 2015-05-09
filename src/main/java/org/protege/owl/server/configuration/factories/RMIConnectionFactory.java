@@ -15,6 +15,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 public class RMIConnectionFactory extends ServerComponentFactoryAdapter {
     public static Logger logger = Logger.getLogger(CoreServerFactory.class.getCanonicalName());
@@ -40,7 +41,7 @@ public class RMIConnectionFactory extends ServerComponentFactoryAdapter {
     }
     
     private int getRegistryPort(OWLIndividual i) {
-        for (OWLLiteral hostPortLiteral : i.getDataPropertyValues(HAS_REGISTRY_PORT, ontology)) {
+        for (OWLLiteral hostPortLiteral : EntitySearcher.getDataPropertyValues(i, HAS_REGISTRY_PORT, ontology)) {
             if (hostPortLiteral.isInteger()) {
                 int port = hostPortLiteral.parseInteger();
                 return port;
@@ -50,7 +51,7 @@ public class RMIConnectionFactory extends ServerComponentFactoryAdapter {
     }
     
     private int getServerPort(OWLIndividual i) {
-        for (OWLLiteral hostPortLiteral : i.getDataPropertyValues(HAS_SERVER_PORT, ontology)) {
+        for (OWLLiteral hostPortLiteral : EntitySearcher.getDataPropertyValues(i, HAS_SERVER_PORT, ontology)) {
             if (hostPortLiteral.isInteger()) {
                 int port = hostPortLiteral.parseInteger();
                 return port;
