@@ -7,3 +7,4 @@ META-INF/
 # Maven
 target/
 release.properties
+/bin/
