@@ -43,8 +43,8 @@
 
         <dependency>
             <groupId>net.sourceforge.owlapi</groupId>
-            <artifactId>owlapi-distribution</artifactId>
-            <version>3.4.5</version>
+            <artifactId>owlapi-osgidistribution</artifactId>
+            <version>3.5.1</version>
         </dependency>
 
         <dependency>
@@ -80,7 +80,7 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.configadmin</artifactId>
-            <version>1.6.0</version>
+            <version>1.8.2</version>
         </dependency>
 
         <dependency>
@@ -92,13 +92,13 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.metatype</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.12</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr</artifactId>
-            <version>1.6.2</version>
+            <version>1.8.2</version>
         </dependency>
     </dependencies>
 
@@ -108,7 +108,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.4.1</version>
+                    <version>2.5.2</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -117,17 +117,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.3</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
 
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.4</version>
+                <version>1.9.1</version>
                 <executions>
                     <execution>
                         <id>add-generated-source</id>
@@ -164,12 +164,13 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
+                <version>2.5.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
                         <Bundle-Activator>org.protege.owl.server.Activator</Bundle-Activator>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Version>${project.version}</Bundle-Version>
                         <Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
                         <Embed-Dependency>antlr, antlr-runtime, stringtemplate</Embed-Dependency>
                         <Export-Package>
@@ -187,13 +188,14 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.5.4</version>
                 <executions>
                     <execution>
                         <!-- We need to build a working server before the integration tests. -->
                         <id>create-server</id>
-                        <phase>pre-integration-test</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
@@ -211,7 +213,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.13</version>
+                <version>2.18.1</version>
                 <!-- Weird! -->
                 <configuration>
                     <skip>true</skip>
@@ -276,12 +278,11 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <version>2.4</version>
                         <executions>
                             <execution>
                                 <!-- Create a distribution of the OWL Ontology Server. -->
                                 <id>create-distro</id>
-                                <phase>install</phase>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>single</goal>
                                 </goals>
