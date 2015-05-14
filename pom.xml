@@ -38,13 +38,13 @@
         <dependency>
             <groupId>edu.stanford.protege</groupId>
             <artifactId>ProtegeLauncher</artifactId>
-            <version>5.0.0-beta-17</version>
+            <version>5.0.0-beta-15</version>
         </dependency>
 
         <dependency>
             <groupId>net.sourceforge.owlapi</groupId>
-            <artifactId>owlapi-osgidistribution</artifactId>
-            <version>3.5.1</version>
+            <artifactId>owlapi-distribution</artifactId>
+            <version>3.5.0</version>
         </dependency>
 
         <dependency>
