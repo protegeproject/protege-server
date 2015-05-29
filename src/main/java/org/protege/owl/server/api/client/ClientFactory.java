@@ -38,8 +38,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
  *
  */
 public interface ClientFactory {
-    public static final String USERNAME_KEY = "username";
-    public static final String PASSWORD_KEY = "password";
+    String USERNAME_KEY = "username", PASSWORD_KEY = "password";
     
     /**
      * Look at the storage location of the ontology to determine if there is metadata associated with this ontology indicating

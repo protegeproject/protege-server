@@ -1,16 +1,5 @@
 package org.protege.owl.server.policy;
 
-import static org.protege.owl.server.PizzaVocabulary.CHEESEY_PIZZA_DEFINITION;
-import static org.protege.owl.server.TestUtilities.FERGERSON;
-import static org.protege.owl.server.TestUtilities.GUEST;
-import static org.protege.owl.server.TestUtilities.REDMOND;
-
-import java.io.IOException;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.protege.owl.server.PizzaVocabulary;
@@ -31,12 +20,16 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Parameters;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+
+import static org.protege.owl.server.PizzaVocabulary.CHEESEY_PIZZA_DEFINITION;
+import static org.protege.owl.server.TestUtilities.*;
 
 public class PolicyTest {
     private IRI fergersonsPizzaLoc;
@@ -65,6 +58,7 @@ public class PolicyTest {
     @AfterMethod
     public void stopServer() throws OWLServerException {
         TestUtilities.stopServer(framework);
+        TestUtilities.delete(TestUtilities.ROOT_DIRECTORY, false);
     }
     
     @Test

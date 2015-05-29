@@ -88,7 +88,6 @@ public interface Client {
 	 * Commits a collection of changes to the remote ontology document.
 	 * 
 	 * @param document
-	 * @param revision
 	 * @param changes
 	 */
 	void commit(RemoteOntologyDocument document, 

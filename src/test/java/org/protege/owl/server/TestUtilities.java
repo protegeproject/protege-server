@@ -1,25 +1,9 @@
 package org.protege.owl.server;
 
-import java.io.File;
-import java.io.IOException;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.logging.Logger;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.Framework;
 import org.protege.osgi.framework.Launcher;
-import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.ChangeMetaData;
-import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.SingletonChangeHistory;
-import org.protege.owl.server.api.UserId;
+import org.protege.owl.server.api.*;
 import org.protege.owl.server.api.client.Client;
 import org.protege.owl.server.api.client.RemoteOntologyDocument;
 import org.protege.owl.server.api.client.VersionedOntologyDocument;
@@ -34,13 +18,25 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.logging.Logger;
+
 public class TestUtilities {
     private static Logger logger = Logger.getLogger(TestUtilities.class.getCanonicalName());
-    
+
 	public static final File SERVER_ROOT = new File("target/server-distribution/server");
 	public static final File ROOT_DIRECTORY = new File(SERVER_ROOT, "root");
 	public static final File CONFIGURATION_DIRECTORY = new File(SERVER_ROOT, "configuration");
 	public static final String PREFIX;
+
 	static {
 		StringBuffer sb = new StringBuffer();
 		sb.append("src");
@@ -126,14 +122,22 @@ public class TestUtilities {
         client.commit(doc, changeHistory);
     }
 
-    private static void delete(File f) {
-        if (f.isDirectory()) {
-            for (File child : f.listFiles()) {
-                delete(child);
-            }
-        }
-        f.delete();
+    public static void delete(File f) {
+       delete(f, true);
     }
+
+
+	public static void delete(File f, boolean inclRoot) {
+		if (f.isDirectory()) {
+			for (File child : f.listFiles()) {
+				delete(child);
+			}
+		}
+		if(inclRoot) {
+			f.delete();
+		}
+	}
+
 
     /**
      * This routine creates a temporary directory and then creates a file inside that directory.
