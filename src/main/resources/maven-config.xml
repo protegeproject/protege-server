@@ -8,6 +8,7 @@
     <bundle name="org.apache.felix.metatype.jar"/>
     <bundle name="org.apache.felix.scr.jar"/>
     <bundle name="org.semanticweb.owl.owlapi.jar"/>
+    <bundle name="org.semanticweb.owl.binaryowl.jar"/>
   </bundles>
   <bundles verbose = "true">
     <search path="target/server-distribution/server/bundles"/>

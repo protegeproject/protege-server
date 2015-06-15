@@ -58,6 +58,14 @@
       <outputFileNameMapping>org.semanticweb.owl.owlapi.jar</outputFileNameMapping>
       <outputDirectory>bundles</outputDirectory>
     </dependencySet>
+    
+    <dependencySet>
+      <includes>
+        <include>net.sourceforge.owlapi:binaryowl:jar</include>
+      </includes>
+      <outputFileNameMapping>org.semanticweb.owl.binaryowl.jar</outputFileNameMapping>
+      <outputDirectory>bundles</outputDirectory>
+    </dependencySet> 
 
   </dependencySets>
   <files>

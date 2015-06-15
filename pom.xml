@@ -46,6 +46,12 @@
             <artifactId>owlapi-distribution</artifactId>
             <version>3.5.0</version>
         </dependency>
+        
+        <dependency>
+            <groupId>net.sourceforge.owlapi</groupId>
+            <artifactId>binaryowl</artifactId>
+            <version>1.4.4</version>
+        </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -194,7 +200,9 @@
                         <Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
                         <Embed-Dependency>antlr, antlr-runtime, stringtemplate, guava</Embed-Dependency>
                         <Export-Package>
-                            ${project.artifactId}*;version=${project.version}
+                            ${project.artifactId}*;version=${project.version},
+                            org.semanticweb.binaryowl.*
+                            
                         </Export-Package>
                         <Import-Package>
                             !org.antlr.stringtemplate,
