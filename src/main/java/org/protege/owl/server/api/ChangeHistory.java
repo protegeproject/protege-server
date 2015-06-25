@@ -18,46 +18,46 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
  */
 
 public interface ChangeHistory {
-	public static final String CHANGE_DOCUMENT_EXTENSION = ".history";
+	String CHANGE_DOCUMENT_EXTENSION = ".history";
 	
 	DocumentFactory getDocumentFactory();
 
 	/**
 	 * Get the start revision of this collection of changes.
 	 * 
-	 * @return
+	 * @return OntologyDocumentRevision
 	 */
 	OntologyDocumentRevision getStartRevision();
 	
 	/**
 	 * Get the end revision of this collection of changes.
 	 * 
-	 * @return
+	 * @return OntologyDocumentRevision
 	 */
 	OntologyDocumentRevision getEndRevision();
 	
 	/**
 	 * Returns the ChangeMetaData (user, date of change) for the change document at a given revision.  
-	 * <p/>
+	 * <p>
 	 * It
 	 * should be non-null for all revisions from the start revision of the change document (inclusive) to 
 	 * the end revision of the document (exclusive).  Passing any other revision id in leads to unknown results.
 	 * 
-	 * @param revision
-	 * @return
+	 * @param revision	revision
+	 * @return ChangeMetaData
 	 */
 	ChangeMetaData getMetaData(OntologyDocumentRevision revision);
 	
 	/**
 	 * This call will return the change document obtained by restricting the set of changes from the 
 	 * start revision to the end revision.
-	 * <p/>
+	 * <p>
 	 * If the start or the end revision is out of the range of the ChangeDocument then this call can 
 	 * fail with an exception.
 	 * 
-	 * @param start
-	 * @param end
-	 * @return
+	 * @param start	start
+	 * @param end	end
+	 * @return ChangeHistory
 	 */
 	ChangeHistory cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end);
 	
@@ -66,16 +66,16 @@ public interface ChangeHistory {
 	
 	/**
 	 * Gets the list of changes associated with this document and associates them with the ontology.  
-	 * <p/>
+	 * <p>
 	 * The changes 
 	 * returned are guaranteed to be minimal.  That is if an axiom is added it will not be added again or removed.
 	 * Similarly for annotations and imports.  The SetOntologyID change can only occur once.
-	 * <p/> 
+	 * <p>
 	 * The minimality simplifies processing of the returned changes.  For example the order of the changes
 	 * is no longer important.
 	 * 
-	 * @param ontology
-	 * @return
+	 * @param ontology	ontology
+	 * @return List of OWLOntologyChange
 	 */
 	List<OWLOntologyChange> getChanges(OWLOntology ontology);	
 	

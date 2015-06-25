@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.protege.owl.server.api.UserId;
+import org.protege.owl.server.api.User;
 import org.protege.owl.server.policy.Group;
 import org.protege.owl.server.policy.Operation;
 import org.protege.owl.server.policy.Permission;
@@ -37,14 +37,14 @@ package org.protege.owl.server.policy.generated;
 top:  ( user ) * ;
 
 user : 'User:' username=ID 'Password:' password=ID { 
-           UserId u = db.addUser($username.getText(), $password.getText());
+           User u = db.addUser($username.getText(), $password.getText());
        } 
         ('Groups:'
           ( group[ u ] ) *
           ';' )?
        ;
        
-group[UserId user ]: groupToken = ID {
+group[User user ]: groupToken = ID {
           String groupName = $groupToken.getText();
           Group group = new Group(groupName);
 		  db.addGroup(user, group);

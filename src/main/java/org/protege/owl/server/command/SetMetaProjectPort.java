@@ -35,9 +35,9 @@ public class SetMetaProjectPort {
     private static final Logger LOGGER = Logger.getLogger(SetMetaProjectPort.class.getCanonicalName());
 
     /**
-     * @param args
-     * @throws OWLOntologyCreationException 
-     * @throws OWLOntologyStorageException 
+     * @param args	args
+     * @throws OWLOntologyCreationException	OWLOntologyCreationException
+     * @throws OWLOntologyStorageException	OWLOntologyStorageException
      */
     public static void main(String[] args) throws OWLOntologyCreationException, OWLOntologyStorageException {
         File metaprojectLocation = new File(args[0]);

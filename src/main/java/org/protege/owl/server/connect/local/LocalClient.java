@@ -9,7 +9,7 @@ import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.RevisionPointer;
 import org.protege.owl.server.api.SingletonChangeHistory;
-import org.protege.owl.server.api.UserId;
+import org.protege.owl.server.api.User;
 import org.protege.owl.server.api.client.RemoteOntologyDocument;
 import org.protege.owl.server.api.client.RemoteServerDirectory;
 import org.protege.owl.server.api.client.RemoteServerDocument;
@@ -24,7 +24,7 @@ import org.semanticweb.owlapi.model.IRI;
 
 /**
  * This is the recommended way of interacting with a server on the same jvm.
- * <p/>
+ * <p>
  * This is a very thin wrapper around a server object.  It provides a client interface which can be 
  * used by such things as the ClientUtilities (enabling update and commit for instance).
  * 
@@ -53,8 +53,8 @@ public class LocalClient extends AbstractClient {
 		return "localhost";
 	}
 	
-	public UserId getUserId() {
-	    return authToken.getUserId();
+	public User getUser() {
+	    return authToken.getUser();
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.protege.owl.server.api.UserId;
+import org.protege.owl.server.api.User;
 import org.protege.owl.server.api.server.ServerPath;
 
 public class Policy {
@@ -38,22 +38,22 @@ public class Policy {
         }
     }
     
-    public boolean checkPermission(UserDatabase db, UserId requestingUser, ProtectedObject pObject, Operation op) {
+    public boolean checkPermission(UserDatabase db, User requestingUser, ProtectedObject pObject, Operation op) {
         if (pObject instanceof ProtectedServerDocument) {
             return checkPermission(db, requestingUser, ((ProtectedServerDocument) pObject).getServerPath(), op);
         }
         return isDirectlyAllowed(db, requestingUser, pObject, op);
     }
     
-    public boolean checkPermission(UserDatabase db, UserId requestingUser, ServerPath path, Operation op) {
+    public boolean checkPermission(UserDatabase db, User requestingUser, ServerPath path, Operation op) {
         return isDirectlyAllowed(db, requestingUser, path, op) && checkReadParents(db, requestingUser, path);
     }
     
-    private boolean isDirectlyAllowed(UserDatabase db, UserId requestingUser, ServerPath path, Operation op) {
+    private boolean isDirectlyAllowed(UserDatabase db, User requestingUser, ServerPath path, Operation op) {
         return isDirectlyAllowed(db, requestingUser, new ProtectedServerDocument(path), op);
     }
     
-    private boolean isDirectlyAllowed(UserDatabase db, UserId requestingUser, ProtectedObject pObject, Operation op) {
+    private boolean isDirectlyAllowed(UserDatabase db, User requestingUser, ProtectedObject pObject, Operation op) {
         Permission p = permissionMap.get(pObject);
         if (p == null) {
             return true;
@@ -61,7 +61,7 @@ public class Policy {
         return p.isAllowed(db, requestingUser, op);
     }
     
-    private boolean checkReadParents(UserDatabase db, UserId requestingUser, ServerPath p) {
+    private boolean checkReadParents(UserDatabase db, User requestingUser, ServerPath p) {
         if (p.isRoot()) {
             return true;
         }

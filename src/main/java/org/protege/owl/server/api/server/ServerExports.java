@@ -28,19 +28,19 @@ public interface ServerExports {
      * The call to commit changes.  The revision of the change history
      * passed in is the last revision that has been seen by the
      * client.  
-     * <p/>
+     * <p>
      * The commit operation is a bit complicated.  We will describe
      * its correct operation incrementally; we will first describe an
      * approximation to its correct behavior and then we will describe
      * a complication.  
-     * <p/>
+     * <p>
      * Suppose for a start that a user has some
      * change <i>uh<sub>1</sub></i> that he wants to commit.  The user
      * is at some revision, <i>r</i>, and on the server there is some change
      * history <i>sh<sub>1</sub></i> that represents all the changes
      * up to that revision.  After the revision <i>r</i> there is some
      * more (possibly empty) change history <i>sh<sub>2</sub></i> that
-     * goes from revision <r>r</i> to the head revision.  To make the
+     * goes from revision <i>r</i> to the head revision.  To make the
      * commit, we must find a change history <i>uh<sub>1</sub>'</i>
      * such that 
      * <center>
@@ -51,8 +51,8 @@ public interface ServerExports {
      * his list of changes.  There are some utilities in the
      * {@link org.protege.owl.server.util.ChangeUtilities ChangeUtilities} class that
      * can calculate <i>uh<sub>1</sub>'</i>.
-     * <vertical size=100/>
-     * <p/>
+     *
+     * <p>
      * The complication involves the case where the user makes
      * several commits in sequence.  The server needs to take some
      * measures to ensure that the user does not have a conflict with himself.
@@ -80,7 +80,7 @@ public interface ServerExports {
      * of the commit algorithm allows a user commit to come into
      * conflict with his previous commits.  This is easily repaired by
      * slightly modifying the algorithm used to handle commits.
-     * </p>
+     * <p>
      * Suppose that a user at revision <i>r</i> makes two commits in
      * sequence <i>uh<sub>1</sub></i> and <i>uh<sub>2</sub></i>.  The
      * server history from the start revision to 
@@ -114,15 +114,11 @@ public interface ServerExports {
      *     <i>sh<sub>1</sub></i>&#8226;<i>uh<sub>1</sub></i>
      *       <i>sh<sub>2</sub></i> &#8226;<i>sh<sub>3</sub></i>&#8226;<i>uh<sub>2</sub></i>'
      * </center>
-     * </p>
      *
-     * @param u
-     * @param doc
-     * @param changes
-     * @param myCommits
-     * @param option
-     * @return
-     * @throws OWLServerException
+     * @param u	Authorization token
+     * @param doc	doc
+     * @param changes	changes
+     * @throws OWLServerException	OWLServerException
      */
     void commit(AuthToken u, ServerOntologyDocument doc, SingletonChangeHistory changes) throws OWLServerException;
 

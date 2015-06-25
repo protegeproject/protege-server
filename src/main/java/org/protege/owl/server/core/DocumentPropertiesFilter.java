@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.SingletonChangeHistory;
-import org.protege.owl.server.api.UserId;
+import org.protege.owl.server.api.User;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.api.server.ServerDirectory;
@@ -40,7 +40,7 @@ public class DocumentPropertiesFilter extends ServerFilterAdapter {
     @Override
     public ServerDirectory createDirectory(AuthToken u, ServerPath serverPath) throws OWLServerException {
         ServerDirectory dir = super.createDirectory(u, serverPath);
-        saveCreatedProperties(dir, u.getUserId());
+        saveCreatedProperties(dir, u.getUser());
         return dir;
     }
     
@@ -48,12 +48,12 @@ public class DocumentPropertiesFilter extends ServerFilterAdapter {
     @Override
     public ServerOntologyDocument createOntologyDocument(AuthToken u, ServerPath serverPath, Map<String, Object> settings) throws OWLServerException {
         ServerOntologyDocument doc = super.createOntologyDocument(u, serverPath, settings);
-        saveCreatedProperties(doc, u.getUserId());
+        saveCreatedProperties(doc, u.getUser());
         return doc;
     }
     
 
-    private void saveCreatedProperties(ServerDocument doc, UserId u) {
+    private void saveCreatedProperties(ServerDocument doc, User u) {
         try {
             Properties p = new Properties();
             p.put(OWNER, u.getUserName());
@@ -73,10 +73,10 @@ public class DocumentPropertiesFilter extends ServerFilterAdapter {
     @Override
     public void commit(AuthToken u, ServerOntologyDocument doc, SingletonChangeHistory changes) throws OWLServerException {
         super.commit(u, doc, changes);
-        saveModifiedProperties(doc, u.getUserId());
+        saveModifiedProperties(doc, u.getUser());
     }
 
-    private void saveModifiedProperties(ServerOntologyDocument doc, UserId u) {
+    private void saveModifiedProperties(ServerOntologyDocument doc, User u) {
         try {
             Properties p = readProperties(this, doc);
             Long now = System.currentTimeMillis();

@@ -5,7 +5,7 @@ public enum ProtectedEnumeratedObjects implements ProtectedObject {
     
     private String policyRepresentation;
     
-    private ProtectedEnumeratedObjects(String policyRepresentation) {
+        ProtectedEnumeratedObjects(String policyRepresentation) {
         this.policyRepresentation = policyRepresentation;
     }
     

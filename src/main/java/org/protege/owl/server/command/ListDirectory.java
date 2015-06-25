@@ -59,9 +59,10 @@ public class ListDirectory extends ServerCommand {
     }
 
     /**
-     * @param args
+     * @param args	args
+     * @throws Exception    Exception
      */
-    public static void main(String[] args)  throws Exception {
+    public static void main(String[] args) throws Exception {
         new ListDirectory().run(args);
     }
 

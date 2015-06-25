@@ -52,7 +52,7 @@ public class PolicyFilter extends ServerFilterAdapter {
     
     @Override
     public OntologyDocumentRevision evaluateRevisionPointer(AuthToken u, ServerOntologyDocument doc, RevisionPointer pointer) throws OWLServerException {
-        if (!policy.checkPermission(userDb, u.getUserId(), doc.getServerPath(), Operation.READ)) {
+        if (!policy.checkPermission(userDb, u.getUser(), doc.getServerPath(), Operation.READ)) {
             throw new AuthorizationFailedException("Attempted read operation not allowed");
         }
         return super.evaluateRevisionPointer(u, doc, pointer);
@@ -60,7 +60,7 @@ public class PolicyFilter extends ServerFilterAdapter {
     
     @Override
     public Collection<ServerDocument> list(AuthToken u, ServerDirectory dir) throws OWLServerException {
-        if (!policy.checkPermission(userDb, u.getUserId(), dir.getServerPath(), Operation.READ)) {
+        if (!policy.checkPermission(userDb, u.getUser(), dir.getServerPath(), Operation.READ)) {
             throw new AuthorizationFailedException("Attempted read on directory not allowed");
         }
         return super.list(u, dir);
@@ -69,7 +69,7 @@ public class PolicyFilter extends ServerFilterAdapter {
     @Override
     public ServerDirectory createDirectory(AuthToken u, ServerPath serverPath) throws OWLServerException {
         if (!serverPath.isRoot() &&
-                !policy.checkPermission(userDb, u.getUserId(), serverPath.getParent(), Operation.WRITE)) {
+                !policy.checkPermission(userDb, u.getUser(), serverPath.getParent(), Operation.WRITE)) {
             throw new AuthorizationFailedException("Attempted create not allowed");
         }
         return super.createDirectory(u, serverPath);
@@ -78,7 +78,7 @@ public class PolicyFilter extends ServerFilterAdapter {
     @Override
     public ServerOntologyDocument createOntologyDocument(AuthToken u, ServerPath serverPath, Map<String, Object> settings) throws OWLServerException {
         if (!serverPath.isRoot() &&
-                !policy.checkPermission(userDb, u.getUserId(), serverPath.getParent(), Operation.WRITE)) {
+                !policy.checkPermission(userDb, u.getUser(), serverPath.getParent(), Operation.WRITE)) {
             throw new AuthorizationFailedException("Attempted create not allowed");
         }
         return super.createOntologyDocument(u, serverPath, settings);
@@ -86,7 +86,7 @@ public class PolicyFilter extends ServerFilterAdapter {
 
     @Override
     public ChangeHistory getChanges(AuthToken u, ServerOntologyDocument doc, OntologyDocumentRevision start, OntologyDocumentRevision end) throws OWLServerException {
-        if (!policy.checkPermission(userDb, u.getUserId(), doc.getServerPath(), Operation.READ)) {
+        if (!policy.checkPermission(userDb, u.getUser(), doc.getServerPath(), Operation.READ)) {
             throw new AuthorizationFailedException("Attempted read not allowed");
         }
         return super.getChanges(u, doc, start, end);
@@ -94,7 +94,7 @@ public class PolicyFilter extends ServerFilterAdapter {
     
     @Override
     public void commit(AuthToken u, ServerOntologyDocument doc, SingletonChangeHistory changes) throws OWLServerException {
-        if (!policy.checkPermission(userDb, u.getUserId(), doc.getServerPath(), Operation.WRITE)) {
+        if (!policy.checkPermission(userDb, u.getUser(), doc.getServerPath(), Operation.WRITE)) {
             throw new AuthorizationFailedException("Attempted write not allowed");
         }
         super.commit(u, doc, changes);

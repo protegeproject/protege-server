@@ -1,7 +1,7 @@
 package org.protege.owl.server;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.UserId;
+import org.protege.owl.server.api.User;
 import org.protege.owl.server.api.client.Client;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.server.Server;
@@ -33,12 +33,12 @@ public class LocalBasicServerTest extends AbstractBasicServerTest {
             
             @Override
             public int compareTo(AuthToken o) {
-                return getUserId().compareTo(o.getUserId());
+                return getUser().compareTo(o.getUser());
             }
             
             @Override
-            public UserId getUserId() {
-                return new UserId("redmond");
+            public User getUser() {
+                return new User("redmond");
             }
         }, server);
 	}

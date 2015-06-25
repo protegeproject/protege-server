@@ -22,7 +22,7 @@ public interface ServerInternals {
    
    /**
     * Inform the server and its filters about the transports that are being used.
-    * <p/>
+    * <p>
     * ServerFilters can use this to add their own functionality to the transport mechanism and 
     * to determine that the initialization sequence has been completed.
     * This is used in conjuction with the ServerTransport.start function.  The right sequence is
@@ -31,7 +31,7 @@ public interface ServerInternals {
     *        server.setTransports(transports);
     * </pre>
     *  
-    * @param transports
+    * @param transports	transports
     */
    void setTransports(Collection<ServerTransport> transports);
    

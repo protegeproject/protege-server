@@ -48,11 +48,11 @@ public class TestUtilities {
 		PREFIX = sb.toString();
 	}
 	
-    public static final UserId FERGERSON = new UserId("fergerson");
-    public static final UserId GUEST     = new UserId("guest");
-    public static final UserId REDMOND   = new UserId("redmond");
-    public static final UserId VENDETTI  = new UserId("vendetti");
-    public static final Map<UserId, String> PASSWORD_MAP = new TreeMap<UserId, String>();
+    public static final User FERGERSON = new User("fergerson");
+    public static final User GUEST     = new User("guest");
+    public static final User REDMOND   = new User("redmond");
+    public static final User VENDETTI  = new User("vendetti");
+    public static final Map<User, String> PASSWORD_MAP = new TreeMap<User, String>();
     static {
         PASSWORD_MAP.put(FERGERSON, "ncbo");
         PASSWORD_MAP.put(GUEST,     "guest");
@@ -89,14 +89,14 @@ public class TestUtilities {
 	    }
 	}
 	
-	public static Client createClient(int rmiPort, UserId u) throws RemoteException, NotBoundException {
+	public static Client createClient(int rmiPort, User u) throws RemoteException, NotBoundException {
 	    AuthToken auth = RMILoginUtility.login("localhost", rmiPort, u.getUserName(), PASSWORD_MAP.get(u));
 	    RMIClient client = new RMIClient(auth, "localhost", rmiPort);
 	    client.initialise();
 	    return client;
 	}
 	
-	public static Client createClient(LocalTransport transport, UserId u) {
+	public static Client createClient(LocalTransport transport, User u) {
 	    AuthToken auth = Authenticator.localLogin(transport, u.getUserName(), PASSWORD_MAP.get(u));
 	    return transport.getClient(auth);
 	}
@@ -141,16 +141,16 @@ public class TestUtilities {
 
     /**
      * This routine creates a temporary directory and then creates a file inside that directory.
-     * <p/>
+     * <p>
      * This routine is sometimes needed when running a test that needs a temporary file but then also needs to
      * be able to write to the containing directory.  When we created the temporary file with File.createTempFile(), 
      * it was noticed that when certain tests (e.g. the tests that serialize server side ontologies) were run by different 
      * users the second run would sometimes fail because the second user would fail to have write access to all the contents of 
      * the containing directory (e.g. the .owlserver directory).
      * 
-     * @param name
+     * @param name	name
      * @return
-     * @throws IOException
+     * @throws IOException	IOException
      */
     public static File createFileInTempDirectory(String name) throws IOException {
         File tmpDirectory = File.createTempFile("Save", "test");

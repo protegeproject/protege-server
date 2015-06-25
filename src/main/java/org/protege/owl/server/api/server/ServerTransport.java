@@ -7,15 +7,15 @@ public interface ServerTransport {
 	
     /**
      * Starts the transport mechanism.
-     * <p/>
+     * <p>
      * This is used in conjuction with the Server.setTransports function.  The right sequence is
      * <pre>
      *        transport.start(server);
      *        server.setTransports(transports);
      * </pre>
      * 
-     * @param server
-     * @throws IOException
+     * @param server	server
+     * @throws IOException	IOException
      */
 	void start(Server server) throws IOException;
 	

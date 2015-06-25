@@ -55,8 +55,8 @@ public class Uncommitted extends ServerCommand {
     }
 
     /**
-     * @param args
-     * @throws Exception 
+     * @param args	args
+     * @throws Exception	Exception
      */
     public static void main(String[] args) throws Exception {
         new Uncommitted().run(args);

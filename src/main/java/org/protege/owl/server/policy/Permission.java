@@ -6,7 +6,7 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.protege.owl.server.api.UserId;
+import org.protege.owl.server.api.User;
 
 public class Permission {
     private Map<Operation, UserContainer> permissionMap;
@@ -16,7 +16,7 @@ public class Permission {
     }
     
     
-    public boolean isAllowed(UserDatabase db, UserId requestingUser, Operation op) {
+    public boolean isAllowed(UserDatabase db, User requestingUser, Operation op) {
         UserContainer container = permissionMap.get(op);
         return container != null && container.contains(db, requestingUser);
     }

@@ -6,7 +6,6 @@ import static org.protege.owl.server.TestUtilities.PASSWORD_MAP;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -86,14 +85,14 @@ public class AuthenticatedTest {
     
     /**
      * Test self conflict.
-     * <p/>
+     * <p>
      * Originally I had thought that a user should not have conflicts with himself.  But this led to problems with the getUncommittedChanges
      * and reverse updates (e.g., a reverse update by a user past commits from the same user will lead to a report of uncommitted changes).
      * The current strategy simplifies the definition of the server side commit at the expense of some additional complexity in complicated 
      * clients that do several commits in sequence.
      * 
-     * @throws OWLOntologyCreationException
-     * @throws OWLServerException
+     * @throws OWLOntologyCreationException	OWLOntologyCreationException
+     * @throws OWLServerException	OWLServerException
      */
     @Test
     public void testSelfConflict() throws OWLOntologyCreationException, OWLServerException {
@@ -124,12 +123,12 @@ public class AuthenticatedTest {
         client1.commit(testDoc, client1.getDocumentFactory().createChangeDocument(changes, new ChangeMetaData(), vont1.getRevision()));
         ChangeHistory committedChange = client1.getChanges(testDoc, revisionBeforeCommit.asPointer(), revisionBeforeCommit.next().asPointer());
         Assert.assertEquals(1, committedChange.getChanges(ontology1).size());
-        Assert.assertEquals(client1.getUserId(), committedChange.getMetaData(revisionBeforeCommit).getUserId());
+        Assert.assertEquals(client1.getUser(), committedChange.getMetaData(revisionBeforeCommit).getUser());
     }
     
     /**
      * Test that a commit implies an update.
-     * <p/>
+     * <p>
      * This could change in a future version of this server but changing it would add some complexity to the server.
      * If this changes the VersionedOntologyDocument would need to include some information about what changes have already 
      * been committed.  Things to think about if we change the commit implying update are the following cases
@@ -143,8 +142,8 @@ public class AuthenticatedTest {
      * </ol>
      * 
      * 
-     * @throws OWLOntologyCreationException
-     * @throws OWLServerException
+     * @throws OWLOntologyCreationException	OWLOntologyCreationException
+     * @throws OWLServerException	OWLServerException
      */
     @Test
     public void testCommitImpliesUpdate() throws OWLOntologyCreationException, OWLServerException {

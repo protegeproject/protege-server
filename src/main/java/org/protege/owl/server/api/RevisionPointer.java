@@ -5,9 +5,9 @@ import java.io.Serializable;
 public class RevisionPointer implements Serializable {
     private static final long serialVersionUID = 8902418724621318750L;
 
-    public enum RevisionPointerType {
-        DOCUMENT_REVISION, HEAD;
-    }
+    private RevisionPointerType type;
+    private OntologyDocumentRevision revision;
+
     
     public static final RevisionPointer HEAD_REVISION;
     static {
@@ -16,14 +16,11 @@ public class RevisionPointer implements Serializable {
     }
     
     public static final RevisionPointer START_REVISION = OntologyDocumentRevision.START_REVISION.asPointer();
-    
-    private RevisionPointerType type;
-    private OntologyDocumentRevision revision;
-    
+
     private RevisionPointer() {
-        
+
     }
-    
+
     public RevisionPointer(OntologyDocumentRevision revision) {
         this.revision = revision;
         this.type     = RevisionPointerType.DOCUMENT_REVISION;
@@ -60,4 +57,10 @@ public class RevisionPointer implements Serializable {
         }
     }
 
+    /**
+     * Revision pointer types
+     */
+    public enum RevisionPointerType {
+        DOCUMENT_REVISION, HEAD
+    }
 }

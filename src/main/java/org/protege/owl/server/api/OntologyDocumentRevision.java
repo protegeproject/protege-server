@@ -1,5 +1,7 @@
 package org.protege.owl.server.api;
 
+import com.google.common.base.Objects;
+
 import java.io.Serializable;
 
 public final class OntologyDocumentRevision implements Comparable<OntologyDocumentRevision>, Serializable {
@@ -52,7 +54,7 @@ public final class OntologyDocumentRevision implements Comparable<OntologyDocume
 	
 	@Override
 	public int hashCode() {
-		return revision + 42;
+		return Objects.hashCode(this.revision);
 	}
 	
 	@Override

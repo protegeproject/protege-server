@@ -33,6 +33,9 @@ public class ChangeUtilities {
      * <li> removes all set ontology id changes.
      * </ol>
      * That is to say that changes that will have no effect on the net result are removed.
+     *
+     * @param changes   List of ontology changes
+     * @return List of normalized changes
      */
     public static List<OWLOntologyChange> normalizeChangeDelta(List<OWLOntologyChange> changes) {
         return ChangeNormalizer.normalizeChangeDelta(changes);
@@ -65,14 +68,14 @@ public class ChangeUtilities {
      *    firstChanges o secondChanges = secondChanges o x
      * </center>
      * where composition goes from left to right.
-     * <p/>
+     * <p>
      * ToDo - this routine is quadratic time when it should be linear time.
      * I suspect that this is rarely a problem.
-     * <p/>
-     * @param firstChanges 
-     * @param secondChanges 
+     * <p>
+     * @param firstChanges	firstChanges
+     * @param secondChanges	secondChanges
      * @return a minimal set of changes that when applied after secondChanges will result in the same result as if 
-     *      we had first made the changes {@link firstChanges} and then made the changes {@link secondChanges}
+     *      we had first made the changes <i>firstChanges</i> and then made the changes <i>secondChanges</i>
      */
     public static List<OWLOntologyChange> swapOrderOfChangeLists(List<OWLOntologyChange> firstChanges, List<OWLOntologyChange> secondChanges) {
     	List<OWLOntologyChange> result = normalizeChangeDelta(firstChanges);

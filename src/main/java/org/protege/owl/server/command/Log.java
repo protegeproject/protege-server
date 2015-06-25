@@ -116,7 +116,7 @@ public class Log extends ServerCommand {
         DiffRenderer renderer = new DiffRenderer();
         for (OntologyDocumentRevision revision = history.getStartRevision(); revision.compareTo(history.getEndRevision()) < 0; revision = revision.next()) {
             ChangeMetaData metaData = history.getMetaData(revision);
-            System.out.println("From revision " + revision + " to revision " + revision.next() + ", User = " + metaData.getUserId());
+            System.out.println("From revision " + revision + " to revision " + revision.next() + ", User = " + metaData.getUser());
             System.out.println("\tCommit Comment:\n");
             System.out.println(metaData.getCommitComment());
             if (axiomCount > 0) {
@@ -133,8 +133,8 @@ public class Log extends ServerCommand {
     }
 
     /**
-     * @param args
-     * @throws Exception 
+     * @param args	args
+     * @throws Exception	Exception
      */
     public static void main(String[] args) throws Exception {
         new Log().run(args);

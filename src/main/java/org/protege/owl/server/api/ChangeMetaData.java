@@ -1,5 +1,7 @@
 package org.protege.owl.server.api;
 
+import com.google.common.base.Objects;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -7,7 +9,7 @@ public final class ChangeMetaData implements Serializable {
 	private static final long serialVersionUID = -1198003999159038367L;
 	private Date date;
 	private String commitComment;
-	private UserId userId = new UserId("");
+	private User user = new User("");
 	
 	public ChangeMetaData(Date date, String commitComment) {
 		this.date = date;
@@ -30,17 +32,17 @@ public final class ChangeMetaData implements Serializable {
 		return commitComment;
 	}
 	
-	public UserId getUserId() {
-        return userId;
+	public User getUser() {
+        return user;
     }
 	
 	public void setUser(AuthToken user) {
-        this.userId = user.getUserId();
+        this.user = user.getUser();
     }
 
 	@Override
 	public int hashCode() {
-	    return date.hashCode() + 42 * commitComment.hashCode() + userId.hashCode()/42;
+		return Objects.hashCode(this.date, this.commitComment, this.user);
 	}
 	
 	@Override
@@ -49,7 +51,7 @@ public final class ChangeMetaData implements Serializable {
 	        return false;
 	    }
 	    ChangeMetaData other = (ChangeMetaData) obj;
-	    return other.getCommitComment().equals(commitComment) && other.getDate().equals(date) && userId.equals(other.getUserId());
+	    return other.getCommitComment().equals(commitComment) && other.getDate().equals(date) && user.equals(other.getUser());
 	}
 
 	
