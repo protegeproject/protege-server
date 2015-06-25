@@ -5,7 +5,7 @@ import org.protege.owl.server.api.User;
 import java.util.Set;
 
 /**
- *
+ * A representation of a project
  *
  * @author Rafael Gonçalves
  * Stanford Center for Biomedical Informatics Research

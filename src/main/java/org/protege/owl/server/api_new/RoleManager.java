@@ -1,6 +1,8 @@
 package org.protege.owl.server.api_new;
 
-import java.util.Collection;
+import java.util.Set;
+
+import org.protege.owl.server.api.User;
 import org.protege.owl.server.api_new.operation.*;
 
 /**
@@ -26,18 +28,42 @@ public interface RoleManager {
     void removeRole(Role role);
 
     /**
-     * Get the collection of all roles
+     * Get the set of all roles
      *
-     * @return Collection of existing roles
+     * @return Set of existing roles
      */
-    Collection<Role> getRoles();
+    Set<Role> getRoles();
 
     /**
-     * Get the collection of roles that contain a specified operation
+     * Get the set of roles within a given project
+     *
+     * @param project   Project
+     * @return Set of roles within a project
+     */
+    Set<Role> getRoles(Project project);
+
+    /**
+     * Get the set of roles played by a specified user within a given project
+     *
+     * @param project   Project
+     * @param user  User
+     * @return Set of roles
+     */
+    Set<Role> getRoles(Project project, User user);
+
+    /**
+     * Get the set of roles played by the given user (in all projects)
+     * @param user  User
+     * @return Set of roles
+     */
+    Set<Role> getRoles(User user);
+
+    /**
+     * Get the set of roles that contain a specified operation
      *
      * @param operation Operation
-     * @return Collection of roles containing specified operation
+     * @return Set of roles containing specified operation
      */
-    Collection<Role> getRolesContainingOperation(Operation operation);
+    Set<Role> getRolesContainingOperation(Operation operation);
 
 }

@@ -49,4 +49,5 @@ public interface Operation {
      * @param operationTarget   New operation target
      */
     void setTarget(OperationTarget operationTarget);
+
 }

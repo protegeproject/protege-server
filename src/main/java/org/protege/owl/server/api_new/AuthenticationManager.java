@@ -4,6 +4,8 @@ import com.google.common.base.Optional;
 import org.protege.owl.server.api.User;
 
 /**
+ * A manager for everything authentication-related
+ *
  * @author Rafael Gonçalves
  * Stanford Center for Biomedical Informatics Research
  */
@@ -12,29 +14,51 @@ public interface AuthenticationManager {
     /**
      * Register a user in the user registry
      *
-     * @param user  User instance
+     * @param username  Username
      * @param email Email address
      * @param password  Password
      * @param salt  Password salt
      */
-    void registerUser(User user, String email, String password, String salt);
+    void addUser(String username, String email, String password, String salt);
+
+    /**
+     * Remove user from user registry
+     *
+     * @param username  Username
+     */
+    void removeUser(String username);
+
+    /**
+     * Remove user from user registry
+     *
+     * @param user  User instance
+     */
+    void removeUser(User user);
 
     /**
      * Change password of a specified user to the given password
      *
-     * @param userName  Username
+     * @param username  Username
      * @param password  New password
      */
-    void changePassword(String userName, String password);
+    void changePassword(String username, String password);
+
+    /**
+     * Send a password reminder to specified email
+     *
+     * @param username  Username
+     * @param email Email address
+     */
+    void remindPassword(String username, String email);
 
     /**
      * Check whether there exists a tuple consisting of the given username and password in the user registry
      *
-     * @param userName  Username
+     * @param username  Username
      * @param password  Password
      * @return true if the credentials are valid, false otherwise
      */
-    boolean hasValidCredentials(String userName, String password);
+    boolean hasValidCredentials(String username, String password);
 
     /**
      * Get the salt data used for the given user's password hashing
