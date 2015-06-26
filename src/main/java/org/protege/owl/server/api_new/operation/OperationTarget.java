@@ -15,6 +15,6 @@ public interface OperationTarget {
      *
      * @return Operation target
      */
-    Object getOperationTarget();
+    Object getTarget();
 
 }

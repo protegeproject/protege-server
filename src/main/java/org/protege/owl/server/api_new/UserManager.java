@@ -6,6 +6,8 @@ import org.protege.owl.server.api.User;
 import java.util.Set;
 
 /**
+ * A manager for users and user details
+ *
  * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */

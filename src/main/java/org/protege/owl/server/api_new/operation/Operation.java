@@ -1,5 +1,7 @@
 package org.protege.owl.server.api_new.operation;
 
+import com.google.common.base.Optional;
+
 /**
  * An operation is associated with an operation target
  *
@@ -16,16 +18,23 @@ public interface Operation {
     String getName();
 
     /**
-     * Get the description of this operation
+     * Get the description of the operation
      *
      * @return Description of operation
      */
     String getDescription();
 
     /**
-     * Get the operation target object
+     * Get the requirements for the operation
      *
-     * @return Operation target object
+     * @return Operation requirement instance
+     */
+    Optional<OperationRequirements> getRequirements();
+
+    /**
+     * Get the operation target
+     *
+     * @return Operation target instance
      */
     OperationTarget getTarget();
 
@@ -49,5 +58,12 @@ public interface Operation {
      * @param operationTarget   New operation target
      */
     void setTarget(OperationTarget operationTarget);
+
+    /**
+     * Set the requirements for the operation
+     *
+     * @param requirements  Operation requirement instance
+     */
+    void setRequirements(OperationRequirements requirements);
 
 }

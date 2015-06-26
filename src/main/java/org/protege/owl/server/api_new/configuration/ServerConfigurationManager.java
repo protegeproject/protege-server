@@ -3,6 +3,7 @@ package org.protege.owl.server.api_new.configuration;
 import org.protege.owl.server.api.User;
 import org.protege.owl.server.api_new.Project;
 import org.protege.owl.server.api_new.Role;
+import org.protege.owl.server.api_new.configuration.idgeneration.TermIdentifierGenerationStrategy;
 
 import java.util.Set;
 
@@ -13,6 +14,20 @@ import java.util.Set;
  * Stanford Center for Biomedical Informatics Research
  */
 public interface ServerConfigurationManager extends ConfigurationManager {
+
+    /**
+     * Get the host name of the server
+     *
+     * @return Server host name
+     */
+    String getHostName();
+
+    /**
+     * Set the host name of the server
+     *
+     * @param hostName  Server host name
+     */
+    void setHostName(String hostName);
 
     /**
      * Get the set of all projects
@@ -36,10 +51,17 @@ public interface ServerConfigurationManager extends ConfigurationManager {
     Set<User> getUsers();
 
     /**
-     * Generate a new concept identifier
+     * Generate a new OWL class identifier
      *
-     * @return New concept identifier
+     * @return New OWL class identifier
      */
-    int getNewConceptIdentifier();
+    int getNewClassIdentifier();
+
+    /**
+     * Set the unique term identifier generation strategy
+     *
+     * @param strategy  Unique term identifier generation strategy
+     */
+    void setTermIdentifierGenerationStrategy(TermIdentifierGenerationStrategy strategy);
 
 }

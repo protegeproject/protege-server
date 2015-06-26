@@ -13,7 +13,7 @@ import java.util.Set;
 public interface OWLEntityOperationTarget extends OperationTarget {
 
     @Override
-    OWLEntity getOperationTarget();
+    OWLEntity getTarget();
 
     /**
      * Set the allowed vocabulary for the operation target

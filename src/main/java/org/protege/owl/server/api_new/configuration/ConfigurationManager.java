@@ -80,4 +80,12 @@ public interface ConfigurationManager {
      */
     boolean isBooleanProperty(String propertyName);
 
+    /**
+     * Check whether the given property is set (with some value)
+     *
+     * @param propertyName  Property name
+     * @return true if property has already been set, false otherwise
+     */
+    boolean isPropertySet(String propertyName);
+
 }
