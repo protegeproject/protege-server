@@ -14,6 +14,34 @@ import java.util.Set;
 public interface Policy {
 
     /**
+     * Get the name of the policy
+     *
+     * @return Name of the policy
+     */
+    String getName();
+
+    /**
+     * Set the name of the policy
+     *
+     * @param name  Policy name
+     */
+    void setName(String name);
+
+    /**
+     * Get the description of the policy
+     *
+     * @return Description of the policy
+     */
+    String getDescription();
+
+    /**
+     * Set the description of the policy
+     *
+     * @param description   Policy description
+     */
+    void setDescription(String description);
+
+    /**
      * Add a user to the user-role-project registry with default role
      *
      * @param user  User to be added

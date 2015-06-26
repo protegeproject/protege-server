@@ -45,6 +45,24 @@ public interface PolicyManager {
     boolean isOperationAllowed(Operation operation, Project project, User user);
 
     /**
+     * Check whether a given user has read access on the specified project
+     *
+     * @param project   Project
+     * @param user  User
+     * @return true if user has read access on the given project, false otherwise
+     */
+    boolean hasReadAccess(Project project, User user);
+
+    /**
+     * Check whether a given user has write access on the specified project
+     *
+     * @param project   Project
+     * @param user  User
+     * @return true if user has write access on the given project, false otherwise
+     */
+    boolean hasWriteAccess(Project project, User user);
+
+    /**
      * Get the set of allowed operations for the specified user
      *
      * @param project   Project

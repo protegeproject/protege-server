@@ -20,6 +20,13 @@ public interface Project {
     String getName();
 
     /**
+     * Set the name of the project
+     *
+     * @param projectName   Project name
+     */
+    void setName(String projectName);
+
+    /**
      * Get the owners of the project
      *
      * @return Set of users that own the project

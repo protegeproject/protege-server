@@ -21,6 +21,13 @@ public interface Role {
     String getName();
 
     /**
+     * Set the name of the role
+     *
+     * @param roleName  Role name
+     */
+    void setName(String roleName);
+
+    /**
      * Add a project to this role
      *
      * @param project   Project
@@ -75,13 +82,6 @@ public interface Role {
      * @param operations    Operations to be removed
      */
     void removeOperations(Set<Operation> operations);
-
-    /**
-     * Set the name of this role
-     *
-     * @param roleName  New role name
-     */
-    void setRoleName(String roleName);
 
     /**
      * Replace the set of allowed operations with the given one
