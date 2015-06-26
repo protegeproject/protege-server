@@ -63,7 +63,7 @@ public class DirectServerSetupTest {
     
     @Test
     public void accessLocally() throws OWLServerException {
-        AuthToken token = Authenticator.localLogin(localTransport, REDMOND.getUserName(), PASSWORD_MAP.get(REDMOND));
+        AuthToken token = Authenticator.localLogin(localTransport, REDMOND.getUsername(), PASSWORD_MAP.get(REDMOND));
         Client client = localTransport.getClient(token);
         checkClientOk(client);
     }
@@ -71,7 +71,7 @@ public class DirectServerSetupTest {
     @Parameters({ "rmiPort" })
     @Test
     public void accessRemotely(int rmiPort) throws OWLServerException, RemoteException, NotBoundException {
-        AuthToken tim = RMILoginUtility.login("localhost", rmiPort, REDMOND.getUserName(), PASSWORD_MAP.get(REDMOND));
+        AuthToken tim = RMILoginUtility.login("localhost", rmiPort, REDMOND.getUsername(), PASSWORD_MAP.get(REDMOND));
         RMIClient client = new RMIClient(tim, "localhost", rmiPort);
         client.initialise();
         checkClientOk(client);

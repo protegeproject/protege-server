@@ -3,7 +3,7 @@ package org.protege.owl.server.api_new.operation;
 /**
  * An operation is associated with an operation target
  *
- * @author Rafael Gonçalves
+ * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */
 public interface Operation {

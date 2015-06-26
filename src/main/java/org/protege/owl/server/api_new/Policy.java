@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * A policy associates users and roles
  *
- * @author Rafael Gonçalves
+ * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */
 public interface Policy {

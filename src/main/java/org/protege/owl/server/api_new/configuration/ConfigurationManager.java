@@ -3,7 +3,7 @@ package org.protege.owl.server.api_new.configuration;
 /**
  * General manager for key-value pair configurations
  *
- * @author Rafael Gonçalves
+ * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */
 public interface ConfigurationManager {

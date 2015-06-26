@@ -5,7 +5,7 @@ import java.util.Set;
 /**
  * A project manager
  *
- * @author Rafael Gonçalves
+ * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */
 public interface ProjectManager {

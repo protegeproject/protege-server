@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * An operation target instance that refers to an OWL entity, such as a class or property
  *
- * @author Rafael Gonçalves
+ * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */
 public interface OWLEntityOperationTarget extends OperationTarget {

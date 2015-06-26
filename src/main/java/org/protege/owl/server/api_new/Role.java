@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * A role defines a group of allowed operations within some project
  *
- * @author Rafael Gonçalves
+ * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */
 public interface Role {

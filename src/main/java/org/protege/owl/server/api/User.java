@@ -7,27 +7,37 @@ import java.io.Serializable;
 
 public final class User implements Comparable<User>, Serializable {
     private static final long serialVersionUID = -3698547861609983363L;
-    private String userName;
+    private String username, email;
 
-    public User(String userName) {
-        this.userName = userName;
+    public User(String username) {
+        this(username, "");
+    }
+
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
     }
     
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
+    }
+
+
+    public String getEmail() {
+        return email;
     }
 
     @Override
     public int compareTo(User o) {
         return ComparisonChain.start()
-                .compare(this.userName, o.userName)
+                .compare(this.username, o.username)
                 .result();
     }
 
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("userName", userName)
+                .add("username", username)
                 .toString();
     }
 
@@ -36,11 +46,11 @@ public final class User implements Comparable<User>, Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equal(userName, user.userName);
+        return Objects.equal(username, user.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(userName);
+        return Objects.hashCode(username);
     }
 }

@@ -8,7 +8,7 @@ import org.protege.owl.server.api_new.operation.*;
 /**
  * A manager for roles played by users
  *
- * @author Rafael Gonçalves
+ * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */
 public interface RoleManager {
@@ -52,7 +52,8 @@ public interface RoleManager {
     Set<Role> getRoles(Project project, User user);
 
     /**
-     * Get the set of roles played by the given user (in all projects)
+     * Get the set of roles played by the given user in all projects
+     *
      * @param user  User
      * @return Set of roles
      */

@@ -47,7 +47,7 @@ public class UserDatabase {
             User u = entry.getKey();
             String password = entry.getValue();
             writer.write("User: ");
-            writer.write(u.getUserName());
+            writer.write(u.getUsername());
             writer.write(" Password: ");
             writer.write(password);
             Collection<Group> groups = getGroups(u);

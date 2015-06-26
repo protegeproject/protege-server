@@ -3,14 +3,13 @@ package org.protege.owl.server.api_new.configuration;
 import org.protege.owl.server.api.User;
 import org.protege.owl.server.api_new.Project;
 import org.protege.owl.server.api_new.Role;
-import org.protege.owl.server.api_new.operation.Operation;
 
 import java.util.Set;
 
 /**
  * Manager for server-side configurations
  *
- * @author Rafael Gonçalves
+ * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */
 public interface ServerConfigurationManager extends ConfigurationManager {

@@ -19,7 +19,7 @@ public class GetChanges {
     private static final IRI SERVER_LOCATION = IRI.create("rmi-owl2-server://tania12g:4875/Pizza.history");
 
     public static void main(String[] args) throws RemoteException, NotBoundException, OWLServerException {
-        AuthToken auth = RMILoginUtility.login(SERVER_LOCATION , REDMOND.getUserName(), PASSWORD_MAP.get(REDMOND));
+        AuthToken auth = RMILoginUtility.login(SERVER_LOCATION , REDMOND.getUsername(), PASSWORD_MAP.get(REDMOND));
         RMIClient client = new RMIClient(auth, SERVER_LOCATION);
         client.initialise();
         RemoteOntologyDocument doc = (RemoteOntologyDocument) client.getServerDocument(SERVER_LOCATION);

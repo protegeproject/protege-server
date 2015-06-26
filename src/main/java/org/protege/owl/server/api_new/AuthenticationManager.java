@@ -6,7 +6,7 @@ import org.protege.owl.server.api.User;
 /**
  * A manager for everything authentication-related
  *
- * @author Rafael Gonçalves
+ * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */
 public interface AuthenticationManager {

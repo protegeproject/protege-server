@@ -82,7 +82,7 @@ public class QuickConnectTest {
         protected AuthToken login(IRI serverLocation) throws org.protege.owl.server.api.exception.AuthenticationFailedException {
             try {
                 if (firstTime) {
-                    return login(serverLocation, TestUtilities.REDMOND.getUserName(), TestUtilities.PASSWORD_MAP.get(TestUtilities.REDMOND));
+                    return login(serverLocation, TestUtilities.REDMOND.getUsername(), TestUtilities.PASSWORD_MAP.get(TestUtilities.REDMOND));
                 }
                 else {
                     Assert.fail();

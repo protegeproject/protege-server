@@ -56,7 +56,7 @@ public class DocumentPropertiesFilter extends ServerFilterAdapter {
     private void saveCreatedProperties(ServerDocument doc, User u) {
         try {
             Properties p = new Properties();
-            p.put(OWNER, u.getUserName());
+            p.put(OWNER, u.getUsername());
             doc.setProperty(OWNER, u);
             Long now = System.currentTimeMillis();
             p.put(DATE_CREATED, now.toString());

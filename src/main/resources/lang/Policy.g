@@ -58,7 +58,7 @@ usercontainer returns [UserContainer container]:
               Set<Group> groups = new TreeSet<Group>();
               Set<User> users = new TreeSet<User>();
              }
-            ( ('User'  (userName=ID { users.add(new User($userName.getText())); })* ';' ) |
+            ( ('User'  (username=ID { users.add(new User($username.getText())); })* ';' ) |
               ('Group'  (groupName=ID { groups.add(new Group($groupName.getText())); })* ';' )
               )* 
                   { container = new UserContainerImpl(users, groups); }

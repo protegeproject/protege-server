@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * A policy manager
  *
- * @author Rafael Gonçalves
+ * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */
 public interface PolicyManager {

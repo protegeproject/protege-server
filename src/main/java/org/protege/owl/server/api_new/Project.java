@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * A representation of a project
  *
- * @author Rafael Gonçalves
+ * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */
 public interface Project {
@@ -49,6 +49,7 @@ public interface Project {
 
     /**
      * Add a project-owning user
+     *
      * @param user  Owner user to be added
      */
     void addOwner(User user);

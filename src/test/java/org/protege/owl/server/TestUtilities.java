@@ -90,14 +90,14 @@ public class TestUtilities {
 	}
 	
 	public static Client createClient(int rmiPort, User u) throws RemoteException, NotBoundException {
-	    AuthToken auth = RMILoginUtility.login("localhost", rmiPort, u.getUserName(), PASSWORD_MAP.get(u));
+	    AuthToken auth = RMILoginUtility.login("localhost", rmiPort, u.getUsername(), PASSWORD_MAP.get(u));
 	    RMIClient client = new RMIClient(auth, "localhost", rmiPort);
 	    client.initialise();
 	    return client;
 	}
 	
 	public static Client createClient(LocalTransport transport, User u) {
-	    AuthToken auth = Authenticator.localLogin(transport, u.getUserName(), PASSWORD_MAP.get(u));
+	    AuthToken auth = Authenticator.localLogin(transport, u.getUsername(), PASSWORD_MAP.get(u));
 	    return transport.getClient(auth);
 	}
 	

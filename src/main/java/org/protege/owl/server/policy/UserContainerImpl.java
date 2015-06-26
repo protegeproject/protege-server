@@ -35,7 +35,7 @@ public class UserContainerImpl implements UserContainer {
             writer.write("\n\t\tUser");
             for (User u : users) {
                 writer.write(' ');
-                writer.write(u.getUserName());
+                writer.write(u.getUsername());
             }
             writer.write(';');
         }

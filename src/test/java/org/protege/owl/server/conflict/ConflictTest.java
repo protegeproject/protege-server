@@ -85,13 +85,13 @@ public class ConflictTest {
     }
     
     private void setupClient1() throws OWLOntologyCreationException, OWLServerException {
-        client1 = getClient(REDMOND.getUserName(), PASSWORD_MAP.get(REDMOND));
+        client1 = getClient(REDMOND.getUsername(), PASSWORD_MAP.get(REDMOND));
         OWLOntology ontology1 = OWLManager.createOWLOntologyManager().createOntology();
         vont1 = ClientUtilities.createAndGetServerOntology(client1, SERVER_TEST_ONT, new ChangeMetaData(), ontology1);
     }
     
     private void setupClient2() throws  OWLOntologyCreationException, OWLServerException {
-        client2 = getClient(VENDETTI.getUserName(), PASSWORD_MAP.get(VENDETTI));
+        client2 = getClient(VENDETTI.getUsername(), PASSWORD_MAP.get(VENDETTI));
         RemoteOntologyDocument doc = (RemoteOntologyDocument) client2.getServerDocument(SERVER_TEST_ONT);
         vont2 = ClientUtilities.loadOntology(client2, OWLManager.createOWLOntologyManager(), doc);
     }

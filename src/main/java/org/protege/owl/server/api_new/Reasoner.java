@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * A representation of a reasoner
  *
- * @author Rafael Gonçalves
+ * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */
 public interface Reasoner {
