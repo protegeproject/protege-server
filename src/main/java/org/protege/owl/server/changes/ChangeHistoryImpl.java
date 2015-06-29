@@ -18,6 +18,8 @@ import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.changes.format.OWLOutputStream;
 import org.protege.owl.server.render.RenderOntologyChangeVisitor;
 import org.protege.owl.server.util.ChangeUtilities;
+import org.semanticweb.binaryowl.BinaryOWLOntologyChangeLog;
+import org.semanticweb.binaryowl.BinaryOWLMetadata;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -160,25 +162,29 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 	
 	@Override
 	public void writeChangeDocument(OutputStream out) throws IOException {
-	    long startTime = System.currentTimeMillis();
+		long startTime = System.currentTimeMillis();
 		ObjectOutputStream oos;
 		if (out instanceof ObjectOutputStream) {
 			oos = (ObjectOutputStream) out;
-		}
-		else {
+		} else {
 			oos = new ObjectOutputStream(out);
 		}
+
 		oos.writeObject(startRevision);
 		oos.writeObject(metaDataMap);
-		oos.writeInt(listOfRevisionChanges.size());
-		OWLOutputStream owlstream = new OWLOutputStream(oos);
-		owlstream.setCompressionLimit(compressionLimit);
+
+		BinaryOWLOntologyChangeLog log = new BinaryOWLOntologyChangeLog();
+
 		for (List<OWLOntologyChange> changeSet : listOfRevisionChanges) {
-		    owlstream.writeWithCompression(changeSet);
+			log.appendChanges(changeSet, System.currentTimeMillis(),
+					BinaryOWLMetadata.emptyMetadata(), oos);
 		}
+
 		oos.flush();
 		logLongWrite(System.currentTimeMillis() - startTime);
 	}
+		
+
 	
 	private void logLongWrite(long interval) {
 	    if (interval > 1000) {
@@ -196,7 +202,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 	}
 	
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-	    documentFactory = (DocumentFactory) in.readObject();
+		documentFactory = (DocumentFactory) in.readObject();
 	    ChangeHistoryImpl doc = (ChangeHistoryImpl) documentFactory.readChangeDocument(in, null, null);
 	    startRevision = doc.getStartRevision();
 	    listOfRevisionChanges = doc.listOfRevisionChanges;

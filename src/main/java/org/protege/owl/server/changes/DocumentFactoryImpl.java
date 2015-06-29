@@ -21,10 +21,19 @@ import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.client.RemoteOntologyDocument;
 import org.protege.owl.server.api.client.VersionedOntologyDocument;
 import org.protege.owl.server.changes.format.OWLInputStream;
+import org.semanticweb.binaryowl.BinaryOWLChangeLogHandler;
+import org.semanticweb.binaryowl.BinaryOWLOntologyChangeLog;
+import org.semanticweb.binaryowl.change.OntologyChangeRecordList;
+import org.semanticweb.binaryowl.chunk.SkipSetting;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.change.OWLOntologyChangeData;
+import org.semanticweb.owlapi.change.OWLOntologyChangeRecord;
 import org.semanticweb.owlapi.io.OWLObjectRenderer;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
 
@@ -157,36 +166,100 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 		}
 	    finally {
 	        logLongRead(System.currentTimeMillis() - startTime);
+	        
 	    }
+	}
+	
+	private class DFChangeLogHandler implements BinaryOWLChangeLogHandler {
+		
+		private List<List<OWLOntologyChange>> changes;
+		OntologyDocumentRevision revision;
+		OntologyDocumentRevision end;
+		OWLOntology ontology;		
+		
+		public DFChangeLogHandler(List<List<OWLOntologyChange>> c, OntologyDocumentRevision rev, 
+				OntologyDocumentRevision end, OWLOntology ont) {
+			this.changes = c;
+			this.revision = rev;
+			this.end = end;
+			this.ontology = ont;
+			
+		}
+		
+		public List<List<OWLOntologyChange>> getChanges() {
+			return this.changes;
+		}
+		public void handleChangesRead(
+				OntologyChangeRecordList list,
+				SkipSetting skipSetting, long filePosition) {
+			
+			if (end == null || revision.compareTo(end) < 0) {
+				List<OWLOntologyChangeRecord> change_recs = list
+						.getChangeRecords();
+
+				List<OWLOntologyChange> loc_changes = new ArrayList<OWLOntologyChange>();
+
+ 				for (OWLOntologyChangeRecord rec : change_recs) {
+					OWLOntologyChangeData dat = rec.getData();
+					OWLOntologyChange loc_chan = dat.createOntologyChange(ontology);
+					loc_changes.add(loc_chan);
+
+				}
+
+				changes.add(loc_changes);
+				
+				revision = revision.next();
+			}
+		}
+		
 	}
 	
 	@SuppressWarnings("deprecation")
 	private ChangeHistory readChangeDocument(ObjectInputStream ois,
-	                                         OntologyDocumentRevision start, OntologyDocumentRevision end) throws IOException, ClassNotFoundException  {
-	    OntologyDocumentRevision startRevision = (OntologyDocumentRevision) ois.readObject();
-	    if (start == null) {
-	        start = startRevision;
-	    }
-	    @SuppressWarnings("unchecked")
-	    SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData = (SortedMap<OntologyDocumentRevision, ChangeMetaData>) ois.readObject();
-	    List<List<OWLOntologyChange>> changes = new ArrayList<List<OWLOntologyChange>>();
-	    OWLInputStream owlStream = new OWLInputStream(ois);
-	    int count = ois.readInt();
-	    OntologyDocumentRevision revision = startRevision;
-	    for (int i = 0; i < count; i++,revision = revision.next()) {
-	        @SuppressWarnings("unchecked")
-	        List<OWLOntologyChange> changeList = (List<OWLOntologyChange>) owlStream.read();
-	        if (revision.compareTo(start) >= 0 && (end == null || revision.compareTo(end) < 0)) {
-	            changes.add(changeList);
-	        }
-	    }
-	    if (end == null) {
-	        end = start.add(changes.size());
-	    }
-	    if (!metaData.isEmpty()) {
-	        metaData = metaData.tailMap(start).headMap(end);
-	    }
-	    return new ChangeHistoryImpl(start, this, changes, metaData); 
+			OntologyDocumentRevision start, OntologyDocumentRevision end)
+			throws IOException, ClassNotFoundException {
+		OntologyDocumentRevision startRevision = (OntologyDocumentRevision) ois
+				.readObject();
+		if (start == null) {
+			start = startRevision;
+		}
+		final OntologyDocumentRevision revision = startRevision;
+		@SuppressWarnings("unchecked")
+		SortedMap<OntologyDocumentRevision, ChangeMetaData> metaData = (SortedMap<OntologyDocumentRevision, ChangeMetaData>) ois
+				.readObject();
+		
+		OWLOntologyManager man = OWLManager.createOWLOntologyManager();
+        
+        DFChangeLogHandler dfh = null;
+		try {
+			
+			OWLOntology fake = man.createOntology();
+			
+			dfh =  new DFChangeLogHandler(new ArrayList<List<OWLOntologyChange>>(),
+					start, end, fake);
+			
+
+			BinaryOWLOntologyChangeLog log2 = new BinaryOWLOntologyChangeLog();
+			
+			
+			
+			log2.readChanges(ois, man.getOWLDataFactory(), dfh);
+					
+			
+			if (end == null) {
+				end = start.add(dfh.getChanges().size());
+			}
+			if (!metaData.isEmpty()) {
+				metaData = metaData.tailMap(start).headMap(end);
+			}
+			
+
+		} catch (OWLOntologyCreationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return new ChangeHistoryImpl(start, this, dfh.getChanges(), metaData);
 	}
 	
 	private void logLongRead(long interval) {
