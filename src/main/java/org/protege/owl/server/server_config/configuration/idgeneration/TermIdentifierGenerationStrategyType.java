@@ -1,4 +1,4 @@
-package org.protege.owl.server.api_new.configuration.idgeneration;
+package org.protege.owl.server.server_config.configuration.idgeneration;
 
 /**
  * Unique term identifier generation strategies

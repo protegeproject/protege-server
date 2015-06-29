@@ -1,9 +1,9 @@
-package org.protege.owl.server.api_new.configuration;
+package org.protege.owl.server.server_config.configuration;
 
 import org.protege.owl.server.api.User;
-import org.protege.owl.server.api_new.Project;
-import org.protege.owl.server.api_new.Role;
-import org.protege.owl.server.api_new.configuration.idgeneration.TermIdentifierGenerationStrategy;
+import org.protege.owl.server.server_config.Project;
+import org.protege.owl.server.server_config.Role;
+import org.protege.owl.server.server_config.configuration.idgeneration.TermIdentifierGenerationStrategy;
 
 import java.util.Set;
 

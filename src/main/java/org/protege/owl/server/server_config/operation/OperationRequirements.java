@@ -1,4 +1,4 @@
-package org.protege.owl.server.api_new.operation;
+package org.protege.owl.server.server_config.operation;
 
 /**
  * Requirements for an operation (e.g., existence of some class)

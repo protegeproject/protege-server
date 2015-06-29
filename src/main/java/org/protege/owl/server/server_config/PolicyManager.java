@@ -1,7 +1,7 @@
-package org.protege.owl.server.api_new;
+package org.protege.owl.server.server_config;
 
 import org.protege.owl.server.api.User;
-import org.protege.owl.server.api_new.operation.Operation;
+import org.protege.owl.server.server_config.operation.Operation;
 
 import java.util.Set;
 

@@ -1,4 +1,4 @@
-package org.protege.owl.server.api_new.configuration;
+package org.protege.owl.server.server_config.configuration;
 
 /**
  * General manager for key-value pair configurations

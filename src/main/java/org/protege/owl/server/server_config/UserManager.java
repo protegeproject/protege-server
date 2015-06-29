@@ -1,4 +1,4 @@
-package org.protege.owl.server.api_new;
+package org.protege.owl.server.server_config;
 
 import com.google.common.base.Optional;
 import org.protege.owl.server.api.User;
