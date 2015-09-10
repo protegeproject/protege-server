@@ -69,8 +69,8 @@ public class Update extends ServerCommand {
     }
 
     /**
-     * @param args
-     * @throws Exception 
+     * @param args	args
+     * @throws Exception	Exception
      */
     public static void main(String[] args) throws Exception {
         new Update().run(args);

@@ -8,12 +8,7 @@ import java.rmi.registry.Registry;
 import java.util.Collection;
 import java.util.TreeMap;
 
-import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.RevisionPointer;
-import org.protege.owl.server.api.SingletonChangeHistory;
+import org.protege.owl.server.api.*;
 import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.client.RemoteOntologyDocument;
 import org.protege.owl.server.api.client.RemoteServerDirectory;

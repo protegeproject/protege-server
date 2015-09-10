@@ -15,7 +15,7 @@ package org.protege.owl.server.api.server;
  * In this example, the authentication server filter delegates to the policy server filter which in turn delegates to the conflict management server filter which finally 
  * delegates to the core server.  The core server in isolation has none of the functionality that has been added by the server filters; it does not
  * authenticate the user, it does not understand any system policy and it ignores possible conflicts.  The server filters add these essential capabilities to the server.
- * <p/>
+ * <p>
  * This approach to starting a server is highly pluggable.  The server configuration builder automatically follows a specification of the needed Server Filter components.
  * The specification used by the configuration builder can choose the Server Filters involved to  do such things as
  * <ul>

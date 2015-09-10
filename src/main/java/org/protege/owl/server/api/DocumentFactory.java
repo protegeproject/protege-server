@@ -17,11 +17,11 @@ public interface DocumentFactory {
 	
 	/**
 	 * Create a change document for the list of changes and the commit comments.
-	 * 
-	 * @param doc
-	 * @param changes
-	 * @param start
-	 * @return
+	 *
+	 * @param changes	changes
+	 * @param metaData	metaData
+	 * @param start	start
+	 * @return SingletonChangeHistory
 	 */
 	SingletonChangeHistory createChangeDocument(List<OWLOntologyChange> changes, ChangeMetaData metaData, OntologyDocumentRevision start);
 	

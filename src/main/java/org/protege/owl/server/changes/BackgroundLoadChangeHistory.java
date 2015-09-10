@@ -21,7 +21,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
  * A change history that is loaded from a separate file but which loads the history in a separate thread so that
  * you will not have to wait for the thread to finish loading but only will need to wait when you make some query against the
  * change history.
- * <p/>
+ * <p>
  * A strange constraint on this class is that if the change history class is corrupted then the exception is not seen until the
  * ChangeHistory is used.  Instead of throwing an error at that point, this class will return the empty history.  This somewhat strange behavior
  * is actually perfectly acceptable to a caller such as an implementation of the VersionedOntologyDocument because the history document is a cache

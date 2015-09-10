@@ -11,8 +11,8 @@ import org.protege.owl.server.changes.DocumentFactoryImpl;
 public class ReadChangeDocument {
 
     /**
-     * @param args
-     * @throws IOException 
+     * @param args	args
+     * @throws IOException	IOException
      */
     public static void main(String[] args) throws IOException {
         DocumentFactory factory = new DocumentFactoryImpl();

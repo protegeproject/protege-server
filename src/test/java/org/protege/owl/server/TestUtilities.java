@@ -141,16 +141,16 @@ public class TestUtilities {
 
     /**
      * This routine creates a temporary directory and then creates a file inside that directory.
-     * <p/>
+     * <p>
      * This routine is sometimes needed when running a test that needs a temporary file but then also needs to
      * be able to write to the containing directory.  When we created the temporary file with File.createTempFile(), 
      * it was noticed that when certain tests (e.g. the tests that serialize server side ontologies) were run by different 
      * users the second run would sometimes fail because the second user would fail to have write access to all the contents of 
      * the containing directory (e.g. the .owlserver directory).
      * 
-     * @param name
+     * @param name	name
      * @return
-     * @throws IOException
+     * @throws IOException	IOException
      */
     public static File createFileInTempDirectory(String name) throws IOException {
         File tmpDirectory = File.createTempFile("Save", "test");
