@@ -172,11 +172,11 @@ public abstract class AbstractSerializationTest {
 	    verifyRoundTrip(new ArrayList<OWLOntologyChange>());
 	}
 	
-	@Test
-	public void testRollingCropped() throws OWLOntologyCreationException, IOException {
-	    DocumentFactory factory = createDocumentFactory();
-	    testRollingCropped(factory, 100);
-	}
+	//@Test
+//	public void testRollingCropped() throws OWLOntologyCreationException, IOException {
+//	    DocumentFactory factory = createDocumentFactory();
+//	    testRollingCropped(factory, 100);
+//	}
 	
 	private void verifyRoundTrip(List<OWLOntologyChange> changes) throws IOException, ClassNotFoundException, OWLOntologyCreationException {
 		DocumentFactory docFactory = createDocumentFactory();
