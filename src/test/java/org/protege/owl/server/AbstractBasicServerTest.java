@@ -362,6 +362,6 @@ public abstract class AbstractBasicServerTest {
 	    Assert.assertEquals(1, importingOntology.getImportsDeclarations().size());
 	    Assert.assertEquals(IRI.create(IMPORTED_NS), importingOntology.getImportsDeclarations().iterator().next().getIRI());
 	    Assert.assertEquals(1, importingOntology.getImports().size());
-	    Assert.assertEquals(IRI.create(IMPORTED_NS), importingOntology.getImports().iterator().next().getOntologyID().getOntologyIRI());
+	    Assert.assertEquals(IRI.create(IMPORTED_NS), importingOntology.getImports().iterator().next().getOntologyID().getOntologyIRI().get());
 	}
 }
