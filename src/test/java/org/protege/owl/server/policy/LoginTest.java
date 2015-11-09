@@ -56,12 +56,12 @@ public class LoginTest {
     @Test
     public void testLogin() throws RemoteException, NotBoundException {
         Assert.assertNotNull(RMILoginUtility.login(IRI.create(RMIClient.SCHEME + "://localhost:" + rmiPort + "/testdirectory/pizza.owl"), "redmond", PASSWORD_MAP.get(REDMOND)));
-        Assert.assertNotNull(RMILoginUtility.login("localhost", rmiPort, REDMOND.getUsername(), PASSWORD_MAP.get(REDMOND)));
+        Assert.assertNotNull(RMILoginUtility.login("localhost", rmiPort, REDMOND.getUserName(), PASSWORD_MAP.get(REDMOND)));
     }
     
     @Test
     public void testGoodLogin() throws NotBoundException, IOException, OWLServerException {
-        AuthToken tim = RMILoginUtility.login("localhost", rmiPort, REDMOND.getUsername(), PASSWORD_MAP.get(REDMOND));
+        AuthToken tim = RMILoginUtility.login("localhost", rmiPort, REDMOND.getUserName(), PASSWORD_MAP.get(REDMOND));
         RMIClient client = new RMIClient(tim,"localhost", rmiPort);
         client.initialise();
         client.createRemoteDirectory(IRI.create(RMIClient.SCHEME + "://localhost:" + rmiPort + "/test"));
@@ -79,7 +79,7 @@ public class LoginTest {
     
     @Test
     public void testHackedLoginV2() throws NotBoundException, IOException, OWLServerException {
-        RMILoginUtility.login("localhost", rmiPort, REDMOND.getUsername(), PASSWORD_MAP.get(REDMOND));
+        RMILoginUtility.login("localhost", rmiPort, REDMOND.getUserName(), PASSWORD_MAP.get(REDMOND));
         AuthToken tim = new SimpleAuthToken(REDMOND);
         RMIClient client = new RMIClient(tim,"localhost", rmiPort);
         client.initialise();
@@ -96,7 +96,7 @@ public class LoginTest {
             protected AuthToken login(IRI serverLocation) throws AuthenticationFailedException {
                 try {
                     wrappedLoginCount.incrementAndGet();
-                    return login(serverLocation, REDMOND.getUsername(), PASSWORD_MAP.get(REDMOND));
+                    return login(serverLocation, REDMOND.getUserName(), PASSWORD_MAP.get(REDMOND));
                 }
                 catch (NotBoundException nbe) {
                     throw new AuthenticationFailedException("Server error", nbe);

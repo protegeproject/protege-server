@@ -1,7 +1,7 @@
 package org.protege.owl.server.policy;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.UserId;
 
 public class BasicLoginService implements LoginService {
     private UserDatabase userDb;
@@ -11,7 +11,7 @@ public class BasicLoginService implements LoginService {
     }
 
     public AuthToken login(String name, String password) {
-        User u = new User(name);
+        UserId u = new UserId(name);
         if (!userDb.checkPassword(u, password)) {
             return null;
         }

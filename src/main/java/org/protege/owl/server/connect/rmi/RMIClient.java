@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.TreeMap;
 
 import org.protege.owl.server.api.*;
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.client.RemoteOntologyDocument;
 import org.protege.owl.server.api.client.RemoteServerDirectory;
 import org.protege.owl.server.api.client.RemoteServerDocument;
@@ -68,8 +68,8 @@ public class RMIClient extends AbstractClient {
 	}
 	
 	@Override
-	public User getUser() {
-	    return authToken.getUser();
+	public UserId getUserId() {
+	    return authToken.getUserId();
 	}
 	
 	@Override

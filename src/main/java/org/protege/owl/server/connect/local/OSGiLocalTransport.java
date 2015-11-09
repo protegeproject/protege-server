@@ -8,7 +8,7 @@ import org.protege.owl.server.api.server.Server;
 
 public class OSGiLocalTransport extends LocalTransportImpl {
     private BundleContext context;
-    private ServiceRegistration serviceRegistration;
+    private ServiceRegistration<LocalTransport> serviceRegistration;
     
     public void setBundleContext(BundleContext context) {
         this.context = context;

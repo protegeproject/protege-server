@@ -9,16 +9,16 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.UserId;
 
 /*
  * ToDo Add token expiration...
  */
 
 public class UserDatabase {
-    private Map<User, String> passwordMap = new TreeMap<User, String>();
-    private Map<User, Collection<Group>> userToGroupsMap = new TreeMap<User, Collection<Group>>();
-    private Map<User, SimpleAuthToken> tokenMap = new TreeMap<User, SimpleAuthToken>();
+    private Map<UserId, String> passwordMap = new TreeMap<UserId, String>();
+    private Map<UserId, Collection<Group>> userToGroupsMap = new TreeMap<UserId, Collection<Group>>();
+    private Map<UserId, SimpleAuthToken> tokenMap = new TreeMap<UserId, SimpleAuthToken>();
     
     
     public UserDatabase() {
@@ -27,13 +27,13 @@ public class UserDatabase {
         permissionMap.put(Operation.WRITE, UserContainer.EVERYONE);
     }
     
-    public User addUser(String userName, String password) {
-        User u = new User(userName);
+    public UserId addUser(String userName, String password) {
+        UserId u = new UserId(userName);
         passwordMap.put(u, password);
         return u;
     }
     
-    public void addGroup(User u, Group g) {
+    public void addGroup(UserId u, Group g) {
         Collection<Group> groups = userToGroupsMap.get(u);
         if (groups == null) {
             groups = new TreeSet<Group>();
@@ -43,11 +43,11 @@ public class UserDatabase {
     }
     
     void write(Writer writer) throws IOException {
-        for (Entry<User, String> entry : passwordMap.entrySet()) {
-            User u = entry.getKey();
+        for (Entry<UserId, String> entry : passwordMap.entrySet()) {
+            UserId u = entry.getKey();
             String password = entry.getValue();
             writer.write("User: ");
-            writer.write(u.getUsername());
+            writer.write(u.getUserName());
             writer.write(" Password: ");
             writer.write(password);
             Collection<Group> groups = getGroups(u);
@@ -62,7 +62,7 @@ public class UserDatabase {
         }
     }
     
-    public Collection<Group> getGroups(User u) {
+    public Collection<Group> getGroups(UserId u) {
         Collection<Group> groups = userToGroupsMap.get(u);
         if (groups == null) {
             return Collections.emptySet();
@@ -70,21 +70,21 @@ public class UserDatabase {
         return new TreeSet<Group>(groups);
     }
     
-    public Collection<User> getUsers() {
+    public Collection<UserId> getUsers() {
         return passwordMap.keySet();
     }
     
-    public boolean checkPassword(User u, String password) {
+    public boolean checkPassword(UserId u, String password) {
         String actualPassword = passwordMap.get(u);
         return actualPassword != null && actualPassword.equals(password);
     }
     
-    public SimpleAuthToken getToken(User u) {
+    public SimpleAuthToken getToken(UserId u) {
         return tokenMap.get(u);
     }
     
     public void addToken(SimpleAuthToken token) {
-        tokenMap.put(token.getUser(), token);
+        tokenMap.put(token.getUserId(), token);
     }
     
     public boolean isValid(SimpleAuthToken token) {

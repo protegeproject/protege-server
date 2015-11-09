@@ -15,7 +15,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.policy.Group;
 import org.protege.owl.server.policy.Operation;
 import org.protege.owl.server.policy.Permission;
@@ -56,9 +56,9 @@ usercontainer returns [UserContainer container]:
        ( 
             { 
               Set<Group> groups = new TreeSet<Group>();
-              Set<User> users = new TreeSet<User>();
+              Set<UserId> users = new TreeSet<UserId>();
              }
-            ( ('User'  (username=ID { users.add(new User($username.getText())); })* ';' ) |
+            ( ('User'  (userName=ID { users.add(new UserId($userName.getText())); })* ';' ) |
               ('Group'  (groupName=ID { groups.add(new Group($groupName.getText())); })* ';' )
               )* 
                   { container = new UserContainerImpl(users, groups); }

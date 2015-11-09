@@ -69,7 +69,7 @@ public class RobustnessTest {
     }
     
     private Client createClient() {
-        AuthToken tok = new UnauthorizedToken(REDMOND.getUsername());
+        AuthToken tok = new UnauthorizedToken(REDMOND.getUserName());
         return transport.getClient(tok);
     }
     

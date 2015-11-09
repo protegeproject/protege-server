@@ -4,19 +4,19 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Set;
 
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.UserId;
 
 public class UserContainerImpl implements UserContainer {
-    private Set<User> users;
+    private Set<UserId> users;
     private Set<Group> groups;
     
-    public UserContainerImpl(Set<User> users, Set<Group> groups) {
+    public UserContainerImpl(Set<UserId> users, Set<Group> groups) {
         this.users  = users;
         this.groups = groups;
     }
 
     
-    public boolean contains(UserDatabase db, User requestingUser) {
+    public boolean contains(UserDatabase db, UserId requestingUser) {
         if (users.contains(requestingUser)) {
             return true;
         }
@@ -33,9 +33,9 @@ public class UserContainerImpl implements UserContainer {
     public void write(Writer writer) throws IOException {
         if (!users.isEmpty()) {
             writer.write("\n\t\tUser");
-            for (User u : users) {
+            for (UserId u : users) {
                 writer.write(' ');
-                writer.write(u.getUsername());
+                writer.write(u.getUserName());
             }
             writer.write(';');
         }

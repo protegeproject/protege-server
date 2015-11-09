@@ -4,26 +4,26 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.UserId;
 
 public final class SimpleAuthToken implements AuthToken, Serializable {
     private static final long serialVersionUID = -3590024420017662281L;
-    private User user;
+    private UserId userId;
     private String secret;
 
-    public SimpleAuthToken(User user) {
-        this.user = user;
+    public SimpleAuthToken(UserId userId) {
+        this.userId = userId;
         this.secret = UUID.randomUUID().toString();
     }
 
     @Override
-    public User getUser() {
-        return user;
+    public UserId getUserId() {
+        return userId;
     }
     
     @Override
     public int hashCode() {
-        return user.hashCode() + 2718 * secret.hashCode();
+        return userId.hashCode() + 2718 * secret.hashCode();
     }
     
     @Override
@@ -32,17 +32,17 @@ public final class SimpleAuthToken implements AuthToken, Serializable {
             return false;
         }
         SimpleAuthToken other = (SimpleAuthToken) obj;
-        return user.equals(other.getUser()) && secret.equals(other.secret);
+        return userId.equals(other.getUserId()) && secret.equals(other.secret);
     }
     
     @Override
     public int compareTo(AuthToken other) {
-        return user.compareTo(other.getUser());
+        return userId.compareTo(other.getUserId());
     }
     
     @Override
     public String toString() {
-        return "<Authentication Token for " + user + ">";
+        return "<Authentication Token for " + userId + ">";
     }
 
 }

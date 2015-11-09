@@ -48,11 +48,11 @@ public class TestUtilities {
 		PREFIX = sb.toString();
 	}
 	
-    public static final User FERGERSON = new User("fergerson");
-    public static final User GUEST     = new User("guest");
-    public static final User REDMOND   = new User("redmond");
-    public static final User VENDETTI  = new User("vendetti");
-    public static final Map<User, String> PASSWORD_MAP = new TreeMap<User, String>();
+    public static final UserId FERGERSON = new UserId("fergerson");
+    public static final UserId GUEST     = new UserId("guest");
+    public static final UserId REDMOND   = new UserId("redmond");
+    public static final UserId VENDETTI  = new UserId("vendetti");
+    public static final Map<UserId, String> PASSWORD_MAP = new TreeMap<UserId, String>();
     static {
         PASSWORD_MAP.put(FERGERSON, "ncbo");
         PASSWORD_MAP.put(GUEST,     "guest");
@@ -89,15 +89,15 @@ public class TestUtilities {
 	    }
 	}
 	
-	public static Client createClient(int rmiPort, User u) throws RemoteException, NotBoundException {
-	    AuthToken auth = RMILoginUtility.login("localhost", rmiPort, u.getUsername(), PASSWORD_MAP.get(u));
+	public static Client createClient(int rmiPort, UserId u) throws RemoteException, NotBoundException {
+	    AuthToken auth = RMILoginUtility.login("localhost", rmiPort, u.getUserName(), PASSWORD_MAP.get(u));
 	    RMIClient client = new RMIClient(auth, "localhost", rmiPort);
 	    client.initialise();
 	    return client;
 	}
 	
-	public static Client createClient(LocalTransport transport, User u) {
-	    AuthToken auth = Authenticator.localLogin(transport, u.getUsername(), PASSWORD_MAP.get(u));
+	public static Client createClient(LocalTransport transport, UserId u) {
+	    AuthToken auth = Authenticator.localLogin(transport, u.getUserName(), PASSWORD_MAP.get(u));
 	    return transport.getClient(auth);
 	}
 	

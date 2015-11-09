@@ -3,7 +3,7 @@ package org.protege.owl.server.api.client;
 import java.util.Collection;
 
 import org.protege.owl.server.api.*;
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.semanticweb.owlapi.model.IRI;
 
@@ -25,7 +25,7 @@ public interface Client {
 	
 	IRI getServerIRI();
 	
-	User getUser();
+	UserId getUserId();
 	
 	boolean isCompatible(VersionedOntologyDocument versionedOntology);
 	

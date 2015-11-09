@@ -123,7 +123,7 @@ public class AuthenticatedTest {
         client1.commit(testDoc, client1.getDocumentFactory().createChangeDocument(changes, new ChangeMetaData(), vont1.getRevision()));
         ChangeHistory committedChange = client1.getChanges(testDoc, revisionBeforeCommit.asPointer(), revisionBeforeCommit.next().asPointer());
         Assert.assertEquals(1, committedChange.getChanges(ontology1).size());
-        Assert.assertEquals(client1.getUser(), committedChange.getMetaData(revisionBeforeCommit).getUser());
+        Assert.assertEquals(client1.getUserId(), committedChange.getMetaData(revisionBeforeCommit).getUserId());
     }
     
     /**
@@ -174,13 +174,13 @@ public class AuthenticatedTest {
     
     
     private void setupClient1() throws OWLOntologyCreationException, OWLServerException {
-        client1 = getClient(REDMOND.getUsername(), PASSWORD_MAP.get(REDMOND));
+        client1 = getClient(REDMOND.getUserName(), PASSWORD_MAP.get(REDMOND));
         OWLOntology ontology1 = OWLManager.createOWLOntologyManager().createOntology();
         vont1 = ClientUtilities.createAndGetServerOntology(client1, SERVER_TEST_ONT, new ChangeMetaData(), ontology1);
     }
     
     private void setupClient2() throws  OWLOntologyCreationException, OWLServerException {
-        client2 = getClient(VENDETTI.getUsername(), PASSWORD_MAP.get(VENDETTI));
+        client2 = getClient(VENDETTI.getUserName(), PASSWORD_MAP.get(VENDETTI));
     }
     
     private LocalClient getClient(String username, String password) {

@@ -1,6 +1,5 @@
 package org.protege.owl.server.policy;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -52,9 +51,6 @@ public class Authenticator extends ServerFilterAdapter {
         if (option == GetUserAndGroupOption.USE_CACHE && userDatabase != null) {
             return userDatabase;
         }
-
-//        InputStream fis = Thread.currentThread().getContextClassLoader().getResourceAsStream("configuration.03" + File.separator + "UsersAndGroups");
-
         InputStream fis = server.getConfigurationInputStream("UsersAndGroups");
         try {
             ANTLRInputStream input = new ANTLRInputStream(fis);

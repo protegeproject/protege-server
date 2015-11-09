@@ -41,7 +41,7 @@ public class TestBadUpdate {
     
     @Test
     public void testBadUpdate() throws OWLServerException, OWLOntologyCreationException {   
-        Client client = transport.getClient(new UnauthorizedToken(REDMOND.getUsername()));
+        Client client = transport.getClient(new UnauthorizedToken(REDMOND.getUserName()));
         RemoteOntologyDocument doc = (RemoteOntologyDocument) client.getServerDocument(IRI.create(LocalClient.SCHEME + "://localhost/Pizza.history"));
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         VersionedOntologyDocument vont = ClientUtilities.loadOntology(client, manager, doc);

@@ -3,7 +3,7 @@ package org.protege.owl.server.policy;
 import java.io.Serializable;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.UserId;
 
 public class UnauthorizedToken implements AuthToken, Serializable {
     private static final long serialVersionUID = 5535482187202979494L;
@@ -16,12 +16,12 @@ public class UnauthorizedToken implements AuthToken, Serializable {
 
     @Override
     public int compareTo(AuthToken o) {
-        return getUser().compareTo(o.getUser());
+        return getUserId().compareTo(o.getUserId());
     }
 
     @Override
-    public User getUser() {
-        return new User(userName);
+    public UserId getUserId() {
+        return new UserId(userName);
     }
 
 }

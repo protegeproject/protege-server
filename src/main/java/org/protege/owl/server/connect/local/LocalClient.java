@@ -3,13 +3,8 @@ package org.protege.owl.server.connect.local;
 import java.util.Collection;
 import java.util.TreeMap;
 
-import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.RevisionPointer;
-import org.protege.owl.server.api.SingletonChangeHistory;
-import org.protege.owl.server.api.User;
+import org.protege.owl.server.api.*;
+import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.client.RemoteOntologyDocument;
 import org.protege.owl.server.api.client.RemoteServerDirectory;
 import org.protege.owl.server.api.client.RemoteServerDocument;
@@ -53,8 +48,8 @@ public class LocalClient extends AbstractClient {
 		return "localhost";
 	}
 	
-	public User getUser() {
-	    return authToken.getUser();
+	public UserId getUserId() {
+	    return authToken.getUserId();
 	}
 
 	@Override

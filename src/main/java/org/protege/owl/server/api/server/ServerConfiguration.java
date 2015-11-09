@@ -4,8 +4,6 @@ import org.semanticweb.owlapi.model.OWLOntology;
 
 public interface ServerConfiguration {
 
-    OWLOntology getMetaOntology();
-
-
+    public OWLOntology getMetaOntology();
 
 }
