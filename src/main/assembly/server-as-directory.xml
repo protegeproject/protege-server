@@ -35,9 +35,9 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>edu.stanford.protege:ProtegeLauncher:jar</include>
+        <include>edu.stanford.protege:protege-launcher:jar</include>
       </includes>
-      <outputFileNameMapping>ProtegeLauncher.jar</outputFileNameMapping>
+      <outputFileNameMapping>protege-launcher.jar</outputFileNameMapping>
       <outputDirectory>lib</outputDirectory>
     </dependencySet>
     <dependencySet>
