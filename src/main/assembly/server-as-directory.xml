@@ -59,6 +59,15 @@
       <outputDirectory>bundles</outputDirectory>
     </dependencySet>
 
+    <dependencySet>
+      <includes>
+        <include>org.slf4j:slf4j-api:jar</include>
+        <include>com.google.guava:guava:jar</include>
+      </includes>
+      <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+      <outputDirectory>lib</outputDirectory>
+    </dependencySet>
+
   </dependencySets>
   <files>
     <file>

@@ -10,5 +10,5 @@ java -Xmx3500M -Xms250M \
      -Dorg.protege.owl.server.configuration=metaproject.owl \
      -agentlib:jdwp=transport=dt_socket,address=8100,server=y,suspend=y \
      -Djava.util.logging.config.file=logging.properties \
-     -classpath ./lib/felix.jar:./lib/ProtegeLauncher.jar \
+     -classpath ./lib/guava.jar:./lib/slf4j-api.jar:./lib/felix.jar:./lib/protege-launcher.jar \
      org.protege.osgi.framework.Launcher

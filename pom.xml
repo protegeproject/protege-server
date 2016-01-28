@@ -8,11 +8,11 @@
     </parent>
 
     <groupId>edu.stanford.protege</groupId>
-    <artifactId>org.protege.owl.server</artifactId>
+    <artifactId>protege-server</artifactId>
     <version>3.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
-    <name>OWL Ontology Server</name>
+    <name>Protege Server</name>
     <description>An OWL ontology server for OWL API programs including the Protege ontology editor (versions 5 and above).</description>
 
     <organization>
@@ -28,29 +28,35 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:protegeproject/org.protege.owl.server.git</connection>
-        <developerConnection>scm:git:git@github.com:protegeproject/org.protege.owl.server.git</developerConnection>
-        <url>https://github.com/protegeproject/org.protege.owl.server</url>
+        <connection>scm:git:git@github.com:protegeproject/protege-server.git</connection>
+        <developerConnection>scm:git:git@github.com:protegeproject/protege-server.git</developerConnection>
+        <url>https://github.com/protegeproject/protege-server</url>
         <tag>HEAD</tag>
     </scm>
+
+    <properties>
+        <protege.version>5.0.0-beta-21</protege.version>
+        <owlapi.version>4.1.1</owlapi.version>
+        <antlr.version>3.5.2</antlr.version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>edu.stanford.protege</groupId>
             <artifactId>protege-launcher</artifactId>
-            <version>5.0.0-beta-20</version>
+            <version>${protege.version}</version>
         </dependency>
 
         <dependency>
             <groupId>net.sourceforge.owlapi</groupId>
             <artifactId>owlapi-osgidistribution</artifactId>
-            <version>4.1.0-RC4-SNAPSHOT</version>
+            <version>${owlapi.version}</version>
         </dependency>
 
         <dependency>
             <groupId>net.sourceforge.owlapi</groupId>
             <artifactId>owlapi-rio</artifactId>
-            <version>4.1.0-RC4-SNAPSHOT</version>
+            <version>${owlapi.version}</version>
         </dependency>
 
         <dependency>
@@ -62,13 +68,13 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr</artifactId>
-            <version>3.5.2</version>
+            <version>${antlr.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr-runtime</artifactId>
-            <version>3.5.2</version>
+            <version>${antlr.version}</version>
         </dependency>
 
         <dependency>
@@ -121,7 +127,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.4.1</version>
+                    <version>2.5.3</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -130,7 +136,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.5</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
@@ -140,7 +146,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.4</version>
+                <version>1.10</version>
                 <executions>
                     <execution>
                         <id>add-generated-source</id>
@@ -177,7 +183,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
+                <version>3.0.1</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -186,7 +192,7 @@
                         <Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
                         <Embed-Dependency>antlr, antlr-runtime, stringtemplate</Embed-Dependency>
                         <Export-Package>
-                            ${project.artifactId}*;version=${project.version}
+                            org.protege.owl.server*;version=${project.version}
                         </Export-Package>
                         <Import-Package>
                             !org.antlr.stringtemplate,
@@ -200,8 +206,9 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.6</version>
                 <executions>
                     <execution>
                         <!-- We need to build a working server before the integration tests. -->
@@ -224,7 +231,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.13</version>
+                <version>2.19</version>
                 <!-- Weird! -->
                 <configuration>
                     <skip>true</skip>
@@ -267,6 +274,7 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
                 <version>2.9</version>
                 <configuration>
@@ -289,7 +297,7 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <version>2.4</version>
+                        <version>2.6</version>
                         <executions>
                             <execution>
                                 <!-- Create a distribution of the OWL Ontology Server. -->
