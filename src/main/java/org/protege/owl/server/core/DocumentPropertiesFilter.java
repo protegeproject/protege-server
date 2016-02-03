@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.SingletonChangeHistory;
@@ -25,7 +25,7 @@ public class DocumentPropertiesFilter extends ServerFilterAdapter {
     public static final String DATE_MODIFIED = "modified";
     public static final String EXTENSION     = "properties";
     
-    private Logger logger = Logger.getLogger(DocumentPropertiesFilter.class.getCanonicalName());
+    private Logger logger = LoggerFactory.getLogger(DocumentPropertiesFilter.class.getCanonicalName());
     
     public static Properties readProperties(Server server, ServerDocument doc) throws IOException, OWLServerException {
         Properties p = new Properties();
@@ -66,7 +66,7 @@ public class DocumentPropertiesFilter extends ServerFilterAdapter {
         }
         catch (Exception e) {
             // what can you do?
-            logger.log(Level.WARNING, "Could not associate standard document properties with document " + doc, e);
+            logger.warn("Could not associate standard document properties with document " + doc, e);
         }
     }
     
@@ -84,7 +84,7 @@ public class DocumentPropertiesFilter extends ServerFilterAdapter {
             p.store(getConfigurationOutputStream(doc, EXTENSION), "Updated by Document Properties Plugin");
         }
         catch (Exception e) {
-            logger.log(Level.WARNING, "Could not update modification date in properties for document", e);
+            logger.warn("Could not update modification date in properties for document", e);
         }
     }
     
@@ -109,7 +109,7 @@ public class DocumentPropertiesFilter extends ServerFilterAdapter {
             Properties p = readProperties(this, doc);
             updateDocumentProperties(doc, p);
         } catch (Exception e) {
-            logger.log(Level.WARNING, "could not update document properties", e);
+            logger.warn("could not update document properties", e);
         }
     }
     

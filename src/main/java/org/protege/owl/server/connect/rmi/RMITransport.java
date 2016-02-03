@@ -5,8 +5,8 @@ import java.rmi.NoSuchObjectException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.api.server.ServerTransport;
@@ -21,7 +21,7 @@ import org.protege.owl.server.connect.ConfigurableCompression;
 public class RMITransport implements ServerTransport, ConfigurableCompression {
 	public static final String SERVER_NAME = "OWL 2 Server";
 	
-	private Logger logger = Logger.getLogger(RMITransport.class.getCanonicalName());
+	private Logger logger = LoggerFactory.getLogger(RMITransport.class.getCanonicalName());
 	private RemoteServerImpl exportedServer;
 	private Registry registry;
 	private int rmiRegistryPort;
@@ -71,12 +71,12 @@ public class RMITransport implements ServerTransport, ConfigurableCompression {
 		try {
 			UnicastRemoteObject.unexportObject(exportedServer, true);
 		} catch (NoSuchObjectException e) {
-			logger.log(Level.WARNING, "Why couldn't I shutdown the server?", e);
+			logger.warn("Why couldn't I shutdown the server?", e);
 		}	
 		try {
 			UnicastRemoteObject.unexportObject(registry, true);
 		} catch (NoSuchObjectException e) {
-			logger.log(Level.WARNING, "Why couldn't I close the registry?", e);
+			logger.warn("Why couldn't I close the registry?", e);
 		}
 	}
 

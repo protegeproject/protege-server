@@ -6,7 +6,8 @@ import static org.protege.owl.server.configuration.MetaprojectVocabulary.STANDAR
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.configuration.MetaprojectVocabulary;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -32,7 +33,7 @@ import org.semanticweb.owlapi.search.EntitySearcher;
  *
  */
 public class SetMetaprojectDataDir {
-    private static final Logger LOGGER = Logger.getLogger(SetMetaprojectDataDir.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(SetMetaprojectDataDir.class.getCanonicalName());
 
     /**
      * @param args

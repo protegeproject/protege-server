@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.server.Builder;
 import org.protege.owl.server.api.server.Server;
@@ -18,7 +18,7 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public class BuilderImpl implements Builder {
-	private Logger logger = Logger.getLogger(BuilderImpl.class.getCanonicalName());
+	private Logger logger = LoggerFactory.getLogger(BuilderImpl.class.getCanonicalName());
 	private OWLOntology metaOntology;
 	private Set<ServerComponentFactory> factories = new HashSet<ServerComponentFactory>();
 	private ServerConstraints serverConstraints;
@@ -42,7 +42,7 @@ public class BuilderImpl implements Builder {
 	        satisfyConstraints();
 	    }
 		catch (IOException ioe) {
-			logger.log(Level.SEVERE, "Exception caught configuring server", ioe);
+			logger.error("Exception caught configuring server", ioe);
 		}
 	}
 	
@@ -63,7 +63,7 @@ public class BuilderImpl implements Builder {
 			}
 		}
 		catch (IOException ioe) {
-			logger.log(Level.SEVERE, "Exception caught while withdrawing server component factory", ioe);
+			logger.error("Exception caught while withdrawing server component factory", ioe);
 		}
 	}
 	

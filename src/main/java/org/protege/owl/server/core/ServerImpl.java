@@ -13,8 +13,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ChangeHistory;
@@ -100,7 +100,7 @@ public class ServerImpl implements Server {
 		public abstract boolean isStatusOf(File f, boolean pooledDocumentFound);
 	}
 	
-	private Logger logger = Logger.getLogger(ServerImpl.class.getCanonicalName());
+	private Logger logger = LoggerFactory.getLogger(ServerImpl.class.getCanonicalName());
 	private File root;
 	private File configurationDir;
 	private DocumentFactory factory = new DocumentFactoryImpl();
@@ -347,10 +347,10 @@ public class ServerImpl implements Server {
 	            listener.configurationChanged(configFile);
 	        }
 	        catch (Error e) {
-	            logger.log(Level.WARNING, "Listener error", e);
+	            logger.warn("Listener error", e);
 	        }
 	        catch (RuntimeException e) {
-	            logger.log(Level.WARNING, "Listener bug", e);
+	            logger.warn("Listener bug", e);
 	        }
 	    }
 	}

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ChangeHistory;
@@ -30,7 +31,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 public class ConflictManager extends ServerFilterAdapter {
-    private Logger logger = Logger.getLogger(ConflictManager.class.getCanonicalName());
+    private Logger logger = LoggerFactory.getLogger(ConflictManager.class.getCanonicalName());
 
     public ConflictManager(Server delegate) {
         super(delegate);

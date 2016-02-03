@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.api.server.ServerComponentFactory;
@@ -19,7 +19,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.search.EntitySearcher;
 
 public class ServerConstraints {
-    private Logger logger = Logger.getLogger(ServerConstraints.class.getCanonicalName());
+    private Logger logger = LoggerFactory.getLogger(ServerConstraints.class.getCanonicalName());
 	private OWLIndividual serverIndividual;
 
 	private FilterConstraint containingFilterConstraint;
@@ -48,14 +48,14 @@ public class ServerConstraints {
 		}
 		for (ServerComponentFactory factory : factories) {
 			if (factory.hasSuitableServer(serverIndividual)) {
-			    if (logger.isLoggable(Level.FINE)) {
-			        logger.fine("Using " + factory + " to satisfy " + serverIndividual);
+			    if (logger.isDebugEnabled()) {
+			        logger.debug("Using " + factory + " to satisfy " + serverIndividual);
 			    }
 				return true;
 			}
 		}
-		if (logger.isLoggable(Level.FINE)) {
-		    logger.fine("No factory can create a core server matching the constraint: " + serverIndividual);
+		if (logger.isDebugEnabled()) {
+		    logger.debug("No factory can create a core server matching the constraint: " + serverIndividual);
 		}
 		return false;
 	}

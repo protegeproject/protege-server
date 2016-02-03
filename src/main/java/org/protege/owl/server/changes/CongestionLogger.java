@@ -1,11 +1,12 @@
 package org.protege.owl.server.changes;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CongestionLogger {
     private static final int LOGGING_TIMEOUT = 3000;
     private static final int LOGGING_UNIT    = 100000;
-    private Logger   logger         = Logger.getLogger(CongestionLoggerInputStream.class.getCanonicalName());
+    private Logger   logger         = LoggerFactory.getLogger(CongestionLoggerInputStream.class.getCanonicalName());
     private long    startTime      = System.currentTimeMillis();
     private boolean loggingStarted = false;
     private int      counter        = 0;

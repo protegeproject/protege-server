@@ -7,7 +7,17 @@
     <bundle name="org.apache.felix.log.jar"/>
     <bundle name="org.apache.felix.metatype.jar"/>
     <bundle name="org.apache.felix.scr.jar"/>
-    <bundle name="org.semanticweb.owl.owlapi.jar"/>
+    <bundle name="owlapi-osgidistribution.jar"/>
+    <bundle name="commons-cli.jar"/>
+    <bundle name="slf4j-api.jar"/>
+    <bundle name="logback-core.jar"/>
+    <bundle name="logback-classic.jar"/>
+    <bundle name="guava.jar"/>
+    <bundle name="guice.jar"/>
+    <bundle name="guice-assistedinject.jar"/>
+    <bundle name="guice-multibindings.jar"/>
+    <bundle name="org.apache.servicemix.bundles.javax-inject.jar"/>
+    <bundle name="org.apache.servicemix.bundles.aopalliance.jar"/>
   </bundles>
   <bundles verbose = "true">
     <search path="target/server-distribution/server/bundles"/>

@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -35,7 +36,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.xml.sax.SAXException;
 
 public class TestUtilities {
-    private static Logger logger = Logger.getLogger(TestUtilities.class.getCanonicalName());
+    private static Logger logger = LoggerFactory.getLogger(TestUtilities.class.getCanonicalName());
     
 	public static final File SERVER_ROOT = new File("target/server-distribution/server");
 	public static final File ROOT_DIRECTORY = new File(SERVER_ROOT, "root");

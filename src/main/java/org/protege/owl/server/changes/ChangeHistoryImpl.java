@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
@@ -29,7 +30,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
  */
 public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 	private static final long serialVersionUID = -3842895051205436375L;
-	public static Logger logger = Logger.getLogger(ChangeHistoryImpl.class.getCanonicalName());
+	public static Logger logger = LoggerFactory.getLogger(ChangeHistoryImpl.class.getCanonicalName());
 	private transient int compressionLimit = -1;
 	private OntologyDocumentRevision startRevision;
 	private List<List<OWLOntologyChange>> listOfRevisionChanges = new ArrayList<List<OWLOntologyChange>>();

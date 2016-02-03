@@ -9,8 +9,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.DocumentFactory;
@@ -20,7 +20,7 @@ import org.protege.owl.server.changes.ChangeHistoryUtilities;
 
 public class ChangeDocumentPoolEntry {
     
-    private Logger logger = Logger.getLogger(ChangeDocumentPoolEntry.class.getCanonicalName());
+    private Logger logger = LoggerFactory.getLogger(ChangeDocumentPoolEntry.class.getCanonicalName());
     private DocumentFactory factory;
     private ChangeHistory changeDocument;
     private Future<ChangeHistory> readChangeDocumentTask;
@@ -72,8 +72,8 @@ public class ChangeDocumentPoolEntry {
     }
     
     public void setChangeDocument(final ChangeHistory newChangeDocument) {
-    	if (logger.isLoggable(Level.FINE)) {
-    		logger.fine("Setting change document for " + historyFile + " to change doc ending at revision " + newChangeDocument.getEndRevision());
+    	if (logger.isDebugEnabled()) {
+    		logger.debug("Setting change document for " + historyFile + " to change doc ending at revision " + newChangeDocument.getEndRevision());
     	}
         touch();
         this.changeDocument = newChangeDocument;
@@ -133,8 +133,8 @@ public class ChangeDocumentPoolEntry {
         
         public WriteChanges(ChangeHistory newChangeDocument) {
             this.newChangeDocument = newChangeDocument;
-            if (logger.isLoggable(Level.FINE)) {
-            	logger.fine("Created writer for " + historyFile + " and change document ending at " + newChangeDocument.getEndRevision());
+            if (logger.isDebugEnabled()) {
+            	logger.debug("Created writer for " + historyFile + " and change document ending at " + newChangeDocument.getEndRevision());
             }
         }
         
@@ -152,38 +152,38 @@ public class ChangeDocumentPoolEntry {
                     if (interval > 1000) {
                         logger.info("Save of " + historyFile + " took " + (interval / 1000) + " seconds.");
                     }
-                    else if (logger.isLoggable(Level.FINE)) {
-                    	logger.fine("Wrote new " + historyFile);
+                    else if (logger.isDebugEnabled()) {
+                    	logger.debug("Wrote new " + historyFile);
                     }
                 }
-                else if (logger.isLoggable(Level.FINE)) {
-                	logger.fine("This is not the latest change document");
-                	logger.fine("Was supposed to save doc with end revision " + newChangeDocument.getEndRevision());
-                	logger.fine("But now have new save doc with end revision " + changeDocument.getEndRevision());
+                else if (logger.isDebugEnabled()) {
+                	logger.debug("This is not the latest change document");
+                	logger.debug("Was supposed to save doc with end revision " + newChangeDocument.getEndRevision());
+                	logger.debug("But now have new save doc with end revision " + changeDocument.getEndRevision());
                 }
                 return true;
             }
             catch (Throwable t) {
-                logger.log(Level.SEVERE, "Exception caught writing history file", t);
+                logger.error("Exception caught writing history file", t);
                 return false;
             }
         }
         
         private void prepareToSave(File historyFile) {
-        	if (logger.isLoggable(Level.FINE)) {
-        		logger.fine("Preparing backup for " + historyFile);
+        	if (logger.isDebugEnabled()) {
+        		logger.debug("Preparing backup for " + historyFile);
         	}
             File backup = getBackupHistoryFile(historyFile);
             if (historyFile.exists() && backup.exists()) {
                 backup.delete();
-                if (logger.isLoggable(Level.FINE)) {
-                	logger.fine("Old backup removed");
+                if (logger.isDebugEnabled()) {
+                	logger.debug("Old backup removed");
                 }
             }
             if (historyFile.exists()) {
                 historyFile.renameTo(backup);
-                if (logger.isLoggable(Level.FINE)) {
-                	logger.fine("Moved " + historyFile + " to " + backup);
+                if (logger.isDebugEnabled()) {
+                	logger.debug("Moved " + historyFile + " to " + backup);
                 }
             }
         }

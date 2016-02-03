@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.PizzaVocabulary;
 import org.protege.owl.server.TestVocabulary;
@@ -38,7 +39,7 @@ import org.testng.annotations.Test;
 
 @Test(groups = {"unit.test" })
 public abstract class AbstractSerializationTest {
-	private Logger logs = Logger.getLogger(AbstractSerializationTest.class.getCanonicalName());
+	private Logger logs = LoggerFactory.getLogger(AbstractSerializationTest.class.getCanonicalName());
 	
 	private OWLOntologyManager manager;
 	private OWLOntology ontology;
@@ -71,7 +72,7 @@ public abstract class AbstractSerializationTest {
 		ChangeHistory doc2 = documentFactory.createChangeDocument(changes2, null, revision2);
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");
-		logs.fine("Using file " + tmp);
+		logs.debug("Using file " + tmp);
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(tmp));
 		out.writeObject(doc1);
 		out.writeObject(doc2);
@@ -108,7 +109,7 @@ public abstract class AbstractSerializationTest {
 		ChangeHistory doc4 = documentFactory.createChangeDocument(changes2, null, revision2);
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");
-		logs.fine("Using file " + tmp);
+		logs.debug("Using file " + tmp);
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(tmp));
 		Integer int1 = new Integer(42);
 		out.writeObject(int1);
@@ -183,7 +184,7 @@ public abstract class AbstractSerializationTest {
 		ChangeHistory doc = docFactory.createChangeDocument(changes, null, new OntologyDocumentRevision(r.nextInt(500)));
 		
 		File tmp = File.createTempFile("ServerTest", ".ser");
-		logs.fine("Using file " + tmp);
+		logs.debug("Using file " + tmp);
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(tmp));
 		out.writeObject(doc);
 		out.flush();

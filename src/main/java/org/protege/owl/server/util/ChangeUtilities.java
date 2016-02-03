@@ -5,8 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
@@ -115,27 +114,22 @@ public class ChangeUtilities {
         return ontologies;
     }
     
-    public static void logOntology(String message, OWLOntology ontology, Logger logger, Level level) {
-        if (logger.isLoggable(level)) {
-            logger.log(level, message);
-            StringDocumentTarget out = new StringDocumentTarget();
-            try {
-                ontology.getOWLOntologyManager().saveOntology(ontology, new OWLXMLOntologyFormat(), out);
-            } catch (OWLOntologyStorageException e) {
-                logger.log(level, "Could not display ontology", e);
-            }
-            logger.log(level, out.toString());
-            
+    public static void logOntology(String message, OWLOntology ontology, Logger logger) {
+        logger.info(message);
+        StringDocumentTarget out = new StringDocumentTarget();
+        try {
+            ontology.getOWLOntologyManager().saveOntology(ontology, new OWLXMLOntologyFormat(), out);
+        } catch (OWLOntologyStorageException e) {
+            logger.info("Could not display ontology", e);
         }
+        logger.info(out.toString());
     }
     
-    public static void logChanges(String message, Collection<OWLOntologyChange> changes, Logger logger, Level level) {
-        if (logger.isLoggable(level)) {
-            LogChangesVisitor visitor = new LogChangesVisitor(logger, level);
-            logger.log(level, message);
-            for (OWLOntologyChange change : changes) {
-                change.accept(visitor);
-            }
+    public static void logChanges(String message, Collection<OWLOntologyChange> changes, Logger logger) {
+        LogChangesVisitor visitor = new LogChangesVisitor(logger);
+        logger.info(message);
+        for (OWLOntologyChange change : changes) {
+            change.accept(visitor);
         }
     }
 
