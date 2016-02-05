@@ -189,32 +189,12 @@
             </plugin>
 
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.10</version>
-                <executions>
-                    <execution>
-                        <id>add-generated-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>target/generated-sources</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr3-maven-plugin</artifactId>
                 <version>3.5.2</version>
                 <configuration>
                     <sourceDirectory>${basedir}/src/main/resources/lang</sourceDirectory>
-                    <outputDirectory>${basedir}/target/generated-sources/org/protege/owl/server/policy/generated</outputDirectory>
+                    <outputDirectory>${basedir}/target/generated-sources</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
