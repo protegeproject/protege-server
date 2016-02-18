@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.DocumentFactory;
@@ -25,7 +25,7 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public abstract class AbstractRMIClientFactory implements ClientFactory {
-    private Logger logger = Logger.getLogger(AbstractRMIClientFactory.class.getCanonicalName());
+    private Logger logger = LoggerFactory.getLogger(AbstractRMIClientFactory.class.getCanonicalName());
     private Map<IRI, AuthToken> authMap = new TreeMap<IRI, AuthToken>();
     private DocumentFactory factory = new DocumentFactoryImpl();
     
@@ -145,7 +145,7 @@ public abstract class AbstractRMIClientFactory implements ClientFactory {
             return authMap.containsKey(rootLocation);
         }
         catch (URISyntaxException e) {
-            logger.log(Level.WARNING, "IRI has invalid format: " + serverLocation, e);
+            logger.warn("IRI has invalid format: " + serverLocation, e);
             return false;
         }
     }
@@ -173,17 +173,17 @@ public abstract class AbstractRMIClientFactory implements ClientFactory {
             return client;
         }
         catch (NotBoundException nbe) {
-            logger.warning("Server connection to " + serverLocation + " lost.");
+            logger.warn("Server connection to " + serverLocation + " lost.");
             authMap.remove(serverRoot);
             return null;
         }
         catch (RemoteException re) {
-            logger.warning("Server connection to " + serverLocation + " lost.");
+            logger.warn("Server connection to " + serverLocation + " lost.");
             authMap.remove(serverRoot);
             return null;
         }
         catch (URISyntaxException use) {
-            logger.log(Level.WARNING, "IRI has invalid format: " + serverLocation, use);
+            logger.warn("IRI has invalid format: " + serverLocation, use);
             return null;
         }
     }

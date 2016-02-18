@@ -7,7 +7,8 @@ import static org.protege.owl.server.configuration.MetaprojectVocabulary.STANDAR
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.configuration.MetaprojectVocabulary;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -22,6 +23,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 
 /**
@@ -32,7 +34,7 @@ import org.semanticweb.owlapi.model.RemoveAxiom;
  *
  */
 public class SetMetaProjectPort {
-    private static final Logger LOGGER = Logger.getLogger(SetMetaProjectPort.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(SetMetaProjectPort.class.getCanonicalName());
 
     /**
      * @param args	args
@@ -54,7 +56,7 @@ public class SetMetaProjectPort {
                 changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(axiom.getProperty(), server, port)));
             }
         }
-        for (OWLIndividual server : STANDARD_SERVER.getIndividuals(ontology)) {
+        for (OWLIndividual server : EntitySearcher.getIndividuals(STANDARD_SERVER, ontology)) {
             changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_SERVER_PORT, server, port)));
             changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_REGISTRY_PORT, server, port)));
         }

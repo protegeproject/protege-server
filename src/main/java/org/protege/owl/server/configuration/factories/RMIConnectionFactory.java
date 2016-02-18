@@ -5,7 +5,8 @@ import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_SER
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.RMI_TRANSPORT;
 
 import java.rmi.registry.Registry;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.server.ServerTransport;
 import org.protege.owl.server.connect.rmi.RMITransport;
@@ -15,9 +16,10 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 public class RMIConnectionFactory extends ServerComponentFactoryAdapter {
-    public static Logger logger = Logger.getLogger(CoreServerFactory.class.getCanonicalName());
+    public static Logger logger = LoggerFactory.getLogger(CoreServerFactory.class.getCanonicalName());
     private OWLOntology ontology;
     private OWLDataFactory factory;
     
@@ -40,7 +42,7 @@ public class RMIConnectionFactory extends ServerComponentFactoryAdapter {
     }
     
     private int getRegistryPort(OWLIndividual i) {
-        for (OWLLiteral hostPortLiteral : i.getDataPropertyValues(HAS_REGISTRY_PORT, ontology)) {
+        for (OWLLiteral hostPortLiteral : EntitySearcher.getDataPropertyValues(i, HAS_REGISTRY_PORT, ontology)) {
             if (hostPortLiteral.isInteger()) {
                 int port = hostPortLiteral.parseInteger();
                 return port;
@@ -50,7 +52,7 @@ public class RMIConnectionFactory extends ServerComponentFactoryAdapter {
     }
     
     private int getServerPort(OWLIndividual i) {
-        for (OWLLiteral hostPortLiteral : i.getDataPropertyValues(HAS_SERVER_PORT, ontology)) {
+        for (OWLLiteral hostPortLiteral : EntitySearcher.getDataPropertyValues(i, HAS_SERVER_PORT, ontology)) {
             if (hostPortLiteral.isInteger()) {
                 int port = hostPortLiteral.parseInteger();
                 return port;

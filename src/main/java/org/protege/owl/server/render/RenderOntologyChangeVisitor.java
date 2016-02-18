@@ -4,6 +4,7 @@ import org.semanticweb.owlapi.io.OWLObjectRenderer;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
+import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntologyChangeVisitor;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
@@ -37,7 +38,7 @@ public class RenderOntologyChangeVisitor implements OWLOntologyChangeVisitor {
     @Override
     public void visit(SetOntologyID change) {
         sb.append("Set Ontology Id: ");
-        sb.append(renderer.render(change.getNewOntologyID().getDefaultDocumentIRI()));
+        sb.append(renderer.render((OWLObject) change.getNewOntologyID().getDefaultDocumentIRI()));
     }
     @Override
     public void visit(AddImport change) {

@@ -2,8 +2,8 @@ package org.protege.owl.server.core;
 
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.SingletonChangeHistory;
@@ -44,7 +44,7 @@ import org.protege.owl.server.util.ServerFilterAdapter;
  *
  */
 public class SynchronizationFilter extends ServerFilterAdapter {
-    private Logger logger = Logger.getLogger(SynchronizationFilter.class.getCanonicalName());
+    private Logger logger = LoggerFactory.getLogger(SynchronizationFilter.class.getCanonicalName());
     private Set<ServerOntologyDocument> writers = new TreeSet<ServerOntologyDocument>();
     
     public SynchronizationFilter(Server delegate) {
@@ -58,7 +58,7 @@ public class SynchronizationFilter extends ServerFilterAdapter {
                 try {
                     writers.wait();
                 } catch (InterruptedException e) {
-                    logger.log(Level.SEVERE, "Unexpected interrupt.", e);
+                    logger.error("Unexpected interrupt.", e);
                     writers.remove(doc);
                     throw new IllegalStateException("Unexpected Interrupt - server changes made at this time might be lost", e);
                 }

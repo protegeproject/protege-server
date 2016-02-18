@@ -9,8 +9,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collection;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
@@ -40,7 +40,7 @@ public class Authenticator extends ServerFilterAdapter {
     public static final String LOCAL_BASIC_LOGIN_KEY = "Basic Login key for Local Transport";
     private static UserDatabase userDatabase = null;
     
-    private Logger logger = Logger.getLogger(Authenticator.class.getCanonicalName());
+    private Logger logger = LoggerFactory.getLogger(Authenticator.class.getCanonicalName());
     private BasicLoginService loginService;
 
     public enum GetUserAndGroupOption {
@@ -85,7 +85,7 @@ public class Authenticator extends ServerFilterAdapter {
         try {
             loadTransports(transports);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Authentication Service failed to start up.  Users may not be able to authenticate.", e);
+            logger.error("Authentication Service failed to start up.  Users may not be able to authenticate.", e);
         }
         getDelegate().setTransports(transports);
     }
@@ -107,10 +107,10 @@ public class Authenticator extends ServerFilterAdapter {
             }
         }
         if (workingTransports == 0) {
-            logger.warning("Did not find communications suitable for login.  Clients will be locked out.");
+            logger.warn("Did not find communications suitable for login.  Clients will be locked out.");
         }
         if (otherTransports > 0) {
-            logger.warning("Clients must use RMI to login.  Thereafter they can communicate with the server in other ways.");
+            logger.warn("Clients must use RMI to login.  Thereafter they can communicate with the server in other ways.");
         }      
     }
     

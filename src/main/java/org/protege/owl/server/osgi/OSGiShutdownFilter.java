@@ -1,7 +1,7 @@
 package org.protege.owl.server.osgi;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -12,7 +12,7 @@ import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.util.ServerFilterAdapter;
 
 public class OSGiShutdownFilter extends ServerFilterAdapter {
-    private Logger logger = Logger.getLogger(OSGiShutdownFilter.class.getCanonicalName());
+    private Logger logger = LoggerFactory.getLogger(OSGiShutdownFilter.class.getCanonicalName());
     
     private BundleContext context;
     
@@ -29,7 +29,7 @@ public class OSGiShutdownFilter extends ServerFilterAdapter {
             systemBundle.stop();
         }
         catch (BundleException be) {
-            logger.log(Level.SEVERE, "Exception caught trying to shutdown server.", be);
+            logger.error("Exception caught trying to shutdown server.", be);
         }
     }
 

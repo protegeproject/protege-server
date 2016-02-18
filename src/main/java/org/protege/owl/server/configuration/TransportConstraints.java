@@ -1,8 +1,8 @@
 package org.protege.owl.server.configuration;
 
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.server.ServerComponentFactory;
 import org.protege.owl.server.api.server.ServerTransport;
@@ -10,7 +10,7 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public class TransportConstraints {
-    private Logger logger = Logger.getLogger(TransportConstraints.class.getCanonicalName());
+    private Logger logger = LoggerFactory.getLogger(TransportConstraints.class.getCanonicalName());
 	private OWLIndividual transportIndividual;
 	
 	public TransportConstraints(OWLOntology configuration, OWLIndividual transportIndividual) {
@@ -21,14 +21,14 @@ public class TransportConstraints {
 	public boolean satisfied(Set<ServerComponentFactory> factories) {
 		for (ServerComponentFactory factory : factories) {
 			if (factory.hasSuitableServerTransport(transportIndividual)) {
-			    if (logger.isLoggable(Level.FINE)) {
-			        logger.fine("Using " + factory + " to satisfy constraint: " + transportIndividual);
+			    if (logger.isDebugEnabled()) {
+			        logger.debug("Using " + factory + " to satisfy constraint: " + transportIndividual);
 			    }
 				return true;
 			}
 		}
-		if (logger.isLoggable(Level.FINE)) {
-		    logger.fine("Could not find factory to satisfy constraint: " + transportIndividual);
+		if (logger.isDebugEnabled()) {
+		    logger.debug("Could not find factory to satisfy constraint: " + transportIndividual);
 		}
 		return false;
 	}

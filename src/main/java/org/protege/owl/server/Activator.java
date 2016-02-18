@@ -3,7 +3,6 @@ package org.protege.owl.server;
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -14,10 +13,12 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator implements BundleActivator {
 	public static final String SERVER_CONFIGURATION_PROPERTY = "org.protege.owl.server.configuration";
-	private Logger logger = Logger.getLogger(Activator.class.getCanonicalName());
+	private Logger logger = LoggerFactory.getLogger(Activator.class.getCanonicalName());
 
 	@Override
 	public void start(BundleContext context) throws OWLOntologyCreationException  {

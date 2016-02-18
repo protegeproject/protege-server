@@ -2,7 +2,8 @@ package org.protege.owl.server.deploy.windows;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -14,7 +15,7 @@ import org.xml.sax.SAXException;
 
 public class WindowsOWLServer {
     private static WindowsOWLServer instance;
-    private Logger logger = Logger.getLogger(WindowsOWLServer.class.getCanonicalName());
+    private Logger logger = LoggerFactory.getLogger(WindowsOWLServer.class.getCanonicalName());
     private Framework framework;
     
     

@@ -10,8 +10,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
@@ -26,11 +26,11 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
-import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
+import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
 
 public class DocumentFactoryImpl implements DocumentFactory, Serializable {
     private static final long serialVersionUID = -4952738108103836430L;
-    public static Logger logger = Logger.getLogger(DocumentFactoryImpl.class.getCanonicalName());
+    public static Logger logger = LoggerFactory.getLogger(DocumentFactoryImpl.class.getCanonicalName());
     private transient OWLObjectRenderer renderer;
 	
     @Override
@@ -144,15 +144,15 @@ public class DocumentFactoryImpl implements DocumentFactory, Serializable {
 			return readChangeDocument(ois, start, end);
 		}
 		catch (IOException ioe) {
-			logger.log(Level.WARNING, "Exception caught deserializing change document", ioe);
+			logger.warn("Exception caught deserializing change document", ioe);
 			throw ioe;
 		}
 		catch (Exception e) {
-			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
+			logger.warn("Exception caught deserializing change document", e);
 			throw new IOException(e);
 		}
 		catch (Error e) {
-			logger.log(Level.WARNING, "Exception caught deserializing change document", e);
+			logger.warn("Exception caught deserializing change document", e);
 			throw e;
 		}
 	    finally {

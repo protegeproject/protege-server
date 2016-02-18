@@ -10,7 +10,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.Assert;
 
@@ -33,7 +34,7 @@ import org.testng.annotations.Test;
 @Test(groups={"unit.test"})
 @SuppressWarnings("deprecation")
 public class FormatTest {
-    private Logger logger = Logger.getLogger(FormatTest.class.getCanonicalName());
+    private Logger logger = LoggerFactory.getLogger(FormatTest.class.getCanonicalName());
     private OWLOntology ontology;
     
     @BeforeClass
@@ -42,7 +43,7 @@ public class FormatTest {
         long startTime = System.currentTimeMillis();
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         ontology = manager.loadOntologyFromOntologyDocument(new File(ontologyFile));
-        logger.fine("Initial ontology load took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
+        logger.debug("Initial ontology load took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
     }
     
     @Test
@@ -82,7 +83,7 @@ public class FormatTest {
         new OWLOutputStream(os).write(changes);
         os.flush();
         os.close();
-        logger.fine("Write to history file took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
+        logger.debug("Write to history file took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
     }
     
     private void writeChangesWithCompression(List<OWLOntologyChange> changes, File output) throws IOException {
@@ -93,7 +94,7 @@ public class FormatTest {
         owlOut.writeWithCompression(changes);
         os.flush();
         os.close();
-        logger.fine("Compressed Write to history file took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
+        logger.debug("Compressed Write to history file took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
     }
     
     @SuppressWarnings("unchecked")
@@ -102,7 +103,7 @@ public class FormatTest {
         long startTime = System.currentTimeMillis();        
         List<OWLOntologyChange> changes = (List<OWLOntologyChange>) new OWLInputStream(is).read();
         is.close();
-        logger.fine("Read of history file took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
+        logger.debug("Read of history file took " + ((System.currentTimeMillis() - startTime)/1000) + " seconds.");
         ReplaceChangedOntologyVisitor visitor = new ReplaceChangedOntologyVisitor(ontology);
         List<OWLOntologyChange> adjustedChanges = new ArrayList<OWLOntologyChange>();
         for (OWLOntologyChange change : changes) {

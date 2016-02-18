@@ -7,8 +7,8 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
@@ -28,7 +28,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
  * and having it suddenly become empty merely means that it will need to be refilled later.
  */
 public class BackgroundLoadChangeHistory implements ChangeHistory {
-    private Logger logger = Logger.getLogger(BackgroundLoadChangeHistory.class.getCanonicalName());
+    private Logger logger = LoggerFactory.getLogger(BackgroundLoadChangeHistory.class.getCanonicalName());
     private File historyFile;
     private DocumentFactory factory;
     private FutureTask<ChangeHistory> backgroundLoader;
@@ -68,7 +68,7 @@ public class BackgroundLoadChangeHistory implements ChangeHistory {
                 history = backgroundLoader.get();
             }
             catch (Exception e) {
-                logger.log(Level.WARNING, "History File " + historyFile + " was corrupted - using empty history instead.", e);
+                logger.warn("History File " + historyFile + " was corrupted - using empty history instead.", e);
                 delegateOnFailure = factory.createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION);
                 history = delegateOnFailure;
             }

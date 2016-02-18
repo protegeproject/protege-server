@@ -9,6 +9,6 @@ java -Xmx3500M -Xms250M \
      -Dfile.encoding=UTF-8 \
      -Dorg.protege.owl.server.configuration=metaproject.owl \
      -agentlib:jdwp=transport=dt_socket,address=8100,server=y,suspend=y \
-     -Djava.util.logging.config.file=logging.properties \
-     -classpath ./lib/felix.jar:./lib/ProtegeLauncher.jar \
+     -Dlogback.configurationFile=conf/logback.xml \
+     -classpath bundles/guava.jar:bundles/slf4j-api.jar:bundles/logback-core.jar:bundles/logback-classic.jar:bin/org.apache.felix.main.jar:bin/protege-launcher.jar \
      org.protege.osgi.framework.Launcher

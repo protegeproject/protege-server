@@ -11,8 +11,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.DocumentFactory;
@@ -21,7 +21,7 @@ import org.protege.owl.server.api.server.ServerOntologyDocument;
 import org.protege.owl.server.api.server.ServerPath;
 
 public class ChangeDocumentPool {
-    private Logger logger = Logger.getLogger(ChangeDocumentPool.class.getCanonicalName());
+    private Logger logger = LoggerFactory.getLogger(ChangeDocumentPool.class.getCanonicalName());
     private ScheduledExecutorService executorService;
     private DocumentFactory docFactory;
     private final long timeout;
@@ -63,17 +63,17 @@ public class ChangeDocumentPool {
                     consecutiveCleanupFailures = 0;
                 }
                 catch (Error t) {
-                    logger.log(Level.SEVERE, "Exception caught cleaning open ontology pool.", t);
+                    logger.error("Exception caught cleaning open ontology pool.", t);
                     consecutiveCleanupFailures++;
                 }
                 catch (RuntimeException re) {
-                    logger.log(Level.SEVERE, "Exception caught cleaning open ontology pool.", re);
+                    logger.error("Exception caught cleaning open ontology pool.", re);
                     consecutiveCleanupFailures++;
                 }
                 finally {
                     if (consecutiveCleanupFailures > 8) {
-                        logger.log(Level.SEVERE, "Shutting down clean up thread for change history management.");
-                        logger.log(Level.SEVERE, "Server could run out of memory");
+                        logger.error("Shutting down clean up thread for change history management.");
+                        logger.error("Server could run out of memory");
                     }
                 }
             }

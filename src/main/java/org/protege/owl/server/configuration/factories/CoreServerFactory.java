@@ -5,7 +5,8 @@ import static org.protege.owl.server.configuration.MetaprojectVocabulary.HAS_ROO
 import static org.protege.owl.server.configuration.MetaprojectVocabulary.STANDARD_SERVER;
 
 import java.io.File;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.core.ServerImpl;
@@ -15,9 +16,10 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 public class CoreServerFactory extends ServerComponentFactoryAdapter {
-	public static Logger logger = Logger.getLogger(CoreServerFactory.class.getCanonicalName());
+	public static Logger logger = LoggerFactory.getLogger(CoreServerFactory.class.getCanonicalName());
 	private OWLOntology ontology;
 	private OWLDataFactory factory;
 	
@@ -40,7 +42,7 @@ public class CoreServerFactory extends ServerComponentFactoryAdapter {
 	}
 	
 	private File getRootPath(OWLIndividual i) {
-	    for (OWLLiteral rootPathLiteral : i.getDataPropertyValues(HAS_ROOT_PATH, ontology)) {
+	    for (OWLLiteral rootPathLiteral : EntitySearcher.getDataPropertyValues(i, HAS_ROOT_PATH, ontology)) {
 	        String rootPath = rootPathLiteral.getLiteral();
 	        return new File(rootPath);
 	    }
@@ -48,7 +50,7 @@ public class CoreServerFactory extends ServerComponentFactoryAdapter {
 	}
 	
 	private File getConfigurationPath(OWLIndividual i) {
-	       for (OWLLiteral rootPathLiteral : i.getDataPropertyValues(HAS_CONFIGURATION_PATH, ontology)) {
+	       for (OWLLiteral rootPathLiteral : EntitySearcher.getDataPropertyValues(i, HAS_CONFIGURATION_PATH, ontology)) {
 	            String configurationPath = rootPathLiteral.getLiteral();
 	            return new File(configurationPath);
 	        }

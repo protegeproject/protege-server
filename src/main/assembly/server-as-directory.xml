@@ -8,37 +8,17 @@
   <fileSets>
     <fileSet>
       <directory>src/main/resources/server-template</directory>
-      <outputDirectory></outputDirectory>
+      <outputDirectory>.</outputDirectory>
     </fileSet>
   </fileSets>
   <dependencySets>
     <dependencySet>
       <includes>
-        <include>commons-cli:commons-cli:jar</include>
+        <include>org.apache.felix:org.apache.felix.main:jar</include>
+        <include>edu.stanford.protege:protege-launcher:jar</include>
       </includes>
       <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
-      <outputDirectory>lib</outputDirectory>
-    </dependencySet>
-    <dependencySet>
-      <includes>
-        <include>org.apache.felix:org.apache.felix.main:jar</include>
-      </includes>
-      <outputFileNameMapping>felix.jar</outputFileNameMapping>
-      <outputDirectory>lib</outputDirectory>
-    </dependencySet>
-    <dependencySet>
-      <includes>
-        <include>org.apache.felix:org.apache.felix.main:jar</include>
-      </includes>
-      <outputFileNameMapping>felix.jar</outputFileNameMapping>
-      <outputDirectory>lib</outputDirectory>
-    </dependencySet>
-    <dependencySet>
-      <includes>
-        <include>edu.stanford.protege:ProtegeLauncher:jar</include>
-      </includes>
-      <outputFileNameMapping>ProtegeLauncher.jar</outputFileNameMapping>
-      <outputDirectory>lib</outputDirectory>
+      <outputDirectory>bin</outputDirectory>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -46,30 +26,27 @@
         <include>org.apache.felix:org.apache.felix.log:jar</include>
         <include>org.apache.felix:org.apache.felix.metatype:jar</include>
         <include>org.apache.felix:org.apache.felix.scr:jar</include>
+        <include>net.sourceforge.owlapi:owlapi-osgidistribution:jar</include>
+        <include>commons-cli:commons-cli:jar</include>
+        <include>org.slf4j:slf4j-api:jar</include>
+        <include>com.google.guava:guava:jar</include>
+        <include>com.google.inject:guice:jar</include>
+        <include>ch.qos.logback:logback-core:jar</include>
+        <include>ch.qos.logback:logback-classic:jar</include>
+        <include>org.apache.servicemix.bundles:org.apache.servicemix.bundles.javax-inject:jar</include>
+        <include>org.apache.servicemix.bundles:org.apache.servicemix.bundles.aopalliance:jar</include>
+        <include>com.google.inject.extensions:guice-assistedinject:jar</include>
+        <include>com.google.inject.extensions:guice-multibindings:jar</include>
       </includes>
       <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
       <outputDirectory>bundles</outputDirectory>
     </dependencySet>
-
-    <dependencySet>
-      <includes>
-        <include>net.sourceforge.owlapi:owlapi-distribution:jar</include>
-      </includes>
-      <outputFileNameMapping>org.semanticweb.owl.owlapi.jar</outputFileNameMapping>
-      <outputDirectory>bundles</outputDirectory>
-    </dependencySet>
-
   </dependencySets>
   <files>
     <file>
       <source>target/${project.build.finalName}.jar</source>
       <outputDirectory>bundles</outputDirectory>
       <destName>org.protege.owl.server.jar</destName>
-    </file>
-    <file>
-      <source>src/main/resources/logging.properties</source>
-      <outputDirectory>.</outputDirectory>
-      <destName>logging.properties</destName>
     </file>
   </files>
 </assembly>

@@ -193,7 +193,7 @@ public enum OWLObjectType {
             if (id.isAnonymous()) {
                 count = 0;
             }
-            else if (id.getVersionIRI() == null) {
+            else if (!id.getVersionIRI().isPresent()) {
                 count = 1;
             }
             else {
@@ -201,10 +201,10 @@ public enum OWLObjectType {
             }
             IOUtils.writeInt(out.getOutputStream(), count);
             if (!id.isAnonymous()) {
-                out.write(id.getOntologyIRI());
+                out.write((OWLObject) id.getOntologyIRI().get());
             }
-            if (id.getVersionIRI() != null) {
-                out.write(id.getVersionIRI());
+            if (id.getVersionIRI().isPresent()) {
+                out.write((OWLObject) id.getVersionIRI().get());
             }
         }
         

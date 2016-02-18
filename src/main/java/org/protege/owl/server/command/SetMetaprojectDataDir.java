@@ -6,7 +6,8 @@ import static org.protege.owl.server.configuration.MetaprojectVocabulary.STANDAR
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.configuration.MetaprojectVocabulary;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -21,6 +22,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.search.EntitySearcher;
 
 
 /**
@@ -31,7 +33,7 @@ import org.semanticweb.owlapi.model.RemoveAxiom;
  *
  */
 public class SetMetaprojectDataDir {
-    private static final Logger LOGGER = Logger.getLogger(SetMetaprojectDataDir.class.getCanonicalName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(SetMetaprojectDataDir.class.getCanonicalName());
 
     /**
      * @param args	args
@@ -53,7 +55,7 @@ public class SetMetaprojectDataDir {
                 changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_ROOT_PATH, server, dataDir)));
             }
         }
-        for (OWLIndividual server : STANDARD_SERVER.getIndividuals(ontology)) {
+        for (OWLIndividual server : EntitySearcher.getIndividuals(STANDARD_SERVER, ontology)) {
             changes.add(new AddAxiom(ontology, factory.getOWLDataPropertyAssertionAxiom(HAS_ROOT_PATH, server, dataDir)));
         }
         manager.applyChanges(changes);
