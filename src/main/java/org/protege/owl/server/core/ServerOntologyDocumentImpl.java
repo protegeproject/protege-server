@@ -11,7 +11,7 @@ import org.semanticweb.owlapi.model.IRI;
 
 /**
  * This class represents an ontology document that is obtained from an OWL server by giving a location and a revision.
- * <p/>
+ * <p>
  * From the OWL 2 Specification, an Ontology Document is defined as follows: "Each ontology is associated 
  * with an <em>ontology document</em>,
  * which physically contains the ontology stored in a particular way.  The name "ontology document"

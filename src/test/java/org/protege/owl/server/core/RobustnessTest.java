@@ -123,16 +123,16 @@ public class RobustnessTest {
 
     /**
      * Test that the state of a server can be recovered from a client history.
-     * <p/>
+     * <p>
      * This is a bit of a strange test because it is testing an implementation detail that people might want to change
      * at a later time.  But it does add an element of robustness to the server to know that the server state is also saved on the clients 
      * that are up to date.  It is documented on the wiki and if this test is removed then the wiki should be changed in a corresponding way.
      * Future versions of this test might require some additional steps to ensure that the client is fully up to date with the server copy.
      * 
-     * @throws OWLOntologyCreationException
-     * @throws IOException
-     * @throws OWLServerException
-     * @throws OWLOntologyStorageException
+     * @throws OWLOntologyCreationException	OWLOntologyCreationException
+     * @throws IOException	IOException
+     * @throws OWLServerException	OWLServerException
+     * @throws OWLOntologyStorageException	OWLOntologyStorageException
      */
     @Test
     public void restoreFromClient() throws OWLOntologyCreationException, IOException, OWLServerException, OWLOntologyStorageException {
@@ -178,14 +178,14 @@ public class RobustnessTest {
     
     /**
      * This call will put the test history on the server in a known state.
-     * <p/>
+     * <p>
      * The test history contains three revisions 0,1,2. The delta from 0->1 contains one 
      * added axiom and the delta from 1->2 contains another.  The backup file only contains the 
      * revisions 0 and 1.
      * 
-     * @throws IOException
-     * @throws OWLServerException
-     * @throws OWLOntologyCreationException
+     * @throws IOException	IOException
+     * @throws OWLServerException	OWLServerException
+     * @throws OWLOntologyCreationException	OWLOntologyCreationException
      */
     private void twoForcedSaves() throws IOException, OWLServerException, OWLOntologyCreationException {
         OWLOntology ontology = OWLManager.createOWLOntologyManager().createOntology();

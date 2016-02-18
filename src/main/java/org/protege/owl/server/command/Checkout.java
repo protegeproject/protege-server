@@ -98,13 +98,13 @@ public class Checkout extends ServerCommand {
     }
 
     /**
-     * @param args
-     * @throws OWLServerException 
-     * @throws OWLOntologyCreationException 
-     * @throws OWLOntologyStorageException 
-     * @throws ParseException 
-     * @throws IOException 
-     * @throws Exception 
+     * @param args	args
+     * @throws OWLServerException	OWLServerException
+     * @throws OWLOntologyCreationException	OWLOntologyCreationException
+     * @throws OWLOntologyStorageException	OWLOntologyStorageException
+     * @throws ParseException	ParseException
+     * @throws IOException	IOException
+     * @throws Exception	Exception
      */
     public static void main(String[] args) throws Exception  {
         new Checkout().run(args);
