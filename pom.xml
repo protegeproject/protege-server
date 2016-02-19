@@ -238,7 +238,7 @@
                     <execution>
                         <!-- We need to build a working server before the integration tests. -->
                         <id>create-server</id>
-                        <phase>pre-integration-test</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
@@ -249,6 +249,26 @@
                             <outputDirectory>target</outputDirectory>
                             <finalName>server</finalName>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Creating root server folder..."/>
+                                <mkdir dir="target/server-distribution/server/root"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
