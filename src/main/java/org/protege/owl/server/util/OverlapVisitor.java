@@ -12,6 +12,7 @@ import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 import org.semanticweb.owlapi.model.SetOntologyID;
 
+@Deprecated
 public class OverlapVisitor implements OWLOntologyChangeVisitor {
     private OWLOntologyChange testChange;
     private boolean overlapping;

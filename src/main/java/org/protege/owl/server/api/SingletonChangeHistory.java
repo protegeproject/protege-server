@@ -7,6 +7,7 @@ package org.protege.owl.server.api;
  * @author redmond
  *
  */
+@Deprecated
 public interface SingletonChangeHistory extends ChangeHistory {
 
 }

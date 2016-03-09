@@ -18,6 +18,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.search.EntitySearcher;
 import org.semanticweb.owlapi.util.SimpleIRIMapper;
 
+@Deprecated
 public class MetaprojectVocabulary {
 	public static final String NS = "http://protege.stanford.edu/ontologies/owl.server/metaproject.owl";
 	

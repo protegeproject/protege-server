@@ -20,6 +20,7 @@ import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.server.ServerOntologyDocument;
 import org.protege.owl.server.api.server.ServerPath;
 
+@Deprecated
 public class ChangeDocumentPool {
     private Logger logger = LoggerFactory.getLogger(ChangeDocumentPool.class.getCanonicalName());
     private ScheduledExecutorService executorService;

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.protege.owl.server.api.UserId;
 
+@Deprecated
 public class UserContainerImpl implements UserContainer {
     private Set<UserId> users;
     private Set<Group> groups;

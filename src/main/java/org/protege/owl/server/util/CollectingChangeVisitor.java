@@ -20,6 +20,7 @@ import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 import org.semanticweb.owlapi.model.SetOntologyID;
 
+@Deprecated
 public class CollectingChangeVisitor implements OWLOntologyChangeVisitor {
     private SetOntologyID lastOntologyIDChange;
     private Map<OWLImportsDeclaration, ImportChange> lastImportChangeMap;

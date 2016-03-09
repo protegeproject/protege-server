@@ -1,5 +1,34 @@
 package org.protege.owl.server.core;
 
+import org.protege.owl.server.api.AuthToken;
+import org.protege.owl.server.api.ChangeHistory;
+import org.protege.owl.server.api.ChangeMetaData;
+import org.protege.owl.server.api.CommitBundle;
+import org.protege.owl.server.api.DocumentFactory;
+import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.api.RevisionPointer;
+import org.protege.owl.server.api.SingletonChangeHistory;
+import org.protege.owl.server.api.exception.DocumentAlreadyExistsException;
+import org.protege.owl.server.api.exception.DocumentNotFoundException;
+import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.api.exception.ServerRequestException;
+import org.protege.owl.server.api.server.Server;
+import org.protege.owl.server.api.server.ServerDirectory;
+import org.protege.owl.server.api.server.ServerDocument;
+import org.protege.owl.server.api.server.ServerListener;
+import org.protege.owl.server.api.server.ServerOntologyDocument;
+import org.protege.owl.server.api.server.ServerPath;
+import org.protege.owl.server.api.server.ServerTransport;
+import org.protege.owl.server.changes.DocumentFactoryImpl;
+import org.protege.owl.server.util.ChangeUtilities;
+
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyChange;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,32 +42,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.ChangeMetaData;
-import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.RevisionPointer;
-import org.protege.owl.server.api.SingletonChangeHistory;
-import org.protege.owl.server.api.exception.DocumentAlreadyExistsException;
-import org.protege.owl.server.api.exception.DocumentNotFoundException;
-import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.server.Server;
-import org.protege.owl.server.api.server.ServerDirectory;
-import org.protege.owl.server.api.server.ServerDocument;
-import org.protege.owl.server.api.server.ServerListener;
-import org.protege.owl.server.api.server.ServerOntologyDocument;
-import org.protege.owl.server.api.server.ServerPath;
-import org.protege.owl.server.api.server.ServerTransport;
-import org.protege.owl.server.changes.DocumentFactoryImpl;
-import org.protege.owl.server.util.ChangeUtilities;
-import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import edu.stanford.protege.metaproject.api.AuthenticationDetails;
+import edu.stanford.protege.metaproject.api.Project;
+import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.ServerConfiguration;
+import edu.stanford.protege.metaproject.api.User;
+import edu.stanford.protege.metaproject.api.UserId;
 
 
 /*
@@ -54,6 +64,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
  * 
  */
 
+@Deprecated
 public class ServerImpl implements Server {
     public static final int POOL_TIMEOUT = 60 * 1000;
 	
@@ -168,6 +179,12 @@ public class ServerImpl implements Server {
 		return documents;
 	}
 
+	public Collection<ServerDocument> list(AuthenticationDetails token, ProjectId projectId) throws DocumentNotFoundException {
+	    // for the given projectId, add the file to a list and wrap it as ServerDocument
+	    return null;
+	    
+	}
+	
 	@Override
 	public ServerOntologyDocument createOntologyDocument(AuthToken u, ServerPath serverPath, Map<String, Object> settings) throws OWLServerException {
 		File historyFile = parseServerIRI(serverPath, ServerObjectStatus.OBJECT_NOT_FOUND);
@@ -359,4 +376,64 @@ public class ServerImpl implements Server {
 	public DocumentFactory getDocumentFactory() {
 	    return factory;
 	}
+
+    @Override
+    public ServerConfiguration getConfiguration() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void addUser(edu.stanford.protege.metaproject.api.AuthToken token, User newUser)
+            throws ServerRequestException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void removeUser(edu.stanford.protege.metaproject.api.AuthToken token, UserId userId)
+            throws ServerRequestException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void addProject(edu.stanford.protege.metaproject.api.AuthToken token, Project newProject)
+            throws ServerRequestException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void removeProject(edu.stanford.protege.metaproject.api.AuthToken token, ProjectId projectId)
+            throws ServerRequestException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void viewProject(edu.stanford.protege.metaproject.api.AuthToken token, ProjectId projectId)
+            throws ServerRequestException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void commit(edu.stanford.protege.metaproject.api.AuthToken token, ProjectId projectId, CommitBundle changes)
+            throws ServerRequestException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void start(edu.stanford.protege.metaproject.api.AuthToken token) throws ServerRequestException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void stop(edu.stanford.protege.metaproject.api.AuthToken token) throws ServerRequestException {
+        // TODO Auto-generated method stub
+        
+    }
 }

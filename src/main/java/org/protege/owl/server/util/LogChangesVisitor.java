@@ -11,6 +11,7 @@ import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 import org.semanticweb.owlapi.model.SetOntologyID;
 
+@Deprecated
 public class LogChangesVisitor implements OWLOntologyChangeVisitor {
     private Logger logger;
 

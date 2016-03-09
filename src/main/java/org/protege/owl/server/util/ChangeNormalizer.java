@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
+@Deprecated
 public class ChangeNormalizer {
 
 

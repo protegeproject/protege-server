@@ -1,5 +1,6 @@
 package org.protege.owl.server.policy;
 
+@Deprecated
 public final class Operation implements Comparable<Operation> {
     public static final Operation READ   = new Operation("read");
     public static final Operation WRITE  = new Operation("write");

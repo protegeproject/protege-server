@@ -101,6 +101,4 @@ public class LocalTransportImpl implements LocalTransport {
     public void removeServerListener(ServerListener listener) {
         server.removeServerListener(listener);
     }
-
-
 }

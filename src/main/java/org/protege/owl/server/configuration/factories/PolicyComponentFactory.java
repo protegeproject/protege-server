@@ -13,6 +13,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 
+@Deprecated
 public class PolicyComponentFactory extends ServerComponentFactoryAdapter {
     private OWLOntology metaOntology;
     private OWLDataFactory factory;

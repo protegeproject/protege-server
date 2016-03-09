@@ -18,18 +18,22 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.search.EntitySearcher;
 
+@Deprecated
 public class RMIConnectionFactory extends ServerComponentFactoryAdapter {
+
     public static Logger logger = LoggerFactory.getLogger(CoreServerFactory.class.getCanonicalName());
     private OWLOntology ontology;
     private OWLDataFactory factory;
     
     @Override
+    @Deprecated
     public void setConfiguration(OWLOntology ontology) {
         this.ontology = ontology;
         factory = ontology.getOWLOntologyManager().getOWLDataFactory();
     }
 
     @Override
+    @Deprecated
     public boolean hasSuitableServerTransport(OWLIndividual i) {
         OWLAxiom rightType = factory.getOWLClassAssertionAxiom(RMI_TRANSPORT, i);
         boolean hasRightType = ontology.containsAxiom(rightType);
@@ -37,10 +41,12 @@ public class RMIConnectionFactory extends ServerComponentFactoryAdapter {
     }
 
     @Override
+    @Deprecated
     public ServerTransport createServerTransport(OWLIndividual i) {
         return new RMITransport(getRegistryPort(i), getServerPort(i));
     }
     
+    @Deprecated
     private int getRegistryPort(OWLIndividual i) {
         for (OWLLiteral hostPortLiteral : EntitySearcher.getDataPropertyValues(i, HAS_REGISTRY_PORT, ontology)) {
             if (hostPortLiteral.isInteger()) {
@@ -51,6 +57,7 @@ public class RMIConnectionFactory extends ServerComponentFactoryAdapter {
         return Registry.REGISTRY_PORT;
     }
     
+    @Deprecated
     private int getServerPort(OWLIndividual i) {
         for (OWLLiteral hostPortLiteral : EntitySearcher.getDataPropertyValues(i, HAS_SERVER_PORT, ontology)) {
             if (hostPortLiteral.isInteger()) {

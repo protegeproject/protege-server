@@ -19,6 +19,7 @@ import org.protege.owl.server.api.server.ServerOntologyDocument;
 import org.protege.owl.server.api.server.ServerPath;
 import org.protege.owl.server.util.ServerFilterAdapter;
 
+@Deprecated
 public class DocumentPropertiesFilter extends ServerFilterAdapter {
     public static final String OWNER         = "owner";
     public static final String DATE_CREATED  = "creation";

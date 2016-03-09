@@ -22,6 +22,7 @@ import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 import org.semanticweb.owlapi.model.SetOntologyID;
 
+@Deprecated
 public class GetUncommittedChangesVisitor implements OWLOntologyChangeVisitor {
     /*
      * This enum characterizes the difference the elements of two sets (e.g. of axioms) that are being compared.

@@ -5,6 +5,7 @@ import java.io.Writer;
 
 import org.protege.owl.server.api.UserId;
 
+@Deprecated
 public interface UserContainer {
     public static final UserContainer EVERYONE = new UserContainer() {
         public boolean contains(UserDatabase db, UserId requestingUser) {

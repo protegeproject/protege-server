@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.UserId;
 
+@Deprecated
 public final class SimpleAuthToken implements AuthToken, Serializable {
     private static final long serialVersionUID = -3590024420017662281L;
     private UserId userId;

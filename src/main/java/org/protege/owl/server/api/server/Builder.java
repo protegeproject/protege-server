@@ -1,15 +1,20 @@
 package org.protege.owl.server.api.server;
 
-
-
+@Deprecated
 public interface Builder {
-	void initialise(ServerConfiguration configuration);
-	
-	void addServerComponentFactory(ServerComponentFactory factory);
 
-	void removeServerComponentFactory(ServerComponentFactory factory);
-	
-	void deactivate();
-	
-	boolean isUp();
+    @Deprecated
+    void initialise(ServerConfiguration configuration);
+
+    @Deprecated
+    void addServerComponentFactory(ServerComponentFactory factory);
+
+    @Deprecated
+    void removeServerComponentFactory(ServerComponentFactory factory);
+
+    @Deprecated
+    void deactivate();
+
+    @Deprecated
+    boolean isUp();
 }

@@ -1,5 +1,8 @@
 package org.protege.owl.server.api;
 
+@Deprecated
 public interface AuthToken extends Comparable<AuthToken> {
-	UserId getUserId();
+
+    @Deprecated
+    UserId getUserId();
 }

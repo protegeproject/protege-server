@@ -3,19 +3,27 @@ package org.protege.owl.server.api.server;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 
+@Deprecated
 public interface ServerComponentFactory {
-	
-	void setConfiguration(OWLOntology ontology);
-	
-	boolean hasSuitableServer(OWLIndividual i);
-	
-	Server createServer(OWLIndividual i);
-	
-	boolean hasSuitableServerFilter(OWLIndividual i);
-	
-	ServerFilter createServerFilter(OWLIndividual i, Server server);
-	
-	boolean hasSuitableServerTransport(OWLIndividual i);
-	
-	ServerTransport createServerTransport(OWLIndividual i);
+
+    @Deprecated
+    void setConfiguration(OWLOntology ontology);
+
+    @Deprecated
+    boolean hasSuitableServer(OWLIndividual i);
+
+    @Deprecated
+    Server createServer(OWLIndividual i);
+
+    @Deprecated
+    boolean hasSuitableServerFilter(OWLIndividual i);
+
+    @Deprecated
+    ServerFilter createServerFilter(OWLIndividual i, Server server);
+
+    @Deprecated
+    boolean hasSuitableServerTransport(OWLIndividual i);
+
+    @Deprecated
+    ServerTransport createServerTransport(OWLIndividual i);
 }

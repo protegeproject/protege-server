@@ -2,6 +2,7 @@ package org.protege.owl.server.policy;
 
 import org.protege.owl.server.api.server.ServerPath;
 
+@Deprecated
 public class ProtectedServerDocument implements ProtectedObject {
     private ServerPath path;
     

@@ -14,6 +14,7 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.search.EntitySearcher;
 
+@Deprecated
 public class FilterConstraint {
     public static final Logger logger = LoggerFactory.getLogger(FilterConstraint.class.getCanonicalName());
     private OWLIndividual i;

@@ -43,6 +43,7 @@ import org.protege.owl.server.util.ServerFilterAdapter;
  * @author tredmond
  *
  */
+@Deprecated
 public class SynchronizationFilter extends ServerFilterAdapter {
     private Logger logger = LoggerFactory.getLogger(SynchronizationFilter.class.getCanonicalName());
     private Set<ServerOntologyDocument> writers = new TreeSet<ServerOntologyDocument>();

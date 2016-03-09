@@ -11,6 +11,7 @@ import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.util.ServerFilterAdapter;
 
+@Deprecated
 public class OSGiShutdownFilter extends ServerFilterAdapter {
     private Logger logger = LoggerFactory.getLogger(OSGiShutdownFilter.class.getCanonicalName());
     

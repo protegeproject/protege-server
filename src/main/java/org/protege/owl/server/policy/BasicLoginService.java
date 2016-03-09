@@ -3,6 +3,7 @@ package org.protege.owl.server.policy;
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.UserId;
 
+@Deprecated
 public class BasicLoginService implements LoginService {
     private UserDatabase userDb;
     

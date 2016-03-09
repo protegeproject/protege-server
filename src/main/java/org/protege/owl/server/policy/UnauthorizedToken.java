@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.UserId;
 
+@Deprecated
 public class UnauthorizedToken implements AuthToken, Serializable {
     private static final long serialVersionUID = 5535482187202979494L;
     

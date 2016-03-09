@@ -9,6 +9,7 @@ import java.rmi.registry.Registry;
 import org.protege.owl.server.api.AuthToken;
 import org.semanticweb.owlapi.model.IRI;
 
+@Deprecated
 public class RMILoginUtility {
     
     private RMILoginUtility() {

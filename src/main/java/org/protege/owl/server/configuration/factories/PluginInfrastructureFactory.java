@@ -15,6 +15,7 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 
+@Deprecated
 public class PluginInfrastructureFactory extends ServerComponentFactoryAdapter implements OSGiAware {
     private OWLOntology configuration;
     private OWLDataFactory factory;

@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import org.protege.owl.server.api.UserId;
 
+@Deprecated
 public class Permission {
     private Map<Operation, UserContainer> permissionMap;
     

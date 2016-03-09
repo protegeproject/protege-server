@@ -1,5 +1,7 @@
 package org.protege.owl.server.policy;
 
+import org.protege.owl.server.api.UserId;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
@@ -9,12 +11,11 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.protege.owl.server.api.UserId;
-
 /*
  * ToDo Add token expiration...
  */
 
+@Deprecated
 public class UserDatabase {
     private Map<UserId, String> passwordMap = new TreeMap<UserId, String>();
     private Map<UserId, Collection<Group>> userToGroupsMap = new TreeMap<UserId, Collection<Group>>();

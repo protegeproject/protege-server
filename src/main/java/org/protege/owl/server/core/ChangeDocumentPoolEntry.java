@@ -18,6 +18,7 @@ import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.ChangeHistoryUtilities;
 
+@Deprecated
 public class ChangeDocumentPoolEntry {
     
     private Logger logger = LoggerFactory.getLogger(ChangeDocumentPoolEntry.class.getCanonicalName());

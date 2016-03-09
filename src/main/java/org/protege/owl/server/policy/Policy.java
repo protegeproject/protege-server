@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.server.ServerPath;
 
+@Deprecated
 public class Policy {
     private Map<ProtectedObject, Permission> permissionMap = new HashMap<ProtectedObject, Permission>();
     

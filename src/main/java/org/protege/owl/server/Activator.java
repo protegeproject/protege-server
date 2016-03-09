@@ -16,6 +16,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public class Activator implements BundleActivator {
 	public static final String SERVER_CONFIGURATION_PROPERTY = "org.protege.owl.server.configuration";
 	private Logger logger = LoggerFactory.getLogger(Activator.class.getCanonicalName());

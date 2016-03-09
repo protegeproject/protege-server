@@ -1,5 +1,6 @@
 package org.protege.owl.server.policy;
 
+@Deprecated
 public enum ProtectedEnumeratedObjects implements ProtectedObject {
     SERVER("Server");
     

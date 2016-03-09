@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component name="ProtegeServerFactory" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
+    <implementation class="org.protege.owl.server.configuration.ProtegeServerFactory"/>
+    <service>
+        <provide interface="org.protege.owl.server.api.server.ServerFactory"/>
+    </service>
+</scr:component>

@@ -18,6 +18,7 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.search.EntitySearcher;
 
+@Deprecated
 public class CoreServerFactory extends ServerComponentFactoryAdapter {
 	public static Logger logger = LoggerFactory.getLogger(CoreServerFactory.class.getCanonicalName());
 	private OWLOntology ontology;

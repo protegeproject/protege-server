@@ -1,20 +1,5 @@
 package org.protege.owl.server.policy;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.rmi.AlreadyBoundException;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.Collection;
-import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.antlr.runtime.ANTLRInputStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.ChangeHistory;
 import org.protege.owl.server.api.ChangeMetaData;
@@ -36,6 +21,23 @@ import org.protege.owl.server.policy.generated.UsersAndGroupsLexer;
 import org.protege.owl.server.policy.generated.UsersAndGroupsParser;
 import org.protege.owl.server.util.ServerFilterAdapter;
 
+import org.antlr.runtime.ANTLRInputStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.rmi.AlreadyBoundException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.Collection;
+import java.util.Map;
+
+@Deprecated
 public class Authenticator extends ServerFilterAdapter {
     public static final String LOCAL_BASIC_LOGIN_KEY = "Basic Login key for Local Transport";
     private static UserDatabase userDatabase = null;
@@ -71,6 +73,7 @@ public class Authenticator extends ServerFilterAdapter {
         return loginService.login(username, password);
     }
 
+    @Deprecated
     public Authenticator(Server delegate) throws IOException, RecognitionException, OWLServerException {
         this(delegate, parseUsersAndGroups(delegate, GetUserAndGroupOption.USE_CACHE));
     }

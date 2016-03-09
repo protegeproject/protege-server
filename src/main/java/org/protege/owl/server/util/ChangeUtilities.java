@@ -18,6 +18,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
+@Deprecated
 public class ChangeUtilities {
 	
 	private ChangeUtilities() {

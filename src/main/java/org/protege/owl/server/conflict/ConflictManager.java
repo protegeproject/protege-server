@@ -30,6 +30,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
+@Deprecated
 public class ConflictManager extends ServerFilterAdapter {
     private Logger logger = LoggerFactory.getLogger(ConflictManager.class.getCanonicalName());
 

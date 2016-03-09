@@ -2,6 +2,7 @@ package org.protege.owl.server.api;
 
 import java.io.Serializable;
 
+@Deprecated
 public final class UserId implements Comparable<UserId>, Serializable {
     private static final long serialVersionUID = -3698547861609983363L;
     private String userName;

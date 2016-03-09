@@ -25,6 +25,7 @@ import org.protege.owl.server.policy.generated.PolicyLexer;
 import org.protege.owl.server.policy.generated.PolicyParser;
 import org.protege.owl.server.util.ServerFilterAdapter;
 
+@Deprecated
 public class PolicyFilter extends ServerFilterAdapter {
     private UserDatabase userDb;
     private Policy policy;

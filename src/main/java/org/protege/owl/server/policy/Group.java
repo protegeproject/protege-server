@@ -1,5 +1,6 @@
 package org.protege.owl.server.policy;
 
+@Deprecated
 public class Group implements Comparable<Group> {
     private String groupName;
     
