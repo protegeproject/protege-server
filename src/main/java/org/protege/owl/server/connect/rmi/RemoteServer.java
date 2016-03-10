@@ -15,6 +15,7 @@ import org.protege.owl.server.api.server.ServerDocument;
 import org.protege.owl.server.api.server.ServerOntologyDocument;
 import org.semanticweb.owlapi.model.IRI;
 
+@Deprecated
 public interface RemoteServer  extends Remote {
     OntologyDocumentRevision evaluateRevisionPointer(AuthToken u, ServerOntologyDocument doc, RevisionPointer pointer) throws RemoteException;
     

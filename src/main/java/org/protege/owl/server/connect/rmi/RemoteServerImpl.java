@@ -17,6 +17,7 @@ import org.protege.owl.server.api.server.ServerOntologyDocument;
 import org.protege.owl.server.api.server.ServerPath;
 import org.semanticweb.owlapi.model.IRI;
 
+@Deprecated
 public class RemoteServerImpl implements RemoteServer {
 	public static final String NETWORK_COMPRESSION_PROPERTY="org.protege.owl.compressionLimit";
 	public static final int NETWORK_COMPRESSION_LIMIT;

@@ -18,6 +18,7 @@ import org.protege.owl.server.connect.ConfigurableCompression;
  *        also I need to remember to add this to the guys that use the RMI transport for a back channel.
  *        I may be able to find these by looking at the callers of getServerPort() - I will know if this works shortly.
  */
+@Deprecated
 public class RMITransport implements ServerTransport, ConfigurableCompression {
 	public static final String SERVER_NAME = "OWL 2 Server";
 	
