@@ -13,7 +13,5 @@ import edu.stanford.protege.metaproject.api.UserId;
  */
 public interface LoginService extends Remote { // TODO: Put it in the Metaproject API
 
-    public static String SERVICE = "LoginService";
-
     AuthToken login(UserId username, SaltedPasswordDigest password) throws RemoteException;
 }
