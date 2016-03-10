@@ -2,7 +2,7 @@ package org.protege.owl.server.api.server;
 
 import java.io.IOException;
 
-
+@Deprecated
 public interface ServerTransport {
 	
     /**
