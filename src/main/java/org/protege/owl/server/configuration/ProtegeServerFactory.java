@@ -1,15 +1,13 @@
 package org.protege.owl.server.configuration;
 
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.api.server.ServerFactory;
-import org.protege.owl.server.api.server.ServerTransport;
-import org.protege.owl.server.connect.rmi.RMITransport;
+import org.protege.owl.server.api.server.TransportHandler;
+import org.protege.owl.server.connect.RmiTransport;
 import org.protege.owl.server.core.ProtegeServer;
 import org.protege.owl.server.policy.AccessControlFilter;
 import org.protege.owl.server.security.AuthenticationFilter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import edu.stanford.protege.metaproject.api.Host;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
@@ -18,12 +16,12 @@ import edu.stanford.protege.metaproject.api.ServerConfiguration;
  * Responsible for building the complete Protege server.
  *
  * @author Josef Hardi <johardi@stanford.edu> <br>
- * Stanford Center for Biomedical Informatics Research
+ *         Stanford Center for Biomedical Informatics Research
  */
 public class ProtegeServerFactory implements ServerFactory {
 
     @Override
-    public Server build(ServerConfiguration configuration) {
+    public Server build(ServerConfiguration configuration) throws OWLServerException {
         Server server = addAccessControlLayer(createBaseServer(configuration));
         server = addAuthenticationLayer(server);
         server = injectServerTransport(server, configuration);
@@ -42,19 +40,17 @@ public class ProtegeServerFactory implements ServerFactory {
         return new AuthenticationFilter(server);
     }
 
-    private Server injectServerTransport(Server server, ServerConfiguration configuration) {
-        List<ServerTransport> transports = createServerTransports(configuration);
-        server.setTransports(transports);
+    private Server injectServerTransport(Server server, ServerConfiguration configuration)
+            throws OWLServerException {
+        TransportHandler transport = createTransport(configuration);
+        server.setTransport(transport);
         return server;
     }
 
-    private List<ServerTransport> createServerTransports(ServerConfiguration configuration) {
+    private TransportHandler createTransport(ServerConfiguration configuration) {
         Host host = configuration.getHost();
-        int rmiRegistryPort = host.getRegistryPort().get();
+        int registryPort = host.getRegistryPort().get();
         int serverPort = host.getPort().get();
-        
-        List<ServerTransport> transports = new ArrayList<>();
-        transports.add(new RMITransport(rmiRegistryPort, serverPort));
-        return transports;
+        return new RmiTransport(registryPort, serverPort);
     }
 }
