@@ -1,5 +1,6 @@
 package org.protege.owl.server.configuration;
 
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.server.BuilderService;
 import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.api.server.ServerFactory;
@@ -34,7 +35,16 @@ public class ServerBuilderService implements BuilderService {
     @Override
     public void setServerFactory(ServerFactory factory) {
         serverFactory = factory;
-        server = serverFactory.build(configuration);
+        immediateBuildServer();
+    }
+
+    private void immediateBuildServer() {
+        try {
+            server = serverFactory.build(configuration);
+        }
+        catch (OWLServerException e) {
+            logger.error("Failed to build the server instance", e);
+        }
     }
 
     @Override
@@ -42,7 +52,6 @@ public class ServerBuilderService implements BuilderService {
         if (factory == null) return;
         if (serverFactory.equals(factory)) {
             serverFactory = null;
-
             logger.info("Shutting down the server");
             server.shutdown();
             server = null;
