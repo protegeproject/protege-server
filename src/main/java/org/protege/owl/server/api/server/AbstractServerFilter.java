@@ -56,6 +56,18 @@ public abstract class AbstractServerFilter implements Server {
 
     @Override
     @Deprecated
+    public void setTransports(Collection<ServerTransport> transports) {
+        getDelegate().setTransports(transports);
+    }
+
+    @Override
+    @Deprecated
+    public Collection<ServerTransport> getTransports() {
+        return getDelegate().getTransports();
+    }
+
+    @Override
+    @Deprecated
     public Collection<ServerDocument> list(AuthToken u, ServerDirectory dir) throws OWLServerException {
         return null;
     }

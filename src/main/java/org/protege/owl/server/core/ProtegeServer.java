@@ -15,12 +15,12 @@ import org.protege.owl.server.api.server.ServerListener;
 import org.protege.owl.server.api.server.ServerOntologyDocument;
 import org.protege.owl.server.api.server.ServerPath;
 import org.protege.owl.server.api.server.ServerTransport;
+import org.protege.owl.server.api.server.TransportHandler;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +43,8 @@ public class ProtegeServer implements Server {
 
     private ServerConfiguration configuration;
 
-    private List<ServerTransport> transports = new ArrayList<ServerTransport>();
+    private TransportHandler transport;
+
     private List<ServerListener> listeners = new ArrayList<ServerListener>();
 
     public ProtegeServer(ServerConfiguration configuration) {
@@ -92,13 +93,8 @@ public class ProtegeServer implements Server {
     }
 
     @Override
-    public void setTransports(Collection<ServerTransport> transports) {
-        transports.addAll(transports);
-    }
-
-    @Override
-    public Collection<ServerTransport> getTransports() {
-        return Collections.unmodifiableCollection(transports);
+    public void setTransport(TransportHandler transport) throws OWLServerException {
+        this.transport = transport;
     }
 
     @Override
@@ -163,6 +159,17 @@ public class ProtegeServer implements Server {
     @Override
     @Deprecated
     public ServerOntologyDocument createOntologyDocument(org.protege.owl.server.api.AuthToken u, ServerPath serverIRI, Map<String, Object> settings) throws OWLServerException {
+        return null;
+    }
+
+    @Override
+    @Deprecated
+    public void setTransports(Collection<ServerTransport> transports) {
+    }
+
+    @Override
+    @Deprecated
+    public Collection<ServerTransport> getTransports() {
         return null;
     }
 

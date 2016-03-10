@@ -1,9 +1,8 @@
 package org.protege.owl.server.api.server;
 
 import org.protege.owl.server.api.CommitBundle;
+import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerRequestException;
-
-import java.util.Collection;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Project;
@@ -62,13 +61,8 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void setTransports(Collection<ServerTransport> transports) {
-        getDelegate().setTransports(transports);
-    }
-
-    @Override
-    public Collection<ServerTransport> getTransports() {
-        return getDelegate().getTransports();
+    public void setTransport(TransportHandler transport) throws OWLServerException {
+        getDelegate().setTransport(transport);
     }
 
     @Override

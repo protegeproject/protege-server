@@ -19,6 +19,7 @@ import org.protege.owl.server.api.server.ServerListener;
 import org.protege.owl.server.api.server.ServerOntologyDocument;
 import org.protege.owl.server.api.server.ServerPath;
 import org.protege.owl.server.api.server.ServerTransport;
+import org.protege.owl.server.api.server.TransportHandler;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
 import org.protege.owl.server.util.ChangeUtilities;
 
@@ -433,6 +434,12 @@ public class ServerImpl implements Server {
 
     @Override
     public void stop(edu.stanford.protege.metaproject.api.AuthToken token) throws ServerRequestException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setTransport(TransportHandler transport) {
         // TODO Auto-generated method stub
         
     }
