@@ -87,22 +87,4 @@ public interface ServerRequests {
      * @throws ServerRequestException
      */
     void commit(AuthToken token, ProjectId projectId, CommitBundle changes) throws ServerRequestException;
-
-    /**
-     * Starting the server.
-     *
-     * @param token
-     *            An authentication token to verify the request source.
-     * @throws ServerRequestException
-     */
-    void start(AuthToken token) throws ServerRequestException;
-
-    /**
-     * Stopping the server.
-     *
-     * @param token
-     *            An authentication token to verify the request source.
-     * @throws ServerRequestException
-     */
-    void stop(AuthToken token) throws ServerRequestException;
 }

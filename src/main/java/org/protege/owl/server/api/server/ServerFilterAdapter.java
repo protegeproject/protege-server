@@ -21,16 +21,6 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void start(AuthToken token) throws ServerRequestException {
-        getDelegate().start(token);
-    }
-
-    @Override
-    public void stop(AuthToken token) throws ServerRequestException {
-        getDelegate().stop(token);
-    }
-
-    @Override
     public void addUser(AuthToken token, User newUser) throws ServerRequestException {
         getDelegate().addUser(token, newUser);
     }

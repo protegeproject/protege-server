@@ -110,18 +110,6 @@ public class ProtegeServer implements Server {
         }
     }
 
-    @Override
-    public void start(AuthToken token) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void stop(AuthToken token) {
-        // TODO Auto-generated method stub
-        
-    }
-
     /*
      * Deprecated classes
      */

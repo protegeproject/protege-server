@@ -177,18 +177,6 @@ public class ServerFilterAdapter extends ServerFilter {
     }
 
     @Override
-    public void start(edu.stanford.protege.metaproject.api.AuthToken token) throws ServerRequestException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void stop(edu.stanford.protege.metaproject.api.AuthToken token) throws ServerRequestException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public void setTransport(TransportHandler transport) throws OWLServerException {
         // TODO Auto-generated method stub
         

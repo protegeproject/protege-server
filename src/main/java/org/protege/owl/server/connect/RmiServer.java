@@ -57,16 +57,4 @@ public class RmiServer implements RemoteServer {
         // TODO Auto-generated method stub
         
     }
-
-    @Override
-    public void start(AuthToken token) throws ServerRequestException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void stop(AuthToken token) throws ServerRequestException {
-        // TODO Auto-generated method stub
-        
-    }
 }

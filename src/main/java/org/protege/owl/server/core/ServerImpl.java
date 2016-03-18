@@ -427,18 +427,6 @@ public class ServerImpl implements Server {
     }
 
     @Override
-    public void start(edu.stanford.protege.metaproject.api.AuthToken token) throws ServerRequestException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void stop(edu.stanford.protege.metaproject.api.AuthToken token) throws ServerRequestException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public void setTransport(TransportHandler transport) {
         // TODO Auto-generated method stub
         
