@@ -1,6 +1,6 @@
 package org.protege.owl.server.connect;
 
-import org.protege.owl.server.api.LoginService;
+import org.protege.owl.server.api.RmiLoginService;
 import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.api.server.TransportHandler;
 
@@ -39,8 +39,8 @@ public class RmiTransport implements TransportHandler {
             logger.info("Server broadcasted through RMI Registry on port {}", registryPort);
             logger.info("Server exported through RMI on port {}", serverPort);
         }
-        else if (remoteObject instanceof LoginService) {
-            LoginService remoteLoginService = (LoginService) remoteObject;
+        else if (remoteObject instanceof RmiLoginService) {
+            RmiLoginService remoteLoginService = (RmiLoginService) remoteObject;
             Remote remoteStub = UnicastRemoteObject.exportObject(remoteLoginService, serverPort);
             registry.rebind("LoginService", remoteStub);
             logger.info("Server broadcasted through RMI Registry on port {}", registryPort);

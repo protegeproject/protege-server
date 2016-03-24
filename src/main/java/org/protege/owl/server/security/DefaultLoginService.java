@@ -1,6 +1,6 @@
 package org.protege.owl.server.security;
 
-import org.protege.owl.server.api.LoginService;
+import org.protege.owl.server.api.RmiLoginService;
 
 import java.rmi.RemoteException;
 
@@ -12,7 +12,7 @@ import edu.stanford.protege.metaproject.api.UserId;
  * @author Josef Hardi <johardi@stanford.edu> <br>
  * Stanford Center for Biomedical Informatics Research
  */
-public class DefaultLoginService implements LoginService {
+public class DefaultLoginService implements RmiLoginService {
 
     SessionManager sessionManager;
 
