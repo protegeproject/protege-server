@@ -1,8 +1,8 @@
 package org.protege.owl.server.security;
 
+import org.protege.owl.server.api.ServerFilterAdapter;
+import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.server.Server;
-import org.protege.owl.server.api.server.ServerFilterAdapter;
 import org.protege.owl.server.api.server.TransportHandler;
 
 /**
@@ -17,9 +17,9 @@ public class AuthenticationFilter extends ServerFilterAdapter {
 
     private DefaultLoginService loginService;
 
-    public AuthenticationFilter(Server delegate) {
+    public AuthenticationFilter(ServerLayer delegate) {
         super(delegate);
-        loginService = new DefaultLoginService(sessionManager);
+//        loginService = new DefaultLoginService(sessionManager);
     }
 
     @Override

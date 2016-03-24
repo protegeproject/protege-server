@@ -1,9 +1,9 @@
 package org.protege.owl.server.configuration;
 
+import org.protege.owl.server.api.BuilderService;
+import org.protege.owl.server.api.ServerFactory;
+import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.server.BuilderService;
-import org.protege.owl.server.api.server.Server;
-import org.protege.owl.server.api.server.ServerFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class ServerBuilderService implements BuilderService {
 
     private ServerFactory serverFactory;
 
-    private Server server;
+    private ServerLayer server;
 
     private ServerConfiguration configuration;
 
@@ -52,8 +52,7 @@ public class ServerBuilderService implements BuilderService {
         if (factory == null) return;
         if (serverFactory.equals(factory)) {
             serverFactory = null;
-            logger.info("Shutting down the server");
-            server.shutdown();
+            logger.info("Disconnecting from the server");
             server = null;
         }
     }

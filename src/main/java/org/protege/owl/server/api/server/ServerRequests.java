@@ -1,6 +1,6 @@
 package org.protege.owl.server.api.server;
 
-import org.protege.owl.server.api.CommitBundle; // TODO: Move to Metaproject API
+import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.exception.ServerRequestException;
 
 import edu.stanford.protege.metaproject.api.AuthToken;

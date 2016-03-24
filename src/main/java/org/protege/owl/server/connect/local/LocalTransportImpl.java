@@ -1,12 +1,5 @@
 package org.protege.owl.server.connect.local;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.protege.owl.server.api.AuthToken;
 import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.exception.OWLServerException;
@@ -14,7 +7,13 @@ import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.api.server.ServerDocument;
 import org.protege.owl.server.api.server.ServerListener;
 import org.protege.owl.server.api.server.ServerTransport;
-import org.protege.owl.server.api.server.TransportHandler;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
 
 /*
  * ToDo - it would be nice to add a factory so that this auto-configures in OSGi.
@@ -102,11 +101,5 @@ public class LocalTransportImpl implements LocalTransport {
     @Override
     public void removeServerListener(ServerListener listener) {
         server.removeServerListener(listener);
-    }
-
-    @Override
-    public void setTransport(TransportHandler transport) {
-        // TODO Auto-generated method stub
-        
     }
 }

@@ -1,8 +1,9 @@
 package org.protege.owl.server.configuration;
 
+import org.protege.owl.server.api.ServerFactory;
+import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.server.Server;
-import org.protege.owl.server.api.server.ServerFactory;
 import org.protege.owl.server.api.server.TransportHandler;
 import org.protege.owl.server.connect.RmiTransport;
 import org.protege.owl.server.core.ProtegeServer;
@@ -21,30 +22,29 @@ import edu.stanford.protege.metaproject.api.ServerConfiguration;
 public class ProtegeServerFactory implements ServerFactory {
 
     @Override
-    public Server build(ServerConfiguration configuration) throws OWLServerException {
-        Server server = addAccessControlLayer(createBaseServer(configuration));
+    public ServerLayer build(ServerConfiguration configuration) throws OWLServerException {
+        ServerLayer server = addAccessControlLayer(createBaseServer(configuration));
         server = addAuthenticationLayer(server);
-        server = injectServerTransport(server, configuration);
+        injectServerTransport(server, configuration);
         return server;
     }
 
-    private Server createBaseServer(ServerConfiguration configuration) {
+    private ServerLayer createBaseServer(ServerConfiguration configuration) {
         return new ProtegeServer(configuration);
     }
 
-    private Server addAccessControlLayer(Server server) {
+    private ServerLayer addAccessControlLayer(ServerLayer server) {
         return new AccessControlFilter(server);
     }
 
-    private Server addAuthenticationLayer(Server server) {
+    private ServerLayer addAuthenticationLayer(ServerLayer server) {
         return new AuthenticationFilter(server);
     }
 
-    private Server injectServerTransport(Server server, ServerConfiguration configuration)
+    private void injectServerTransport(ServerLayer server, ServerConfiguration configuration)
             throws OWLServerException {
         TransportHandler transport = createTransport(configuration);
         server.setTransport(transport);
-        return server;
     }
 
     private TransportHandler createTransport(ServerConfiguration configuration) {

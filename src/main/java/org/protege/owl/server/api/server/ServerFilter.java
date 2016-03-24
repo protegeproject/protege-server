@@ -1,7 +1,5 @@
 package org.protege.owl.server.api.server;
 
-import edu.stanford.protege.metaproject.api.ServerConfiguration;
-
 /**
  * A server filter is a wrapper around an existing implementation of a server
  * that adds some functionality.
@@ -43,26 +41,13 @@ import edu.stanford.protege.metaproject.api.ServerConfiguration;
  */
 @Deprecated
 public abstract class ServerFilter implements Server {
-    
-    private ServerConfiguration configuration;
     private Server delegate;
-
-    @Deprecated
+    
     public ServerFilter(Server delegate) {
         this.delegate = delegate;
     }
-
-    public ServerFilter(ServerConfiguration configuration, Server delegate) {
-        this.configuration = configuration;
-        this.delegate = delegate;
-    }
-
+    
     public Server getDelegate() {
         return delegate;
-    }
-
-    @Override
-    public ServerConfiguration getConfiguration() {
-        return configuration;
     }
 }

@@ -1,4 +1,4 @@
-package org.protege.owl.server.api.server;
+package org.protege.owl.server.api;
 
 import org.protege.owl.server.api.exception.OWLServerException;
 
@@ -12,5 +12,5 @@ import edu.stanford.protege.metaproject.api.ServerConfiguration;
  */
 public interface ServerFactory {
 
-    Server build(ServerConfiguration configuration) throws OWLServerException;
+    ServerLayer build(ServerConfiguration configuration) throws OWLServerException;
 }

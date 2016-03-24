@@ -2,10 +2,10 @@ package org.protege.owl.server.policy;
 
 import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.PerOperationCommitBundle;
-import org.protege.owl.server.api.exception.ServerRequestException;
+import org.protege.owl.server.api.ServerFilterAdapter;
+import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OperationNotAllowedException;
-import org.protege.owl.server.api.server.Server;
-import org.protege.owl.server.api.server.ServerFilterAdapter;
+import org.protege.owl.server.api.exception.ServerRequestException;
 
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
@@ -32,7 +32,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
     private final OperationRegistry operationRegistry;
     private final Policy policy;
 
-    public AccessControlFilter(Server delegate) {
+    public AccessControlFilter(ServerLayer delegate) {
         super(delegate);
         operationRegistry = getConfiguration().getMetaproject().getOperationRegistry();
         policy = getConfiguration().getMetaproject().getPolicy();

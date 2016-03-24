@@ -1,8 +1,9 @@
-package org.protege.owl.server.api.server;
+package org.protege.owl.server.api;
 
-import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerRequestException;
+import org.protege.owl.server.api.server.ServerListener;
+import org.protege.owl.server.api.server.TransportHandler;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Project;
@@ -16,7 +17,7 @@ import edu.stanford.protege.metaproject.api.UserId;
  */
 public class ServerFilterAdapter extends AbstractServerFilter {
 
-    public ServerFilterAdapter(Server delegate) {
+    public ServerFilterAdapter(ServerLayer delegate) {
         super(delegate);
     }
 
