@@ -19,7 +19,6 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
  *
  */
 
-@Deprecated
 public interface ChangeHistory {
     String CHANGE_DOCUMENT_EXTENSION = ".history";
 

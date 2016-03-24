@@ -3,7 +3,6 @@ package org.protege.owl.server.api;
 import java.io.Serializable;
 import java.util.Date;
 
-@Deprecated
 public final class ChangeMetaData implements Serializable {
     private static final long serialVersionUID = -1198003999159038367L;
     private Date date;
