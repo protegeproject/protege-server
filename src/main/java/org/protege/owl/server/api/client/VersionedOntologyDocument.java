@@ -1,10 +1,11 @@
 package org.protege.owl.server.api.client;
 
-import java.io.IOException;
+import org.protege.owl.server.changes.OntologyDocumentRevision;
+import org.protege.owl.server.changes.api.ChangeHistory;
 
-import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.semanticweb.owlapi.model.OWLOntology;
+
+import java.io.IOException;
 
 /**
  * This is an open OWL ontology held by the client with an association to a
