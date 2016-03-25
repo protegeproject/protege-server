@@ -1,11 +1,15 @@
 package org.protege.owl.server.api;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
+import org.protege.owl.server.changes.ChangeMetaData;
+import org.protege.owl.server.changes.OntologyDocumentRevision;
+import org.protege.owl.server.changes.api.DocumentFactory;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
 
 /**
  * This is a lightweight class that captures the collection of changes to a
@@ -16,10 +20,10 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
  * is reconstituted on the remote side.
  * 
  * @author tredmond
- *
  */
 
 public interface ChangeHistory {
+
     String CHANGE_DOCUMENT_EXTENSION = ".history";
 
     DocumentFactory getDocumentFactory();
