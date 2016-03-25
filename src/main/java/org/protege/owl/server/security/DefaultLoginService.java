@@ -10,6 +10,7 @@ import edu.stanford.protege.metaproject.api.Salt;
 import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
 import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
+import edu.stanford.protege.metaproject.impl.AuthorizedUserToken;
 
 public class DefaultLoginService implements RmiLoginService {
 
@@ -23,7 +24,17 @@ public class DefaultLoginService implements RmiLoginService {
 
     @Override
     public AuthToken login(UserId userId, SaltedPasswordDigest password) throws RemoteException {
-        return null;
+        try {
+            if (authManager.hasValidCredentials(userId, password)) {
+                AuthToken authToken = new AuthorizedUserToken(userId);
+                sessionManager.add(authToken);
+                return authToken;
+            }
+            throw new RemoteException("Invalid combination of username and password");
+        }
+        catch (UserNotRegisteredException e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     public Salt getSalt(UserId userId) throws UserNotRegisteredException {
