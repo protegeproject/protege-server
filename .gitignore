@@ -1,11 +1,21 @@
+# Maven
+target/
+
+# Eclipse
 .classpath
 .project
 .settings/
-.idea/
-*.iml
 META-INF/
+build.properties
+plugin.xml
 
-# Maven
-target/
-release.properties
-/bin/
+#intelliJ
+*.iws
+*.ipr
+.idea
+*.iml
+build/
+
+src/main/java/test/*
+
+*.uml
