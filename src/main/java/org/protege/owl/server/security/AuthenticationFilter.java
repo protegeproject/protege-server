@@ -5,6 +5,8 @@ import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.server.TransportHandler;
 
+import edu.stanford.protege.metaproject.api.AuthenticationManager;
+
 /**
  * Represents the authentication gate that will validate the user session in the server.
  *
@@ -13,13 +15,16 @@ import org.protege.owl.server.api.server.TransportHandler;
  */
 public class AuthenticationFilter extends ServerFilterAdapter {
 
+    private final AuthenticationManager authManager;
+
     private SessionManager sessionManager = new SessionManager();
 
-    private DefaultLoginService loginService;
+    private RmiLoginService loginService;
 
     public AuthenticationFilter(ServerLayer delegate) {
         super(delegate);
-//        loginService = new DefaultLoginService(sessionManager);
+        authManager = getConfiguration().getAuthenticationManager();
+        loginService = new RmiLoginService(authManager, sessionManager);
     }
 
     @Override
