@@ -1,8 +1,8 @@
 package org.protege.owl.server.connect;
 
 import org.protege.owl.server.api.CommitBundle;
+import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.exception.ServerRequestException;
-import org.protege.owl.server.api.server.Server;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Project;
@@ -16,6 +16,8 @@ import edu.stanford.protege.metaproject.api.UserId;
  */
 public class RmiServer implements RemoteServer {
 
+    public static final String SERVER_SERVICE = "ProtegeServer";
+
     private Server server;
 
     public RmiServer(Server server) {
@@ -24,37 +26,31 @@ public class RmiServer implements RemoteServer {
 
     @Override
     public void addUser(AuthToken token, User newUser) throws ServerRequestException {
-        // TODO Auto-generated method stub
-        
+        server.addUser(token, newUser);
     }
 
     @Override
     public void removeUser(AuthToken token, UserId userId) throws ServerRequestException {
-        // TODO Auto-generated method stub
-        
+        server.removeUser(token, userId);
     }
 
     @Override
     public void addProject(AuthToken token, Project newProject) throws ServerRequestException {
-        // TODO Auto-generated method stub
-        
+        server.addProject(token, newProject);
     }
 
     @Override
     public void removeProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
-        // TODO Auto-generated method stub
-        
+        server.removeProject(token, projectId);
     }
 
     @Override
     public void viewProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
-        // TODO Auto-generated method stub
-        
+        server.viewProject(token, projectId);
     }
 
     @Override
     public void commit(AuthToken token, ProjectId projectId, CommitBundle changes) throws ServerRequestException {
-        // TODO Auto-generated method stub
-        
+        server.commit(token, projectId, changes);
     }
 }
