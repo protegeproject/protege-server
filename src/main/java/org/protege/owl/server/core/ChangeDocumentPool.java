@@ -14,11 +14,11 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.server.ServerOntologyDocument;
 import org.protege.owl.server.api.server.ServerPath;
+import org.protege.owl.server.changes.api.ChangeHistory;
+import org.protege.owl.server.changes.api.DocumentFactory;
+import org.protege.owl.server.changes.api.ServerOntologyDocument;
 
 @Deprecated
 public class ChangeDocumentPool {

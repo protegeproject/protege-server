@@ -5,8 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
+import org.protege.owl.server.changes.api.DocumentFactory;
 
 public class ReadChangeDocument {
 

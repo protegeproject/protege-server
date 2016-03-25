@@ -1,4 +1,6 @@
-package org.protege.owl.server.api;
+package org.protege.owl.server.changes.api;
+
+import org.protege.owl.server.changes.OntologyDocumentRevision;
 
 import java.io.Serializable;
 

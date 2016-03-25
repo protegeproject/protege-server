@@ -3,7 +3,8 @@ package org.protege.owl.server.util;
 import java.net.URI;
 
 import org.protege.owl.server.api.client.Client;
-import org.protege.owl.server.api.client.VersionedOntologyDocument;
+import org.protege.owl.server.changes.api.VersionedOntologyDocument;
+
 import org.semanticweb.owlapi.model.IRI;
 
 public abstract class AbstractClient implements Client {

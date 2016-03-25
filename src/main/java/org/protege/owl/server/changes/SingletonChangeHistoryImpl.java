@@ -2,10 +2,9 @@ package org.protege.owl.server.changes;
 
 import java.util.List;
 
-import org.protege.owl.server.api.ChangeMetaData;
-import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.SingletonChangeHistory;
+import org.protege.owl.server.changes.api.DocumentFactory;
+import org.protege.owl.server.changes.api.SingletonChangeHistory;
+
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 public class SingletonChangeHistoryImpl extends ChangeHistoryImpl implements SingletonChangeHistory {

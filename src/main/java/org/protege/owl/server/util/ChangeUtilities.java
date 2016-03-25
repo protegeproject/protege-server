@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 
-import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.ChangeMetaData;
-import org.protege.owl.server.api.DocumentFactory;
+import org.protege.owl.server.changes.ChangeMetaData;
+import org.protege.owl.server.changes.api.ChangeHistory;
+import org.protege.owl.server.changes.api.DocumentFactory;
+
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
 import org.semanticweb.owlapi.io.StringDocumentTarget;

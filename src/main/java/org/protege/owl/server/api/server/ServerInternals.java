@@ -1,7 +1,8 @@
 package org.protege.owl.server.api.server;
 
-import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.changes.api.DocumentFactory;
+import org.protege.owl.server.changes.api.ServerDocument;
 
 import java.io.InputStream;
 import java.io.OutputStream;

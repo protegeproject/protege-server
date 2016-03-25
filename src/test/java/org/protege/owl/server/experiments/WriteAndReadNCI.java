@@ -5,12 +5,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.ChangeMetaData;
-import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.changes.ChangeHistoryUtilities;
+import org.protege.owl.server.changes.ChangeMetaData;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
+import org.protege.owl.server.changes.OntologyDocumentRevision;
+import org.protege.owl.server.changes.api.ChangeHistory;
+import org.protege.owl.server.changes.api.DocumentFactory;
+
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.OWLAxiom;

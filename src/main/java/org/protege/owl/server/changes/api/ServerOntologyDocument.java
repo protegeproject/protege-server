@@ -1,6 +1,4 @@
-package org.protege.owl.server.api.server;
-
-import org.protege.owl.server.api.client.RemoteOntologyDocument;
+package org.protege.owl.server.changes.api;
 
 public interface ServerOntologyDocument extends ServerDocument {
 

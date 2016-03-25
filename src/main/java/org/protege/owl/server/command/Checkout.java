@@ -13,11 +13,12 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.protege.owl.server.api.RevisionPointer;
+
 import org.protege.owl.server.api.client.Client;
-import org.protege.owl.server.api.client.RemoteOntologyDocument;
-import org.protege.owl.server.api.client.VersionedOntologyDocument;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.changes.api.RemoteOntologyDocument;
+import org.protege.owl.server.changes.api.RevisionPointer;
+import org.protege.owl.server.changes.api.VersionedOntologyDocument;
 import org.protege.owl.server.util.ClientUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;

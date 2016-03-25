@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.protege.owl.server.api.client.RemoteServerDocument;
-import org.protege.owl.server.api.server.ServerDocument;
+import org.protege.owl.server.changes.api.RemoteServerDocument;
+import org.protege.owl.server.changes.api.ServerDocument;
+
 import org.semanticweb.owlapi.model.IRI;
 
 public class RootUtils {

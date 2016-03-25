@@ -12,13 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.DocumentFactory;
 import org.protege.owl.server.api.client.Client;
 import org.protege.owl.server.api.client.ClientFactory;
-import org.protege.owl.server.api.client.VersionedOntologyDocument;
 import org.protege.owl.server.api.exception.AuthenticationFailedException;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
+import org.protege.owl.server.changes.api.DocumentFactory;
+import org.protege.owl.server.changes.api.VersionedOntologyDocument;
 import org.protege.owl.server.connect.RootUtils;
 import org.protege.owl.server.policy.RMILoginUtility;
 import org.semanticweb.owlapi.model.IRI;

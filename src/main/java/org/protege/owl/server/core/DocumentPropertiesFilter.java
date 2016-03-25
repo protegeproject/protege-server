@@ -8,15 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.server.Server;
-import org.protege.owl.server.api.server.ServerDirectory;
-import org.protege.owl.server.api.server.ServerDocument;
 import org.protege.owl.server.api.server.ServerFilter;
-import org.protege.owl.server.api.server.ServerOntologyDocument;
 import org.protege.owl.server.api.server.ServerPath;
+import org.protege.owl.server.changes.api.ServerDirectory;
+import org.protege.owl.server.changes.api.ServerDocument;
+import org.protege.owl.server.changes.api.ServerOntologyDocument;
+import org.protege.owl.server.changes.api.SingletonChangeHistory;
 import org.protege.owl.server.util.ServerFilterAdapter;
 
 @Deprecated

@@ -1,26 +1,26 @@
 package org.protege.owl.server.core;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.ChangeMetaData;
 import org.protege.owl.server.api.CommitBundle;
-import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.RevisionPointer;
-import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.exception.DocumentAlreadyExistsException;
 import org.protege.owl.server.api.exception.DocumentNotFoundException;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerRequestException;
 import org.protege.owl.server.api.server.Server;
-import org.protege.owl.server.api.server.ServerDirectory;
-import org.protege.owl.server.api.server.ServerDocument;
 import org.protege.owl.server.api.server.ServerListener;
-import org.protege.owl.server.api.server.ServerOntologyDocument;
 import org.protege.owl.server.api.server.ServerPath;
 import org.protege.owl.server.api.server.ServerTransport;
 import org.protege.owl.server.api.server.TransportHandler;
+import org.protege.owl.server.changes.ChangeMetaData;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
+import org.protege.owl.server.changes.OntologyDocumentRevision;
+import org.protege.owl.server.changes.api.ChangeHistory;
+import org.protege.owl.server.changes.api.DocumentFactory;
+import org.protege.owl.server.changes.api.RevisionPointer;
+import org.protege.owl.server.changes.api.ServerDirectory;
+import org.protege.owl.server.changes.api.ServerDocument;
+import org.protege.owl.server.changes.api.ServerOntologyDocument;
+import org.protege.owl.server.changes.api.SingletonChangeHistory;
 import org.protege.owl.server.util.ChangeUtilities;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;

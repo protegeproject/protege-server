@@ -1,6 +1,4 @@
-package org.protege.owl.server.api.client;
-
-import org.protege.owl.server.api.server.ServerDirectory;
+package org.protege.owl.server.changes.api;
 
 public interface RemoteServerDirectory extends RemoteServerDocument {
     

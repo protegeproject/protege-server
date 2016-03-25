@@ -1,13 +1,11 @@
-package org.protege.owl.server.api;
+package org.protege.owl.server.changes.api;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.protege.owl.server.api.client.RemoteOntologyDocument;
-import org.protege.owl.server.api.client.VersionedOntologyDocument;
+import org.protege.owl.server.changes.ChangeMetaData;
 import org.protege.owl.server.changes.OntologyDocumentRevision;
-import org.protege.owl.server.changes.api.SingletonChangeHistory;
 
 import org.semanticweb.owlapi.io.OWLObjectRenderer;
 import org.semanticweb.owlapi.model.IRI;

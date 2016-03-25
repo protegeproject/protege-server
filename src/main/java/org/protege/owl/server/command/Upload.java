@@ -9,9 +9,10 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.protege.owl.server.api.ChangeMetaData;
+
 import org.protege.owl.server.api.client.Client;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.changes.ChangeMetaData;
 import org.protege.owl.server.util.ClientUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;

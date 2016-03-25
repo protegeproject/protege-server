@@ -2,10 +2,11 @@ package org.protege.owl.server.core;
 
 import java.io.Serializable;
 
-import org.protege.owl.server.api.client.RemoteOntologyDocument;
-import org.protege.owl.server.api.client.RemoteServerDocument;
-import org.protege.owl.server.api.server.ServerOntologyDocument;
 import org.protege.owl.server.api.server.ServerPath;
+import org.protege.owl.server.changes.api.RemoteOntologyDocument;
+import org.protege.owl.server.changes.api.RemoteServerDocument;
+import org.protege.owl.server.changes.api.ServerOntologyDocument;
+
 import org.semanticweb.owlapi.model.IRI;
 
 

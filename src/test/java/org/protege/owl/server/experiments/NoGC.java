@@ -4,11 +4,11 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.RevisionPointer;
-import org.protege.owl.server.api.client.RemoteOntologyDocument;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.changes.OntologyDocumentRevision;
+import org.protege.owl.server.changes.api.ChangeHistory;
+import org.protege.owl.server.changes.api.RemoteOntologyDocument;
+import org.protege.owl.server.changes.api.RevisionPointer;
 import org.protege.owl.server.connect.rmi.RMIClient;
 import org.protege.owl.server.policy.RMILoginUtility;
 import org.semanticweb.owlapi.apibinding.OWLManager;

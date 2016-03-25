@@ -1,4 +1,4 @@
-package org.protege.owl.server.api;
+package org.protege.owl.server.changes.api;
 
 /**
  * Represents a change history where the end revision is exactly one revision

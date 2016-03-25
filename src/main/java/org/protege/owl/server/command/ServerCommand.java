@@ -15,11 +15,12 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.protege.owl.server.api.ChangeMetaData;
-import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.RevisionPointer;
+
 import org.protege.owl.server.api.exception.AuthenticationFailedException;
 import org.protege.owl.server.api.exception.ConflictException;
+import org.protege.owl.server.changes.ChangeMetaData;
+import org.protege.owl.server.changes.OntologyDocumentRevision;
+import org.protege.owl.server.changes.api.RevisionPointer;
 import org.protege.owl.server.connect.rmi.RMIClient;
 import org.protege.owl.server.util.ClientRegistry;
 import org.semanticweb.owlapi.io.OWLFunctionalSyntaxOntologyFormat;

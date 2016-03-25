@@ -1,7 +1,6 @@
-package org.protege.owl.server.api.client;
+package org.protege.owl.server.changes.api;
 
 import org.protege.owl.server.changes.OntologyDocumentRevision;
-import org.protege.owl.server.changes.api.ChangeHistory;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 

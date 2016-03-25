@@ -6,6 +6,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.changes.api.VersionedOntologyDocument;
+
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 

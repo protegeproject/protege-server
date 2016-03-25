@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
-import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.OntologyDocumentRevision;
-import org.protege.owl.server.api.client.RemoteOntologyDocument;
-import org.protege.owl.server.api.client.VersionedOntologyDocument;
+import org.protege.owl.server.changes.api.ChangeHistory;
+import org.protege.owl.server.changes.api.RemoteOntologyDocument;
+import org.protege.owl.server.changes.api.VersionedOntologyDocument;
+
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;

@@ -5,6 +5,16 @@ import java.util.Collection;
 import org.protege.owl.server.api.*;
 import org.protege.owl.server.api.UserId;
 import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.changes.OntologyDocumentRevision;
+import org.protege.owl.server.changes.api.ChangeHistory;
+import org.protege.owl.server.changes.api.DocumentFactory;
+import org.protege.owl.server.changes.api.RemoteOntologyDocument;
+import org.protege.owl.server.changes.api.RemoteServerDirectory;
+import org.protege.owl.server.changes.api.RemoteServerDocument;
+import org.protege.owl.server.changes.api.RevisionPointer;
+import org.protege.owl.server.changes.api.SingletonChangeHistory;
+import org.protege.owl.server.changes.api.VersionedOntologyDocument;
+
 import org.semanticweb.owlapi.model.IRI;
 
 public interface Client {

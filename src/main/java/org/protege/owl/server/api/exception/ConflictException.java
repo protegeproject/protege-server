@@ -1,7 +1,8 @@
 package org.protege.owl.server.api.exception;
 
-import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.OntologyDocumentRevision;
+import org.protege.owl.server.changes.OntologyDocumentRevision;
+import org.protege.owl.server.changes.api.ChangeHistory;
+
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;

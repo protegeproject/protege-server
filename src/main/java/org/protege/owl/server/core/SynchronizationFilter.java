@@ -6,10 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.SingletonChangeHistory;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.server.Server;
-import org.protege.owl.server.api.server.ServerOntologyDocument;
+import org.protege.owl.server.changes.api.ServerOntologyDocument;
+import org.protege.owl.server.changes.api.SingletonChangeHistory;
 import org.protege.owl.server.util.ServerFilterAdapter;
 
 /**

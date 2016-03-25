@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.protege.owl.server.api.server.ServerDocument;
 import org.protege.owl.server.api.server.ServerPath;
+import org.protege.owl.server.changes.api.ServerDocument;
 
 
 public abstract class ServerDocumentImpl implements ServerDocument, Serializable {

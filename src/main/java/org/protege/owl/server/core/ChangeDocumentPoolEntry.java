@@ -12,11 +12,11 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.protege.owl.server.api.ChangeHistory;
-import org.protege.owl.server.api.DocumentFactory;
-import org.protege.owl.server.api.OntologyDocumentRevision;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.ChangeHistoryUtilities;
+import org.protege.owl.server.changes.OntologyDocumentRevision;
+import org.protege.owl.server.changes.api.ChangeHistory;
+import org.protege.owl.server.changes.api.DocumentFactory;
 
 @Deprecated
 public class ChangeDocumentPoolEntry {
