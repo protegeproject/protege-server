@@ -1,8 +1,8 @@
 package org.protege.owl.server.connect;
 
-import org.protege.owl.server.api.RmiLoginService;
-import org.protege.owl.server.api.server.Server;
+import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.server.TransportHandler;
+import org.protege.owl.server.security.RmiLoginService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,16 +35,16 @@ public class RmiTransport implements TransportHandler {
         if (remoteObject instanceof Server) {
             RmiServer remoteServer = new RmiServer((Server) remoteObject);
             Remote remoteStub = UnicastRemoteObject.exportObject(remoteServer, serverPort);
-            registry.rebind("ProtegeServer", remoteStub);
+            registry.rebind(RmiServer.SERVER_SERVICE, remoteStub);
             logger.info("Server broadcasted through RMI Registry on port {}", registryPort);
             logger.info("Server exported through RMI on port {}", serverPort);
         }
         else if (remoteObject instanceof RmiLoginService) {
             RmiLoginService remoteLoginService = (RmiLoginService) remoteObject;
             Remote remoteStub = UnicastRemoteObject.exportObject(remoteLoginService, serverPort);
-            registry.rebind("LoginService", remoteStub);
-            logger.info("Server broadcasted through RMI Registry on port {}", registryPort);
-            logger.info("Server exported through RMI on port {}", serverPort);
+            registry.rebind(RmiLoginService.LOGIN_SERVICE, remoteStub);
+            logger.info("Login service broadcasted through RMI Registry on port {}", registryPort);
+            logger.info("Login service exported through RMI on port {}", serverPort);
         }
         else {
             logger.warn("Unknown remote object. No bind was occured: {}", remoteObject);
