@@ -1,8 +1,8 @@
 package org.protege.owl.server.connect;
 
+import org.protege.owl.server.api.RmiLoginService;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.server.TransportHandler;
-import org.protege.owl.server.security.RmiLoginService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

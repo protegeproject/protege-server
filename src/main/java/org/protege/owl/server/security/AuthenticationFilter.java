@@ -19,12 +19,12 @@ public class AuthenticationFilter extends ServerFilterAdapter {
 
     private SessionManager sessionManager = new SessionManager();
 
-    private RmiLoginService loginService;
+    private DefaultLoginService loginService;
 
     public AuthenticationFilter(ServerLayer delegate) {
         super(delegate);
         authManager = getConfiguration().getAuthenticationManager();
-        loginService = new RmiLoginService(authManager, sessionManager);
+        loginService = new DefaultLoginService(authManager, sessionManager);
     }
 
     @Override
