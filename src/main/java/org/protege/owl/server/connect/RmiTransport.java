@@ -1,8 +1,8 @@
 package org.protege.owl.server.connect;
 
-import org.protege.owl.server.api.RmiLoginService;
-import org.protege.owl.server.api.Server;
+import org.protege.owl.server.api.LoginService;
 import org.protege.owl.server.api.server.TransportHandler;
+import org.protege.owl.server.core.ProtegeServer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,31 +30,26 @@ public class RmiTransport implements TransportHandler {
     }
 
     @Override
-    public void bind(Object remoteObject) throws RemoteException {
+    public void bind(Object object) throws RemoteException {
         Registry registry = LocateRegistry.createRegistry(registryPort);
-        if (remoteObject instanceof Server) {
-            RmiServer remoteServer = new RmiServer((Server) remoteObject);
+        if (object instanceof ProtegeServer) {
+            RmiServer remoteServer = new RmiServer((ProtegeServer) object);
             Remote remoteStub = UnicastRemoteObject.exportObject(remoteServer, serverPort);
             registry.rebind(RmiServer.SERVER_SERVICE, remoteStub);
             logger.info("Server broadcasted through RMI Registry on port {}", registryPort);
             logger.info("Server exported through RMI on port {}", serverPort);
         }
-        else if (remoteObject instanceof RmiLoginService) {
-            RmiLoginService remoteLoginService = (RmiLoginService) remoteObject;
+        else if (object instanceof LoginService) {
+            RmiLoginService remoteLoginService = new RmiLoginService((LoginService) object);
             Remote remoteStub = UnicastRemoteObject.exportObject(remoteLoginService, serverPort);
             registry.rebind(RmiLoginService.LOGIN_SERVICE, remoteStub);
             logger.info("Login service broadcasted through RMI Registry on port {}", registryPort);
             logger.info("Login service exported through RMI on port {}", serverPort);
-        }
-        else {
-            logger.warn("Unknown remote object. No bind was occured: {}", remoteObject);
         }
      }
 
     @Override
     public void close() {
         // TODO Auto-generated method stub
-
     }
-
 }

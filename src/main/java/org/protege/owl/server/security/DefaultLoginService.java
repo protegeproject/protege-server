@@ -1,8 +1,6 @@
 package org.protege.owl.server.security;
 
-import org.protege.owl.server.api.RmiLoginService;
-
-import java.rmi.RemoteException;
+import org.protege.owl.server.api.LoginService;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.AuthenticationManager;
@@ -12,7 +10,7 @@ import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
 import edu.stanford.protege.metaproject.impl.AuthorizedUserToken;
 
-public class DefaultLoginService implements RmiLoginService {
+public class DefaultLoginService implements LoginService {
 
     private AuthenticationManager authManager;
     private SessionManager sessionManager;
@@ -23,18 +21,13 @@ public class DefaultLoginService implements RmiLoginService {
     }
 
     @Override
-    public AuthToken login(UserId userId, SaltedPasswordDigest password) throws RemoteException {
-        try {
-            if (authManager.hasValidCredentials(userId, password)) {
-                AuthToken authToken = new AuthorizedUserToken(userId);
-                sessionManager.add(authToken);
-                return authToken;
-            }
-            throw new RemoteException("Invalid combination of username and password");
+    public AuthToken login(UserId userId, SaltedPasswordDigest password) throws Exception {
+        if (authManager.hasValidCredentials(userId, password)) {
+            AuthToken authToken = new AuthorizedUserToken(userId);
+            sessionManager.add(authToken);
+            return authToken;
         }
-        catch (UserNotRegisteredException e) {
-            throw new RemoteException(e.getMessage(), e);
-        }
+        throw new Exception("Invalid combination of username and password");
     }
 
     public Salt getSalt(UserId userId) throws UserNotRegisteredException {
