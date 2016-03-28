@@ -1,5 +1,6 @@
 package org.protege.owl.server.connect;
 
+import org.protege.owl.server.api.ChangeService;
 import org.protege.owl.server.api.LoginService;
 import org.protege.owl.server.api.server.TransportHandler;
 import org.protege.owl.server.core.ProtegeServer;
@@ -45,6 +46,13 @@ public class RmiTransport implements TransportHandler {
             registry.rebind(RmiLoginService.LOGIN_SERVICE, remoteStub);
             logger.info("Login service broadcasted through RMI Registry on port {}", registryPort);
             logger.info("Login service exported through RMI on port {}", serverPort);
+        }
+        else if (object instanceof ChangeService) {
+            RmiChangeService remoteChangeService = new RmiChangeService((ChangeService) object);
+            Remote remoteStub = UnicastRemoteObject.exportObject(remoteChangeService, serverPort);
+            registry.rebind(RmiChangeService.CHANGE_SERVICE, remoteStub);
+            logger.info("Change service broadcasted through RMI Registry on port {}", registryPort);
+            logger.info("Change service exported through RMI on port {}", serverPort);
         }
      }
 
