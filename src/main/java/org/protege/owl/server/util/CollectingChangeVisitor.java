@@ -20,13 +20,13 @@ import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 import org.semanticweb.owlapi.model.SetOntologyID;
 
-@Deprecated
 public class CollectingChangeVisitor implements OWLOntologyChangeVisitor {
+
     private SetOntologyID lastOntologyIDChange;
     private Map<OWLImportsDeclaration, ImportChange> lastImportChangeMap;
     private Map<OWLAnnotation, OWLOntologyChange> lastOntologyAnnotationChangeMap;
     private Map<OWLAxiom, OWLAxiomChange> lastAxiomChangeMap;
-    
+
     public static CollectingChangeVisitor collectChanges(List<OWLOntologyChange> changes) {
         CollectingChangeVisitor visitor = new CollectingChangeVisitor();
         for (OWLOntologyChange change : changes) {
@@ -34,25 +34,25 @@ public class CollectingChangeVisitor implements OWLOntologyChangeVisitor {
         }
         return visitor;
     }
-    
+
     private CollectingChangeVisitor() {
         lastImportChangeMap = new TreeMap<OWLImportsDeclaration, ImportChange>();
         lastOntologyAnnotationChangeMap = new TreeMap<OWLAnnotation, OWLOntologyChange>();
-        lastAxiomChangeMap = new HashMap<OWLAxiom, OWLAxiomChange>();    
+        lastAxiomChangeMap = new HashMap<OWLAxiom, OWLAxiomChange>();
     }
-    
+
     public SetOntologyID getLastOntologyIDChange() {
         return lastOntologyIDChange;
     }
-    
+
     public Map<OWLImportsDeclaration, ImportChange> getLastImportChangeMap() {
         return lastImportChangeMap;
     }
-    
+
     public Map<OWLAnnotation, OWLOntologyChange> getLastOntologyAnnotationChangeMap() {
         return lastOntologyAnnotationChangeMap;
     }
-    
+
     public Map<OWLAxiom, OWLAxiomChange> getLastAxiomChangeMap() {
         return lastAxiomChangeMap;
     }
@@ -91,5 +91,4 @@ public class CollectingChangeVisitor implements OWLOntologyChangeVisitor {
     public void visit(RemoveOntologyAnnotation change) {
         lastOntologyAnnotationChangeMap.put(change.getAnnotation(), change);
     }
-    
 }
