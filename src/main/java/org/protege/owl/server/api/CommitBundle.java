@@ -1,5 +1,7 @@
 package org.protege.owl.server.api;
 
+import org.protege.owl.server.changes.OntologyDocumentRevision;
+
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 import java.util.List;
@@ -13,4 +15,6 @@ import java.util.List;
 public interface CommitBundle {
 
     List<OWLOntologyChange> getChanges();
+
+    OntologyDocumentRevision getRevision();
 }

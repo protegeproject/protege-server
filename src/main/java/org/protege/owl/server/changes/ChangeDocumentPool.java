@@ -1,5 +1,15 @@
 package org.protege.owl.server.changes;
 
+import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.api.server.ServerPath;
+import org.protege.owl.server.changes.api.ChangeHistory;
+import org.protege.owl.server.changes.api.DocumentFactory;
+import org.protege.owl.server.changes.api.ServerOntologyDocument;
+import org.protege.owl.server.core.ServerOntologyDocumentImpl;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,24 +21,26 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.server.ServerPath;
-import org.protege.owl.server.changes.api.ChangeHistory;
-import org.protege.owl.server.changes.api.DocumentFactory;
-import org.protege.owl.server.changes.api.ServerOntologyDocument;
-import org.protege.owl.server.core.ServerOntologyDocumentImpl;
 
 public class ChangeDocumentPool {
 
-    private Logger logger = LoggerFactory.getLogger(ChangeDocumentPool.class.getCanonicalName());
+    private static final Logger logger = LoggerFactory.getLogger(ChangeDocumentPool.class);
+
+    public static final int DEFAULT_POOL_TIMEOUT = 60 * 1000;
+
     private ScheduledExecutorService executorService;
+
     private DocumentFactory docFactory;
+
     private final long timeout;
+
     private Map<ServerOntologyDocument, ChangeDocumentPoolEntry> pool = new TreeMap<ServerOntologyDocument, ChangeDocumentPoolEntry>();
+
     private int consecutiveCleanupFailures = 0;
+
+    public ChangeDocumentPool() {
+        this(new DocumentFactoryImpl(), DEFAULT_POOL_TIMEOUT);
+    }
 
     public ChangeDocumentPool(DocumentFactory docFactory, long timeout) {
         this.docFactory = docFactory;
