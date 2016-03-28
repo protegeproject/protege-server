@@ -1,4 +1,4 @@
-package org.protege.owl.server.core;
+package org.protege.owl.server.changes;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,6 +19,7 @@ import org.protege.owl.server.api.server.ServerPath;
 import org.protege.owl.server.changes.api.ChangeHistory;
 import org.protege.owl.server.changes.api.DocumentFactory;
 import org.protege.owl.server.changes.api.ServerOntologyDocument;
+import org.protege.owl.server.core.ServerOntologyDocumentImpl;
 
 public class ChangeDocumentPool {
 

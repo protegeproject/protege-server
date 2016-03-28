@@ -1,4 +1,4 @@
-package org.protege.owl.server.core;
+package org.protege.owl.server.changes;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.changes.ChangeHistoryUtilities;
-import org.protege.owl.server.changes.OntologyDocumentRevision;
 import org.protege.owl.server.changes.api.ChangeHistory;
 import org.protege.owl.server.changes.api.DocumentFactory;
 
