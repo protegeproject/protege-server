@@ -1,4 +1,4 @@
-package org.protege.owl.server.util;
+package org.protege.owl.server.changes.util;
 
 import java.util.HashMap;
 import java.util.List;
