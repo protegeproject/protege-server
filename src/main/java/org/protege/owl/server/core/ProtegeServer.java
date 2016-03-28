@@ -28,8 +28,6 @@ public class ProtegeServer implements ServerLayer {
 
     private ServerConfiguration configuration;
 
-    private TransportHandler transport;
-
     private List<ServerListener> listeners = new ArrayList<ServerListener>();
 
     public ProtegeServer(ServerConfiguration configuration) {
@@ -79,7 +77,12 @@ public class ProtegeServer implements ServerLayer {
 
     @Override
     public void setTransport(TransportHandler transport) throws OWLServerException {
-        this.transport = transport;
+        try {
+            transport.bind(this);
+        }
+        catch (Exception e) {
+            throw new OWLServerException(e);
+        }
     }
 
     @Override

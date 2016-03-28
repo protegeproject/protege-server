@@ -30,7 +30,6 @@ public class AuthenticationFilter extends ServerFilterAdapter {
     @Override
     public void setTransport(TransportHandler transport) throws OWLServerException {
         try {
-            transport.bind(this);
             transport.bind(loginService);
         }
         catch (Exception e) {
