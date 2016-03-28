@@ -20,21 +20,21 @@ import org.protege.owl.server.changes.api.ChangeHistory;
 import org.protege.owl.server.changes.api.DocumentFactory;
 import org.protege.owl.server.changes.api.ServerOntologyDocument;
 
-@Deprecated
 public class ChangeDocumentPool {
+
     private Logger logger = LoggerFactory.getLogger(ChangeDocumentPool.class.getCanonicalName());
     private ScheduledExecutorService executorService;
     private DocumentFactory docFactory;
     private final long timeout;
     private Map<ServerOntologyDocument, ChangeDocumentPoolEntry> pool = new TreeMap<ServerOntologyDocument, ChangeDocumentPoolEntry>();
     private int consecutiveCleanupFailures = 0;
-    
+
     public ChangeDocumentPool(DocumentFactory docFactory, long timeout) {
         this.docFactory = docFactory;
         this.timeout = timeout;
         createTimeoutThread();
     }
-    
+
     private void createTimeoutThread() {
         executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
             @Override
@@ -45,11 +45,12 @@ public class ChangeDocumentPool {
             }
         });
         executorService.scheduleAtFixedRate(new Runnable() {
-            
+
             @Override
             public void run() {
                 try {
-                    for (Entry<ServerOntologyDocument, ChangeDocumentPoolEntry> entry : new HashSet<Entry<ServerOntologyDocument, ChangeDocumentPoolEntry>>(pool.entrySet())) {
+                    for (Entry<ServerOntologyDocument, ChangeDocumentPoolEntry> entry : new HashSet<Entry<ServerOntologyDocument, ChangeDocumentPoolEntry>>(
+                            pool.entrySet())) {
                         ServerOntologyDocument doc = entry.getKey();
                         ChangeDocumentPoolEntry poolEntry = entry.getValue();
                         synchronized (pool) {
@@ -80,7 +81,7 @@ public class ChangeDocumentPool {
             }
         }, timeout, timeout, TimeUnit.MILLISECONDS);
     }
-    
+
     public ChangeHistory getChangeDocument(ServerOntologyDocument doc, File historyFile) throws OWLServerException {
         ChangeDocumentPoolEntry entry;
         synchronized (pool) {
@@ -93,7 +94,7 @@ public class ChangeDocumentPool {
         }
         return entry.getChangeDocument();
     }
-    
+
     public void setChangeDocument(ServerOntologyDocument doc, File historyFile, ChangeHistory changes) {
         synchronized (pool) {
             ChangeDocumentPoolEntry entry = pool.get(doc);
@@ -106,13 +107,13 @@ public class ChangeDocumentPool {
             }
         }
     }
-    
+
     public boolean testServerLocation(ServerPath serverPath) {
         synchronized (pool) {
             return pool.containsKey(new ServerOntologyDocumentImpl(serverPath));
         }
     }
-    
+
     public void dispose() {
         synchronized (pool) {
             for (ChangeDocumentPoolEntry entry : pool.values()) {
@@ -122,15 +123,14 @@ public class ChangeDocumentPool {
         }
         executorService.shutdown();
     }
-    
+
     public void sync() {
         List<ChangeDocumentPoolEntry> poolEntries;
-        synchronized (pool) { 
+        synchronized (pool) {
             poolEntries = new ArrayList<ChangeDocumentPoolEntry>(pool.values());
         }
         for (ChangeDocumentPoolEntry poolEntry : poolEntries) {
             poolEntry.sync();
         }
     }
-
 }

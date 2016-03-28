@@ -18,31 +18,30 @@ import org.protege.owl.server.changes.OntologyDocumentRevision;
 import org.protege.owl.server.changes.api.ChangeHistory;
 import org.protege.owl.server.changes.api.DocumentFactory;
 
-@Deprecated
 public class ChangeDocumentPoolEntry {
-    
+
     private Logger logger = LoggerFactory.getLogger(ChangeDocumentPoolEntry.class.getCanonicalName());
     private DocumentFactory factory;
     private ChangeHistory changeDocument;
     private Future<ChangeHistory> readChangeDocumentTask;
     private File historyFile;
     private long lastTouch;
-    
+
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
-       @Override
+        @Override
         public Thread newThread(Runnable r) {
-           Thread thread = new Thread(r, "Change Document Updates for " + historyFile);
-           return thread;
-        } 
+            Thread thread = new Thread(r, "Change Document Updates for " + historyFile);
+            return thread;
+        }
     });
-    
+
     public ChangeDocumentPoolEntry(DocumentFactory factory, final File historyFile) {
         this.factory = factory;
         this.historyFile = historyFile;
         touch();
         readChangeDocumentTask = executor.submit(new ReadChangeDocument());
     }
-    
+
     public ChangeDocumentPoolEntry(DocumentFactory factory, File historyFile, ChangeHistory changes) {
         this.factory = factory;
         this.historyFile = historyFile;
@@ -50,7 +49,7 @@ public class ChangeDocumentPoolEntry {
         touch();
         executor.submit(new WriteChanges(changes));
     }
-    
+
     public ChangeHistory getChangeDocument() throws OWLServerException {
         touch();
         if (changeDocument == null) {
@@ -71,25 +70,25 @@ public class ChangeDocumentPoolEntry {
         }
         return changeDocument;
     }
-    
+
     public void setChangeDocument(final ChangeHistory newChangeDocument) {
-    	if (logger.isDebugEnabled()) {
-    		logger.debug("Setting change document for " + historyFile + " to change doc ending at revision " + newChangeDocument.getEndRevision());
-    	}
+        if (logger.isDebugEnabled()) {
+            logger.debug("Setting change document for " + historyFile + " to change doc ending at revision " + newChangeDocument.getEndRevision());
+        }
         touch();
         this.changeDocument = newChangeDocument;
         executor.submit(new WriteChanges(newChangeDocument));
     }
-    
+
     public long getLastTouch() {
         return lastTouch;
     }
-    
+
     public void dispose() {
         executor.shutdown();
         sync();
     }
-    
+
     public void sync() {
         try {
             executor.awaitTermination(60, TimeUnit.MINUTES);
@@ -98,11 +97,11 @@ public class ChangeDocumentPoolEntry {
             throw new RuntimeException(ie);
         }
     }
-    
+
     private void touch() {
         this.lastTouch = System.currentTimeMillis();
     }
-    
+
     private class ReadChangeDocument implements Callable<ChangeHistory> {
         @Override
         public ChangeHistory call() throws IOException {
@@ -128,39 +127,37 @@ public class ChangeDocumentPoolEntry {
             }
         }
     }
-    
+
     private class WriteChanges implements Callable<Boolean> {
+
         private ChangeHistory newChangeDocument;
-        
+
         public WriteChanges(ChangeHistory newChangeDocument) {
             this.newChangeDocument = newChangeDocument;
             if (logger.isDebugEnabled()) {
-            	logger.debug("Created writer for " + historyFile + " and change document ending at " + newChangeDocument.getEndRevision());
+                logger.debug("Created writer for " + historyFile + " and change document ending at " + newChangeDocument.getEndRevision());
             }
         }
-        
+
         @Override
         public Boolean call() {
             try {
                 if (changeDocument == newChangeDocument) {
                     prepareToSave(historyFile);
-                    
                     long startTime = System.currentTimeMillis();
-                                        
                     ChangeHistoryUtilities.writeChanges(newChangeDocument, historyFile);
-                    
                     long interval = System.currentTimeMillis() - startTime;
                     if (interval > 1000) {
                         logger.info("Save of " + historyFile + " took " + (interval / 1000) + " seconds.");
                     }
                     else if (logger.isDebugEnabled()) {
-                    	logger.debug("Wrote new " + historyFile);
+                        logger.debug("Wrote new " + historyFile);
                     }
                 }
                 else if (logger.isDebugEnabled()) {
-                	logger.debug("This is not the latest change document");
-                	logger.debug("Was supposed to save doc with end revision " + newChangeDocument.getEndRevision());
-                	logger.debug("But now have new save doc with end revision " + changeDocument.getEndRevision());
+                    logger.debug("This is not the latest change document");
+                    logger.debug("Was supposed to save doc with end revision " + newChangeDocument.getEndRevision());
+                    logger.debug("But now have new save doc with end revision " + changeDocument.getEndRevision());
                 }
                 return true;
             }
@@ -169,31 +166,29 @@ public class ChangeDocumentPoolEntry {
                 return false;
             }
         }
-        
+
         private void prepareToSave(File historyFile) {
-        	if (logger.isDebugEnabled()) {
-        		logger.debug("Preparing backup for " + historyFile);
-        	}
+            if (logger.isDebugEnabled()) {
+                logger.debug("Preparing backup for " + historyFile);
+            }
             File backup = getBackupHistoryFile(historyFile);
             if (historyFile.exists() && backup.exists()) {
                 backup.delete();
                 if (logger.isDebugEnabled()) {
-                	logger.debug("Old backup removed");
+                    logger.debug("Old backup removed");
                 }
             }
             if (historyFile.exists()) {
                 historyFile.renameTo(backup);
                 if (logger.isDebugEnabled()) {
-                	logger.debug("Moved " + historyFile + " to " + backup);
+                    logger.debug("Moved " + historyFile + " to " + backup);
                 }
             }
         }
     }
-    
+
     private File getBackupHistoryFile(File historyFile) {
         String path = historyFile.getAbsolutePath();
         return new File(path + ".~");
     }
-    
-        
 }
