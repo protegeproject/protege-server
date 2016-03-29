@@ -1,11 +1,8 @@
 package org.protege.owl.server.changes;
 
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.server.ServerPath;
 import org.protege.owl.server.changes.api.ChangeHistory;
 import org.protege.owl.server.changes.api.DocumentFactory;
-import org.protege.owl.server.changes.api.ServerOntologyDocument;
-import org.protege.owl.server.core.ServerOntologyDocumentImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +31,7 @@ public class ChangeDocumentPool {
 
     private final long timeout;
 
-    private Map<ServerOntologyDocument, ChangeDocumentPoolEntry> pool = new TreeMap<ServerOntologyDocument, ChangeDocumentPoolEntry>();
+    private Map<File, ChangeDocumentPoolEntry> pool = new TreeMap<>();
 
     private int consecutiveCleanupFailures = 0;
 
@@ -58,20 +55,18 @@ public class ChangeDocumentPool {
             }
         });
         executorService.scheduleAtFixedRate(new Runnable() {
-
             @Override
             public void run() {
                 try {
-                    for (Entry<ServerOntologyDocument, ChangeDocumentPoolEntry> entry : new HashSet<Entry<ServerOntologyDocument, ChangeDocumentPoolEntry>>(
-                            pool.entrySet())) {
-                        ServerOntologyDocument doc = entry.getKey();
+                    for (Entry<File, ChangeDocumentPoolEntry> entry : new HashSet<>(pool.entrySet())) {
+                        File f = entry.getKey();
                         ChangeDocumentPoolEntry poolEntry = entry.getValue();
                         synchronized (pool) {
                             long now = System.currentTimeMillis();
                             if (poolEntry.getLastTouch() + timeout < now) {
                                 poolEntry.dispose();
-                                pool.remove(doc);
-                                logger.info("Disposed in-memory change history for " + doc);
+                                pool.remove(f);
+                                logger.info("Disposed in-memory change history for " + f.getName());
                             }
                         }
                     }
@@ -95,35 +90,35 @@ public class ChangeDocumentPool {
         }, timeout, timeout, TimeUnit.MILLISECONDS);
     }
 
-    public ChangeHistory getChangeDocument(ServerOntologyDocument doc, File historyFile) throws OWLServerException {
+    public ChangeHistory getChangeDocument(File historyFile) throws OWLServerException {
         ChangeDocumentPoolEntry entry;
         synchronized (pool) {
-            entry = pool.get(doc);
+            entry = pool.get(historyFile);
             if (entry == null) {
                 entry = new ChangeDocumentPoolEntry(docFactory, historyFile);
-                pool.put(doc, entry);
-                logger.info("Checked out in-memory change history for " + doc);
+                pool.put(historyFile, entry);
+                logger.info("Checked out in-memory change history for " + historyFile.getName());
             }
         }
         return entry.getChangeDocument();
     }
 
-    public void setChangeDocument(ServerOntologyDocument doc, File historyFile, ChangeHistory changes) {
+    public void setChangeDocument(File historyFile, ChangeHistory changes) {
         synchronized (pool) {
-            ChangeDocumentPoolEntry entry = pool.get(doc);
+            ChangeDocumentPoolEntry entry = pool.get(historyFile);
             if (entry != null) {
                 entry.setChangeDocument(changes);
             }
             else {
                 entry = new ChangeDocumentPoolEntry(docFactory, historyFile, changes);
-                pool.put(doc, entry);
+                pool.put(historyFile, entry);
             }
         }
     }
 
-    public boolean testServerLocation(ServerPath serverPath) {
+    public boolean testServerLocation(File historyFile) {
         synchronized (pool) {
-            return pool.containsKey(new ServerOntologyDocumentImpl(serverPath));
+            return pool.containsKey(historyFile);
         }
     }
 
