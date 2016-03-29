@@ -6,7 +6,7 @@ import edu.stanford.protege.metaproject.api.ServerConfiguration;
  * @author Josef Hardi <johardi@stanford.edu> <br>
  * Stanford Center for Biomedical Informatics Research
  */
-public abstract class AbstractServerFilter implements ServerLayer {
+public abstract class AbstractServerFilter extends ServerLayer {
 
     private ServerLayer delegate;
 
