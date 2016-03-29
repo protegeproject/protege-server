@@ -1,15 +1,11 @@
 package org.protege.owl.server.connect;
 
 import org.protege.owl.server.api.ChangeService;
-import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.changes.OntologyDocumentRevision;
 import org.protege.owl.server.changes.api.ChangeHistory;
-import org.protege.owl.server.changes.api.ServerOntologyDocument;
 
-import org.semanticweb.owlapi.model.OWLOntologyChange;
-
+import java.io.File;
 import java.rmi.RemoteException;
-import java.util.List;
 
 /**
  * @author Josef Hardi <johardi@stanford.edu> <br>
@@ -26,20 +22,10 @@ public class RmiChangeService implements RemoteChangeService {
     }
 
     @Override
-    public ChangeHistory getChanges(ServerOntologyDocument doc, OntologyDocumentRevision startRevision,
+    public ChangeHistory getChanges(File historyFile, OntologyDocumentRevision startRevision,
             OntologyDocumentRevision endRevision) throws Exception {
         try {
-            return changeService.getChanges(doc, startRevision, endRevision);
-        }
-        catch (Exception e) {
-            throw new RemoteException(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public List<OWLOntologyChange> getConflicts(ServerOntologyDocument doc, CommitBundle commits) throws Exception {
-        try {
-            return changeService.getConflicts(doc, commits);
+            return changeService.getChanges(historyFile, startRevision, endRevision);
         }
         catch (Exception e) {
             throw new RemoteException(e.getMessage(), e);
