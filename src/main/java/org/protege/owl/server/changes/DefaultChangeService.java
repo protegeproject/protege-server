@@ -22,4 +22,12 @@ public class DefaultChangeService implements ChangeService {
             throws OWLServerException {
         return getChanges(historyFile, OntologyDocumentRevision.START_REVISION, endRevision);
     }
+
+    public OntologyDocumentRevision getStartRevision(HistoryFile historyFile) throws OWLServerException {
+        return changePool.getChangeDocument(historyFile).getStartRevision();
+    }
+
+    public OntologyDocumentRevision getEndRevision(HistoryFile historyFile) throws OWLServerException {
+        return changePool.getChangeDocument(historyFile).getEndRevision();
+    }
 }
