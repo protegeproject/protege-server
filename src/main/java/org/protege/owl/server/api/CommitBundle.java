@@ -16,5 +16,7 @@ public interface CommitBundle {
 
     List<OWLOntologyChange> getChanges();
 
-    OntologyDocumentRevision getRevision();
+    OntologyDocumentRevision getStartRevision();
+
+    OntologyDocumentRevision getEndRevision();
 }
