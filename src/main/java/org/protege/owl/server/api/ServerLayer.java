@@ -2,8 +2,8 @@ package org.protege.owl.server.api;
 
 import org.protege.owl.server.api.exception.ServerRequestException;
 import org.protege.owl.server.api.server.ServerPath;
+import org.protege.owl.server.changes.HistoryFile;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 
 import edu.stanford.protege.metaproject.api.Project;
@@ -20,15 +20,15 @@ public abstract class ServerLayer implements Server {
      */
     protected abstract ServerConfiguration getConfiguration();
 
-    protected File getHistoryFile(ProjectId projectId, ServerPath serverPath) throws ServerRequestException {
+    protected HistoryFile getHistoryFile(ProjectId projectId, ServerPath serverPath) throws ServerRequestException {
         try {
             Project project = getConfiguration().getMetaproject().getProjectRegistry().getProject(projectId);
             String rootPath = project.getAddress().get();
-            File f = new File(rootPath, serverPath.pathAsString());
-            if (!f.exists()) {
-                throw new FileNotFoundException();
+            HistoryFile historyFile = new HistoryFile(rootPath, serverPath.pathAsString());
+            if (!historyFile.exists()) {
+                throw new FileNotFoundException(); // TODO: Use factory to create the history file
             }
-            return f;
+            return historyFile;
         }
         catch (UnknownProjectIdException e) {
             throw new ServerRequestException(e);

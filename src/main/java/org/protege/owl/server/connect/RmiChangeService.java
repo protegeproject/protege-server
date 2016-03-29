@@ -1,10 +1,10 @@
 package org.protege.owl.server.connect;
 
 import org.protege.owl.server.api.ChangeService;
+import org.protege.owl.server.changes.HistoryFile;
 import org.protege.owl.server.changes.OntologyDocumentRevision;
 import org.protege.owl.server.changes.api.ChangeHistory;
 
-import java.io.File;
 import java.rmi.RemoteException;
 
 /**
@@ -22,7 +22,7 @@ public class RmiChangeService implements RemoteChangeService {
     }
 
     @Override
-    public ChangeHistory getChanges(File historyFile, OntologyDocumentRevision startRevision,
+    public ChangeHistory getChanges(HistoryFile historyFile, OntologyDocumentRevision startRevision,
             OntologyDocumentRevision endRevision) throws Exception {
         try {
             return changeService.getChanges(historyFile, startRevision, endRevision);
