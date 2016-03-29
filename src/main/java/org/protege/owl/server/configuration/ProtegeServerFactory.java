@@ -1,10 +1,11 @@
 package org.protege.owl.server.configuration;
 
+import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerFactory;
 import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.api.server.TransportHandler;
+import org.protege.owl.server.changes.ConflictDetectionFilter;
 import org.protege.owl.server.connect.RmiTransport;
 import org.protege.owl.server.core.ProtegeServer;
 import org.protege.owl.server.policy.AccessControlFilter;
@@ -23,7 +24,8 @@ public class ProtegeServerFactory implements ServerFactory {
 
     @Override
     public ServerLayer build(ServerConfiguration configuration) throws OWLServerException {
-        ServerLayer server = addAccessControlLayer(createBaseServer(configuration));
+        ServerLayer server = addConflictDetectionLayer(createBaseServer(configuration));
+        server = addAccessControlLayer(server);
         server = addAuthenticationLayer(server);
         injectServerTransport(server, configuration);
         return server;
@@ -31,6 +33,10 @@ public class ProtegeServerFactory implements ServerFactory {
 
     private ServerLayer createBaseServer(ServerConfiguration configuration) {
         return new ProtegeServer(configuration);
+    }
+
+    private ServerLayer addConflictDetectionLayer(ServerLayer server) {
+        return new ConflictDetectionFilter(server);
     }
 
     private ServerLayer addAccessControlLayer(ServerLayer server) {
