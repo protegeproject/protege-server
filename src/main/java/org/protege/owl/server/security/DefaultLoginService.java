@@ -10,7 +10,7 @@ import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
 import edu.stanford.protege.metaproject.impl.AuthorizedUserToken;
 
-public class DefaultLoginService implements LoginService {
+public class DefaultLoginService implements LoginService, SimpleHashProtocol {
 
     private AuthenticationManager authManager;
     private SessionManager sessionManager;
@@ -30,6 +30,7 @@ public class DefaultLoginService implements LoginService {
         throw new Exception("Invalid combination of username and password");
     }
 
+    @Override
     public Salt getSalt(UserId userId) throws UserNotRegisteredException {
         return authManager.getSalt(userId);
     }
