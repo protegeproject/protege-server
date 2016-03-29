@@ -24,7 +24,7 @@ import edu.stanford.protege.metaproject.api.UserId;
  * @author Josef Hardi <johardi@stanford.edu> <br>
  * Stanford Center for Biomedical Informatics Research
  */
-public class ProtegeServer implements ServerLayer {
+public class ProtegeServer extends ServerLayer {
 
     private ServerConfiguration configuration;
 
