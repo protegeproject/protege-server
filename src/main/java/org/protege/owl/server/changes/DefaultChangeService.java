@@ -18,8 +18,8 @@ public class DefaultChangeService implements ChangeService {
         return changePool.getChangeDocument(historyFile).cropChanges(startRevision, endRevision);
     }
 
-    public ChangeHistory getChanges(HistoryFile historyFile, OntologyDocumentRevision endRevision)
-            throws OWLServerException {
+    public ChangeHistory getAllChanges(HistoryFile historyFile) throws OWLServerException {
+        OntologyDocumentRevision endRevision = getEndRevision(historyFile);
         return getChanges(historyFile, OntologyDocumentRevision.START_REVISION, endRevision);
     }
 
