@@ -23,7 +23,7 @@ import edu.stanford.protege.metaproject.api.ServerConfiguration;
 public class ProtegeServerFactory implements ServerFactory {
 
     @Override
-    public ServerLayer build(ServerConfiguration configuration) throws OWLServerException {
+    public Server build(ServerConfiguration configuration) throws OWLServerException {
         ServerLayer server = addConflictDetectionLayer(createBaseServer(configuration));
         server = addAccessControlLayer(server);
         server = addAuthenticationLayer(server);
@@ -47,7 +47,7 @@ public class ProtegeServerFactory implements ServerFactory {
         return new AuthenticationFilter(server);
     }
 
-    private void injectServerTransport(ServerLayer server, ServerConfiguration configuration)
+    private void injectServerTransport(Server server, ServerConfiguration configuration)
             throws OWLServerException {
         TransportHandler transport = createTransport(configuration);
         server.setTransport(transport);

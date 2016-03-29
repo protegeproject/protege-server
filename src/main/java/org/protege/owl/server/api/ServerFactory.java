@@ -12,5 +12,5 @@ import edu.stanford.protege.metaproject.api.ServerConfiguration;
  */
 public interface ServerFactory {
 
-    ServerLayer build(ServerConfiguration configuration) throws OWLServerException;
+    Server build(ServerConfiguration configuration) throws OWLServerException;
 }

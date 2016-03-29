@@ -1,8 +1,8 @@
 package org.protege.owl.server.configuration;
 
 import org.protege.owl.server.api.BuilderService;
+import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerFactory;
-import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OWLServerException;
 
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public class ServerBuilderService implements BuilderService {
 
     private ServerFactory serverFactory;
 
-    private ServerLayer server;
+    private Server server;
 
     private ServerConfiguration configuration;
 
