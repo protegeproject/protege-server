@@ -219,7 +219,7 @@ public abstract class AbstractBasicServerTest {
         client.commit(testDoc, client.getDocumentFactory().createChangeDocument(changes, new ChangeMetaData(), versionedPizza.getRevision()));
         ChangeHistory committedChange = client.getChanges(testDoc, revisionBeforeCommit.asPointer(), revisionBeforeCommit.next().asPointer());
         Assert.assertEquals(1, committedChange.getChanges(ontology1).size());
-        Assert.assertEquals(client.getUserId(), committedChange.getMetaData(revisionBeforeCommit).getUserId());
+        Assert.assertEquals(client.getUserId(), committedChange.getMetaData(revisionBeforeCommit).getUserID());
     }
 
     @Test

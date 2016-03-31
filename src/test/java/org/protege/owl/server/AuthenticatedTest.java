@@ -123,7 +123,7 @@ public class AuthenticatedTest {
         client1.commit(testDoc, client1.getDocumentFactory().createChangeDocument(changes, new ChangeMetaData(), vont1.getRevision()));
         ChangeHistory committedChange = client1.getChanges(testDoc, revisionBeforeCommit.asPointer(), revisionBeforeCommit.next().asPointer());
         Assert.assertEquals(1, committedChange.getChanges(ontology1).size());
-        Assert.assertEquals(client1.getUserId(), committedChange.getMetaData(revisionBeforeCommit).getUserId());
+        Assert.assertEquals(client1.getUserId(), committedChange.getMetaData(revisionBeforeCommit).getUserID());
     }
     
     /**

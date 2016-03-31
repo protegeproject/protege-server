@@ -37,6 +37,11 @@ public final class ChangeMetaData implements Serializable {
         return comment;
     }
 
+    @Deprecated
+    public org.protege.owl.server.api.UserId getUserID() {
+        return null;
+    }
+
     public UserId getUserId() {
         return userId;
     }
