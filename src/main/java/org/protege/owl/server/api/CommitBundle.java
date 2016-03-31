@@ -1,6 +1,5 @@
 package org.protege.owl.server.api;
 
-import org.protege.owl.server.api.server.ServerPath;
 import org.protege.owl.server.changes.OntologyDocumentRevision;
 
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -14,8 +13,6 @@ import java.util.List;
  * Stanford Center for Biomedical Informatics Research
  */
 public interface CommitBundle {
-
-    ServerPath getServerPath();
 
     List<OWLOntologyChange> getChanges();
 
