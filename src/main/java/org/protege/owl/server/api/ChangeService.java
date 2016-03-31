@@ -25,4 +25,9 @@ public interface ChangeService {
      */
     ChangeHistory getChanges(Address resourceLocation, OntologyDocumentRevision startRevision,
             OntologyDocumentRevision endRevision) throws Exception;
+
+    ChangeHistory getAllChanges(Address fileLocation) throws Exception;
+
+    ChangeHistory getLatestChanges(Address fileLocation, OntologyDocumentRevision startRevision)
+            throws Exception;
 }
