@@ -31,10 +31,15 @@ public class RmiLoginService implements RemoteLoginService, SimpleHashProtocol {
     }
 
     @Override
-    public Salt getSalt(UserId userId) throws Exception {
+    public Salt getSalt(UserId userId) throws RemoteException {
         if (loginService instanceof SimpleHashProtocol) {
-            ((SimpleHashProtocol) loginService).getSalt(userId);
+            try {
+                ((SimpleHashProtocol) loginService).getSalt(userId);
+            }
+            catch (Exception e) {
+                throw new RemoteException(e.getMessage(), e);
+            }
         }
-        throw new Exception("Invalid protocol to generate password salt");
+        throw new RemoteException("Invalid protocol to generate password salt");
     }
 }

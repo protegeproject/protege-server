@@ -67,9 +67,9 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
         List<OWLOntologyChange> clientChanges = commits.getChanges();
         CollectingChangeVisitor collectedClientChanges = CollectingChangeVisitor.collectChanges(clientChanges);
         
-        ChangeHistory allChangeHistory = changeService.getAllChanges(project.getAddress());
+        ChangeHistory allChangeHistory = changeService.getAllChanges(project.getFile());
         
-        final OntologyDocumentRevision headRevision = changeService.getHeadRevision(project.getAddress());
+        final OntologyDocumentRevision headRevision = changeService.getHeadRevision(project.getFile());
         OntologyDocumentRevision revision = commits.getStartRevision();
         for (; revision.compareTo(headRevision) < 0; revision = revision.next()) {
             ChangeHistory singleRevisionChangeHistory = allChangeHistory.cropChanges(revision, revision.next());

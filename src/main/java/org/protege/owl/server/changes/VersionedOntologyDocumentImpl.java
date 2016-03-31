@@ -1,15 +1,5 @@
 package org.protege.owl.server.changes;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-
-import edu.stanford.protege.metaproject.api.Address;
-import edu.stanford.protege.metaproject.api.Host;
-
 import org.protege.owl.server.changes.api.ChangeHistory;
 import org.protege.owl.server.changes.api.RemoteOntologyDocument;
 import org.protege.owl.server.changes.api.VersionedOntologyDocument;
@@ -17,6 +7,15 @@ import org.protege.owl.server.changes.api.VersionedOntologyDocument;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+
+import edu.stanford.protege.metaproject.api.Host;
 
 public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument {
 
@@ -50,7 +49,7 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
     }
 
     private Host remoteHost;
-    private Address remoteAddress;
+    private File remoteFile;
 
     private OWLOntology ontology;
     private RemoteOntologyDocument serverDocument;
@@ -67,10 +66,10 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
         this.localHistory = localHistory;
     }
 
-    public VersionedOntologyDocumentImpl(Host remoteHost, Address remoteAddress, OWLOntology ontology, 
+    public VersionedOntologyDocumentImpl(Host remoteHost, File remoteFile, OWLOntology ontology, 
             OntologyDocumentRevision revision, ChangeHistory localHistory) {
         this.remoteHost = remoteHost;
-        this.remoteAddress = remoteAddress;
+        this.remoteFile = remoteFile;
         this.ontology = ontology;
         this.revision = revision;
         this.localHistory = localHistory;
@@ -82,8 +81,8 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
     }
 
     @Override
-    public Address getRemoteAddress() {
-        return remoteAddress;
+    public File getRemoteFile() {
+        return remoteFile;
     }
 
     @Override

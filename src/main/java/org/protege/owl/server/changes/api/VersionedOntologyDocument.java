@@ -4,9 +4,9 @@ import org.protege.owl.server.changes.OntologyDocumentRevision;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 
+import java.io.File;
 import java.io.IOException;
 
-import edu.stanford.protege.metaproject.api.Address;
 import edu.stanford.protege.metaproject.api.Host;
 
 /**
@@ -30,7 +30,7 @@ public interface VersionedOntologyDocument {
 
     Host getRemoteHost();
 
-    Address getRemoteAddress();
+    File getRemoteFile();
 
     OWLOntology getOntology();
 

@@ -11,6 +11,8 @@ import org.protege.owl.server.core.ProtegeServer;
 import org.protege.owl.server.policy.AccessControlFilter;
 import org.protege.owl.server.security.AuthenticationFilter;
 
+import java.net.URI;
+
 import edu.stanford.protege.metaproject.api.Host;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 
@@ -55,8 +57,9 @@ public class ProtegeServerFactory implements ServerFactory {
 
     private TransportHandler createTransport(ServerConfiguration configuration) {
         Host host = configuration.getHost();
-        int registryPort = host.getRegistryPort().get();
-        int serverPort = host.getPort().get();
+        URI remoteUri = host.getUri();
+        int registryPort = host.getSecondaryPort().isPresent() ? host.getSecondaryPort().get().get() : remoteUri.getPort();
+        int serverPort = remoteUri.getPort();
         return new RmiTransport(registryPort, serverPort);
     }
 }

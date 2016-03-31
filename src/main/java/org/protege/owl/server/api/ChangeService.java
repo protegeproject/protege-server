@@ -3,7 +3,7 @@ package org.protege.owl.server.api;
 import org.protege.owl.server.changes.OntologyDocumentRevision;
 import org.protege.owl.server.changes.api.ChangeHistory;
 
-import edu.stanford.protege.metaproject.api.Address;
+import java.io.File;
 
 /**
  * @author Josef Hardi <johardi@stanford.edu> <br>
@@ -23,11 +23,11 @@ public interface ChangeService {
      * @return The change history from the start revision until the end revision
      * @throws Exception
      */
-    ChangeHistory getChanges(Address resourceLocation, OntologyDocumentRevision startRevision,
+    ChangeHistory getChanges(File resourceLocation, OntologyDocumentRevision startRevision,
             OntologyDocumentRevision endRevision) throws Exception;
 
-    ChangeHistory getAllChanges(Address fileLocation) throws Exception;
+    ChangeHistory getAllChanges(File resourceLocation) throws Exception;
 
-    ChangeHistory getLatestChanges(Address fileLocation, OntologyDocumentRevision startRevision)
+    ChangeHistory getLatestChanges(File resourceLocation, OntologyDocumentRevision startRevision)
             throws Exception;
 }

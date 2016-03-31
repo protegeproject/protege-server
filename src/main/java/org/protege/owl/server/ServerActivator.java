@@ -46,7 +46,7 @@ public class ServerActivator implements BundleActivator {
     
     private void loadConfiguration(BundleContext context, String configPath) throws OWLOntologyCreationException {
         try {
-            ServerConfiguration configuration = Manager.loadServerConfiguration(new File(configPath));
+            ServerConfiguration configuration = Manager.getConfigurationManager().loadServerConfiguration(new File(configPath));
             context.registerService(ServerConfiguration.class, configuration, new Hashtable<String, String>());
         }
         catch (FileNotFoundException e) {

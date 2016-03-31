@@ -7,20 +7,26 @@ import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OperationNotAllowedException;
 import org.protege.owl.server.api.exception.ServerRequestException;
 
+import org.semanticweb.owlapi.model.AddAxiom;
+import org.semanticweb.owlapi.model.AddImport;
+import org.semanticweb.owlapi.model.AddOntologyAnnotation;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
+import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.model.RemoveImport;
+import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
+import org.semanticweb.owlapi.model.SetOntologyID;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Metaproject;
 import edu.stanford.protege.metaproject.api.Operation;
-import edu.stanford.protege.metaproject.api.OperationRegistry;
-import edu.stanford.protege.metaproject.api.Policy;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.exception.MetaprojectException;
-import edu.stanford.protege.metaproject.api.exception.OperationForChangeNotFoundException;
+import edu.stanford.protege.metaproject.impl.Operations;
 
 /**
  * Represents the access control gate that will check each user request to their given permission.
@@ -30,13 +36,11 @@ import edu.stanford.protege.metaproject.api.exception.OperationForChangeNotFound
  */
 public class AccessControlFilter extends ServerFilterAdapter {
 
-    private final OperationRegistry operationRegistry;
-    private final Policy policy;
+    private final Metaproject metaproject;
 
     public AccessControlFilter(ServerLayer delegate) {
         super(delegate);
-        operationRegistry = getConfiguration().getMetaproject().getOperationRegistry();
-        policy = getConfiguration().getMetaproject().getPolicy();
+        metaproject = getConfiguration().getMetaproject();
     }
 
     @Override
@@ -92,24 +96,45 @@ public class AccessControlFilter extends ServerFilterAdapter {
     }
 
     private boolean checkPermission(UserId userId, ProjectId projectId, Operation operation) throws MetaprojectException {
-        if (!policy.isOperationAllowed(operation.getId(), projectId, userId)) {
+        if (!metaproject.isOperationAllowed(operation.getId(), projectId, userId)) {
             return false;
         }
         return true;
     }
 
     private List<Operation> evaluateCommitChanges(CommitBundle commitBundle) throws ServerRequestException {
-        List<OWLOntologyChange> changes = commitBundle.getChanges();
-        try {
-            List<Operation> operations = new ArrayList<>();
-            for (OWLOntologyChange change : changes) {
-                Operation op = operationRegistry.getOperationForChange(change);
-                operations.add(op);
-            }
-            return operations;
+        final List<OWLOntologyChange> changes = commitBundle.getChanges();
+        List<Operation> operations = new ArrayList<>();
+        for (OWLOntologyChange change : changes) {
+            Operation op = getOperationForChange(change);
+            operations.add(op);
         }
-        catch (OperationForChangeNotFoundException e) {
-            throw new ServerRequestException(e);
+        return operations;
+    }
+
+    private Operation getOperationForChange(OWLOntologyChange change) throws OperationForChangeNotFoundException {
+        if (change instanceof AddAxiom) {
+            return Operations.ADD_AXIOM;
         }
+        else if (change instanceof RemoveAxiom) {
+            return Operations.REMOVE_AXIOM;
+        }
+        else if (change instanceof AddOntologyAnnotation) {
+            return Operations.ADD_ONTOLOGY_ANNOTATION;
+        }
+        else if (change instanceof RemoveOntologyAnnotation) {
+            return Operations.REMOVE_ONTOLOGY_ANNOTATION;
+        }
+        else if (change instanceof AddImport) {
+            return Operations.ADD_IMPORT;
+        }
+        else if (change instanceof RemoveImport) {
+            return Operations.REMOVE_IMPORT;
+        }
+        else if (change instanceof SetOntologyID) {
+            return Operations.MODIFY_ONTOLOGY_IRI;
+        }
+        String template = "No suitable operation for ontology change %s";
+        throw new OperationForChangeNotFoundException(String.format(template, change.toString()));
     }
 }

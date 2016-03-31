@@ -4,9 +4,8 @@ import org.protege.owl.server.api.ChangeService;
 import org.protege.owl.server.changes.OntologyDocumentRevision;
 import org.protege.owl.server.changes.api.ChangeHistory;
 
+import java.io.File;
 import java.rmi.RemoteException;
-
-import edu.stanford.protege.metaproject.api.Address;
 
 /**
  * @author Josef Hardi <johardi@stanford.edu> <br>
@@ -23,7 +22,7 @@ public class RmiChangeService implements RemoteChangeService {
     }
 
     @Override
-    public ChangeHistory getChanges(Address resourceLocation, OntologyDocumentRevision startRevision,
+    public ChangeHistory getChanges(File resourceLocation, OntologyDocumentRevision startRevision,
             OntologyDocumentRevision endRevision) throws Exception {
         try {
             return changeService.getChanges(resourceLocation, startRevision, endRevision);
@@ -34,7 +33,7 @@ public class RmiChangeService implements RemoteChangeService {
     }
 
     @Override
-    public ChangeHistory getAllChanges(Address resourceLocation) throws Exception {
+    public ChangeHistory getAllChanges(File resourceLocation) throws Exception {
         try {
             return changeService.getAllChanges(resourceLocation);
         }
@@ -44,7 +43,7 @@ public class RmiChangeService implements RemoteChangeService {
     }
 
     @Override
-    public ChangeHistory getLatestChanges(Address resourceLocation, OntologyDocumentRevision startRevision)
+    public ChangeHistory getLatestChanges(File resourceLocation, OntologyDocumentRevision startRevision)
             throws Exception {
         try {
             return changeService.getLatestChanges(resourceLocation, startRevision);
