@@ -50,7 +50,7 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
-    public void commit(AuthToken token, ProjectId projectId, CommitBundle changes) throws ServerRequestException {
-        server.commit(token, projectId, changes);
+    public void commit(AuthToken token, Project project, CommitBundle changes) throws ServerRequestException {
+        server.commit(token, project, changes);
     }
 }
