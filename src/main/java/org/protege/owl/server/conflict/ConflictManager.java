@@ -18,7 +18,7 @@ import org.protege.owl.server.changes.api.ChangeHistory;
 import org.protege.owl.server.changes.api.RevisionPointer;
 import org.protege.owl.server.changes.api.ServerOntologyDocument;
 import org.protege.owl.server.changes.api.SingletonChangeHistory;
-import org.protege.owl.server.util.CollectingChangeVisitor;
+import org.protege.owl.server.changes.util.CollectingChangeVisitor;
 import org.protege.owl.server.util.ServerFilterAdapter;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.ImportChange;

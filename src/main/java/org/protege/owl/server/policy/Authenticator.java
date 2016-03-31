@@ -180,7 +180,7 @@ public class Authenticator extends ServerFilterAdapter {
         if (commitComment == null) {
             throw new IllegalStateException("Changes to be committed must have metadata");
         }
-        commitComment.setUser(u);
+//        commitComment.setUser(u);
         getDelegate().commit(u, doc, clientChanges);
     }
 

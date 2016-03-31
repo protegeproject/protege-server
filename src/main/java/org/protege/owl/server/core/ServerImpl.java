@@ -1,16 +1,14 @@
 package org.protege.owl.server.core;
 
 import org.protege.owl.server.api.AuthToken;
-import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.exception.DocumentAlreadyExistsException;
 import org.protege.owl.server.api.exception.DocumentNotFoundException;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.exception.ServerRequestException;
 import org.protege.owl.server.api.server.Server;
 import org.protege.owl.server.api.server.ServerListener;
 import org.protege.owl.server.api.server.ServerPath;
 import org.protege.owl.server.api.server.ServerTransport;
-import org.protege.owl.server.api.server.TransportHandler;
+import org.protege.owl.server.changes.ChangeDocumentPool;
 import org.protege.owl.server.changes.ChangeMetaData;
 import org.protege.owl.server.changes.DocumentFactoryImpl;
 import org.protege.owl.server.changes.OntologyDocumentRevision;
@@ -45,11 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.stanford.protege.metaproject.api.AuthenticationDetails;
-import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ServerConfiguration;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
 
 
 /*
@@ -139,7 +133,7 @@ public class ServerImpl implements Server {
 	        if (historyFile == null) {
 	            throw new IllegalStateException("Expected to find ontology document at the location " + doc.getServerPath());
 	        }
-	        return pool.getChangeDocument(doc, historyFile).getEndRevision();
+	        return pool.getChangeDocument(historyFile).getEndRevision();
 	    default:
 	        throw new IllegalStateException("Programmer missed a case.");
 	    }
@@ -196,7 +190,7 @@ public class ServerImpl implements Server {
 			throw new IllegalArgumentException("Server side IRI's must have the " + ChangeHistory.CHANGE_DOCUMENT_EXTENSION + " extension");
 		}
 		ServerOntologyDocument doc = new ServerOntologyDocumentImpl(serverPath);
-		pool.setChangeDocument(doc, historyFile, factory.createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION));
+		pool.setChangeDocument(historyFile, factory.createEmptyChangeDocument(OntologyDocumentRevision.START_REVISION));
 		return doc;
 	}
 
@@ -217,7 +211,7 @@ public class ServerImpl implements Server {
 		if (historyFile == null) {
 			throw new IllegalStateException("Expected to find ontology document at the location " + doc.getServerPath());
 		}
-		return pool.getChangeDocument(doc, historyFile).cropChanges(start, end);
+		return pool.getChangeDocument(historyFile).cropChanges(start, end);
 	}
 	
 
@@ -225,7 +219,7 @@ public class ServerImpl implements Server {
 	@Override
 	public void commit(AuthToken u, ServerOntologyDocument doc,
 	                    SingletonChangeHistory changesFromClient) throws OWLServerException {
-	    changesFromClient.getMetaData(changesFromClient.getStartRevision()).setUser(u);
+//	    changesFromClient.getMetaData(changesFromClient.getStartRevision()).setUser(u);
 		OWLOntology fakeOntology;
 		try {
 			fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
@@ -235,7 +229,7 @@ public class ServerImpl implements Server {
 		}
 
 		ChangeHistory fullHistoryAfterCommit = getChangesAfterCommit(u, doc, changesFromClient, fakeOntology);
-		pool.setChangeDocument(doc, parseServerIRI(doc.getServerPath(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT), fullHistoryAfterCommit);
+		pool.setChangeDocument(parseServerIRI(doc.getServerPath(), ServerObjectStatus.OBJECT_IS_ONTOLOGY_DOCUMENT), fullHistoryAfterCommit);
 	}
 	
 	private ChangeHistory getChangesAfterCommit(AuthToken u, ServerOntologyDocument doc, SingletonChangeHistory changesFromClient, OWLOntology fakeOntology) throws OWLServerException {
@@ -274,7 +268,7 @@ public class ServerImpl implements Server {
 
 	private File parseServerIRI(ServerPath path, ServerObjectStatus expected) throws DocumentNotFoundException {
 		File f = new File(root, path.pathAsString());
-		boolean pooledDocumentFound = pool.testServerLocation(path);
+		boolean pooledDocumentFound = pool.testServerLocation(f);
 		if (expected.isStatusOf(f, pooledDocumentFound)) {
 			return f;
 		}
