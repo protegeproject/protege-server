@@ -16,129 +16,127 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument {
-	public static final String BACKING_STORE_PROPERTY     = "server.location";
-	public static final String VERSION_PROPERTY           = "version";
-	public static final String VERSION_DOCUMENT_DIRECTORY = ".owlserver";
-	public static final String VERSION_DOCUMENT_EXTENSION = ".vontology";
 
-	public static File getMetaDataFile(File ontologyFile) {
-		File versionInfoDir = getVersionInfoDirectory(ontologyFile);
-		return new File(versionInfoDir, ontologyFile.getName() + VERSION_DOCUMENT_EXTENSION);
-	}
-	
-	public static File getHistoryFile(File ontologyFile) {
+    public static final String BACKING_STORE_PROPERTY = "server.location";
+    public static final String VERSION_PROPERTY = "version";
+    public static final String VERSION_DOCUMENT_DIRECTORY = ".owlserver";
+    public static final String VERSION_DOCUMENT_EXTENSION = ".vontology";
+
+    public static File getMetaDataFile(File ontologyFile) {
         File versionInfoDir = getVersionInfoDirectory(ontologyFile);
-        return new File(versionInfoDir, ontologyFile.getName() + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);	    
-	}
+        return new File(versionInfoDir, ontologyFile.getName() + VERSION_DOCUMENT_EXTENSION);
+    }
 
-	public static File getVersionInfoDirectory(File ontologyFile) {
-		File dir = ontologyFile.getParentFile();
-		return new File(dir, VERSION_DOCUMENT_DIRECTORY);
-	}
-	
+    public static File getHistoryFile(File ontologyFile) {
+        File versionInfoDir = getVersionInfoDirectory(ontologyFile);
+        return new File(versionInfoDir, ontologyFile.getName() + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
+    }
+
+    public static File getVersionInfoDirectory(File ontologyFile) {
+        File dir = ontologyFile.getParentFile();
+        return new File(dir, VERSION_DOCUMENT_DIRECTORY);
+    }
+
     public static File getBackingStore(OWLOntology ontology) {
-		OWLOntologyManager manager = ontology.getOWLOntologyManager();
-		IRI documentLocation = manager.getOntologyDocumentIRI(ontology);
-		if (!documentLocation.getScheme().equals("file")) {
-			return null;
-		}
-		return new File(documentLocation.toURI());
-	}
-	
-	private OWLOntology ontology;
-	private RemoteOntologyDocument serverDocument;
-	private OntologyDocumentRevision revision;
-	private ChangeHistory localHistory;
-	private boolean isHistoryDirty = false;
-	
-	
-	public VersionedOntologyDocumentImpl(OWLOntology ontology,
-	                                     RemoteOntologyDocument serverDocument,
-	                                     OntologyDocumentRevision revision,
-	                                     ChangeHistory localHistory) {
-		this.ontology = ontology;
-		this.serverDocument = serverDocument;
-		this.revision = revision;
-		this.localHistory = localHistory;
-	}
+        OWLOntologyManager manager = ontology.getOWLOntologyManager();
+        IRI documentLocation = manager.getOntologyDocumentIRI(ontology);
+        if (!documentLocation.getScheme().equals("file")) {
+            return null;
+        }
+        return new File(documentLocation.toURI());
+    }
 
-	@Override
-	public OWLOntology getOntology() {
-		return ontology;
-	}
+    private OWLOntology ontology;
+    private RemoteOntologyDocument serverDocument;
+    private OntologyDocumentRevision revision;
+    private ChangeHistory localHistory;
+    private boolean isHistoryDirty = false;
 
+    public VersionedOntologyDocumentImpl(OWLOntology ontology, RemoteOntologyDocument serverDocument,
+            OntologyDocumentRevision revision, ChangeHistory localHistory) {
+        this.ontology = ontology;
+        this.serverDocument = serverDocument;
+        this.revision = revision;
+        this.localHistory = localHistory;
+    }
 
-	@Override
-	public RemoteOntologyDocument getServerDocument() {
-		return serverDocument;
-	}
-	
-	@Override
-	public ChangeHistory getLocalHistory() {
-		return localHistory;
-	}
-	
-	@Override
-	public void appendLocalHistory(ChangeHistory changes) {
-		localHistory = localHistory.appendChanges(changes);
-		isHistoryDirty = true;
-	}
+    @Override
+    public OWLOntology getOntology() {
+        return ontology;
+    }
 
-	@Override
-	public OntologyDocumentRevision getRevision() {
-		return revision;
-	}
-	
-	@Override
-	public void setRevision(OntologyDocumentRevision revision) {
-		this.revision = revision;
-	}
-	
-	@Override
-	public boolean saveMetaData() throws IOException {
-		File ontologyFile = getBackingStore(ontology);
-		if (ontologyFile == null) {
-			return false;
-		}
-		File metadataFile = getMetaDataFile(ontologyFile);
-		metadataFile.getParentFile().mkdirs();
-		ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(metadataFile)));
-		try {
-		    oos.writeObject(serverDocument);
-		    oos.writeObject(revision);
-		}
-		finally {
-		    oos.flush();
-		    oos.close();
-		}
-		saveLocalHistory();
-		return true;
-	}
-	
-	@Override
-	public boolean saveLocalHistory() throws IOException {
+    @Override
+    public RemoteOntologyDocument getServerDocument() {
+        return serverDocument;
+    }
+
+    @Override
+    public ChangeHistory getLocalHistory() {
+        return localHistory;
+    }
+
+    @Override
+    public void appendLocalHistory(ChangeHistory changes) {
+        localHistory = localHistory.appendChanges(changes);
+        isHistoryDirty = true;
+    }
+
+    @Override
+    public OntologyDocumentRevision getRevision() {
+        return revision;
+    }
+
+    @Override
+    public void setRevision(OntologyDocumentRevision revision) {
+        this.revision = revision;
+    }
+
+    @Override
+    public boolean saveMetaData() throws IOException {
+        File ontologyFile = getBackingStore(ontology);
+        if (ontologyFile == null) {
+            return false;
+        }
+        File metadataFile = getMetaDataFile(ontologyFile);
+        metadataFile.getParentFile().mkdirs();
+        ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(metadataFile)));
+        try {
+            oos.writeObject(serverDocument);
+            oos.writeObject(revision);
+        }
+        finally {
+            oos.flush();
+            oos.close();
+        }
+        saveLocalHistory();
+        return true;
+    }
+
+    @Override
+    public boolean saveLocalHistory() throws IOException {
         File ontologyFile = getBackingStore(ontology);
         if (ontologyFile == null) {
             return false;
         }
         File historyFile = getHistoryFile(ontologyFile);
-	    if (isHistoryDirty || !historyFile.exists()) {
-	        historyFile.getParentFile().mkdirs();
-	        OutputStream os = new BufferedOutputStream(new FileOutputStream(historyFile));
-	        try {
-	            localHistory.writeChangeDocument(os);
-	        }
-	        finally {
-	            os.flush();
-	            os.close();
-	        }
-	        isHistoryDirty = false;
-	    }
+        if (isHistoryDirty || !historyFile.exists()) {
+            historyFile.getParentFile().mkdirs();
+            OutputStream os = new BufferedOutputStream(new FileOutputStream(historyFile));
+            try {
+                localHistory.writeChangeDocument(os);
+            }
+            finally {
+                os.flush();
+                os.close();
+            }
+            isHistoryDirty = false;
+        }
         return true;
-	}
+    }
 
-	@Override
-	public String toString() {
-	    return "[Document " + ontology.getOntologyID() + " from server " + serverDocument.getServerLocation() + " revision " + revision + "]";
-	}
+    @Override
+    public String toString() {
+        return "[Document " + ontology.getOntologyID() + " from server " + serverDocument.getServerLocation()
+                + " revision " + revision + "]";
+    }
 }
