@@ -6,6 +6,9 @@ import org.semanticweb.owlapi.model.OWLOntology;
 
 import java.io.IOException;
 
+import edu.stanford.protege.metaproject.api.Address;
+import edu.stanford.protege.metaproject.api.Host;
+
 /**
  * This is an open OWL ontology held by the client with an association to a
  * corresponding server document at a particular revision.
@@ -25,8 +28,13 @@ import java.io.IOException;
  */
 public interface VersionedOntologyDocument {
 
+    Host getRemoteHost();
+
+    Address getRemoteAddress();
+
     OWLOntology getOntology();
 
+    @Deprecated
     RemoteOntologyDocument getServerDocument();
 
     /**

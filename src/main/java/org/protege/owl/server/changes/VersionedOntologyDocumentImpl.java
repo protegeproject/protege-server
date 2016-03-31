@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
+import edu.stanford.protege.metaproject.api.Address;
+import edu.stanford.protege.metaproject.api.Host;
+
 import org.protege.owl.server.changes.api.ChangeHistory;
 import org.protege.owl.server.changes.api.RemoteOntologyDocument;
 import org.protege.owl.server.changes.api.VersionedOntologyDocument;
@@ -46,18 +49,41 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
         return new File(documentLocation.toURI());
     }
 
+    private Host remoteHost;
+    private Address remoteAddress;
+
     private OWLOntology ontology;
     private RemoteOntologyDocument serverDocument;
     private OntologyDocumentRevision revision;
     private ChangeHistory localHistory;
     private boolean isHistoryDirty = false;
 
+    @Deprecated
     public VersionedOntologyDocumentImpl(OWLOntology ontology, RemoteOntologyDocument serverDocument,
             OntologyDocumentRevision revision, ChangeHistory localHistory) {
         this.ontology = ontology;
         this.serverDocument = serverDocument;
         this.revision = revision;
         this.localHistory = localHistory;
+    }
+
+    public VersionedOntologyDocumentImpl(Host remoteHost, Address remoteAddress, OWLOntology ontology, 
+            OntologyDocumentRevision revision, ChangeHistory localHistory) {
+        this.remoteHost = remoteHost;
+        this.remoteAddress = remoteAddress;
+        this.ontology = ontology;
+        this.revision = revision;
+        this.localHistory = localHistory;
+    }
+
+    @Override
+    public Host getRemoteHost() {
+        return remoteHost;
+    }
+
+    @Override
+    public Address getRemoteAddress() {
+        return remoteAddress;
     }
 
     @Override
