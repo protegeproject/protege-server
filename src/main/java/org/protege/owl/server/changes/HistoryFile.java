@@ -14,11 +14,14 @@ public class HistoryFile extends File {
 
     public static final String EXTENSION = ".history";
 
-    public HistoryFile(String parent, String child) {
-        super(parent, child);
+    public HistoryFile(File file) throws InvalidHistoryFileException {
+        this(file.getPath());
     }
 
-    public HistoryFile(String pathname) {
+    public HistoryFile(String pathname) throws InvalidHistoryFileException {
         super(pathname);
+        if (!pathname.endsWith(EXTENSION)) {
+            throw new InvalidHistoryFileException(pathname);
+        }
     }
 }

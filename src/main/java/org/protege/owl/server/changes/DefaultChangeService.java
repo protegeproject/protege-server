@@ -2,7 +2,6 @@ package org.protege.owl.server.changes;
 
 import org.protege.owl.server.api.ChangeService;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.exception.ServerRequestException;
 import org.protege.owl.server.changes.api.ChangeHistory;
 
 import java.io.File;
@@ -39,16 +38,16 @@ public class DefaultChangeService implements ChangeService {
         return changePool.getChangeDocument(historyFile).getEndRevision();
     }
 
-    private HistoryFile getHistoryFile(File resourceLocation) throws ServerRequestException {
+    private HistoryFile getHistoryFile(File resourceLocation) throws OWLServerException {
         try {
-            HistoryFile historyFile = new HistoryFile(resourceLocation.getPath());
+            HistoryFile historyFile = new HistoryFile(resourceLocation);
             if (!historyFile.exists()) {
                 throw new FileNotFoundException(); // TODO: Use factory to create the history file
             }
             return historyFile;
         }
         catch (FileNotFoundException e) {
-            throw new ServerRequestException(e);
+            throw new OWLServerException(e);
         }
     }
 }
