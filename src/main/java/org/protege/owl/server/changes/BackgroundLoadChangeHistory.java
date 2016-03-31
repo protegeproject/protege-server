@@ -114,4 +114,9 @@ public class BackgroundLoadChangeHistory implements ChangeHistory {
     public void setCompressionLimit(int compressionLimit) {
         getDelegate().setCompressionLimit(compressionLimit);
     }
+
+    @Override
+    public boolean isEmpty() {
+        return getDelegate().isEmpty();
+    }
 }

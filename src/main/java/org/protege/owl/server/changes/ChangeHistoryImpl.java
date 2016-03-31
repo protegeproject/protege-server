@@ -108,6 +108,11 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
         return new ChangeHistoryImpl(start, documentFactory, subChanges, subMetaDataMap);
     }
 
+    @Override
+    public boolean isEmpty() {
+        return listOfRevisionChanges.isEmpty();
+    }
+
     private <X extends Comparable<X>, Y> SortedMap<X, Y> cropMap(SortedMap<X, Y> map, X start, X end) {
         if (map.isEmpty()) {
             return new TreeMap<X, Y>();

@@ -92,4 +92,6 @@ public interface ChangeHistory {
     void writeChangeDocument(OutputStream out) throws IOException;
 
     void setCompressionLimit(int compressionLimit);
+
+    boolean isEmpty();
 }
