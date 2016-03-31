@@ -17,4 +17,8 @@ public class HistoryFile extends File {
     public HistoryFile(String parent, String child) {
         super(parent, child);
     }
+
+    public HistoryFile(String pathname) {
+        super(pathname);
+    }
 }
