@@ -5,7 +5,6 @@ import org.protege.owl.server.api.ServerFilterAdapter;
 import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerRequestException;
-import org.protege.owl.server.api.server.ServerPath;
 import org.protege.owl.server.api.server.TransportHandler;
 import org.protege.owl.server.changes.api.ChangeHistory;
 import org.protege.owl.server.changes.util.CollectingChangeVisitor;
@@ -25,7 +24,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.Project;
 
 /**
  * Represents the change document layer that will validate the user changes in the commit document.
@@ -45,14 +44,13 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public void commit(AuthToken token, ProjectId projectId, CommitBundle commits) throws ServerRequestException {
+    public void commit(AuthToken token, Project project, CommitBundle commits) throws ServerRequestException {
        try {
-            ServerPath serverPath = commits.getServerPath();
-            List<OWLOntologyChange> conflicts = getConflicts(getHistoryFile(projectId, serverPath), commits);
+            List<OWLOntologyChange> conflicts = getConflicts(project, commits);
             if (!conflicts.isEmpty()) {
                 throw new ServerRequestException("Conflicts detected: " + conflicts); // TODO: Fix the exception
             }
-            super.commit(token, projectId, commits);
+            super.commit(token, project, commits);
        }
        catch (OWLOntologyCreationException e) {
            throw new ServerRequestException(e);
@@ -62,16 +60,16 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
        }
     }
 
-    private List<OWLOntologyChange> getConflicts(HistoryFile historyFile, CommitBundle commits) throws OWLOntologyCreationException, OWLServerException {
+    private List<OWLOntologyChange> getConflicts(Project project, CommitBundle commits) throws OWLOntologyCreationException, OWLServerException {
         List<OWLOntologyChange> conflicts = new ArrayList<OWLOntologyChange>();
         OWLOntology cacheOntology = OWLManager.createOWLOntologyManager().createOntology();
         
         List<OWLOntologyChange> clientChanges = commits.getChanges();
         CollectingChangeVisitor collectedClientChanges = CollectingChangeVisitor.collectChanges(clientChanges);
         
-        ChangeHistory allChangeHistory = changeService.getAllChanges(historyFile);
+        ChangeHistory allChangeHistory = changeService.getAllChanges(project.getAddress());
         
-        final OntologyDocumentRevision headRevision = changeService.getEndRevision(historyFile);
+        final OntologyDocumentRevision headRevision = changeService.getHeadRevision(project.getAddress());
         OntologyDocumentRevision revision = commits.getStartRevision();
         for (; revision.compareTo(headRevision) < 0; revision = revision.next()) {
             ChangeHistory singleRevisionChangeHistory = allChangeHistory.cropChanges(revision, revision.next());

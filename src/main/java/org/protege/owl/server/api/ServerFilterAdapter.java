@@ -47,8 +47,8 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void commit(AuthToken token, ProjectId projectId, CommitBundle changes) throws ServerRequestException {
-        getDelegate().commit(token, projectId, changes);
+    public void commit(AuthToken token, Project project, CommitBundle changes) throws ServerRequestException {
+        getDelegate().commit(token, project, changes);
     }
 
     @Override

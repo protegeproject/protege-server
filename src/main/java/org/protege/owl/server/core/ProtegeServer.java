@@ -70,7 +70,7 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void commit(AuthToken token, ProjectId projectId, CommitBundle changes) {
+    public void commit(AuthToken token, Project project, CommitBundle changes) {
         // TODO Auto-generated method stub
         
     }

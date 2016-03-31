@@ -80,11 +80,11 @@ public interface ServerRequests {
      *
      * @param token
      *            An authentication token to verify the request source.
-     * @param projectId
+     * @param project
      *            The target project for such changes
      * @param changes
      *            A list of changes coming from the client
      * @throws ServerRequestException
      */
-    void commit(AuthToken token, ProjectId projectId, CommitBundle changes) throws ServerRequestException;
+    void commit(AuthToken token, Project project, CommitBundle changes) throws ServerRequestException;
 }
