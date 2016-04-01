@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
 
 public final class ChangeMetaData implements Serializable {
@@ -12,6 +13,7 @@ public final class ChangeMetaData implements Serializable {
 
     private Date date;
     private String comment;
+    private User author;
     private UserId userId;
 
     public ChangeMetaData(Date date, String comment) {
@@ -42,17 +44,27 @@ public final class ChangeMetaData implements Serializable {
         return null;
     }
 
+    @Deprecated
     public UserId getUserId() {
         return userId;
     }
 
-    public void setUser(AuthToken user) {
-        this.userId = user.getUserId();
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    @Deprecated
+    public void setUser(AuthToken authToken) {
+        this.userId = authToken.getUser().getId();
     }
 
     @Override
     public int hashCode() {
-        return date.hashCode() + 42 * comment.hashCode() + userId.hashCode() / 42;
+        return date.hashCode() + 42 * comment.hashCode() + author.hashCode() / 42;
     }
 
     @Override
@@ -65,7 +77,7 @@ public final class ChangeMetaData implements Serializable {
         }
         ChangeMetaData other = (ChangeMetaData) obj;
         return other.getCommitComment().equals(comment) && other.getDate().equals(date)
-                && userId.equals(other.getUserId());
+                && other.getAuthor().equals(author);
     }
 
     @Override
