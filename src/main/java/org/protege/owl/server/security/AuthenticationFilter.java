@@ -6,6 +6,7 @@ import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.server.TransportHandler;
 
 import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
+import edu.stanford.protege.metaproject.api.UserRegistry;
 
 /**
  * Represents the authentication gate that will validate the user session in the server.
@@ -24,7 +25,8 @@ public class AuthenticationFilter extends ServerFilterAdapter {
     public AuthenticationFilter(ServerLayer delegate) {
         super(delegate);
         authRegistry = getConfiguration().getAuthenticationRegistry();
-        loginService = new DefaultLoginService(authRegistry, sessionManager);
+        UserRegistry userRegistry = getConfiguration().getMetaproject().getUserRegistry();
+        loginService = new DefaultLoginService(authRegistry, userRegistry, sessionManager);
     }
 
     @Override

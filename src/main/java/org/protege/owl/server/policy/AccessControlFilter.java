@@ -57,7 +57,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
             throws ServerRequestException {
         try {
             Operation operation = commitBundle.getOperation();
-            if (checkPermission(token.getUserId(), project.getId(), operation)) {
+            if (checkPermission(token.getUser().getId(), project.getId(), operation)) {
                 getDelegate().commit(token, project, commitBundle);
             }
             else {
@@ -73,7 +73,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
             throws ServerRequestException {
         List<Operation> operations = evaluateCommitChanges(commitBundle);
         List<Exception> violations = new ArrayList<>();
-        if (checkPermission(token.getUserId(), project.getId(), operations, violations)) {
+        if (checkPermission(token.getUser().getId(), project.getId(), operations, violations)) {
             getDelegate().commit(token, project, commitBundle);
         }
         throw new ServerRequestException(OperationNotAllowedException.create(violations));
