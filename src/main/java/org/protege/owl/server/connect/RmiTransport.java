@@ -2,8 +2,8 @@ package org.protege.owl.server.connect;
 
 import org.protege.owl.server.api.ChangeService;
 import org.protege.owl.server.api.LoginService;
+import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.server.TransportHandler;
-import org.protege.owl.server.core.ProtegeServer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +33,8 @@ public class RmiTransport implements TransportHandler {
     @Override
     public void bind(Object object) throws RemoteException {
         Registry registry = LocateRegistry.createRegistry(registryPort);
-        if (object instanceof ProtegeServer) {
-            RmiServer remoteServer = new RmiServer((ProtegeServer) object);
+        if (object instanceof Server) {
+            RmiServer remoteServer = new RmiServer((Server) object);
             Remote remoteStub = UnicastRemoteObject.exportObject(remoteServer, serverPort);
             registry.rebind(RmiServer.SERVER_SERVICE, remoteStub);
             logger.info("Server broadcasted through RMI Registry on port {}", registryPort);
