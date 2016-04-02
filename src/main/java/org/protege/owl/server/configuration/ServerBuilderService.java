@@ -3,7 +3,8 @@ package org.protege.owl.server.configuration;
 import org.protege.owl.server.api.BuilderService;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerFactory;
-import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.api.TransportFactory;
+import org.protege.owl.server.api.server.TransportHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +23,22 @@ public class ServerBuilderService implements BuilderService {
 
     private ServerFactory serverFactory;
 
-    private Server server;
+    private TransportFactory transportFactory;
 
     private ServerConfiguration configuration;
+
+    @Override
+    public void buildAndLaunchServer() {
+        try {
+            Server server = serverFactory.build(configuration);
+            TransportHandler transport = transportFactory.build(configuration);
+            server.setTransport(transport);
+            transport.bind(server);
+        }
+        catch (Exception e) {
+            logger.error("Failed to build the server instance", e);
+        }
+    }
 
     @Override
     public void initialize(ServerConfiguration configuration) {
@@ -35,25 +49,10 @@ public class ServerBuilderService implements BuilderService {
     @Override
     public void setServerFactory(ServerFactory factory) {
         serverFactory = factory;
-        immediateBuildServer();
-    }
-
-    private void immediateBuildServer() {
-        try {
-            server = serverFactory.build(configuration);
-        }
-        catch (OWLServerException e) {
-            logger.error("Failed to build the server instance", e);
-        }
     }
 
     @Override
-    public void removeServerFactory(ServerFactory factory) {
-        if (factory == null) return;
-        if (serverFactory.equals(factory)) {
-            serverFactory = null;
-            logger.info("Disconnecting from the server");
-            server = null;
-        }
+    public void setTransportFactory(TransportFactory factory) {
+        transportFactory = factory;
     }
 }

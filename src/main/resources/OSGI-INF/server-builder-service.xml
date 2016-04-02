@@ -11,7 +11,11 @@
     <reference name="SERVER_FACTORY"
         interface="org.protege.owl.server.api.server.ServerFactory"
         bind="setServerFactory"
-        unbind="removeServerFactory"
-        cardinality="0..1"
-        policy="dynamic" />
+        cardinality="1..1"
+        policy="static" />
+    <reference name="TRANSPORT_FACTORY"
+        interface="org.protege.owl.server.api.server.TransportFactory"
+        bind="setTransportFactory"
+        cardinality="1..1"
+        policy="static" />
 </scr:component>

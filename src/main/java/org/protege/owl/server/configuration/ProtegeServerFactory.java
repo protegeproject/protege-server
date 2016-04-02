@@ -3,17 +3,11 @@ package org.protege.owl.server.configuration;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerFactory;
 import org.protege.owl.server.api.ServerLayer;
-import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.server.TransportHandler;
 import org.protege.owl.server.changes.ConflictDetectionFilter;
-import org.protege.owl.server.connect.RmiTransport;
 import org.protege.owl.server.core.ProtegeServer;
 import org.protege.owl.server.policy.AccessControlFilter;
 import org.protege.owl.server.security.AuthenticationFilter;
 
-import java.net.URI;
-
-import edu.stanford.protege.metaproject.api.Host;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 
 /**
@@ -25,11 +19,10 @@ import edu.stanford.protege.metaproject.api.ServerConfiguration;
 public class ProtegeServerFactory implements ServerFactory {
 
     @Override
-    public Server build(ServerConfiguration configuration) throws OWLServerException {
+    public Server build(ServerConfiguration configuration) {
         ServerLayer server = addConflictDetectionLayer(createBaseServer(configuration));
         server = addAccessControlLayer(server);
         server = addAuthenticationLayer(server);
-        injectServerTransport(server, configuration);
         return server;
     }
 
@@ -47,19 +40,5 @@ public class ProtegeServerFactory implements ServerFactory {
 
     private ServerLayer addAuthenticationLayer(ServerLayer server) {
         return new AuthenticationFilter(server);
-    }
-
-    private void injectServerTransport(Server server, ServerConfiguration configuration)
-            throws OWLServerException {
-        TransportHandler transport = createTransport(configuration);
-        server.setTransport(transport);
-    }
-
-    private TransportHandler createTransport(ServerConfiguration configuration) {
-        Host host = configuration.getHost();
-        URI remoteUri = host.getUri();
-        int registryPort = host.getSecondaryPort().isPresent() ? host.getSecondaryPort().get().get() : remoteUri.getPort();
-        int serverPort = remoteUri.getPort();
-        return new RmiTransport(registryPort, serverPort);
     }
 }

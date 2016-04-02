@@ -12,5 +12,7 @@ public interface BuilderService {
 
     void setServerFactory(ServerFactory factory);
 
-    void removeServerFactory(ServerFactory factory);
+    void setTransportFactory(TransportFactory factory);
+
+    void buildAndLaunchServer();
 }
