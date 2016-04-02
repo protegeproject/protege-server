@@ -30,4 +30,6 @@ public interface ChangeService {
 
     ChangeHistory getLatestChanges(File resourceLocation, OntologyDocumentRevision startRevision)
             throws Exception;
+
+    OntologyDocumentRevision getHeadRevision(File resourceLocation) throws Exception;
 }

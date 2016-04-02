@@ -22,18 +22,21 @@ public class DefaultChangeService implements ChangeService {
         return changePool.getChangeDocument(historyFile).cropChanges(startRevision, endRevision);
     }
 
+    @Override
     public ChangeHistory getAllChanges(File resourceLocation) throws OWLServerException {
         OntologyDocumentRevision headRevision = getHeadRevision(resourceLocation);
         return getChanges(resourceLocation, OntologyDocumentRevision.START_REVISION, headRevision);
     }
 
+    @Override
     public ChangeHistory getLatestChanges(File resourceLocation, OntologyDocumentRevision startRevision)
             throws OWLServerException {
         OntologyDocumentRevision headRevision = getHeadRevision(resourceLocation);
         return getChanges(resourceLocation, startRevision, headRevision);
     }
 
-    protected OntologyDocumentRevision getHeadRevision(File resourceLocation) throws OWLServerException {
+    @Override
+    public OntologyDocumentRevision getHeadRevision(File resourceLocation) throws OWLServerException {
         HistoryFile historyFile = getHistoryFile(resourceLocation);
         return changePool.getChangeDocument(historyFile).getEndRevision();
     }

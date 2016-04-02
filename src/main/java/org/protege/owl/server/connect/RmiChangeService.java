@@ -52,4 +52,14 @@ public class RmiChangeService implements RemoteChangeService {
             throw new RemoteException(e.getMessage(), e);
         }
     }
+
+    @Override
+    public OntologyDocumentRevision getHeadRevision(File resourceLocation) throws Exception {
+        try {
+            return changeService.getHeadRevision(resourceLocation);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
+    }
 }
