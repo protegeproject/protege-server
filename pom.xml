@@ -218,7 +218,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>org.protege.owl.server.Activator</Bundle-Activator>
+                        <Bundle-Activator>org.protege.owl.server.ServerActivator</Bundle-Activator>
                         <Bundle-SymbolicName>org.protege.owl.server</Bundle-SymbolicName>
                         <Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
                         <Embed-Dependency>antlr, antlr-runtime, stringtemplate</Embed-Dependency>
