@@ -1,5 +1,6 @@
 package org.protege.owl.server.changes;
 
+import org.protege.owl.server.api.ChangeService;
 import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.ServerFilterAdapter;
 import org.protege.owl.server.api.ServerLayer;
@@ -17,7 +18,6 @@ import org.semanticweb.owlapi.model.OWLAxiomChange;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +36,15 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
 
     private ChangeDocumentPool changePool = new ChangeDocumentPool();
 
-    private DefaultChangeService changeService;
+    private ChangeService changeService;
 
     public ConflictDetectionFilter(ServerLayer delegate) {
         super(delegate);
         changeService = new DefaultChangeService(changePool);
+    }
+
+    public void setLoginService(ChangeService changeService) {
+        this.changeService = changeService;
     }
 
     @Override
@@ -52,15 +56,12 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
             }
             super.commit(token, project, commits);
        }
-       catch (OWLOntologyCreationException e) {
-           throw new ServerRequestException(e);
-       }
-       catch (OWLServerException e) {
+       catch (Exception e) {
            throw new ServerRequestException(e);
        }
     }
 
-    private List<OWLOntologyChange> getConflicts(Project project, CommitBundle commits) throws OWLOntologyCreationException, OWLServerException {
+    private List<OWLOntologyChange> getConflicts(Project project, CommitBundle commits) throws Exception {
         List<OWLOntologyChange> conflicts = new ArrayList<OWLOntologyChange>();
         OWLOntology cacheOntology = OWLManager.createOWLOntologyManager().createOntology();
         
