@@ -1,5 +1,6 @@
 package org.protege.owl.server.security;
 
+import org.protege.owl.server.api.LoginService;
 import org.protege.owl.server.api.ServerFilterAdapter;
 import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OWLServerException;
@@ -20,13 +21,17 @@ public class AuthenticationFilter extends ServerFilterAdapter {
 
     private SessionManager sessionManager = new SessionManager();
 
-    private DefaultLoginService loginService;
+    private LoginService loginService;
 
     public AuthenticationFilter(ServerLayer delegate) {
         super(delegate);
         authRegistry = getConfiguration().getAuthenticationRegistry();
         UserRegistry userRegistry = getConfiguration().getMetaproject().getUserRegistry();
         loginService = new DefaultLoginService(authRegistry, userRegistry, sessionManager);
+    }
+
+    public void setLoginService(LoginService loginService) {
+        this.loginService = loginService;
     }
 
     @Override
