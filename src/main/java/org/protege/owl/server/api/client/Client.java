@@ -17,6 +17,7 @@ import org.protege.owl.server.changes.api.VersionedOntologyDocument;
 
 import org.semanticweb.owlapi.model.IRI;
 
+@Deprecated
 public interface Client {
 
 	/**

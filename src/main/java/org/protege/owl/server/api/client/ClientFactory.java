@@ -39,6 +39,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
  * @author tredmond
  *
  */
+@Deprecated
 public interface ClientFactory {
     String USERNAME_KEY = "username", PASSWORD_KEY = "password";
     
