@@ -12,7 +12,7 @@ import edu.stanford.protege.metaproject.api.UserRegistry;
 import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
 import edu.stanford.protege.metaproject.impl.AuthorizedUserToken;
 
-public class DefaultLoginService implements LoginService, SimpleHashProtocol {
+public class DefaultLoginService implements LoginService {
 
     private AuthenticationRegistry authRegistry;
     private UserRegistry userRegistry;
@@ -36,7 +36,7 @@ public class DefaultLoginService implements LoginService, SimpleHashProtocol {
     }
 
     @Override
-    public Salt getSalt(UserId userId) throws UserNotRegisteredException {
+    public Salt getEncryptionKey(UserId userId) throws UserNotRegisteredException {
         return authRegistry.getSalt(userId);
     }
 }

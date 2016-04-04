@@ -13,4 +13,6 @@ import edu.stanford.protege.metaproject.api.UserId;
 public interface LoginService {
 
     AuthToken login(UserId username, SaltedPasswordDigest password) throws Exception;
+
+    Object getEncryptionKey(UserId userId) throws Exception;
 }
