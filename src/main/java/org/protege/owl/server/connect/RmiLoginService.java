@@ -2,6 +2,7 @@ package org.protege.owl.server.connect;
 
 import org.protege.owl.server.api.LoginService;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
@@ -9,7 +10,7 @@ import edu.stanford.protege.metaproject.api.Salt;
 import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
 import edu.stanford.protege.metaproject.api.UserId;
 
-public class RmiLoginService implements RemoteLoginService {
+public class RmiLoginService implements RemoteLoginService, Remote {
 
     public static String LOGIN_SERVICE = "RmiLoginService";
 
