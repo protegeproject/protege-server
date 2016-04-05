@@ -1,8 +1,8 @@
 package org.protege.owl.server.configuration;
 
 import org.protege.owl.server.api.BuilderService;
-import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerFactory;
+import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.TransportFactory;
 import org.protege.owl.server.api.server.TransportHandler;
 
@@ -30,7 +30,7 @@ public class ServerBuilderService implements BuilderService {
     @Override
     public void buildAndLaunchServer() {
         try {
-            Server server = serverFactory.build(configuration);
+            ServerLayer server = (ServerLayer) serverFactory.build(configuration);
             TransportHandler transport = transportFactory.build(configuration);
             server.setTransport(transport);
             transport.bind(server);

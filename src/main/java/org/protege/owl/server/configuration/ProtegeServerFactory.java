@@ -1,6 +1,5 @@
 package org.protege.owl.server.configuration;
 
-import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.ServerFactory;
 import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.changes.ConflictDetectionFilter;
@@ -19,7 +18,7 @@ import edu.stanford.protege.metaproject.api.ServerConfiguration;
 public class ProtegeServerFactory implements ServerFactory {
 
     @Override
-    public Server build(ServerConfiguration configuration) {
+    public ServerLayer build(ServerConfiguration configuration) {
         ServerLayer server = addConflictDetectionLayer(createBaseServer(configuration));
         server = addAccessControlLayer(server);
         server = addAuthenticationLayer(server);
