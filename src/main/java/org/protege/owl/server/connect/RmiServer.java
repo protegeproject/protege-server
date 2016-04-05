@@ -7,8 +7,12 @@ import org.protege.owl.server.api.exception.ServerRequestException;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.ClientConfiguration;
+import edu.stanford.protege.metaproject.api.Operation;
+import edu.stanford.protege.metaproject.api.OperationId;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.Role;
+import edu.stanford.protege.metaproject.api.RoleId;
 import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
 
@@ -47,6 +51,11 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
+    public void modifyUser(AuthToken token, UserId userId, User user) throws ServerRequestException {
+        server.modifyUser(token, userId, user);
+    }
+
+    @Override
     public void addProject(AuthToken token, Project newProject) throws ServerRequestException {
         server.addProject(token, newProject);
     }
@@ -57,8 +66,62 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
+    public void modifyProject(AuthToken token, ProjectId projectId, Project newProject) throws ServerRequestException {
+        server.modifyProject(token, projectId, newProject);
+    }
+
+    @Override
     public void viewProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
         server.viewProject(token, projectId);
+    }
+
+    @Override
+    public void addRole(AuthToken token, Role newRole) throws ServerRequestException {
+        server.addRole(token, newRole);
+    }
+
+    @Override
+    public void removeRole(AuthToken token, RoleId roleId) throws ServerRequestException {
+        server.removeRole(token, roleId);
+    }
+
+    @Override
+    public void modifyRole(AuthToken token, RoleId roleId, Role newRole) throws ServerRequestException {
+        server.modifyRole(token, roleId, newRole);
+    }
+
+    @Override
+    public void addOperation(AuthToken token, Operation operation) throws ServerRequestException {
+        server.addOperation(token, operation);
+    }
+
+    @Override
+    public void removeOperation(AuthToken token, OperationId operationId) throws ServerRequestException {
+        server.removeOperation(token, operationId);
+    }
+
+    @Override
+    public void modifyOperation(AuthToken token, OperationId operationId, Operation newOperation)
+            throws ServerRequestException {
+        server.modifyOperation(token, operationId, newOperation);
+    }
+
+    @Override
+    public void assignRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
+            throws ServerRequestException {
+        server.assignRole(token, userId, projectId, roleId);
+    }
+
+    @Override
+    public void retractRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
+            throws ServerRequestException {
+        server.retractRole(token, userId, projectId, roleId);
+    }
+
+    @Override
+    public void modifyServerConfiguration(AuthToken token, String property, String value)
+            throws ServerRequestException {
+        server.modifyServerConfiguration(token, property, value);
     }
 
     @Override
