@@ -5,6 +5,8 @@ import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerRequestException;
 
+import java.rmi.Remote;
+
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.ClientConfiguration;
 import edu.stanford.protege.metaproject.api.Operation;
@@ -20,7 +22,7 @@ import edu.stanford.protege.metaproject.api.UserId;
  * @author Josef Hardi <johardi@stanford.edu> <br>
  * Stanford Center for Biomedical Informatics Research
  */
-public class RmiServer implements RemoteServer {
+public class RmiServer implements RemoteServer, Remote {
 
     public static final String SERVER_SERVICE = "ProtegeServer";
 
