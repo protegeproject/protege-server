@@ -4,11 +4,7 @@ import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerRequestException;
-import org.protege.owl.server.api.server.ServerListener;
 import org.protege.owl.server.api.server.TransportHandler;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Operation;
@@ -33,8 +29,6 @@ public class ProtegeServer extends ServerLayer {
     private ServerConfiguration configuration;
 
     private TransportHandler transport;
-
-    private List<ServerListener> listeners = new ArrayList<ServerListener>();
 
     public ProtegeServer(ServerConfiguration configuration) {
         this.configuration = configuration;
@@ -154,18 +148,5 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public void setTransport(TransportHandler transport) throws OWLServerException {
         this.transport = transport;
-    }
-
-    @Override
-    public void addServerListener(ServerListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void removeServerListener(ServerListener listener) {
-        int index = listeners.indexOf(listener);
-        if (index != -1) {
-            listeners.remove(index);
-        }
     }
 }
