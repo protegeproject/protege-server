@@ -3,9 +3,7 @@ package org.protege.owl.server.changes;
 import java.io.Serializable;
 import java.util.Date;
 
-import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
 
 public final class ChangeMetaData implements Serializable {
 
@@ -14,7 +12,6 @@ public final class ChangeMetaData implements Serializable {
     private Date date;
     private String comment;
     private User author;
-    private UserId userId;
 
     public ChangeMetaData(Date date, String comment) {
         this.date = date;
@@ -39,27 +36,12 @@ public final class ChangeMetaData implements Serializable {
         return comment;
     }
 
-    @Deprecated
-    public org.protege.owl.server.api.UserId getUserID() {
-        return null;
-    }
-
-    @Deprecated
-    public UserId getUserId() {
-        return userId;
-    }
-
     public User getAuthor() {
         return author;
     }
 
     public void setAuthor(User author) {
         this.author = author;
-    }
-
-    @Deprecated
-    public void setUser(AuthToken authToken) {
-        this.userId = authToken.getUser().getId();
     }
 
     @Override
