@@ -9,23 +9,30 @@ public final class ChangeMetaData implements Serializable {
 
     private static final long serialVersionUID = -1198003999159038367L;
 
+    private User author;
     private Date date;
     private String comment;
-    private User author;
 
-    public ChangeMetaData(Date date, String comment) {
-        this.date = date;
-        this.comment = comment;
-    }
-
-    public ChangeMetaData(String comment) {
+    public ChangeMetaData(User author, String comment) {
+        this.author = author;
         this.date = new Date();
         this.comment = comment;
     }
 
-    public ChangeMetaData() {
-        this.date = new Date();
-        this.comment = "";
+    private User getAuthor() { // Make only accessible internally
+        return author;
+    }
+
+    public String getAuthorId() {
+        return author.getId().get();
+    }
+
+    public String getAuthorName() {
+        return author.getName().get();
+    }
+
+    public String getAuthorEmail() {
+        return author.getId().get();
     }
 
     public Date getDate() {
@@ -34,14 +41,6 @@ public final class ChangeMetaData implements Serializable {
 
     public String getCommitComment() {
         return comment;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
     }
 
     @Override
@@ -64,6 +63,7 @@ public final class ChangeMetaData implements Serializable {
 
     @Override
     public String toString() {
-        return "Committed at " + date + ": " + comment;
+        String template = "Committed by %s <%s> at %s: %s";
+        return String.format(template, getAuthorId(), getAuthorEmail(), getDate(), getCommitComment());
     }
 }

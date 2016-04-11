@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author tredmond
  */
@@ -37,33 +39,22 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
     private SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
     private DocumentFactory documentFactory;
 
-    private ChangeHistoryImpl(OntologyDocumentRevision start, DocumentFactory documentFactory) {
-        startRevision = start;
+    public ChangeHistoryImpl(DocumentFactory documentFactory, @Nonnull OntologyDocumentRevision startRevision,
+            @Nonnull List<OWLOntologyChange> changes, @Nonnull ChangeMetaData metaData) {
         this.documentFactory = documentFactory;
+        this.startRevision = startRevision;
+        this.listOfRevisionChanges.add(new ArrayList<OWLOntologyChange>(changes));
+        this.metaDataMap.put(startRevision, metaData);
     }
 
-    ChangeHistoryImpl(OntologyDocumentRevision start, DocumentFactory documentFactory,
+    /* Utility constructor */
+    private ChangeHistoryImpl(DocumentFactory documentFactory, OntologyDocumentRevision startRevision,
             List<List<OWLOntologyChange>> listOfRevisionChanges,
             SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap) {
-        startRevision = start;
         this.documentFactory = documentFactory;
+        this.startRevision = startRevision;
         this.listOfRevisionChanges = listOfRevisionChanges;
         this.metaDataMap = metaDataMap;
-    }
-
-    public ChangeHistoryImpl(DocumentFactory documentFactory, OntologyDocumentRevision startRevision,
-            List<OWLOntologyChange> changes, ChangeMetaData metaData) {
-        if (metaData == null) {
-            metaData = new ChangeMetaData();
-        }
-        this.startRevision = startRevision;
-        if (changes != null) {
-            this.listOfRevisionChanges.add(new ArrayList<OWLOntologyChange>(changes));
-        }
-        if (metaData != null && changes != null) {
-            this.metaDataMap.put(startRevision, metaData);
-        }
-        this.documentFactory = documentFactory;
     }
 
     @Override
@@ -105,7 +96,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
         List<List<OWLOntologyChange>> subChanges = listOfRevisionChanges.subList(
                 start.getRevisionDifferenceFrom(startRevision), end.getRevisionDifferenceFrom(startRevision));
         SortedMap<OntologyDocumentRevision, ChangeMetaData> subMetaDataMap = cropMap(metaDataMap, start, end);
-        return new ChangeHistoryImpl(start, documentFactory, subChanges, subMetaDataMap);
+        return new ChangeHistoryImpl(documentFactory, start, subChanges, subMetaDataMap);
     }
 
     @Override
@@ -142,9 +133,9 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
         catch (OWLOntologyCreationException e) {
             throw new RuntimeException("This really shouldn't happen!", e);
         }
-        ChangeHistoryImpl newDoc = new ChangeHistoryImpl(startRevision, documentFactory);
-        newDoc.listOfRevisionChanges = new ArrayList<List<OWLOntologyChange>>(listOfRevisionChanges);
-        newDoc.metaDataMap = new TreeMap<OntologyDocumentRevision, ChangeMetaData>(metaDataMap);
+        ChangeHistoryImpl newDoc = new ChangeHistoryImpl(documentFactory, startRevision,
+                new ArrayList<List<OWLOntologyChange>>(listOfRevisionChanges),
+                new TreeMap<OntologyDocumentRevision, ChangeMetaData>(metaDataMap));
         OntologyDocumentRevision revision = newDoc.getEndRevision();
         for (; additionalChanges.getEndRevision().compareTo(revision) > 0; revision = revision.next()) {
             newDoc.metaDataMap.put(revision, additionalChanges.getMetaData(revision));
@@ -236,7 +227,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
         ChangeHistory other = (ChangeHistory) o;
         try {
             OWLOntology ontology = OWLManager.createOWLOntologyManager().createOntology();
-            if (!(getStartRevision().equals(other.getStartRevision())
+            if (!(getStartRevision().equals(other.getStartRevision()) 
                     && getEndRevision().equals(other.getEndRevision()))) {
                 return false;
             }
