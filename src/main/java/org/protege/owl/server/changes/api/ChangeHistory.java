@@ -20,12 +20,9 @@ import java.util.List;
  * 
  * @author tredmond
  */
-
 public interface ChangeHistory {
 
     String CHANGE_DOCUMENT_EXTENSION = ".history";
-
-    DocumentFactory getDocumentFactory();
 
     /**
      * Get the start revision of this collection of changes.
