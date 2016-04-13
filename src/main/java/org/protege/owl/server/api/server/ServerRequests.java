@@ -2,6 +2,7 @@ package org.protege.owl.server.api.server;
 
 import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.exception.ServerRequestException;
+import org.protege.owl.server.changes.ServerDocument;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Operation;
@@ -94,16 +95,16 @@ public interface ServerRequests {
     void modifyProject(AuthToken token, ProjectId projectId, Project newProject) throws ServerRequestException;
 
     /**
-     * Viewing only the project (similar to read-only permission) from the
-     * server.
+     * Opening a project from the server. The server will return the {@code ProjectResource} that
+     * can be used to construct the project ontology.
      *
      * @param token
      *            An authentication token to verify the request source.
      * @param projectId
-     *            The project to view identified by its ID
+     *            The project to open identified by its ID
      * @throws ServerRequestException
      */
-    void viewProject(AuthToken token, ProjectId projectId) throws ServerRequestException;
+    ServerDocument openProject(AuthToken token, ProjectId projectId) throws ServerRequestException;
 
     /**
      * Adding a new role to the server.

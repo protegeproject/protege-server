@@ -4,6 +4,7 @@ import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerRequestException;
 import org.protege.owl.server.api.server.ServerListener;
 import org.protege.owl.server.api.server.TransportHandler;
+import org.protege.owl.server.changes.ServerDocument;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Operation;
@@ -56,8 +57,8 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void viewProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
-        getDelegate().viewProject(token, projectId);
+    public ServerDocument openProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
+        return getDelegate().openProject(token, projectId);
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.Server;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerRequestException;
+import org.protege.owl.server.changes.ServerDocument;
 
 import java.rmi.Remote;
 
@@ -73,8 +74,8 @@ public class RmiServer implements RemoteServer, Remote {
     }
 
     @Override
-    public void viewProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
-        server.viewProject(token, projectId);
+    public ServerDocument openProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
+        return server.openProject(token, projectId);
     }
 
     @Override

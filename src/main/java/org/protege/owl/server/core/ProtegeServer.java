@@ -5,6 +5,7 @@ import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerRequestException;
 import org.protege.owl.server.api.server.TransportHandler;
+import org.protege.owl.server.changes.ServerDocument;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Operation;
@@ -76,9 +77,9 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void viewProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
+    public ServerDocument openProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
         // TODO Auto-generated method stub
-        
+        return null;
     }
 
     @Override
