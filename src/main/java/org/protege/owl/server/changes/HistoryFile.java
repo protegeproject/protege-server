@@ -20,8 +20,12 @@ public class HistoryFile extends File {
 
     public HistoryFile(String pathname) throws InvalidHistoryFileException {
         super(pathname);
+        if (!this.exists()) {
+            throw new InvalidHistoryFileException("Cannot found history file at path " + pathname);
+        }
         if (!pathname.endsWith(EXTENSION)) {
-            throw new InvalidHistoryFileException(pathname);
+            String template = "History file does not end with %s extension: %s";
+            throw new InvalidHistoryFileException(String.format(template, EXTENSION, pathname));
         }
     }
 }
