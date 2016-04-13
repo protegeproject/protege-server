@@ -1,9 +1,7 @@
 package org.protege.owl.server.changes;
 
 import org.protege.owl.server.changes.api.ChangeHistory;
-import org.protege.owl.server.changes.api.DocumentFactory;
 import org.protege.owl.server.changes.format.OWLOutputStream;
-import org.protege.owl.server.render.RenderOntologyChangeVisitor;
 import org.protege.owl.server.util.ChangeUtilities;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -25,46 +23,44 @@ import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 
-/**
- * @author tredmond
- */
 public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 
     private static final long serialVersionUID = -3842895051205436375L;
 
     public static Logger logger = LoggerFactory.getLogger(ChangeHistoryImpl.class);
+
     private transient int compressionLimit = -1;
     private OntologyDocumentRevision startRevision;
-    private List<List<OWLOntologyChange>> listOfRevisionChanges = new ArrayList<List<OWLOntologyChange>>();
-    private SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap = new TreeMap<OntologyDocumentRevision, ChangeMetaData>();
-    private DocumentFactory documentFactory;
+    private List<List<OWLOntologyChange>> revisionsList = new ArrayList<>();
+    private SortedMap<OntologyDocumentRevision, ChangeMetaData> metadataMap = new TreeMap<>();
 
-    public ChangeHistoryImpl(DocumentFactory documentFactory, @Nonnull OntologyDocumentRevision startRevision,
-            @Nonnull List<OWLOntologyChange> changes, @Nonnull ChangeMetaData metaData) {
-        this.documentFactory = documentFactory;
+    public ChangeHistoryImpl(@Nonnull OntologyDocumentRevision startRevision,
+            @Nonnull List<OWLOntologyChange> changes, @Nonnull ChangeMetaData metadata) {
         this.startRevision = startRevision;
-        this.listOfRevisionChanges.add(new ArrayList<OWLOntologyChange>(changes));
-        this.metaDataMap.put(startRevision, metaData);
+        this.revisionsList.add(new ArrayList<OWLOntologyChange>(changes));
+        this.metadataMap.put(startRevision, metadata);
     }
 
-    /* Utility constructor */
-    private ChangeHistoryImpl(DocumentFactory documentFactory, OntologyDocumentRevision startRevision,
-            List<List<OWLOntologyChange>> listOfRevisionChanges,
-            SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap) {
-        this.documentFactory = documentFactory;
+    /* Utility constructors */
+    /* package */ ChangeHistoryImpl(@Nonnull OntologyDocumentRevision startRevision) {
         this.startRevision = startRevision;
-        this.listOfRevisionChanges = listOfRevisionChanges;
-        this.metaDataMap = metaDataMap;
+    }
+
+    /* package */ ChangeHistoryImpl(OntologyDocumentRevision startRevision,
+            List<List<OWLOntologyChange>> revisionsList,
+            SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap) {
+        this.startRevision = startRevision;
+        this.revisionsList = revisionsList;
+        this.metadataMap = metaDataMap;
+    }
+
+    public static ChangeHistoryImpl createEmptyChangeHistory() {
+        return new ChangeHistoryImpl(OntologyDocumentRevision.START_REVISION);
     }
 
     @Override
     public void setCompressionLimit(int compressionLimit) {
         this.compressionLimit = compressionLimit;
-    }
-
-    @Override
-    public DocumentFactory getDocumentFactory() {
-        return documentFactory;
     }
 
     @Override
@@ -74,12 +70,12 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 
     @Override
     public OntologyDocumentRevision getEndRevision() {
-        return startRevision.add(listOfRevisionChanges.size());
+        return startRevision.add(revisionsList.size());
     }
 
     @Override
     public ChangeMetaData getMetaData(OntologyDocumentRevision revision) {
-        return metaDataMap.get(revision);
+        return metadataMap.get(revision);
     }
 
     @Override
@@ -93,15 +89,15 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
         if (start.equals(getStartRevision()) && end.equals(getEndRevision())) {
             return this;
         }
-        List<List<OWLOntologyChange>> subChanges = listOfRevisionChanges.subList(
+        List<List<OWLOntologyChange>> subChanges = revisionsList.subList(
                 start.getRevisionDifferenceFrom(startRevision), end.getRevisionDifferenceFrom(startRevision));
-        SortedMap<OntologyDocumentRevision, ChangeMetaData> subMetaDataMap = cropMap(metaDataMap, start, end);
-        return new ChangeHistoryImpl(documentFactory, start, subChanges, subMetaDataMap);
+        SortedMap<OntologyDocumentRevision, ChangeMetaData> subMetaDataMap = cropMap(metadataMap, start, end);
+        return new ChangeHistoryImpl(start, subChanges, subMetaDataMap);
     }
 
     @Override
     public boolean isEmpty() {
-        return listOfRevisionChanges.isEmpty();
+        return revisionsList.isEmpty();
     }
 
     private <X extends Comparable<X>, Y> SortedMap<X, Y> cropMap(SortedMap<X, Y> map, X start, X end) {
@@ -133,13 +129,13 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
         catch (OWLOntologyCreationException e) {
             throw new RuntimeException("This really shouldn't happen!", e);
         }
-        ChangeHistoryImpl newDoc = new ChangeHistoryImpl(documentFactory, startRevision,
-                new ArrayList<List<OWLOntologyChange>>(listOfRevisionChanges),
-                new TreeMap<OntologyDocumentRevision, ChangeMetaData>(metaDataMap));
+        ChangeHistoryImpl newDoc = new ChangeHistoryImpl(startRevision,
+                new ArrayList<List<OWLOntologyChange>>(revisionsList),
+                new TreeMap<OntologyDocumentRevision, ChangeMetaData>(metadataMap));
         OntologyDocumentRevision revision = newDoc.getEndRevision();
         for (; additionalChanges.getEndRevision().compareTo(revision) > 0; revision = revision.next()) {
-            newDoc.metaDataMap.put(revision, additionalChanges.getMetaData(revision));
-            newDoc.listOfRevisionChanges.add(
+            newDoc.metadataMap.put(revision, additionalChanges.getMetaData(revision));
+            newDoc.revisionsList.add(
                     additionalChanges.cropChanges(revision, revision.next()).getChanges(fakeOntology));
         }
         return newDoc;
@@ -149,7 +145,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
     public List<OWLOntologyChange> getChanges(OWLOntology ontology) {
         List<OWLOntologyChange> filteredChanges = new ArrayList<OWLOntologyChange>();
         OntologyDocumentRevision revision = startRevision;
-        for (List<OWLOntologyChange> change : listOfRevisionChanges) {
+        for (List<OWLOntologyChange> change : revisionsList) {
             filteredChanges.addAll(change);
             revision = revision.next();
         }
@@ -167,11 +163,11 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
             oos = new ObjectOutputStream(out);
         }
         oos.writeObject(startRevision);
-        oos.writeObject(metaDataMap);
-        oos.writeInt(listOfRevisionChanges.size());
+        oos.writeObject(metadataMap);
+        oos.writeInt(revisionsList.size());
         OWLOutputStream owlstream = new OWLOutputStream(oos);
         owlstream.setCompressionLimit(compressionLimit);
-        for (List<OWLOntologyChange> changeSet : listOfRevisionChanges) {
+        for (List<OWLOntologyChange> changeSet : revisionsList) {
             owlstream.writeWithCompression(changeSet);
         }
         oos.flush();
@@ -181,7 +177,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
     private void logLongWrite(long interval) {
         if (interval > 1000) {
             int totalChanges = 0;
-            for (List<OWLOntologyChange> changeList : listOfRevisionChanges) {
+            for (List<OWLOntologyChange> changeList : revisionsList) {
                 totalChanges += changeList.size();
             }
             String template = "Write of change history ({} changes) took {} seconds (compression limit = {}).";
@@ -190,16 +186,16 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
-        out.writeObject(getDocumentFactory());
         writeChangeDocument(out);
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        documentFactory = (DocumentFactory) in.readObject();
-        ChangeHistoryImpl doc = (ChangeHistoryImpl) documentFactory.readChangeDocument(in, null, null);
-        startRevision = doc.getStartRevision();
-        listOfRevisionChanges = doc.listOfRevisionChanges;
-        metaDataMap = doc.metaDataMap;
+        // TODO Implement later
+//        documentFactory = (DocumentFactory) in.readObject();
+//        ChangeHistoryImpl doc = (ChangeHistoryImpl) documentFactory.readChangeDocument(in, null, null);
+//        startRevision = doc.getStartRevision();
+//        listOfRevisionChanges = doc.listOfRevisionChanges;
+//        metadataMap = doc.metadataMap;
     }
 
     @Override
@@ -256,20 +252,14 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
         sb.append(" --> ");
         sb.append(getEndRevision());
         sb.append(": ");
-        for (List<OWLOntologyChange> changesAtRevision : listOfRevisionChanges) {
+        for (List<OWLOntologyChange> changesAtRevision : revisionsList) {
             sb.append("[");
-            boolean firstTime = true;
+            boolean needComma = false;
             for (OWLOntologyChange particularChangeAtRevision : changesAtRevision) {
-                if (firstTime) {
-                    firstTime = false;
-                }
-                else {
+                if (needComma) {
                     sb.append(", ");
                 }
-                RenderOntologyChangeVisitor renderingVisitor = new RenderOntologyChangeVisitor(
-                        documentFactory.getOWLRenderer());
-                particularChangeAtRevision.accept(renderingVisitor);
-                sb.append(renderingVisitor.getRendering());
+                sb.append(particularChangeAtRevision);
             }
             sb.append("]");
         }
