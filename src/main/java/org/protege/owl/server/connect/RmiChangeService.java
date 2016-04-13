@@ -1,10 +1,11 @@
 package org.protege.owl.server.connect;
 
 import org.protege.owl.server.api.ChangeService;
+import org.protege.owl.server.changes.HistoryFile;
 import org.protege.owl.server.changes.OntologyDocumentRevision;
+import org.protege.owl.server.changes.ServerDocument;
 import org.protege.owl.server.changes.api.ChangeHistory;
 
-import java.io.File;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -23,44 +24,76 @@ public class RmiChangeService implements RemoteChangeService, Remote {
     }
 
     @Override
-    public ChangeHistory getChanges(File resourceLocation, OntologyDocumentRevision startRevision,
-            OntologyDocumentRevision endRevision) throws Exception {
+    public ChangeHistory getChanges(HistoryFile historyFile,
+            OntologyDocumentRevision startRevision,
+            OntologyDocumentRevision endRevision) throws RemoteException {
         try {
-            return changeService.getChanges(resourceLocation, startRevision, endRevision);
+            return changeService.getChanges(historyFile, startRevision, endRevision);
         }
         catch (Exception e) {
             throw new RemoteException(e.getMessage(), e);
         }
     }
 
+    /**
+     * A helper method to calculate changes given the {@code ServerDocument} as input.
+     */
+    public ChangeHistory getChanges(ServerDocument serverDocument,
+            OntologyDocumentRevision startRevision,
+            OntologyDocumentRevision endRevision) throws RemoteException {
+        return getChanges(serverDocument.getHistoryFile(), startRevision, endRevision);
+    }
+
     @Override
-    public ChangeHistory getAllChanges(File resourceLocation) throws Exception {
+    public ChangeHistory getLatestChanges(HistoryFile historyFile,
+            OntologyDocumentRevision startRevision) throws RemoteException {
         try {
-            return changeService.getAllChanges(resourceLocation);
+            return changeService.getLatestChanges(historyFile, startRevision);
         }
         catch (Exception e) {
             throw new RemoteException(e.getMessage(), e);
         }
     }
 
+    /**
+     * A helper method to calculate the latest changes given the {@code ServerDocument} as input.
+     */
+    public ChangeHistory getLatestChanges(ServerDocument serverDocument,
+            OntologyDocumentRevision startRevision) throws RemoteException {
+        return getLatestChanges(serverDocument.getHistoryFile(), startRevision);
+    }
+
     @Override
-    public ChangeHistory getLatestChanges(File resourceLocation, OntologyDocumentRevision startRevision)
-            throws Exception {
+    public ChangeHistory getAllChanges(HistoryFile historyFile) throws RemoteException {
         try {
-            return changeService.getLatestChanges(resourceLocation, startRevision);
+            return changeService.getAllChanges(historyFile);
         }
         catch (Exception e) {
             throw new RemoteException(e.getMessage(), e);
         }
     }
 
+    /**
+     * A helper method to calculate the latest changes given the {@code ServerDocument} as input.
+     */
+    public ChangeHistory getAllChanges(ServerDocument serverDocument) throws RemoteException {
+        return getAllChanges(serverDocument.getHistoryFile());
+    }
+
     @Override
-    public OntologyDocumentRevision getHeadRevision(File resourceLocation) throws Exception {
+    public OntologyDocumentRevision getHeadRevision(HistoryFile historyFile) throws RemoteException {
         try {
-            return changeService.getHeadRevision(resourceLocation);
+            return changeService.getHeadRevision(historyFile);
         }
         catch (Exception e) {
             throw new RemoteException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * A helper method to get the remote head revision given the {@code ServerDocument} as input.
+     */
+    public OntologyDocumentRevision getHeadRevision(ServerDocument serverDocument) throws RemoteException {
+        return getHeadRevision(serverDocument.getHistoryFile());
     }
 }
