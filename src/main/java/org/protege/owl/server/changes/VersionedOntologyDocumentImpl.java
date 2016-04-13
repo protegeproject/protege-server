@@ -1,7 +1,6 @@
 package org.protege.owl.server.changes;
 
 import org.protege.owl.server.changes.api.ChangeHistory;
-import org.protege.owl.server.changes.api.RemoteOntologyDocument;
 import org.protege.owl.server.changes.api.VersionedOntologyDocument;
 
 import org.semanticweb.owlapi.model.IRI;
@@ -14,8 +13,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-
-import edu.stanford.protege.metaproject.api.Host;
 
 public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument {
 
@@ -48,41 +45,30 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
         return new File(documentLocation.toURI());
     }
 
-    private Host remoteHost;
-    private File remoteFile;
-
+    private ServerDocument serverDocument;
     private OWLOntology ontology;
-    private RemoteOntologyDocument serverDocument;
     private OntologyDocumentRevision revision;
     private ChangeHistory localHistory;
     private boolean isHistoryDirty = false;
 
-    @Deprecated
-    public VersionedOntologyDocumentImpl(OWLOntology ontology, RemoteOntologyDocument serverDocument,
+    public VersionedOntologyDocumentImpl(ServerDocument serverDocument, OWLOntology ontology,
             OntologyDocumentRevision revision, ChangeHistory localHistory) {
-        this.ontology = ontology;
         this.serverDocument = serverDocument;
-        this.revision = revision;
-        this.localHistory = localHistory;
-    }
-
-    public VersionedOntologyDocumentImpl(Host remoteHost, File remoteFile, OWLOntology ontology, 
-            OntologyDocumentRevision revision, ChangeHistory localHistory) {
-        this.remoteHost = remoteHost;
-        this.remoteFile = remoteFile;
         this.ontology = ontology;
         this.revision = revision;
         this.localHistory = localHistory;
     }
 
-    @Override
-    public Host getRemoteHost() {
-        return remoteHost;
+    public VersionedOntologyDocumentImpl(ServerDocument serverDocument, OWLOntology ontology) {
+        this.serverDocument = serverDocument;
+        this.ontology = ontology;
+        this.revision = OntologyDocumentRevision.START_REVISION;
+        this.localHistory = ChangeHistoryImpl.createEmptyChangeHistory();
     }
 
     @Override
-    public File getRemoteFile() {
-        return remoteFile;
+    public ServerDocument getServerDocument() {
+        return serverDocument;
     }
 
     @Override
@@ -91,8 +77,8 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
     }
 
     @Override
-    public RemoteOntologyDocument getServerDocument() {
-        return serverDocument;
+    public String getDisplayName() {
+        return ontology.getOntologyID().getOntologyIRI().get().toString();
     }
 
     @Override
@@ -101,7 +87,7 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
     }
 
     @Override
-    public void appendLocalHistory(ChangeHistory changes) {
+    public void appendChangeHistory(ChangeHistory changes) {
         localHistory = localHistory.appendChanges(changes);
         isHistoryDirty = true;
     }
@@ -161,7 +147,7 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
 
     @Override
     public String toString() {
-        return "[Document " + ontology.getOntologyID() + " from server " + serverDocument.getServerLocation()
-                + " revision " + revision + "]";
+        String template = "%s at revision #%s [Remote HEAD %s]";
+        return String.format(template, ontology.getOntologyID(), revision, serverDocument.getHost());
     }
 }

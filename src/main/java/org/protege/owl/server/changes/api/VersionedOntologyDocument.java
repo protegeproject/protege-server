@@ -1,13 +1,11 @@
 package org.protege.owl.server.changes.api;
 
 import org.protege.owl.server.changes.OntologyDocumentRevision;
+import org.protege.owl.server.changes.ServerDocument;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 
-import java.io.File;
 import java.io.IOException;
-
-import edu.stanford.protege.metaproject.api.Host;
 
 /**
  * This is an open OWL ontology held by the client with an association to a
@@ -26,16 +24,11 @@ import edu.stanford.protege.metaproject.api.Host;
  *
  * @author redmond
  */
-public interface VersionedOntologyDocument {
+public interface VersionedOntologyDocument extends HasDisplayName {
 
-    Host getRemoteHost();
-
-    File getRemoteFile();
+    ServerDocument getServerDocument();
 
     OWLOntology getOntology();
-
-    @Deprecated
-    RemoteOntologyDocument getServerDocument();
 
     /**
      * This returns a change document which is a copy of the server-side change
@@ -69,7 +62,7 @@ public interface VersionedOntologyDocument {
      * @param changes
      *            changes
      */
-    void appendLocalHistory(ChangeHistory changes);
+    void appendChangeHistory(ChangeHistory changes);
 
     OntologyDocumentRevision getRevision();
 
