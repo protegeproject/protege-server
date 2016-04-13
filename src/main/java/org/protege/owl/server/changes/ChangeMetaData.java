@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import edu.stanford.protege.metaproject.api.User;
+import edu.stanford.protege.metaproject.api.UserId;
 
 public final class ChangeMetaData implements Serializable {
 
@@ -23,8 +24,8 @@ public final class ChangeMetaData implements Serializable {
         return author;
     }
 
-    public String getAuthorId() {
-        return author.getId().get();
+    public UserId getAuthorId() {
+        return author.getId();
     }
 
     public String getAuthorName() {
@@ -32,7 +33,7 @@ public final class ChangeMetaData implements Serializable {
     }
 
     public String getAuthorEmail() {
-        return author.getId().get();
+        return author.getEmailAddress().get();
     }
 
     public Date getDate() {
