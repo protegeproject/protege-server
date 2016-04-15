@@ -91,7 +91,7 @@ public interface VersionedOntologyDocument extends HasDisplayName {
      * @throws IOException
      *             IOException
      */
-    boolean saveMetaData() throws IOException;
+    boolean saveMetaData() throws Exception;
 
     /**
      * This call will save the local history associated with a versioned
@@ -113,5 +113,5 @@ public interface VersionedOntologyDocument extends HasDisplayName {
      * @throws IOException
      *             IOException
      */
-    boolean saveLocalHistory() throws IOException;
+    boolean saveLocalHistory() throws Exception;
 }
