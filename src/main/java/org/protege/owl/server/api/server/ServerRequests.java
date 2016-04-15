@@ -207,17 +207,17 @@ public interface ServerRequests {
     void retractRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId) throws ServerRequestException;
 
     /**
-     * Updating an existing server property by specifying the property name and the new value.
+     * Setting a server property by specifying the property name and the value.
      *
      * @param token
      *            An authentication token to verify the request source.
      * @param property
      *          The target property name
      * @param value
-     *          The new property value
+     *          The property value
      * @throws ServerRequestException
      */
-    void updateServerConfiguration(AuthToken token, String property, String value) throws ServerRequestException;
+    void setServerConfiguration(AuthToken token, String property, String value) throws ServerRequestException;
 
     /**
      * Committing the given ontology changes to be applied in the server.

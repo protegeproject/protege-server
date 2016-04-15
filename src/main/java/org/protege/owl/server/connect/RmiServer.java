@@ -122,9 +122,9 @@ public class RmiServer implements RemoteServer, Remote {
     }
 
     @Override
-    public void updateServerConfiguration(AuthToken token, String property, String value)
+    public void setServerConfiguration(AuthToken token, String property, String value)
             throws ServerRequestException {
-        server.updateServerConfiguration(token, property, value);
+        server.setServerConfiguration(token, property, value);
     }
 
     @Override
