@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 
 public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument {
 
@@ -26,9 +25,10 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
         return new File(versionInfoDir, ontologyFile.getName() + VERSION_DOCUMENT_EXTENSION);
     }
 
-    public static File getHistoryFile(File ontologyFile) {
+    public static HistoryFile getHistoryFile(File ontologyFile) throws InvalidHistoryFileException {
         File versionInfoDir = getVersionInfoDirectory(ontologyFile);
-        return new File(versionInfoDir, ontologyFile.getName() + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
+        File historyFile = new File(versionInfoDir, ontologyFile.getName() + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
+        return new HistoryFile(historyFile);
     }
 
     public static File getVersionInfoDirectory(File ontologyFile) {
@@ -103,7 +103,7 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
     }
 
     @Override
-    public boolean saveMetaData() throws IOException {
+    public boolean saveMetaData() throws Exception {
         File ontologyFile = getBackingStore(ontology);
         if (ontologyFile == null) {
             return false;
@@ -124,22 +124,15 @@ public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument 
     }
 
     @Override
-    public boolean saveLocalHistory() throws IOException {
+    public boolean saveLocalHistory() throws IOException, InvalidHistoryFileException {
         File ontologyFile = getBackingStore(ontology);
         if (ontologyFile == null) {
             return false;
         }
-        File historyFile = getHistoryFile(ontologyFile);
+        HistoryFile historyFile = getHistoryFile(ontologyFile);
         if (isHistoryDirty || !historyFile.exists()) {
             historyFile.getParentFile().mkdirs();
-            OutputStream os = new BufferedOutputStream(new FileOutputStream(historyFile));
-            try {
-                localHistory.writeChangeDocument(os);
-            }
-            finally {
-                os.flush();
-                os.close();
-            }
+            ChangeHistoryUtilities.writeChanges(localHistory, historyFile);
             isHistoryDirty = false;
         }
         return true;
