@@ -7,19 +7,16 @@ import org.protege.owl.server.changes.util.CollectingChangeVisitor;
 
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
-@Deprecated
 public class ChangeNormalizer {
 
-
-    
     public static List<OWLOntologyChange> normalizeChangeDelta(List<OWLOntologyChange> changes) {
         return new ChangeNormalizer().run(changes);
     }
-    
+
     private ChangeNormalizer() {
 
     }
-    
+
     public List<OWLOntologyChange> run(List<OWLOntologyChange> changes) {
         CollectingChangeVisitor visitor = CollectingChangeVisitor.collectChanges(changes);
         List<OWLOntologyChange> normalizedChanges = new ArrayList<OWLOntologyChange>();

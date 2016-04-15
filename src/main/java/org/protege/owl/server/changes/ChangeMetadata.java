@@ -6,7 +6,7 @@ import java.util.Date;
 import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
 
-public final class ChangeMetaData implements Serializable {
+public final class ChangeMetadata implements Serializable {
 
     private static final long serialVersionUID = -1198003999159038367L;
 
@@ -14,7 +14,7 @@ public final class ChangeMetaData implements Serializable {
     private Date date;
     private String comment;
 
-    public ChangeMetaData(User author, String comment) {
+    public ChangeMetadata(User author, String comment) {
         this.author = author;
         this.date = new Date();
         this.comment = comment;
@@ -54,10 +54,10 @@ public final class ChangeMetaData implements Serializable {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof ChangeMetaData)) {
+        if (!(obj instanceof ChangeMetadata)) {
             return false;
         }
-        ChangeMetaData other = (ChangeMetaData) obj;
+        ChangeMetadata other = (ChangeMetadata) obj;
         return other.getCommitComment().equals(comment) && other.getDate().equals(date)
                 && other.getAuthor().equals(author);
     }

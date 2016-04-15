@@ -1,7 +1,5 @@
 package org.protege.owl.server.util;
 
-import org.slf4j.Logger;
-
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
@@ -10,9 +8,10 @@ import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 import org.semanticweb.owlapi.model.SetOntologyID;
+import org.slf4j.Logger;
 
-@Deprecated
 public class LogChangesVisitor implements OWLOntologyChangeVisitor {
+
     private Logger logger;
 
     public LogChangesVisitor(Logger logger) {
@@ -42,7 +41,6 @@ public class LogChangesVisitor implements OWLOntologyChangeVisitor {
     @Override
     public void visit(RemoveImport change) {
         logger.info("\t" + change);
-
     }
 
     @Override
@@ -53,6 +51,5 @@ public class LogChangesVisitor implements OWLOntologyChangeVisitor {
     @Override
     public void visit(RemoveOntologyAnnotation change) {
         logger.info("\t" + change);
-   }
-    
+    }
 }

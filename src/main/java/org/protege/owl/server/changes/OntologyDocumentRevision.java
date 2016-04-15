@@ -16,6 +16,10 @@ public final class OntologyDocumentRevision implements Comparable<OntologyDocume
         this.revision = revision;
     }
 
+    public int getRevisionNumber() {
+        return revision;
+    }
+
     public RevisionPointer asPointer() {
         return new RevisionPointer(this);
     }

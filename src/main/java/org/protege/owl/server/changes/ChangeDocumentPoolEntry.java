@@ -1,5 +1,11 @@
 package org.protege.owl.server.changes;
 
+import org.protege.owl.server.api.exception.OWLServerException;
+import org.protege.owl.server.changes.api.ChangeHistory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.Callable;
@@ -9,20 +15,17 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.changes.api.ChangeHistory;
-import org.protege.owl.server.changes.api.DocumentFactory;
+import javax.annotation.Nonnull;
 
 public class ChangeDocumentPoolEntry {
 
     private Logger logger = LoggerFactory.getLogger(ChangeDocumentPoolEntry.class.getCanonicalName());
-    private DocumentFactory factory;
-    private ChangeHistory changeDocument;
+
+    private ChangeHistory changeHistory;
     private Future<ChangeHistory> readChangeDocumentTask;
-    private File historyFile;
+    private HistoryFile historyFile;
+
     private long lastTouch;
 
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
@@ -33,26 +36,24 @@ public class ChangeDocumentPoolEntry {
         }
     });
 
-    public ChangeDocumentPoolEntry(DocumentFactory factory, final File historyFile) {
-        this.factory = factory;
+    public ChangeDocumentPoolEntry(@Nonnull HistoryFile historyFile) {
         this.historyFile = historyFile;
         touch();
         readChangeDocumentTask = executor.submit(new ReadChangeDocument());
     }
 
-    public ChangeDocumentPoolEntry(DocumentFactory factory, File historyFile, ChangeHistory changes) {
-        this.factory = factory;
+    public ChangeDocumentPoolEntry(@Nonnull HistoryFile historyFile, ChangeHistory changes) {
         this.historyFile = historyFile;
-        this.changeDocument = changes;
+        this.changeHistory = changes;
         touch();
         executor.submit(new WriteChanges(changes));
     }
 
     public ChangeHistory getChangeDocument() throws OWLServerException {
         touch();
-        if (changeDocument == null) {
+        if (changeHistory == null) {
             try {
-                changeDocument = readChangeDocumentTask.get();
+                changeHistory = readChangeDocumentTask.get();
             }
             catch (InterruptedException ie) {
                 throw new RuntimeException(ie);
@@ -66,7 +67,7 @@ public class ChangeDocumentPoolEntry {
                 }
             }
         }
-        return changeDocument;
+        return changeHistory;
     }
 
     public void setChangeDocument(final ChangeHistory newChangeDocument) {
@@ -74,7 +75,7 @@ public class ChangeDocumentPoolEntry {
             logger.debug("Setting change document for " + historyFile + " to change doc ending at revision " + newChangeDocument.getEndRevision());
         }
         touch();
-        this.changeDocument = newChangeDocument;
+        this.changeHistory = newChangeDocument;
         executor.submit(new WriteChanges(newChangeDocument));
     }
 
@@ -102,26 +103,22 @@ public class ChangeDocumentPoolEntry {
 
     private class ReadChangeDocument implements Callable<ChangeHistory> {
         @Override
-        public ChangeHistory call() throws IOException {
-            File backup = getBackupHistoryFile(historyFile);
+        public ChangeHistory call() throws Exception {
+            HistoryFile backup = getBackupHistoryFile(historyFile);
             try {
-                return ChangeHistoryUtilities.readChanges(factory, historyFile, OntologyDocumentRevision.START_REVISION, null);
+                return ChangeHistoryUtilities.readChanges(historyFile);
             }
-            catch (RuntimeException err) {
+            catch (RuntimeException e) {
                 if (backup.exists()) {
-                    return ChangeHistoryUtilities.readChanges(factory, backup, OntologyDocumentRevision.START_REVISION, null);
+                    return ChangeHistoryUtilities.readChanges(backup);
                 }
-                else {
-                    throw err;
-                }
+                throw e;
             }
-            catch (IOException ioe) {
+            catch (Exception e) {
                 if (backup.exists()) {
-                    return ChangeHistoryUtilities.readChanges(factory, backup, OntologyDocumentRevision.START_REVISION, null);
+                    return ChangeHistoryUtilities.readChanges(backup);
                 }
-                else {
-                    throw ioe;
-                }
+                throw e;
             }
         }
     }
@@ -140,7 +137,7 @@ public class ChangeDocumentPoolEntry {
         @Override
         public Boolean call() {
             try {
-                if (changeDocument == newChangeDocument) {
+                if (changeHistory == newChangeDocument) {
                     prepareToSave(historyFile);
                     long startTime = System.currentTimeMillis();
                     ChangeHistoryUtilities.writeChanges(newChangeDocument, historyFile);
@@ -155,7 +152,7 @@ public class ChangeDocumentPoolEntry {
                 else if (logger.isDebugEnabled()) {
                     logger.debug("This is not the latest change document");
                     logger.debug("Was supposed to save doc with end revision " + newChangeDocument.getEndRevision());
-                    logger.debug("But now have new save doc with end revision " + changeDocument.getEndRevision());
+                    logger.debug("But now have new save doc with end revision " + changeHistory.getEndRevision());
                 }
                 return true;
             }
@@ -165,11 +162,11 @@ public class ChangeDocumentPoolEntry {
             }
         }
 
-        private void prepareToSave(File historyFile) {
+        private void prepareToSave(File historyFile) throws InvalidHistoryFileException, IOException {
             if (logger.isDebugEnabled()) {
                 logger.debug("Preparing backup for " + historyFile);
             }
-            File backup = getBackupHistoryFile(historyFile);
+            HistoryFile backup = getBackupHistoryFile(historyFile);
             if (historyFile.exists() && backup.exists()) {
                 backup.delete();
                 if (logger.isDebugEnabled()) {
@@ -185,8 +182,9 @@ public class ChangeDocumentPoolEntry {
         }
     }
 
-    private File getBackupHistoryFile(File historyFile) {
-        String path = historyFile.getAbsolutePath();
-        return new File(path + ".~");
+    private HistoryFile getBackupHistoryFile(File historyFile) throws InvalidHistoryFileException, IOException {
+        String path = historyFile.getCanonicalPath();
+        String newPath = new StringBuilder(path).insert(path.lastIndexOf(File.separator), "~").toString();
+        return new HistoryFile(newPath);
     }
 }

@@ -1,8 +1,7 @@
 package org.protege.owl.server.changes;
 
 import org.protege.owl.server.changes.api.ChangeHistory;
-import org.protege.owl.server.changes.format.OWLOutputStream;
-import org.protege.owl.server.util.ChangeUtilities;
+import org.protege.owl.server.changes.util.CollectingChangeVisitor;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -11,13 +10,10 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -29,38 +25,29 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 
     public static Logger logger = LoggerFactory.getLogger(ChangeHistoryImpl.class);
 
-    private transient int compressionLimit = -1;
     private OntologyDocumentRevision startRevision;
     private List<List<OWLOntologyChange>> revisionsList = new ArrayList<>();
-    private SortedMap<OntologyDocumentRevision, ChangeMetaData> metadataMap = new TreeMap<>();
+    private SortedMap<OntologyDocumentRevision, ChangeMetadata> metadataMap = new TreeMap<>();
 
-    public ChangeHistoryImpl(@Nonnull OntologyDocumentRevision startRevision,
-            @Nonnull List<OWLOntologyChange> changes, @Nonnull ChangeMetaData metadata) {
-        this.startRevision = startRevision;
-        this.revisionsList.add(new ArrayList<OWLOntologyChange>(changes));
-        this.metadataMap.put(startRevision, metadata);
+    public ChangeHistoryImpl() {
+        this.startRevision = OntologyDocumentRevision.START_REVISION;
     }
 
-    /* Utility constructors */
-    /* package */ ChangeHistoryImpl(@Nonnull OntologyDocumentRevision startRevision) {
-        this.startRevision = startRevision;
-    }
-
-    /* package */ ChangeHistoryImpl(OntologyDocumentRevision startRevision,
-            List<List<OWLOntologyChange>> revisionsList,
-            SortedMap<OntologyDocumentRevision, ChangeMetaData> metaDataMap) {
+    /* package */ ChangeHistoryImpl(@Nonnull OntologyDocumentRevision startRevision,
+            @Nonnull List<List<OWLOntologyChange>> revisionsList,
+            @Nonnull SortedMap<OntologyDocumentRevision, ChangeMetadata> metaDataMap) {
         this.startRevision = startRevision;
         this.revisionsList = revisionsList;
         this.metadataMap = metaDataMap;
     }
 
     public static ChangeHistoryImpl createEmptyChangeHistory() {
-        return new ChangeHistoryImpl(OntologyDocumentRevision.START_REVISION);
+        return new ChangeHistoryImpl();
     }
 
-    @Override
-    public void setCompressionLimit(int compressionLimit) {
-        this.compressionLimit = compressionLimit;
+    public void addRevisionBundle(OntologyDocumentRevision revision, ChangeMetadata metadata, List<OWLOntologyChange> changes) {
+        metadataMap.put(revision, metadata);
+        revisionsList.add(changes);
     }
 
     @Override
@@ -74,8 +61,23 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
     }
 
     @Override
-    public ChangeMetaData getMetaData(OntologyDocumentRevision revision) {
+    public ChangeMetadata getChangeMetadataForRevision(OntologyDocumentRevision revision) {
         return metadataMap.get(revision);
+    }
+
+    @Override
+    public List<List<OWLOntologyChange>> getRevisionsList() {
+        return revisionsList;
+    }
+
+    @Override
+    public Map<OntologyDocumentRevision, ChangeMetadata> getMetadataMap() {
+        return metadataMap;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return revisionsList.isEmpty();
     }
 
     @Override
@@ -90,14 +92,10 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
             return this;
         }
         List<List<OWLOntologyChange>> subChanges = revisionsList.subList(
-                start.getRevisionDifferenceFrom(startRevision), end.getRevisionDifferenceFrom(startRevision));
-        SortedMap<OntologyDocumentRevision, ChangeMetaData> subMetaDataMap = cropMap(metadataMap, start, end);
+                start.getRevisionDifferenceFrom(startRevision),
+                end.getRevisionDifferenceFrom(startRevision));
+        SortedMap<OntologyDocumentRevision, ChangeMetadata> subMetaDataMap = cropMap(metadataMap, start, end);
         return new ChangeHistoryImpl(start, subChanges, subMetaDataMap);
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return revisionsList.isEmpty();
     }
 
     private <X extends Comparable<X>, Y> SortedMap<X, Y> cropMap(SortedMap<X, Y> map, X start, X end) {
@@ -114,104 +112,68 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
     }
 
     @Override
-    public ChangeHistory appendChanges(ChangeHistory additionalChanges) {
-        if (additionalChanges.getEndRevision().compareTo(getEndRevision()) <= 0) {
+    public ChangeHistory appendChanges(ChangeHistory additionalChangeHistory) {
+        if (additionalChangeHistory.getEndRevision().compareTo(getEndRevision()) <= 0) {
             return this;
         }
-        if (additionalChanges.getStartRevision().compareTo(getEndRevision()) > 0) {
-            throw new IllegalArgumentException(
-                    "Changes could not be merged because there was a gap in the change histories");
+        if (additionalChangeHistory.getStartRevision().compareTo(getEndRevision()) > 0) {
+            throw new IllegalArgumentException("Changes could not be merged because there was a gap in the change history");
         }
-        OWLOntology fakeOntology;
         try {
-            fakeOntology = OWLManager.createOWLOntologyManager().createOntology();
+            OWLOntology emptyOntology = OWLManager.createOWLOntologyManager().createOntology();
+            ChangeHistoryImpl changeHistory = new ChangeHistoryImpl(startRevision,
+                    new ArrayList<List<OWLOntologyChange>>(revisionsList),
+                    new TreeMap<OntologyDocumentRevision, ChangeMetadata>(metadataMap));
+            OntologyDocumentRevision currentRevision = changeHistory.getEndRevision();
+            for (; additionalChangeHistory.getEndRevision().compareTo(currentRevision) > 0; currentRevision = currentRevision.next()) {
+                ChangeMetadata metadata = additionalChangeHistory.getChangeMetadataForRevision(currentRevision);
+                List<OWLOntologyChange> changes = additionalChangeHistory.cropChanges(currentRevision, currentRevision.next()).getChanges(emptyOntology);
+                changeHistory.addRevisionBundle(currentRevision, metadata, changes);
+            }
+            return changeHistory;
         }
         catch (OWLOntologyCreationException e) {
-            throw new RuntimeException("This really shouldn't happen!", e);
+            throw new IllegalStateException("Could not create an empty ontology");
         }
-        ChangeHistoryImpl newDoc = new ChangeHistoryImpl(startRevision,
-                new ArrayList<List<OWLOntologyChange>>(revisionsList),
-                new TreeMap<OntologyDocumentRevision, ChangeMetaData>(metadataMap));
-        OntologyDocumentRevision revision = newDoc.getEndRevision();
-        for (; additionalChanges.getEndRevision().compareTo(revision) > 0; revision = revision.next()) {
-            newDoc.metadataMap.put(revision, additionalChanges.getMetaData(revision));
-            newDoc.revisionsList.add(
-                    additionalChanges.cropChanges(revision, revision.next()).getChanges(fakeOntology));
-        }
-        return newDoc;
     }
 
     @Override
-    public List<OWLOntologyChange> getChanges(OWLOntology ontology) {
+    public List<OWLOntologyChange> getChanges(OWLOntology sourceOntology) {
         List<OWLOntologyChange> filteredChanges = new ArrayList<OWLOntologyChange>();
         OntologyDocumentRevision revision = startRevision;
         for (List<OWLOntologyChange> change : revisionsList) {
             filteredChanges.addAll(change);
             revision = revision.next();
         }
-        return ReplaceChangedOntologyVisitor.mutate(ontology, ChangeUtilities.normalizeChangeDelta(filteredChanges));
+        return ReplaceChangedOntologyVisitor.mutate(sourceOntology, normalizeChangeDelta(filteredChanges));
     }
 
-    @Override
-    public void writeChangeDocument(OutputStream out) throws IOException {
-        long startTime = System.currentTimeMillis();
-        ObjectOutputStream oos;
-        if (out instanceof ObjectOutputStream) {
-            oos = (ObjectOutputStream) out;
+    private List<OWLOntologyChange> normalizeChangeDelta(List<OWLOntologyChange> revision) {
+        CollectingChangeVisitor visitor = CollectingChangeVisitor.collectChanges(revision);
+        List<OWLOntologyChange> normalizedChanges = new ArrayList<OWLOntologyChange>();
+        if (visitor.getLastOntologyIDChange() != null) {
+            normalizedChanges.add(visitor.getLastOntologyIDChange());
         }
-        else {
-            oos = new ObjectOutputStream(out);
-        }
-        oos.writeObject(startRevision);
-        oos.writeObject(metadataMap);
-        oos.writeInt(revisionsList.size());
-        OWLOutputStream owlstream = new OWLOutputStream(oos);
-        owlstream.setCompressionLimit(compressionLimit);
-        for (List<OWLOntologyChange> changeSet : revisionsList) {
-            owlstream.writeWithCompression(changeSet);
-        }
-        oos.flush();
-        logLongWrite(System.currentTimeMillis() - startTime);
-    }
-
-    private void logLongWrite(long interval) {
-        if (interval > 1000) {
-            int totalChanges = 0;
-            for (List<OWLOntologyChange> changeList : revisionsList) {
-                totalChanges += changeList.size();
-            }
-            String template = "Write of change history ({} changes) took {} seconds (compression limit = {}).";
-            logger.info(template, totalChanges, interval/1000, compressionLimit);
-        }
-    }
-
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        writeChangeDocument(out);
-    }
-
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        // TODO Implement later
-//        documentFactory = (DocumentFactory) in.readObject();
-//        ChangeHistoryImpl doc = (ChangeHistoryImpl) documentFactory.readChangeDocument(in, null, null);
-//        startRevision = doc.getStartRevision();
-//        listOfRevisionChanges = doc.listOfRevisionChanges;
-//        metadataMap = doc.metadataMap;
+        normalizedChanges.addAll(visitor.getLastImportChangeMap().values());
+        normalizedChanges.addAll(visitor.getLastOntologyAnnotationChangeMap().values());
+        normalizedChanges.addAll(visitor.getLastAxiomChangeMap().values());
+        return normalizedChanges;
     }
 
     @Override
     public int hashCode() {
         try {
-            OWLOntology ontology = OWLManager.createOWLOntologyManager().createOntology();
+            OWLOntology emptyOntology = OWLManager.createOWLOntologyManager().createOntology();
             int hashCode = 314159 * getStartRevision().hashCode() + 271828 * getEndRevision().hashCode();
-            for (OntologyDocumentRevision revision = getStartRevision(); revision
-                    .compareTo(getEndRevision()) < 0; revision = revision.next()) {
-                hashCode = 42 * hashCode + getMetaData(revision).hashCode();
-                hashCode = hashCode - cropChanges(revision, revision.next()).getChanges(ontology).hashCode();
+            OntologyDocumentRevision currentRevision = getStartRevision();
+            for (; currentRevision.compareTo(getEndRevision()) < 0; currentRevision = currentRevision.next()) {
+                hashCode = 42 * hashCode + getChangeMetadataForRevision(currentRevision).hashCode();
+                hashCode = hashCode - cropChanges(currentRevision, currentRevision.next()).getChanges(emptyOntology).hashCode();
             }
             return hashCode;
         }
         catch (OWLOntologyCreationException e) {
-            throw new IllegalStateException("Could not create empty ontology");
+            throw new IllegalStateException("Could not create an empty ontology");
         }
     }
 
@@ -222,25 +184,25 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
         }
         ChangeHistory other = (ChangeHistory) o;
         try {
-            OWLOntology ontology = OWLManager.createOWLOntologyManager().createOntology();
-            if (!(getStartRevision().equals(other.getStartRevision()) 
+            OWLOntology emptyOntology = OWLManager.createOWLOntologyManager().createOntology();
+            if (!(getStartRevision().equals(other.getStartRevision())
                     && getEndRevision().equals(other.getEndRevision()))) {
                 return false;
             }
-            for (OntologyDocumentRevision revision = getStartRevision(); revision
-                    .compareTo(getEndRevision()) < 0; revision = revision.next()) {
-                if (!(getMetaData(revision).equals(other.getMetaData(revision)))) {
+            OntologyDocumentRevision currentRevision = getStartRevision();
+            for (; currentRevision.compareTo(getEndRevision()) < 0; currentRevision = currentRevision.next()) {
+                if (!(getChangeMetadataForRevision(currentRevision).equals(other.getChangeMetadataForRevision(currentRevision)))) {
                     return false;
                 }
-                if (!cropChanges(revision, revision.next()).getChanges(ontology)
-                        .equals(other.cropChanges(revision, revision.next()).getChanges(ontology))) {
+                if (!cropChanges(currentRevision, currentRevision.next()).getChanges(emptyOntology)
+                        .equals(other.cropChanges(currentRevision, currentRevision.next()).getChanges(emptyOntology))) {
                     return false;
                 }
             }
             return true;
         }
         catch (OWLOntologyCreationException e) {
-            throw new IllegalStateException("Could not create empty ontology");
+            throw new IllegalStateException("Could not create an empty ontology");
         }
     }
 

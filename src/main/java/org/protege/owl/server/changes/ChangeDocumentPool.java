@@ -2,7 +2,6 @@ package org.protege.owl.server.changes;
 
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.changes.api.ChangeHistory;
-import org.protege.owl.server.changes.api.DocumentFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,20 +26,17 @@ public class ChangeDocumentPool {
 
     private ScheduledExecutorService executorService;
 
-    private DocumentFactory docFactory;
-
     private final long timeout;
 
-    private Map<File, ChangeDocumentPoolEntry> pool = new TreeMap<>();
+    private Map<HistoryFile, ChangeDocumentPoolEntry> pool = new TreeMap<>();
 
     private int consecutiveCleanupFailures = 0;
 
     public ChangeDocumentPool() {
-        this(new DocumentFactoryImpl(), DEFAULT_POOL_TIMEOUT);
+        this(DEFAULT_POOL_TIMEOUT);
     }
 
-    public ChangeDocumentPool(DocumentFactory docFactory, long timeout) {
-        this.docFactory = docFactory;
+    public ChangeDocumentPool(long timeout) {
         this.timeout = timeout;
         createTimeoutThread();
     }
@@ -58,7 +54,7 @@ public class ChangeDocumentPool {
             @Override
             public void run() {
                 try {
-                    for (Entry<File, ChangeDocumentPoolEntry> entry : new HashSet<>(pool.entrySet())) {
+                    for (Entry<HistoryFile, ChangeDocumentPoolEntry> entry : new HashSet<>(pool.entrySet())) {
                         File f = entry.getKey();
                         ChangeDocumentPoolEntry poolEntry = entry.getValue();
                         synchronized (pool) {
@@ -90,12 +86,12 @@ public class ChangeDocumentPool {
         }, timeout, timeout, TimeUnit.MILLISECONDS);
     }
 
-    public ChangeHistory getChangeDocument(File historyFile) throws OWLServerException {
+    public ChangeHistory getChangeDocument(HistoryFile historyFile) throws OWLServerException {
         ChangeDocumentPoolEntry entry;
         synchronized (pool) {
             entry = pool.get(historyFile);
             if (entry == null) {
-                entry = new ChangeDocumentPoolEntry(docFactory, historyFile);
+                entry = new ChangeDocumentPoolEntry(historyFile);
                 pool.put(historyFile, entry);
                 logger.info("Checked out in-memory change history for " + historyFile.getName());
             }
@@ -103,14 +99,14 @@ public class ChangeDocumentPool {
         return entry.getChangeDocument();
     }
 
-    public void setChangeDocument(File historyFile, ChangeHistory changes) {
+    public void setChangeDocument(HistoryFile historyFile, ChangeHistory changes) {
         synchronized (pool) {
             ChangeDocumentPoolEntry entry = pool.get(historyFile);
             if (entry != null) {
                 entry.setChangeDocument(changes);
             }
             else {
-                entry = new ChangeDocumentPoolEntry(docFactory, historyFile, changes);
+                entry = new ChangeDocumentPoolEntry(historyFile, changes);
                 pool.put(historyFile, entry);
             }
         }

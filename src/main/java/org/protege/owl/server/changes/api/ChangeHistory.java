@@ -1,14 +1,13 @@
 package org.protege.owl.server.changes.api;
 
-import org.protege.owl.server.changes.ChangeMetaData;
+import org.protege.owl.server.changes.ChangeMetadata;
 import org.protege.owl.server.changes.OntologyDocumentRevision;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is a lightweight class that captures the collection of changes to a
@@ -50,7 +49,7 @@ public interface ChangeHistory {
      *            revision
      * @return ChangeMetaData
      */
-    ChangeMetaData getMetaData(OntologyDocumentRevision revision);
+    ChangeMetadata getChangeMetadataForRevision(OntologyDocumentRevision revision);
 
     /**
      * This call will return the change document obtained by restricting the set
@@ -86,9 +85,9 @@ public interface ChangeHistory {
      */
     List<OWLOntologyChange> getChanges(OWLOntology ontology);
 
-    void writeChangeDocument(OutputStream out) throws IOException;
-
-    void setCompressionLimit(int compressionLimit);
-
     boolean isEmpty();
+
+    List<List<OWLOntologyChange>> getRevisionsList();
+
+    Map<OntologyDocumentRevision, ChangeMetadata> getMetadataMap();
 }
