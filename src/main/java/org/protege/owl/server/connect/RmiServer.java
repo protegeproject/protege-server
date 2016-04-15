@@ -44,33 +44,33 @@ public class RmiServer implements RemoteServer, Remote {
     }
 
     @Override
-    public void addUser(AuthToken token, User newUser) throws ServerRequestException {
-        server.addUser(token, newUser);
+    public void createUser(AuthToken token, User newUser) throws ServerRequestException {
+        server.createUser(token, newUser);
     }
 
     @Override
-    public void removeUser(AuthToken token, UserId userId) throws ServerRequestException {
-        server.removeUser(token, userId);
+    public void deleteUser(AuthToken token, UserId userId) throws ServerRequestException {
+        server.deleteUser(token, userId);
     }
 
     @Override
-    public void modifyUser(AuthToken token, UserId userId, User user) throws ServerRequestException {
-        server.modifyUser(token, userId, user);
+    public void updateUser(AuthToken token, UserId userId, User user) throws ServerRequestException {
+        server.updateUser(token, userId, user);
     }
 
     @Override
-    public void addProject(AuthToken token, Project newProject) throws ServerRequestException {
-        server.addProject(token, newProject);
+    public void createProject(AuthToken token, Project newProject) throws ServerRequestException {
+        server.createProject(token, newProject);
     }
 
     @Override
-    public void removeProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
-        server.removeProject(token, projectId);
+    public void deleteProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
+        server.deleteProject(token, projectId);
     }
 
     @Override
-    public void modifyProject(AuthToken token, ProjectId projectId, Project newProject) throws ServerRequestException {
-        server.modifyProject(token, projectId, newProject);
+    public void updateProject(AuthToken token, ProjectId projectId, Project newProject) throws ServerRequestException {
+        server.updateProject(token, projectId, newProject);
     }
 
     @Override
@@ -79,34 +79,34 @@ public class RmiServer implements RemoteServer, Remote {
     }
 
     @Override
-    public void addRole(AuthToken token, Role newRole) throws ServerRequestException {
-        server.addRole(token, newRole);
+    public void createRole(AuthToken token, Role newRole) throws ServerRequestException {
+        server.createRole(token, newRole);
     }
 
     @Override
-    public void removeRole(AuthToken token, RoleId roleId) throws ServerRequestException {
-        server.removeRole(token, roleId);
+    public void deleteRole(AuthToken token, RoleId roleId) throws ServerRequestException {
+        server.deleteRole(token, roleId);
     }
 
     @Override
-    public void modifyRole(AuthToken token, RoleId roleId, Role newRole) throws ServerRequestException {
-        server.modifyRole(token, roleId, newRole);
+    public void updateRole(AuthToken token, RoleId roleId, Role newRole) throws ServerRequestException {
+        server.updateRole(token, roleId, newRole);
     }
 
     @Override
-    public void addOperation(AuthToken token, Operation operation) throws ServerRequestException {
-        server.addOperation(token, operation);
+    public void createOperation(AuthToken token, Operation operation) throws ServerRequestException {
+        server.createOperation(token, operation);
     }
 
     @Override
-    public void removeOperation(AuthToken token, OperationId operationId) throws ServerRequestException {
-        server.removeOperation(token, operationId);
+    public void deleteOperation(AuthToken token, OperationId operationId) throws ServerRequestException {
+        server.deleteOperation(token, operationId);
     }
 
     @Override
-    public void modifyOperation(AuthToken token, OperationId operationId, Operation newOperation)
+    public void updateOperation(AuthToken token, OperationId operationId, Operation newOperation)
             throws ServerRequestException {
-        server.modifyOperation(token, operationId, newOperation);
+        server.updateOperation(token, operationId, newOperation);
     }
 
     @Override
@@ -122,9 +122,9 @@ public class RmiServer implements RemoteServer, Remote {
     }
 
     @Override
-    public void modifyServerConfiguration(AuthToken token, String property, String value)
+    public void updateServerConfiguration(AuthToken token, String property, String value)
             throws ServerRequestException {
-        server.modifyServerConfiguration(token, property, value);
+        server.updateServerConfiguration(token, property, value);
     }
 
     @Override

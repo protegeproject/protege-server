@@ -27,33 +27,33 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void addUser(AuthToken token, User newUser) throws ServerRequestException {
-        getDelegate().addUser(token, newUser);
+    public void createUser(AuthToken token, User newUser) throws ServerRequestException {
+        getDelegate().createUser(token, newUser);
     }
 
     @Override
-    public void removeUser(AuthToken token, UserId userId) throws ServerRequestException {
-        getDelegate().removeUser(token, userId);
+    public void deleteUser(AuthToken token, UserId userId) throws ServerRequestException {
+        getDelegate().deleteUser(token, userId);
     }
 
     @Override
-    public void modifyUser(AuthToken token, UserId userId, User user) throws ServerRequestException {
-        getDelegate().modifyUser(token, userId, user);
+    public void updateUser(AuthToken token, UserId userId, User user) throws ServerRequestException {
+        getDelegate().updateUser(token, userId, user);
     }
 
     @Override
-    public void addProject(AuthToken token, Project newProject) throws ServerRequestException {
-        getDelegate().addProject(token, newProject);
+    public void createProject(AuthToken token, Project newProject) throws ServerRequestException {
+        getDelegate().createProject(token, newProject);
     }
 
     @Override
-    public void removeProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
-        getDelegate().removeProject(token, projectId);
+    public void deleteProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
+        getDelegate().deleteProject(token, projectId);
     }
 
     @Override
-    public void modifyProject(AuthToken token, ProjectId projectId, Project newProject) throws ServerRequestException {
-        getDelegate().modifyProject(token, projectId, newProject);
+    public void updateProject(AuthToken token, ProjectId projectId, Project newProject) throws ServerRequestException {
+        getDelegate().updateProject(token, projectId, newProject);
     }
 
     @Override
@@ -62,34 +62,34 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void addRole(AuthToken token, Role newRole) throws ServerRequestException {
-        getDelegate().addRole(token, newRole);
+    public void createRole(AuthToken token, Role newRole) throws ServerRequestException {
+        getDelegate().createRole(token, newRole);
     }
 
     @Override
-    public void removeRole(AuthToken token, RoleId roleId) throws ServerRequestException {
-        getDelegate().removeRole(token, roleId);
+    public void deleteRole(AuthToken token, RoleId roleId) throws ServerRequestException {
+        getDelegate().deleteRole(token, roleId);
     }
 
     @Override
-    public void modifyRole(AuthToken token, RoleId roleId, Role newRole) throws ServerRequestException {
-        getDelegate().modifyRole(token, roleId, newRole);
+    public void updateRole(AuthToken token, RoleId roleId, Role newRole) throws ServerRequestException {
+        getDelegate().updateRole(token, roleId, newRole);
     }
 
     @Override
-    public void addOperation(AuthToken token, Operation operation) throws ServerRequestException {
-        getDelegate().addOperation(token, operation);
+    public void createOperation(AuthToken token, Operation operation) throws ServerRequestException {
+        getDelegate().createOperation(token, operation);
     }
 
     @Override
-    public void removeOperation(AuthToken token, OperationId operationId) throws ServerRequestException {
-        getDelegate().removeOperation(token, operationId);
+    public void deleteOperation(AuthToken token, OperationId operationId) throws ServerRequestException {
+        getDelegate().deleteOperation(token, operationId);
     }
 
     @Override
-    public void modifyOperation(AuthToken token, OperationId operationId, Operation newOperation)
+    public void updateOperation(AuthToken token, OperationId operationId, Operation newOperation)
             throws ServerRequestException {
-        getDelegate().modifyOperation(token, operationId, newOperation);
+        getDelegate().updateOperation(token, operationId, newOperation);
     }
 
     @Override
@@ -105,9 +105,9 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void modifyServerConfiguration(AuthToken token, String property, String value)
+    public void updateServerConfiguration(AuthToken token, String property, String value)
             throws ServerRequestException {
-        getDelegate().modifyServerConfiguration(token, property, value);
+        getDelegate().updateServerConfiguration(token, property, value);
     }
 
     @Override

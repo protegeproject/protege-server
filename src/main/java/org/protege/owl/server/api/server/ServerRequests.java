@@ -25,7 +25,7 @@ import edu.stanford.protege.metaproject.api.UserId;
 public interface ServerRequests {
 
     /**
-     * Adding a new user to the server.
+     * Creating a new user to the server.
      *
      * @param token
      *            An authentication token to verify the request source.
@@ -33,10 +33,10 @@ public interface ServerRequests {
      *            The new user to add.
      * @throws ServerRequestException
      */
-    void addUser(AuthToken token, User newUser) throws ServerRequestException;
+    void createUser(AuthToken token, User newUser) throws ServerRequestException;
 
     /**
-     * Removing an existing user from the server.
+     * Deleting an existing user from the server.
      *
      * @param token
      *            An authentication token to verify the request source.
@@ -44,23 +44,23 @@ public interface ServerRequests {
      *            The user to remove identified by the ID
      * @throws ServerRequestException
      */
-    void removeUser(AuthToken token, UserId userId) throws ServerRequestException;
+    void deleteUser(AuthToken token, UserId userId) throws ServerRequestException;
 
     /**
-     * Modifying an exiting user in the server.
+     * Updating information of an exiting user in the server.
      *
      * @param token
      *            An authentication token to verify the request source.
      * @param userId
      *          The target user to modify identified by the ID
      * @param newUser
-     *          The new user to replace with
+     *          The new updated user to replace with
      * @throws ServerRequestException
      */
-    void modifyUser(AuthToken token, UserId userId, User user) throws ServerRequestException;
+    void updateUser(AuthToken token, UserId userId, User updatedUser) throws ServerRequestException;
 
     /**
-     * Adding a new project to the server.
+     * Creating a new project to the server.
      *
      * @param token
      *            An authentication token to verify the request source.
@@ -68,10 +68,10 @@ public interface ServerRequests {
      *            The new project to add.
      * @throws ServerRequestException
      */
-    void addProject(AuthToken token, Project newProject) throws ServerRequestException;
+    void createProject(AuthToken token, Project newProject) throws ServerRequestException;
 
     /**
-     * Removing an existing project from the server.
+     * Deleting an existing project from the server.
      *
      * @param token
      *            An authentication token to verify the request source.
@@ -79,20 +79,20 @@ public interface ServerRequests {
      *            The project to remove identified by its ID.
      * @throws ServerRequestException
      */
-    void removeProject(AuthToken token, ProjectId projectId) throws ServerRequestException;
+    void deleteProject(AuthToken token, ProjectId projectId) throws ServerRequestException;
 
     /**
-     * Modifying an existing project in the server.
+     * Updating information of an existing project in the server.
      *
      * @param token
      *            An authentication token to verify the request source.
      * @param projectId
      *            The target project to modify identified by its ID.
-     * @param newProject
-     *            The new project to replace with.
+     * @param updatedProject
+     *            The new updated project to replace with.
      * @throws ServerRequestException
      */
-    void modifyProject(AuthToken token, ProjectId projectId, Project newProject) throws ServerRequestException;
+    void updateProject(AuthToken token, ProjectId projectId, Project updatedProject) throws ServerRequestException;
 
     /**
      * Opening a project from the server. The server will return the {@code ProjectResource} that
@@ -107,7 +107,7 @@ public interface ServerRequests {
     ServerDocument openProject(AuthToken token, ProjectId projectId) throws ServerRequestException;
 
     /**
-     * Adding a new role to the server.
+     * Creating a new role to the server.
      *
      * @param token
      *            An authentication token to verify the request source.
@@ -115,10 +115,10 @@ public interface ServerRequests {
      *          The new role to add.
      * @throws ServerRequestException
      */
-    void addRole(AuthToken token, Role newRole) throws ServerRequestException;
+    void createRole(AuthToken token, Role newRole) throws ServerRequestException;
 
     /**
-     * Removing an existing role from the server.
+     * Deleting an existing role from the server.
      *
      * @param token
      *            An authentication token to verify the request source.
@@ -126,23 +126,23 @@ public interface ServerRequests {
      *          The role to remove identified by its ID.
      * @throws ServerRequestException
      */
-    void removeRole(AuthToken token, RoleId roleId) throws ServerRequestException;
+    void deleteRole(AuthToken token, RoleId roleId) throws ServerRequestException;
 
     /**
-     * Modifying an existing role at the server.
+     * Updating information of an existing role at the server.
      *
      * @param token
      *            An authentication token to verify the request source.
      * @param roleId
      *          The target role to modify identified by its ID.
-     * @param newRole
-     *          The new role to replace with.
+     * @param updatedRole
+     *          The new updated role to replace with.
      * @throws ServerRequestException
      */
-    void modifyRole(AuthToken token, RoleId roleId, Role newRole) throws ServerRequestException;
+    void updateRole(AuthToken token, RoleId roleId, Role updatedRole) throws ServerRequestException;
 
     /**
-     * Adding a new operation to the server.
+     * Creating a new operation to the server.
      *
      * @param token
      *            An authentication token to verify the request source.
@@ -150,10 +150,10 @@ public interface ServerRequests {
      *          The new operation to add.
      * @throws ServerRequestException
      */
-    void addOperation(AuthToken token, Operation operation) throws ServerRequestException;
+    void createOperation(AuthToken token, Operation operation) throws ServerRequestException;
 
     /**
-     * Removing an existing operation from the server.
+     * Deleting an existing operation from the server.
      *
      * @param token
      *            An authentication token to verify the request source.
@@ -161,20 +161,20 @@ public interface ServerRequests {
      *          The operation to remove identified by its ID.
      * @throws ServerRequestException
      */
-    void removeOperation(AuthToken token, OperationId operationId) throws ServerRequestException;
+    void deleteOperation(AuthToken token, OperationId operationId) throws ServerRequestException;
 
     /**
-     * Modifying an existing operation at the server.
+     * Updating information of an existing operation at the server.
      *
      * @param token
      *            An authentication token to verify the request source.
      * @param operationId
      *          The target operation to modify identified by its ID.
-     * @param newOperation
-     *          The new operation to replace with.
+     * @param updatedOperation
+     *          The new updated operation to replace with.
      * @throws ServerRequestException
      */
-    void modifyOperation(AuthToken token, OperationId operationId, Operation newOperation) throws ServerRequestException;
+    void updateOperation(AuthToken token, OperationId operationId, Operation updatedOperation) throws ServerRequestException;
 
     /**
      * Assigning a role to a user for a particular project.
@@ -207,7 +207,7 @@ public interface ServerRequests {
     void retractRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId) throws ServerRequestException;
 
     /**
-     * Modifying an existing server property by replacing the value.
+     * Updating an existing server property by specifying the property name and the new value.
      *
      * @param token
      *            An authentication token to verify the request source.
@@ -217,7 +217,7 @@ public interface ServerRequests {
      *          The new property value
      * @throws ServerRequestException
      */
-    void modifyServerConfiguration(AuthToken token, String property, String value) throws ServerRequestException;
+    void updateServerConfiguration(AuthToken token, String property, String value) throws ServerRequestException;
 
     /**
      * Committing the given ontology changes to be applied in the server.

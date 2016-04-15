@@ -41,37 +41,37 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void addUser(AuthToken token, User newUser) throws ServerRequestException {
+    public void createUser(AuthToken token, User newUser) throws ServerRequestException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void removeUser(AuthToken token, UserId userId) throws ServerRequestException {
+    public void deleteUser(AuthToken token, UserId userId) throws ServerRequestException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void modifyUser(AuthToken token, UserId userId, User user) throws ServerRequestException {
+    public void updateUser(AuthToken token, UserId userId, User user) throws ServerRequestException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void addProject(AuthToken token, Project newProject) throws ServerRequestException {
+    public void createProject(AuthToken token, Project newProject) throws ServerRequestException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void removeProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
+    public void deleteProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void modifyProject(AuthToken token, ProjectId projectId, Project newProject) throws ServerRequestException {
+    public void updateProject(AuthToken token, ProjectId projectId, Project newProject) throws ServerRequestException {
         // TODO Auto-generated method stub
         
     }
@@ -83,37 +83,37 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void addRole(AuthToken token, Role newRole) throws ServerRequestException {
+    public void createRole(AuthToken token, Role newRole) throws ServerRequestException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void removeRole(AuthToken token, RoleId roleId) throws ServerRequestException {
+    public void deleteRole(AuthToken token, RoleId roleId) throws ServerRequestException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void modifyRole(AuthToken token, RoleId roleId, Role newRole) throws ServerRequestException {
+    public void updateRole(AuthToken token, RoleId roleId, Role newRole) throws ServerRequestException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void addOperation(AuthToken token, Operation operation) throws ServerRequestException {
+    public void createOperation(AuthToken token, Operation operation) throws ServerRequestException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void removeOperation(AuthToken token, OperationId operationId) throws ServerRequestException {
+    public void deleteOperation(AuthToken token, OperationId operationId) throws ServerRequestException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void modifyOperation(AuthToken token, OperationId operationId, Operation newOperation)
+    public void updateOperation(AuthToken token, OperationId operationId, Operation newOperation)
             throws ServerRequestException {
         // TODO Auto-generated method stub
         
@@ -134,7 +134,7 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void modifyServerConfiguration(AuthToken token, String property, String value)
+    public void updateServerConfiguration(AuthToken token, String property, String value)
             throws ServerRequestException {
         // TODO Auto-generated method stub
         
