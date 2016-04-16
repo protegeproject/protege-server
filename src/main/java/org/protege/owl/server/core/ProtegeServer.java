@@ -7,6 +7,9 @@ import org.protege.owl.server.api.exception.ServerRequestException;
 import org.protege.owl.server.api.server.TransportHandler;
 import org.protege.owl.server.changes.ServerDocument;
 
+import java.util.List;
+import java.util.Map;
+
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
@@ -149,5 +152,67 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public void setTransport(TransportHandler transport) throws OWLServerException {
         this.transport = transport;
+    }
+
+    @Override
+    public List<User> getAllUsers(AuthToken token) throws ServerRequestException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Project> getProjects(AuthToken token, UserId userId) throws ServerRequestException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Project> getAllProjects(AuthToken token) throws ServerRequestException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId) throws ServerRequestException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId) throws ServerRequestException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Role> getAllRoles(AuthToken token) throws ServerRequestException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId) throws ServerRequestException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId)
+            throws ServerRequestException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Operation> getAllOperations(AuthToken token) throws ServerRequestException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean isOperationAllowed(AuthToken token, OperationId operationId, ProjectId projectId, UserId userId)
+            throws ServerRequestException {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

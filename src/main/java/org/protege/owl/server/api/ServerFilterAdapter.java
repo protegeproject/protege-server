@@ -6,6 +6,9 @@ import org.protege.owl.server.api.server.ServerListener;
 import org.protege.owl.server.api.server.TransportHandler;
 import org.protege.owl.server.changes.ServerDocument;
 
+import java.util.List;
+import java.util.Map;
+
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
@@ -128,5 +131,57 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     @Override
     public void removeServerListener(ServerListener listener) {
         getDelegate().removeServerListener(listener);
+    }
+
+    @Override
+    public List<User> getAllUsers(AuthToken token) throws ServerRequestException {
+        return getDelegate().getAllUsers(token);
+    }
+
+    @Override
+    public List<Project> getProjects(AuthToken token, UserId userId) throws ServerRequestException {
+        return getDelegate().getProjects(token, userId);
+    }
+
+    @Override
+    public List<Project> getAllProjects(AuthToken token) throws ServerRequestException {
+        return getDelegate().getAllProjects(token);
+    }
+
+    @Override
+    public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId) throws ServerRequestException {
+        return getDelegate().getRoles(token, userId);
+    }
+
+    @Override
+    public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId) throws ServerRequestException {
+        return getDelegate().getRoles(token, userId, projectId);
+    }
+
+    @Override
+    public List<Role> getAllRoles(AuthToken token) throws ServerRequestException {
+        return getDelegate().getAllRoles(token);
+    }
+
+    @Override
+    public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId) throws ServerRequestException {
+        return getDelegate().getOperations(token, userId);
+    }
+
+    @Override
+    public List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId)
+            throws ServerRequestException {
+        return getDelegate().getOperations(token, userId, projectId);
+    }
+
+    @Override
+    public List<Operation> getAllOperations(AuthToken token) throws ServerRequestException {
+        return getDelegate().getAllOperations(token);
+    }
+
+    @Override
+    public boolean isOperationAllowed(AuthToken token, OperationId operationId, ProjectId projectId, UserId userId)
+            throws ServerRequestException {
+        return getDelegate().isOperationAllowed(token, operationId, projectId, userId);
     }
 }

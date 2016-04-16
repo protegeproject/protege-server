@@ -4,6 +4,9 @@ import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.exception.ServerRequestException;
 import org.protege.owl.server.changes.ServerDocument;
 
+import java.util.List;
+import java.util.Map;
+
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
@@ -15,7 +18,7 @@ import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
 
 /**
- * Represents all operations that the client could request to the server. All
+ * Represents all operations that the server can serve to the clients. All
  * operations require an authentication token that will be initially checked
  * before continuing to the execution of the operation.
  *
@@ -23,6 +26,16 @@ import edu.stanford.protege.metaproject.api.UserId;
  *         Stanford Center for Biomedical Informatics Research
  */
 public interface ServerRequests {
+
+    /**
+     * Getting all users known by the server.
+     *
+     * @param token
+     *          An authentication token to verify the request source.
+     * @return A list of {@code User}.
+     * @throws ServerRequestException
+     */
+    List<User> getAllUsers(AuthToken token) throws ServerRequestException;
 
     /**
      * Creating a new user to the server.
@@ -58,6 +71,28 @@ public interface ServerRequests {
      * @throws ServerRequestException
      */
     void updateUser(AuthToken token, UserId userId, User updatedUser) throws ServerRequestException;
+
+    /**
+     * Getting all projects the given the user id.
+     *
+     * @param token
+     *          An authentication token to verify the request source.
+     * @param userId
+     *          The target user identified by the ID
+     * @return A list of {@code Project}
+     * @throws ServerRequestException
+     */
+    List<Project> getProjects(AuthToken token, UserId userId) throws ServerRequestException;
+
+    /**
+     * Getting all project known by the server.
+     *
+     * @param token
+     *          An authentication token to verify the request source.
+     * @return A list of {@code Project}.
+     * @throws ServerRequestException
+     */
+    List<Project> getAllProjects(AuthToken token) throws ServerRequestException;
 
     /**
      * Creating a new project to the server.
@@ -107,6 +142,42 @@ public interface ServerRequests {
     ServerDocument openProject(AuthToken token, ProjectId projectId) throws ServerRequestException;
 
     /**
+     * Getting all roles given the user id, categorized for each owned project.
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @param userId
+     *          The target user identified by the ID
+     * @return A map of {@code ProjectId} with a list of corresponding {@code Role}
+     * @throws ServerRequestException
+     */
+    Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId) throws ServerRequestException;
+
+    /**
+     * Getting all roles given the user id and the project id.
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @param userId
+     *          The target user identified by the ID
+     * @param projectId
+     *          The target project identified by the ID
+     * @return A list of {@code Role}
+     * @throws ServerRequestException
+     */
+    List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId) throws ServerRequestException;
+
+    /**
+     * Getting all roles known by the server.
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @return A list of {@code Role}
+     * @throws ServerRequestException
+     */
+    List<Role> getAllRoles(AuthToken token) throws ServerRequestException;
+
+    /**
      * Creating a new role to the server.
      *
      * @param token
@@ -140,6 +211,42 @@ public interface ServerRequests {
      * @throws ServerRequestException
      */
     void updateRole(AuthToken token, RoleId roleId, Role updatedRole) throws ServerRequestException;
+
+    /**
+     * Getting all operations given the user id, categorized for each owned project.
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @param userId
+     *          The target user identified by the ID
+     * @return A map of {@code ProjectId} with a list of corresponding {@code Operation}
+     * @throws ServerRequestException
+     */
+    Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId) throws ServerRequestException;
+
+    /**
+     * Getting all operations given the user id and the project id.
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @param userId
+     *          The target user identified by the ID
+     * @param projectId
+     *          The target project identified by the ID
+     * @return A list of {code Operation}
+     * @throws ServerRequestException
+     */
+    List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId) throws ServerRequestException;
+
+    /**
+     * Getting all operations known by the server.
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @return A list of {@code Operation}
+     * @throws ServerRequestException
+     */
+    List<Operation> getAllOperations(AuthToken token) throws ServerRequestException;
 
     /**
      * Creating a new operation to the server.
@@ -231,4 +338,17 @@ public interface ServerRequests {
      * @throws ServerRequestException
      */
     void commit(AuthToken token, Project project, CommitBundle changes) throws ServerRequestException;
+
+    /**
+     * Checking if an operation is allowed for the given user id and the project id.
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @param userId
+     * @param projectId
+     * @param operationId
+     * @return
+     * @throws ServerRequestException
+     */
+    boolean isOperationAllowed(AuthToken token, OperationId operationId, ProjectId projectId, UserId userId) throws ServerRequestException;
 }
