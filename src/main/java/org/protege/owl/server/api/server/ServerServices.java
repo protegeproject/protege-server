@@ -25,7 +25,7 @@ import edu.stanford.protege.metaproject.api.UserId;
  * @author Josef Hardi <johardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public interface ServerRequests {
+public interface ServerServices {
 
     /**
      * Getting all users known by the server.
