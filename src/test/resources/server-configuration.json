@@ -1,0 +1,364 @@
+{
+  "host": {
+    "uri": "rmi-owl2-server://localhost:5100/4fb1373c-a17b-4879-bc4f-cc123fb69a64",
+    "secondaryPort": "1884114537"
+  },
+  "root": "target/server-distribution/server/root/ce2ae02f-36e4-4005-892d-28a4657d5dbb.history",
+  "metaproject": {
+    "policy": {
+      "userId-d2542112-e469-4327-8b0a-ae7a5266bb1a": {
+        "projectId-ff7b336d-56b3-4d60-b0c6-587617695db8": [
+          "roleId-e8e74308-997c-49a5-af76-1fc81e95ab2a",
+          "roleId-77a98de5-e26b-4c85-ada3-09dbda0c3b46",
+          "roleId-af851c82-c376-467c-b743-509e74e4779c"
+        ],
+        "projectId-4117993d-1884-4162-ab34-ae45511f780f": [
+          "roleId-56a803c3-4450-46a1-8c26-7884e76ead52",
+          "roleId-9bc374c2-f4f9-4e70-9c63-0f5480655350",
+          "roleId-027b7799-ee12-4626-b421-3d524a159fe2"
+        ]
+      },
+      "userId-7f6b14c4-5c94-45f9-84ee-c60719a9f063": {
+        "projectId-95e0272a-7ef0-4606-8ee0-86093ae18ee8": [
+          "roleId-7fb54d73-71b3-4ebb-9e9e-9a81e7a04b86",
+          "roleId-ee52da06-9ef5-4c0a-a791-fe737a82a364",
+          "roleId-57069132-80a7-418c-affe-cde647653548"
+        ],
+        "projectId-567a1dfb-c028-4bfe-aec7-0d6517e8c734": [
+          "roleId-8ca290a2-44ff-4de8-8642-24a92e10f4da",
+          "roleId-0050a4c7-95c4-45dd-b520-8bfc5a1e9a2e",
+          "roleId-d050aca6-507f-4df5-8924-8ecab2d05de8"
+        ]
+      },
+      "userId-ec06f6fa-0aab-467e-a41a-2abd329225ce": {
+        "projectId-75b59eb3-3f08-474c-bf8f-baa5b6bd5b20": [
+          "roleId-4b9ac2e6-b62f-4cfb-8038-37fd0dc9ba39",
+          "roleId-50592480-0c2c-4dd8-89fd-c83c89d9f52a",
+          "roleId-a140f3b5-8bf3-4d50-96a2-5300adb35d8b"
+        ],
+        "projectId-f1ef8e92-38c7-48e9-b7a7-dfb1cc297cd4": [
+          "roleId-41158559-333c-4066-89ce-9d66a0dea2af",
+          "roleId-55495ff5-4f3e-4137-b99c-6e29f905ae3e",
+          "roleId-a461dd4d-c274-4c22-a847-c6f21b168b3e"
+        ]
+      }
+    },
+    "users": [
+      {
+        "id": "userId-a3009fd4-60b7-4b0e-9105-14547ffa4eee",
+        "name": "name 51f1c15e-61f1-4fc6-9a69-e08f180e91cb",
+        "emailAddress": "6cd55520-600e-4632-82f8-c02c42398524@email.com"
+      },
+      {
+        "id": "userId-2875a6db-649c-4d8d-ab22-242087595870",
+        "name": "name 9f0bf235-998c-46bf-a87e-c04f9b39f75a",
+        "emailAddress": "cf7ceeba-7ee1-43af-909b-685a78e5a904@email.com"
+      },
+      {
+        "id": "userId-223d8954-8941-4bbb-92ea-9ed4a72b83ed",
+        "name": "name fc47fbe6-c8e6-4a2f-ac7d-935cc25194a3",
+        "emailAddress": "49e269d7-e0a7-4334-9b9f-f8b81a2232b3@email.com"
+      }
+    ],
+    "projects": [
+      {
+        "id": "projectId-0138a573-a175-47c3-aed7-f4c75e5f7a70",
+        "name": "name 822f72c2-8f16-4a6f-bf57-e1336bb0e52b",
+        "description": "description 0035a24c-f393-495a-9757-a2ff01272586",
+        "file": "target/server-distribution/server/root/c9638941-6abd-40ca-ae53-d5abe3453d62.history",
+        "owner": "userId-7f6a73b0-49dc-4e0c-a55b-4742c2947a4e",
+        "options": {
+          "complexProperties": [
+            "db89b040-fe00-4599-b95f-97abaa7ba327",
+            "39d17408-2608-48d2-8849-9b12a4483a49",
+            "04c5ed06-75c1-40b3-a3a0-94484eb8ab01"
+          ],
+          "immutableAnnotations": [
+            "fd5a93c3-a03d-4277-93bf-e4ad10420f3b",
+            "a6626e65-9df1-464c-bc58-35b88c80c280",
+            "82ed5199-1b09-420a-a95c-820d6cb2f0b6"
+          ],
+          "requiredEntities": {
+            "28b41373-47a7-4579-b28b-293c47510f5d": [
+              "8aa837f8-2305-425f-9e61-cecae64c6553",
+              "75f736c0-6d8c-43e1-8b3a-6fcea7d7fc6c",
+              "25117371-ef20-4e9e-8804-3b1249e66883"
+            ],
+            "4f030fb8-f668-41f8-9f2d-35dd4c900a2d": [
+              "ad29b2e6-5c6b-4bab-bd63-8a279788e5b0",
+              "5f354182-de26-4c54-b080-d94052794214",
+              "488515ad-90e8-4ae3-91c1-f656ebbb10bf"
+            ],
+            "9df4fe54-4011-425b-bd73-97f811d80e4e": [
+              "6e61957f-72cf-4326-becb-95b20493ca03",
+              "af0e97eb-5998-47ca-977f-41d62327748f",
+              "8edda900-6575-4c5e-b26a-fb4c09295c6f"
+            ]
+          },
+          "requiredAnnotations": {
+            "0bb4f353-8019-4fe1-92c7-a50c2f579b8a": [
+              "4d191d4e-8e9f-4d84-beb8-6f2292e49435",
+              "50d9e104-d37b-4440-8780-dffdbbac27c0",
+              "1e0f2f1d-e7ff-49d9-a473-144ac9a553e8"
+            ],
+            "785b6ff4-9327-423d-a157-bfa2daf87816": [
+              "d3280942-1adc-4aa0-82a4-4ac744642300",
+              "57f580f8-5458-4056-9808-a35de9f65601",
+              "e50ee027-031f-4801-bf44-a864dcd73584"
+            ],
+            "9c602adb-932b-4c7b-a75a-4f0d2e844e20": [
+              "3f5a831f-0366-4a8b-a8e7-3e429437ad80",
+              "919e9726-fb9a-4de0-8c93-b3fff17b9a3b",
+              "350a3584-daf1-4c3f-ad0f-d40eea024e2c"
+            ]
+          },
+          "optionalAnnotations": {
+            "fe74bcb8-c522-478a-8778-95b7ca672b0d": [
+              "0d01c5a5-6d4f-486f-8255-fc167369fafb",
+              "c9810cee-53ce-4815-8996-c51e1f344315",
+              "e6c3960f-1a21-4322-9247-47264c50ca00"
+            ],
+            "61497665-3cfa-4014-b8af-ebf63471efa1": [
+              "e0563886-5a1d-4b24-9f63-281301f449c5",
+              "eb523500-715a-459f-a84e-bda8d91df32d",
+              "4270fdf3-8b13-4397-9bf1-abe49b8fb02d"
+            ],
+            "600b6aae-aa5f-4fd8-bc78-c8c71f2ed2a3": [
+              "222ccce3-c7a5-4494-94aa-77b8d7b5d81b",
+              "558c5490-97ee-4f56-b96a-b13ccc57cf4e",
+              "72ba3414-f141-49de-84e7-9eb05c1d199e"
+            ]
+          },
+          "customProperties": {
+            "a98ae3a4-2472-464d-914a-2d123900e003": "29b411e3-eee0-4061-bcd0-db0410ba1499",
+            "fcec0cd0-4fdb-4c6c-953a-e1dc54a64327": "364bf268-aa3c-4b6c-8bdf-2b41c37e4cf9",
+            "210f7f43-2e37-4ae1-8a3d-0569b532b8dc": "19a9408d-46ed-49f4-b971-2169e6b973b9"
+          }
+        }
+      },
+      {
+        "id": "projectId-26545694-0057-4c3f-bae8-b0580fb962a8",
+        "name": "name d4fc602e-ef2b-4356-9fa2-d9b26464b79d",
+        "description": "description cb9c7f28-a13f-48c9-8ac6-fb668916f958",
+        "file": "target/server-distribution/server/root/2cd54f13-9ba9-4538-a59a-18009ce160f6.history",
+        "owner": "userId-5192ca83-eabb-4411-8c53-ea06a374ec63",
+        "options": {
+          "complexProperties": [
+            "89810b24-cacd-4755-97cc-667deb6ff4c1",
+            "70457bd4-512e-46cf-b167-774ca35a29c1",
+            "b82f1154-938b-4672-b7ef-a65666ff19a8"
+          ],
+          "immutableAnnotations": [
+            "1f372f3d-4f8c-428e-b3ff-27e600a81d83",
+            "e07120a8-1462-4dd1-902a-fca70754fc8d",
+            "03357cae-9521-4faf-bb01-808c7a63dab7"
+          ],
+          "requiredEntities": {
+            "86f77ba2-ede1-4253-b797-548e609c7754": [
+              "bd5752ba-94d3-4983-8649-759de38c6c7a",
+              "9472f48b-7571-45f1-a0e7-91cccad0b20e",
+              "343b6d33-efbc-430a-8157-3b32c60f5a99"
+            ],
+            "cc62930b-d5ca-48d5-a9bd-9029664efb63": [
+              "cbc16d42-5a88-4c12-afcf-58a7360cd27f",
+              "6b19d2d7-55eb-4361-93a8-5b72b0336280",
+              "8d696def-02ac-4f44-bc59-43c7c11940ab"
+            ],
+            "8a09b522-6e1c-4c9c-bd29-ac04bfbb5377": [
+              "e788d3e0-f652-4209-b059-1a038d17d4c0",
+              "a12ffacd-c268-4b63-895b-bf92a6c0d63e",
+              "e3059aee-2986-49ed-8e30-22d479ba79da"
+            ]
+          },
+          "requiredAnnotations": {
+            "f89dca5e-255d-4d3f-8005-c5f7ae898329": [
+              "93ccb152-a82e-4c90-82fa-2edebe5c04e0",
+              "29717a15-6b30-4444-a695-5431d0490839",
+              "aebf8a93-6c7b-49b3-8d7b-6b8f562dd8c5"
+            ],
+            "6dc1536a-083d-4e9b-8fdf-8ea29680f09d": [
+              "66784948-6b30-4e86-b1a8-ccdb96ca6ce1",
+              "b19df96b-3fd4-49b9-b7a3-60a006015172",
+              "9b39d7f4-0ed5-4b57-86cd-50197d8f5e81"
+            ],
+            "e8e32665-58ec-4c77-b4a3-efd59d42a4b5": [
+              "af35f2a5-3e1a-4752-82d0-ed7ab3b8bdc4",
+              "4a688fae-acaa-4e42-908f-6da16472c9ff",
+              "1ef2dcb9-aa1b-42ea-9d80-f89cbcd6d3ed"
+            ]
+          },
+          "optionalAnnotations": {
+            "cbce8064-a4bf-4674-8ea2-c12268685a0d": [
+              "876dfe06-0f29-4c4f-985b-cdd6001aec92",
+              "5a8e9e7f-28ea-4f68-ba57-5ddc0e94d607",
+              "4145eeb6-776d-4a89-b503-dd87b149d1fc"
+            ],
+            "2b5a11b2-8c17-4005-8ed9-a5bde0df2eeb": [
+              "52a67ae1-8438-42e1-8ab5-e0e9cf94f5ed",
+              "19fd22c8-0156-4ed9-8aca-feec506ba20a",
+              "12edb737-8dbb-41b8-aabe-278a43834969"
+            ],
+            "20a1c0b6-597a-40fe-b2c1-a0c770fc8e44": [
+              "e3d3b67b-db55-415e-af39-ac9f5385bc92",
+              "2028ce99-4fa6-4394-a803-45fbe0a91632",
+              "cc45272f-0f1b-4058-8fdd-9f25aea86a3c"
+            ]
+          },
+          "customProperties": {
+            "91682f1c-83d9-4f74-8793-dc2966a9869a": "b83633e3-683f-4a5f-8eeb-39565e501c8e",
+            "b124e1ad-59ca-4e25-a7a9-0d0b5d626f58": "04157f7c-dd0c-4273-b422-171ad3cc95a6",
+            "712e4f70-bcbf-4633-832a-64ec2a12339f": "9152d0b1-e9c5-4d65-b92c-f1c4aa408ba4"
+          }
+        }
+      },
+      {
+        "id": "projectId-1669ae70-0010-4016-be3f-7580d804765c",
+        "name": "name f5547d1a-fa10-4cd6-ae64-7f4ceff3c26b",
+        "description": "description f09e4fe1-eb8a-4fe3-bb28-7a36502d9562",
+        "file": "target/server-distribution/server/root/5dc74dc1-2caa-49af-bdb9-29382c4042e5.history",
+        "owner": "userId-fe3823b8-55a0-4a4e-bb84-734afd4878a6",
+        "options": {
+          "complexProperties": [
+            "c8dc3f7e-85ea-43a8-8f55-69d6cc6a980a",
+            "977c2cf3-d69c-4d5b-a83d-c5f638eaf45a",
+            "75a60283-1d3c-4e57-ad9a-56ee6ebe122f"
+          ],
+          "immutableAnnotations": [
+            "13efe7f0-c5d3-4392-8e8a-ac5e1d08517d",
+            "d688c877-7b64-401a-81c0-e184093ca63c",
+            "fc42be08-93c0-400b-ac38-1f62cec89422"
+          ],
+          "requiredEntities": {
+            "b32fb3e3-cc41-43c3-b122-7761c1e88280": [
+              "cb376a76-9417-4f1d-98fe-1f2b3a8332f0",
+              "132705ed-4634-45dd-b742-d88a0e999c2c",
+              "13fad7d4-f9cf-4643-9fd9-0a5aa028999a"
+            ],
+            "db13c29d-fd79-494c-aca2-fe162f811862": [
+              "e6fa6fb5-772c-420d-8e01-1e523190a274",
+              "79ad55e0-fc5c-40ad-9205-36e1f19e9649",
+              "92c2d0c2-88ac-40ce-aff8-306883432b30"
+            ],
+            "5c0f3aea-f851-4db4-ae92-075a85aac1c4": [
+              "42cc4050-f112-4c1b-9062-8142518b9472",
+              "99dc870d-9722-447f-b306-3aa47bba3559",
+              "a10a1515-b5ca-4f7a-a813-9cbdee69108e"
+            ]
+          },
+          "requiredAnnotations": {
+            "96de4287-a0ad-45cb-a0ac-ce7ba3d3fe60": [
+              "5b1475e2-28be-4fa8-8c98-5ad999c25a98",
+              "3bdfa605-65b7-4661-b0bd-28d8b0d9e379",
+              "7683b429-1e61-4a6b-99bf-b075de671815"
+            ],
+            "5114f264-dd4d-4c7f-8d0d-c9d1a26a1be7": [
+              "12fa31b6-f5b8-4c62-b987-3576f9a54087",
+              "9a78cfa3-bcb8-490d-bb88-94cb269cc9b9",
+              "05eefced-654b-4736-9b27-e42d06da9786"
+            ],
+            "d2341da8-e8d9-46db-a19b-32f850cc9f2f": [
+              "6f355358-47bd-41f0-8dac-628ae3e5cd57",
+              "16601833-ea05-4ae6-a7e9-a3680d428960",
+              "104b9bc6-dd05-40b7-b2a8-2a36505924b6"
+            ]
+          },
+          "optionalAnnotations": {
+            "8f7bfa4c-bed1-47b2-becc-ddc8682e4f20": [
+              "ba9bde27-b1be-420d-af51-64c07f056f00",
+              "df75f42a-0d82-4c92-8dc6-6b55a6510ea7",
+              "3ea0ebed-80bb-462f-a666-cf5c2ac488b8"
+            ],
+            "d032404b-a00f-4d2f-80cf-4f90699338af": [
+              "b10f919c-597a-4b85-a480-0daddd9536f4",
+              "9b9433b5-102c-48ed-b418-85328c67bca9",
+              "59d02c45-c842-4d16-8968-e58a7aed012d"
+            ],
+            "586dacd3-f47f-43f2-afdd-60cef1fdb97e": [
+              "f00b35bd-0bc7-49a3-b57f-e9c25015a332",
+              "f551364c-edbf-4ce0-ac64-1722e2f80651",
+              "8a4655c0-1f7f-4cb9-a3c7-911a96a7da82"
+            ]
+          },
+          "customProperties": {
+            "53fcdda6-63ed-4817-b2e5-c3ced3fd78a8": "5338b854-094b-40d7-920a-0a0a6e8db0bc",
+            "95bb5c43-b0c7-462d-91f6-7d33dec15d5c": "d6821731-df2c-4faf-a9ca-9e39c37676f8",
+            "1a0ca9c2-a782-4205-9480-656463dad2a1": "fcffc8aa-f238-46a7-ae5e-31b915ca1f32"
+          }
+        }
+      }
+    ],
+    "roles": [
+      {
+        "id": "roleId-4ac36fc1-35e7-478a-9c45-59328d801cb0",
+        "name": "name 764e95aa-2f71-48cd-8287-450dc02882b8",
+        "description": "description 27968d8f-66e1-4da7-ac34-1dde8d7ea589",
+        "operations": [
+          "operationId-579c7fe1-2e42-445e-8e2f-e6bb747c8a1a",
+          "operationId-0b20cec8-e280-4009-8fcc-93b9e78dcbdd",
+          "operationId-a43efe11-a673-43b9-9a9b-9775ec9f8bc6"
+        ]
+      },
+      {
+        "id": "roleId-2d78e1cb-fe28-46be-a995-3f6dd02e968a",
+        "name": "name 9ace1508-e46e-4528-bfa5-65aa9b9b2330",
+        "description": "description 615f0920-bad2-41d7-b993-554359540a31",
+        "operations": [
+          "operationId-121dcd9b-9c1e-4f1f-a444-7ba7fe7a3a34",
+          "operationId-ed45f78d-fb06-4fe1-ab79-698529f17340",
+          "operationId-41107065-f2d2-47c9-bc3d-750dbd7bf578"
+        ]
+      },
+      {
+        "id": "roleId-bfe5dba9-f4b5-4add-8aff-3caeac7508aa",
+        "name": "name a27076e3-7c38-4055-a14d-e51cf4e5fff5",
+        "description": "description db2ed2e7-accc-4524-a583-7cf029930594",
+        "operations": [
+          "operationId-30dc13ce-ded7-4142-a45c-dc4366de1488",
+          "operationId-de28b944-2000-4ead-8091-55c84a49808d",
+          "operationId-284cf913-354a-4083-88e8-0459802b8289"
+        ]
+      }
+    ],
+    "operations": [
+      {
+        "id": "operationId-dc5fe3ae-07c4-4844-b236-ec2b9d986c32",
+        "name": "name ab754a25-9b70-4f21-9c76-ebf642b2090d",
+        "description": "description c1209edc-b3de-49ea-9b56-414394c420ce",
+        "type": "WRITE"
+      },
+      {
+        "id": "operationId-3a512006-5289-49f3-af1e-f0f2f60bf7bd",
+        "name": "name af28972b-3168-412c-a2b4-139cad4198c5",
+        "description": "description 5d2096f1-8075-4164-b481-7c991bf1a132",
+        "type": "WRITE"
+      },
+      {
+        "id": "operationId-c6a22fb2-0a8a-44c8-9fd4-95fadbe3514d",
+        "name": "name b3229f8a-7f6e-4849-bba4-f2e8f1028ba7",
+        "description": "description 8e2a2e1b-4d0b-4b90-ae80-99dfca903c62",
+        "type": "WRITE"
+      }
+    ]
+  },
+  "authentication": [
+    {
+      "userId": "userId-05f5bc54-e088-4e39-8a03-5abd91547f2b",
+      "password": "8b0b64434e1e8cb83d0d39199b0fd50b6847a4e345c1bc82",
+      "salt": "dacce2618f95f7c231fca73dab7c9cf7b4e18bf71cb1f874"
+    },
+    {
+      "userId": "userId-24bffce3-8998-4f37-93cd-5566a87bdd85",
+      "password": "c86decf5ac6d585e7fd071c18f83816668793252b7f75858",
+      "salt": "709fac668f90784604c191ad11dadefe209a4d9cda2b1cf2"
+    },
+    {
+      "userId": "userId-48c1cae0-61d0-47b4-ae27-fbd7567b50fd",
+      "password": "05305ae5b805347b3486e6b2da6aefff79f03cd4a8af9e2a",
+      "salt": "35f4c3ddc4516eb2226a6bbf8a0a598e71a43a4ab0e3319b"
+    }
+  ],
+  "properties": {
+    "testProp1": "testVal1",
+    "testProp2": "testVal2"
+  }
+}
