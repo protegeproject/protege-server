@@ -1,14 +1,14 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
-
 <launch>
-  <bundles verbose = "true">
+  <bundles verbose="true">
     <search path="bundles"/>
+    <bundle name="owlapi-osgidistribution.jar"/>
+    <bundle name="commons-cli.jar"/>
     <bundle name="org.apache.felix.configadmin.jar"/>
     <bundle name="org.apache.felix.log.jar"/>
     <bundle name="org.apache.felix.metatype.jar"/>
     <bundle name="org.apache.felix.scr.jar"/>
-    <bundle name="owlapi-osgidistribution.jar"/>
-    <bundle name="commons-cli.jar"/>
+    <bundle name="metaproject.jar"/>
     <bundle name="slf4j-api.jar"/>
     <bundle name="logback-core.jar"/>
     <bundle name="logback-classic.jar"/>
@@ -19,7 +19,7 @@
     <bundle name="org.apache.servicemix.bundles.javax-inject.jar"/>
     <bundle name="org.apache.servicemix.bundles.aopalliance.jar"/>
   </bundles>
-  <bundles verbose = "true">
+  <bundles verbose="true">
     <search path="bundles"/>
     <bundle name="org.protege.owl.server.jar"/>
   </bundles>

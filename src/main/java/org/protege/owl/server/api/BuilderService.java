@@ -14,5 +14,5 @@ public interface BuilderService {
 
     void setTransportFactory(TransportFactory factory);
 
-    void buildAndLaunchServer();
+    void activate();
 }

@@ -28,7 +28,29 @@ public class ServerBuilderService implements BuilderService {
     private ServerConfiguration configuration;
 
     @Override
-    public void buildAndLaunchServer() {
+    public void initialize(ServerConfiguration configuration) {
+        this.configuration = configuration;
+        logger.info("Loading server configuration");
+    }
+
+    @Override
+    public void setServerFactory(ServerFactory serverFactory) {
+        this.serverFactory = serverFactory;
+    }
+
+    @Override
+    public void setTransportFactory(TransportFactory transportFactory) {
+//        if (factory.getFactoryName().equals(configuration.getTransportId())) {
+            this.transportFactory = transportFactory;
+//        }
+    }
+
+    /*
+     * OSGi will call this when all of the SCR components required dependencies
+     * have been satisfied.
+     */
+    @Override
+    public void activate() {
         try {
             ServerLayer server = (ServerLayer) serverFactory.build(configuration);
             TransportHandler transport = transportFactory.build(configuration);
@@ -38,21 +60,5 @@ public class ServerBuilderService implements BuilderService {
         catch (Exception e) {
             logger.error("Failed to build the server instance", e);
         }
-    }
-
-    @Override
-    public void initialize(ServerConfiguration configuration) {
-        this.configuration = configuration;
-        logger.info("Loading server configuration");
-    }
-
-    @Override
-    public void setServerFactory(ServerFactory factory) {
-        serverFactory = factory;
-    }
-
-    @Override
-    public void setTransportFactory(TransportFactory factory) {
-        transportFactory = factory;
     }
 }

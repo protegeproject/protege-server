@@ -25,6 +25,8 @@ public class RmiTransport implements TransportHandler {
     private int registryPort;
     private int serverPort;
 
+    private Registry registry;
+
     public RmiTransport(int registryPort, int serverPort) {
         this.registryPort = registryPort;
         this.serverPort = serverPort;
@@ -32,7 +34,7 @@ public class RmiTransport implements TransportHandler {
 
     @Override
     public void bind(Object object) throws RemoteException {
-        Registry registry = LocateRegistry.createRegistry(registryPort);
+        initialize();
         if (object instanceof Server) {
             RmiServer remoteServer = new RmiServer((Server) object);
             Remote remoteStub = UnicastRemoteObject.exportObject(remoteServer, serverPort);
@@ -56,8 +58,14 @@ public class RmiTransport implements TransportHandler {
         }
      }
 
+    private void initialize() throws RemoteException {
+        if (registry == null) {
+            registry = LocateRegistry.createRegistry(registryPort);
+        }
+    }
+
     @Override
     public void close() {
-        // TODO Auto-generated method stub
+        registry = null;
     }
 }

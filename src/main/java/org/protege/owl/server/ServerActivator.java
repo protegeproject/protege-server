@@ -1,11 +1,8 @@
 package org.protege.owl.server;
 
-import org.protege.owl.server.api.BuilderService;
-
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-import org.osgi.framework.ServiceReference;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +32,6 @@ public class ServerActivator implements BundleActivator {
         if (configuration != null) {
             displayPlatform(context);
             loadConfiguration(context, configuration);
-            startServer(context);
         }
     }
 
@@ -59,12 +55,6 @@ public class ServerActivator implements BundleActivator {
         catch (ObjectConversionException e) {
             throw new OWLOntologyCreationException(e);
         }
-    }
-
-    private void startServer(BundleContext context) {
-        ServiceReference<?> reference = context.getServiceReference(BuilderService.class.getName());
-        BuilderService serverBuilderService = (BuilderService) context.getService(reference);
-        serverBuilderService.buildAndLaunchServer();
     }
 
     @Override

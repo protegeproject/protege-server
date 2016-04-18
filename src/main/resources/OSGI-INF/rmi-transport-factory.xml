@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component name="ProtegeServerFactory" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
+<scr:component name="RmiTransportFactory" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
     <implementation class="org.protege.owl.server.configuration.RmiTransportFactory"/>
     <service>
-        <provide interface="org.protege.owl.server.api.server.TransportFactory"/>
+        <provide interface="org.protege.owl.server.api.TransportFactory"/>
     </service>
 </scr:component>
