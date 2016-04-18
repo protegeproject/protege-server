@@ -11,5 +11,7 @@ import edu.stanford.protege.metaproject.api.ServerConfiguration;
  */
 public interface TransportFactory {
 
+    String getFactoryName();
+
     TransportHandler build(ServerConfiguration configuration) throws OWLServerException;
 }

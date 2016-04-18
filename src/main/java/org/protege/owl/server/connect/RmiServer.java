@@ -2,7 +2,6 @@ package org.protege.owl.server.connect;
 
 import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerRequestException;
 import org.protege.owl.server.changes.ServerDocument;
 
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.ClientConfiguration;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
 import edu.stanford.protege.metaproject.api.Project;
@@ -33,16 +31,6 @@ public class RmiServer implements RemoteServer, Remote {
 
     public RmiServer(Server server) {
         this.server = server;
-    }
-
-    @Override
-    public ClientConfiguration getClientConfiguration(UserId userId) throws ServerRequestException {
-        try {
-            return server.getClientConfiguration(userId);
-        }
-        catch (OWLServerException e) {
-            throw new ServerRequestException(e);
-        }
     }
 
     @Override
