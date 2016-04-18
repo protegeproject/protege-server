@@ -27,7 +27,7 @@ public class DefaultLoginService implements LoginService {
     @Override
     public AuthToken login(UserId userId, SaltedPasswordDigest password) throws Exception {
         if (authRegistry.hasValidCredentials(userId, password)) {
-            User user = userRegistry.getUser(userId);
+            User user = userRegistry.get(userId);
             AuthToken authToken = new AuthorizedUserToken(user);
             sessionManager.add(authToken);
             return authToken;
