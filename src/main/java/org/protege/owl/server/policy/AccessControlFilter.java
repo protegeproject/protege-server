@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.MetaprojectAgent;
 import edu.stanford.protege.metaproject.api.Operation;
-import edu.stanford.protege.metaproject.api.PolicyAgent;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.UserId;
@@ -36,11 +36,11 @@ import edu.stanford.protege.metaproject.impl.Operations;
  */
 public class AccessControlFilter extends ServerFilterAdapter {
 
-    private final PolicyAgent policyAgent;
+    private final MetaprojectAgent metaprojectAgent;
 
     public AccessControlFilter(ServerLayer delegate) {
         super(delegate);
-        policyAgent = getConfiguration().getMetaproject().getPolicyAgent();
+        metaprojectAgent = getConfiguration().getMetaproject().getMetaprojectAgent();
     }
 
     @Override
@@ -96,7 +96,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
     }
 
     private boolean checkPermission(UserId userId, ProjectId projectId, Operation operation) throws MetaprojectException {
-        if (!policyAgent.isOperationAllowed(operation.getId(), projectId, userId)) {
+        if (!metaprojectAgent.isOperationAllowed(operation.getId(), projectId, userId)) {
             return false;
         }
         return true;
