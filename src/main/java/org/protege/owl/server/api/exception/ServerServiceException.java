@@ -4,23 +4,23 @@ package org.protege.owl.server.api.exception;
  * @author Josef Hardi <johardi@stanford.edu> <br>
  * Stanford Center for Biomedical Informatics Research
  */
-public class ServerRequestException extends OWLServerException {
+public class ServerServiceException extends OWLServerException {
 
     private static final long serialVersionUID = -366523715475334812L;
 
-    public ServerRequestException() {
+    public ServerServiceException() {
         // NO-OP
     }
 
-    public ServerRequestException(String message) {
+    public ServerServiceException(String message) {
         super(message);
     }
 
-    public ServerRequestException(Throwable t) {
+    public ServerServiceException(Throwable t) {
         super(t);
     }
 
-    public ServerRequestException(String message, Throwable t) {
+    public ServerServiceException(String message, Throwable t) {
         super(message, t);
     }
 }

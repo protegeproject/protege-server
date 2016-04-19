@@ -5,7 +5,7 @@ import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.ServerFilterAdapter;
 import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.exception.ServerRequestException;
+import org.protege.owl.server.api.exception.ServerServiceException;
 import org.protege.owl.server.api.server.TransportHandler;
 import org.protege.owl.server.changes.api.ChangeHistory;
 import org.protege.owl.server.changes.util.CollectingChangeVisitor;
@@ -48,16 +48,16 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public void commit(AuthToken token, Project project, CommitBundle commits) throws ServerRequestException {
+    public void commit(AuthToken token, Project project, CommitBundle commits) throws ServerServiceException {
        try {
             List<OWLOntologyChange> conflicts = getConflicts(project, commits);
             if (!conflicts.isEmpty()) {
-                throw new ServerRequestException("Conflicts detected: " + conflicts); // TODO: Fix the exception
+                throw new ServerServiceException("Conflicts detected: " + conflicts); // TODO: Fix the exception
             }
             super.commit(token, project, commits);
        }
        catch (Exception e) {
-           throw new ServerRequestException(e);
+           throw new ServerServiceException(e);
        }
     }
 

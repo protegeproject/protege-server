@@ -3,7 +3,7 @@ package org.protege.owl.server.core;
 import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.exception.ServerRequestException;
+import org.protege.owl.server.api.exception.ServerServiceException;
 import org.protege.owl.server.api.server.TransportHandler;
 import org.protege.owl.server.changes.ServerDocument;
 
@@ -44,101 +44,101 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void createUser(AuthToken token, User newUser) throws ServerRequestException {
+    public void createUser(AuthToken token, User newUser) throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void deleteUser(AuthToken token, UserId userId) throws ServerRequestException {
+    public void deleteUser(AuthToken token, UserId userId) throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void updateUser(AuthToken token, UserId userId, User user) throws ServerRequestException {
+    public void updateUser(AuthToken token, UserId userId, User user) throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void createProject(AuthToken token, Project newProject) throws ServerRequestException {
+    public void createProject(AuthToken token, Project newProject) throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void deleteProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
+    public void deleteProject(AuthToken token, ProjectId projectId) throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void updateProject(AuthToken token, ProjectId projectId, Project newProject) throws ServerRequestException {
+    public void updateProject(AuthToken token, ProjectId projectId, Project newProject) throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public ServerDocument openProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
+    public ServerDocument openProject(AuthToken token, ProjectId projectId) throws ServerServiceException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void createRole(AuthToken token, Role newRole) throws ServerRequestException {
+    public void createRole(AuthToken token, Role newRole) throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void deleteRole(AuthToken token, RoleId roleId) throws ServerRequestException {
+    public void deleteRole(AuthToken token, RoleId roleId) throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void updateRole(AuthToken token, RoleId roleId, Role newRole) throws ServerRequestException {
+    public void updateRole(AuthToken token, RoleId roleId, Role newRole) throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void createOperation(AuthToken token, Operation operation) throws ServerRequestException {
+    public void createOperation(AuthToken token, Operation operation) throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void deleteOperation(AuthToken token, OperationId operationId) throws ServerRequestException {
+    public void deleteOperation(AuthToken token, OperationId operationId) throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
     public void updateOperation(AuthToken token, OperationId operationId, Operation newOperation)
-            throws ServerRequestException {
+            throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
     public void assignRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
-            throws ServerRequestException {
+            throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
     public void retractRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
-            throws ServerRequestException {
+            throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
 
     @Override
     public void setServerConfiguration(AuthToken token, String property, String value)
-            throws ServerRequestException {
+            throws ServerServiceException {
         // TODO Auto-generated method stub
         
     }
@@ -155,63 +155,63 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public List<User> getAllUsers(AuthToken token) throws ServerRequestException {
+    public List<User> getAllUsers(AuthToken token) throws ServerServiceException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<Project> getProjects(AuthToken token, UserId userId) throws ServerRequestException {
+    public List<Project> getProjects(AuthToken token, UserId userId) throws ServerServiceException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<Project> getAllProjects(AuthToken token) throws ServerRequestException {
+    public List<Project> getAllProjects(AuthToken token) throws ServerServiceException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId) throws ServerRequestException {
+    public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId) throws ServerServiceException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId) throws ServerRequestException {
+    public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId) throws ServerServiceException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<Role> getAllRoles(AuthToken token) throws ServerRequestException {
+    public List<Role> getAllRoles(AuthToken token) throws ServerServiceException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId) throws ServerRequestException {
+    public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId) throws ServerServiceException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId)
-            throws ServerRequestException {
+            throws ServerServiceException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public List<Operation> getAllOperations(AuthToken token) throws ServerRequestException {
+    public List<Operation> getAllOperations(AuthToken token) throws ServerServiceException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public boolean isOperationAllowed(AuthToken token, OperationId operationId, ProjectId projectId, UserId userId)
-            throws ServerRequestException {
+            throws ServerServiceException {
         // TODO Auto-generated method stub
         return false;
     }

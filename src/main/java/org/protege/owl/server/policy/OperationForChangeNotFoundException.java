@@ -1,12 +1,12 @@
 package org.protege.owl.server.policy;
 
-import org.protege.owl.server.api.exception.ServerRequestException;
+import org.protege.owl.server.api.exception.ServerServiceException;
 
 /**
  * @author Rafael Gonçalves <br>
  * Stanford Center for Biomedical Informatics Research
  */
-public class OperationForChangeNotFoundException extends ServerRequestException {
+public class OperationForChangeNotFoundException extends ServerServiceException {
 
     private static final long serialVersionUID = -8928067718594065835L;
 

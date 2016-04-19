@@ -5,7 +5,7 @@ import org.protege.owl.server.api.PerOperationCommitBundle;
 import org.protege.owl.server.api.ServerFilterAdapter;
 import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.exception.OperationNotAllowedException;
-import org.protege.owl.server.api.exception.ServerRequestException;
+import org.protege.owl.server.api.exception.ServerServiceException;
 
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
@@ -44,7 +44,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public void commit(AuthToken token, Project project, CommitBundle commitBundle) throws ServerRequestException {
+    public void commit(AuthToken token, Project project, CommitBundle commitBundle) throws ServerServiceException {
         if (commitBundle instanceof PerOperationCommitBundle) {
             evaluatePerOperationCommitBundle(token, project, (PerOperationCommitBundle) commitBundle);
         }
@@ -54,23 +54,23 @@ public class AccessControlFilter extends ServerFilterAdapter {
     }
 
     private void evaluatePerOperationCommitBundle(AuthToken token, Project project, PerOperationCommitBundle commitBundle)
-            throws ServerRequestException {
+            throws ServerServiceException {
         try {
             Operation operation = commitBundle.getOperation();
             if (checkPermission(token.getUser().getId(), project.getId(), operation)) {
                 getDelegate().commit(token, project, commitBundle);
             }
             else {
-                throw new ServerRequestException(new OperationNotAllowedException(operation));
+                throw new ServerServiceException(new OperationNotAllowedException(operation));
             }
         }
         catch (Exception e) {
-            throw new ServerRequestException(e);
+            throw new ServerServiceException(e);
         }
     }
 
     private void evaluateCommitBundle(AuthToken token, Project project, CommitBundle commitBundle)
-            throws ServerRequestException {
+            throws ServerServiceException {
         try {
             List<Operation> operations = evaluateCommitChanges(commitBundle);
             List<Exception> violations = new ArrayList<>();
@@ -78,16 +78,16 @@ public class AccessControlFilter extends ServerFilterAdapter {
                 getDelegate().commit(token, project, commitBundle);
             }
             else {
-                throw new ServerRequestException(OperationNotAllowedException.create(violations));
+                throw new ServerServiceException(OperationNotAllowedException.create(violations));
             }
         }
         catch (Exception e) {
-            throw new ServerRequestException(e);
+            throw new ServerServiceException(e);
         }
     }
 
     private boolean checkPermission(UserId userId, ProjectId projectId, List<Operation> operations, List<Exception> violations)
-            throws ServerRequestException {
+            throws ServerServiceException {
         for (Operation op : operations) {
             try {
                 if (!checkPermission(userId, projectId, op)) {
@@ -96,7 +96,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
                 }
             }
             catch (MetaprojectException e) {
-                throw new ServerRequestException(e);
+                throw new ServerServiceException(e);
             }
         }
         return violations.isEmpty() ? true : false;
@@ -109,7 +109,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
         return true;
     }
 
-    private List<Operation> evaluateCommitChanges(CommitBundle commitBundle) throws ServerRequestException {
+    private List<Operation> evaluateCommitChanges(CommitBundle commitBundle) throws ServerServiceException {
         final List<OWLOntologyChange> changes = commitBundle.getChanges();
         List<Operation> operations = new ArrayList<>();
         for (OWLOntologyChange change : changes) {
