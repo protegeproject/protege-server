@@ -2,7 +2,7 @@ package org.protege.owl.server.rmi;
 
 import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.Server;
-import org.protege.owl.server.changes.ServerDocument;
+import org.protege.owl.server.versioning.ServerDocument;
 
 import java.rmi.RemoteException;
 import java.util.List;

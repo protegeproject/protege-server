@@ -1,10 +1,10 @@
 package org.protege.owl.server.rmi;
 
 import org.protege.owl.server.api.ChangeService;
-import org.protege.owl.server.changes.HistoryFile;
-import org.protege.owl.server.changes.OntologyDocumentRevision;
-import org.protege.owl.server.changes.ServerDocument;
-import org.protege.owl.server.changes.api.ChangeHistory;
+import org.protege.owl.server.versioning.HistoryFile;
+import org.protege.owl.server.versioning.OntologyDocumentRevision;
+import org.protege.owl.server.versioning.ServerDocument;
+import org.protege.owl.server.versioning.api.ChangeHistory;
 
 import java.rmi.RemoteException;
 

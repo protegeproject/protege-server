@@ -1,7 +1,7 @@
-package org.protege.owl.server.changes;
+package org.protege.owl.server.versioning;
 
-import org.protege.owl.server.changes.api.ChangeHistory;
-import org.protege.owl.server.changes.api.VersionedOntologyDocument;
+import org.protege.owl.server.versioning.api.ChangeHistory;
+import org.protege.owl.server.versioning.api.VersionedOntologyDocument;
 
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;

@@ -1,4 +1,4 @@
-package org.protege.owl.server.changes;
+package org.protege.owl.server.versioning;
 
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;

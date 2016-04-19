@@ -1,4 +1,4 @@
-package org.protege.owl.server.changes;
+package org.protege.owl.server.versioning;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -3,7 +3,7 @@ package org.protege.owl.server.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.protege.owl.server.changes.CollectingChangeVisitor;
+import org.protege.owl.server.versioning.CollectingChangeVisitor;
 
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 

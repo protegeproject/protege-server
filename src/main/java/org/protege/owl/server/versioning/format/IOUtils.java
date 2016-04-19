@@ -1,4 +1,4 @@
-package org.protege.owl.server.changes.format;
+package org.protege.owl.server.versioning.format;
 
 import java.io.IOException;
 import java.io.InputStream;

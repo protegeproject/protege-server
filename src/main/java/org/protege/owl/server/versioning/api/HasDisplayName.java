@@ -1,4 +1,4 @@
-package org.protege.owl.server.changes.api;
+package org.protege.owl.server.versioning.api;
 
 public interface HasDisplayName {
 

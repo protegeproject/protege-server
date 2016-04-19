@@ -3,9 +3,9 @@ package org.protege.owl.server.configuration;
 import org.protege.owl.server.api.ServerFactory;
 import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.base.ProtegeServer;
-import org.protege.owl.server.changes.ConflictDetectionFilter;
 import org.protege.owl.server.policy.AccessControlFilter;
 import org.protege.owl.server.security.AuthenticationFilter;
+import org.protege.owl.server.versioning.ConflictDetectionFilter;
 
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 

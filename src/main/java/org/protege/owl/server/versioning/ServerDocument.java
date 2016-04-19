@@ -1,6 +1,6 @@
-package org.protege.owl.server.changes;
+package org.protege.owl.server.versioning;
 
-import org.protege.owl.server.changes.api.ChangeHistory;
+import org.protege.owl.server.versioning.api.ChangeHistory;
 
 import java.io.Serializable;
 import java.util.Optional;

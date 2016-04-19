@@ -1,8 +1,8 @@
-package org.protege.owl.server.changes;
+package org.protege.owl.server.versioning;
 
-import org.protege.owl.server.changes.api.ChangeHistory;
-import org.protege.owl.server.changes.format.OWLInputStream;
-import org.protege.owl.server.changes.format.OWLOutputStream;
+import org.protege.owl.server.versioning.api.ChangeHistory;
+import org.protege.owl.server.versioning.format.OWLInputStream;
+import org.protege.owl.server.versioning.format.OWLOutputStream;
 
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 

@@ -1,6 +1,6 @@
-package org.protege.owl.server.changes;
+package org.protege.owl.server.versioning;
 
-import org.protege.owl.server.changes.api.RevisionPointer;
+import org.protege.owl.server.versioning.api.RevisionPointer;
 
 import java.io.Serializable;
 

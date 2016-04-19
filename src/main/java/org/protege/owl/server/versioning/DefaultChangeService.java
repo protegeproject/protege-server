@@ -1,8 +1,8 @@
-package org.protege.owl.server.changes;
+package org.protege.owl.server.versioning;
 
 import org.protege.owl.server.api.ChangeService;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.changes.api.ChangeHistory;
+import org.protege.owl.server.versioning.api.ChangeHistory;
 
 public class DefaultChangeService implements ChangeService {
 

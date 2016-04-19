@@ -1,4 +1,4 @@
-package org.protege.owl.server.changes.format;
+package org.protege.owl.server.versioning.format;
 
 import java.util.ArrayList;
 import java.util.List;

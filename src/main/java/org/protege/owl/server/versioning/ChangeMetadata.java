@@ -1,4 +1,4 @@
-package org.protege.owl.server.changes;
+package org.protege.owl.server.versioning;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -5,7 +5,7 @@ import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.TransportHandler;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerServiceException;
-import org.protege.owl.server.changes.ServerDocument;
+import org.protege.owl.server.versioning.ServerDocument;
 
 import java.util.List;
 import java.util.Map;

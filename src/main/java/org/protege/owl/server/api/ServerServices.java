@@ -1,6 +1,6 @@
 package org.protege.owl.server.api;
 
-import org.protege.owl.server.changes.ServerDocument;
+import org.protege.owl.server.versioning.ServerDocument;
 
 import java.util.List;
 import java.util.Map;
