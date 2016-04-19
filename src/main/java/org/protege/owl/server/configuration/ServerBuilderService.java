@@ -4,7 +4,7 @@ import org.protege.owl.server.api.BuilderService;
 import org.protege.owl.server.api.ServerFactory;
 import org.protege.owl.server.api.ServerLayer;
 import org.protege.owl.server.api.TransportFactory;
-import org.protege.owl.server.api.server.TransportHandler;
+import org.protege.owl.server.api.TransportHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

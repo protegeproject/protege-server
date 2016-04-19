@@ -1,4 +1,4 @@
-package org.protege.owl.server.api.server;
+package org.protege.owl.server.api;
 
 /**
  * @author Josef Hardi <johardi@stanford.edu> <br>

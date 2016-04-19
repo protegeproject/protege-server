@@ -4,9 +4,9 @@ import org.protege.owl.server.api.ChangeService;
 import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.ServerFilterAdapter;
 import org.protege.owl.server.api.ServerLayer;
+import org.protege.owl.server.api.TransportHandler;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerServiceException;
-import org.protege.owl.server.api.server.TransportHandler;
 import org.protege.owl.server.changes.api.ChangeHistory;
 import org.protege.owl.server.changes.util.CollectingChangeVisitor;
 

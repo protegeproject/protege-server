@@ -3,7 +3,7 @@ package org.protege.owl.server.connect;
 import org.protege.owl.server.api.ChangeService;
 import org.protege.owl.server.api.LoginService;
 import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.server.TransportHandler;
+import org.protege.owl.server.api.TransportHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

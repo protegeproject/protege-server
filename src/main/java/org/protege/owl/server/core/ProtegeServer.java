@@ -2,9 +2,9 @@ package org.protege.owl.server.core;
 
 import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.ServerLayer;
+import org.protege.owl.server.api.TransportHandler;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerServiceException;
-import org.protege.owl.server.api.server.TransportHandler;
 import org.protege.owl.server.changes.ServerDocument;
 
 import java.util.List;

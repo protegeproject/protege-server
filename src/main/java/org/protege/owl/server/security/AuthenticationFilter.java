@@ -3,8 +3,8 @@ package org.protege.owl.server.security;
 import org.protege.owl.server.api.LoginService;
 import org.protege.owl.server.api.ServerFilterAdapter;
 import org.protege.owl.server.api.ServerLayer;
+import org.protege.owl.server.api.TransportHandler;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.server.TransportHandler;
 
 import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
 import edu.stanford.protege.metaproject.api.UserRegistry;

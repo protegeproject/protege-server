@@ -1,4 +1,4 @@
-package org.protege.owl.server.api.server;
+package org.protege.owl.server.api;
 
 public abstract class ServerListener {
 

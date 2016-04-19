@@ -1,6 +1,5 @@
-package org.protege.owl.server.api.server;
+package org.protege.owl.server.api;
 
-import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.changes.ServerDocument;
 
 import java.util.List;

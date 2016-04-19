@@ -1,8 +1,6 @@
 package org.protege.owl.server.api;
 
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.api.server.ServerListener;
-import org.protege.owl.server.api.server.TransportHandler;
 import org.protege.owl.server.changes.ServerDocument;
 
 import java.util.List;
