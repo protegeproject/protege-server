@@ -24,17 +24,17 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 
     public static Logger logger = LoggerFactory.getLogger(ChangeHistoryImpl.class);
 
-    private OntologyDocumentRevision startRevision;
+    private DocumentRevision startRevision;
     private List<List<OWLOntologyChange>> revisionsList = new ArrayList<>();
-    private SortedMap<OntologyDocumentRevision, ChangeMetadata> metadataMap = new TreeMap<>();
+    private SortedMap<DocumentRevision, ChangeMetadata> metadataMap = new TreeMap<>();
 
     public ChangeHistoryImpl() {
-        this.startRevision = OntologyDocumentRevision.START_REVISION;
+        this.startRevision = DocumentRevision.START_REVISION;
     }
 
-    /* package */ ChangeHistoryImpl(@Nonnull OntologyDocumentRevision startRevision,
+    /* package */ ChangeHistoryImpl(@Nonnull DocumentRevision startRevision,
             @Nonnull List<List<OWLOntologyChange>> revisionsList,
-            @Nonnull SortedMap<OntologyDocumentRevision, ChangeMetadata> metaDataMap) {
+            @Nonnull SortedMap<DocumentRevision, ChangeMetadata> metaDataMap) {
         this.startRevision = startRevision;
         this.revisionsList = revisionsList;
         this.metadataMap = metaDataMap;
@@ -44,23 +44,23 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
         return new ChangeHistoryImpl();
     }
 
-    public void addRevisionBundle(OntologyDocumentRevision revision, ChangeMetadata metadata, List<OWLOntologyChange> changes) {
+    public void addRevisionBundle(DocumentRevision revision, ChangeMetadata metadata, List<OWLOntologyChange> changes) {
         metadataMap.put(revision, metadata);
         revisionsList.add(changes);
     }
 
     @Override
-    public OntologyDocumentRevision getStartRevision() {
+    public DocumentRevision getStartRevision() {
         return startRevision;
     }
 
     @Override
-    public OntologyDocumentRevision getEndRevision() {
+    public DocumentRevision getEndRevision() {
         return startRevision.add(revisionsList.size());
     }
 
     @Override
-    public ChangeMetadata getChangeMetadataForRevision(OntologyDocumentRevision revision) {
+    public ChangeMetadata getChangeMetadataForRevision(DocumentRevision revision) {
         return metadataMap.get(revision);
     }
 
@@ -70,7 +70,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
     }
 
     @Override
-    public Map<OntologyDocumentRevision, ChangeMetadata> getMetadataMap() {
+    public Map<DocumentRevision, ChangeMetadata> getMetadataMap() {
         return metadataMap;
     }
 
@@ -80,7 +80,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
     }
 
     @Override
-    public ChangeHistory cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end) {
+    public ChangeHistory cropChanges(DocumentRevision start, DocumentRevision end) {
         if (start == null || start.compareTo(getStartRevision()) < 0) {
             start = getStartRevision();
         }
@@ -93,7 +93,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
         List<List<OWLOntologyChange>> subChanges = revisionsList.subList(
                 start.getRevisionDifferenceFrom(startRevision),
                 end.getRevisionDifferenceFrom(startRevision));
-        SortedMap<OntologyDocumentRevision, ChangeMetadata> subMetaDataMap = cropMap(metadataMap, start, end);
+        SortedMap<DocumentRevision, ChangeMetadata> subMetaDataMap = cropMap(metadataMap, start, end);
         return new ChangeHistoryImpl(start, subChanges, subMetaDataMap);
     }
 
@@ -122,8 +122,8 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
             OWLOntology emptyOntology = OWLManager.createOWLOntologyManager().createOntology();
             ChangeHistoryImpl changeHistory = new ChangeHistoryImpl(startRevision,
                     new ArrayList<List<OWLOntologyChange>>(revisionsList),
-                    new TreeMap<OntologyDocumentRevision, ChangeMetadata>(metadataMap));
-            OntologyDocumentRevision currentRevision = changeHistory.getEndRevision();
+                    new TreeMap<DocumentRevision, ChangeMetadata>(metadataMap));
+            DocumentRevision currentRevision = changeHistory.getEndRevision();
             for (; additionalChangeHistory.getEndRevision().compareTo(currentRevision) > 0; currentRevision = currentRevision.next()) {
                 ChangeMetadata metadata = additionalChangeHistory.getChangeMetadataForRevision(currentRevision);
                 List<OWLOntologyChange> changes = additionalChangeHistory.cropChanges(currentRevision, currentRevision.next()).getChanges(emptyOntology);
@@ -139,7 +139,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
     @Override
     public List<OWLOntologyChange> getChanges(OWLOntology sourceOntology) {
         List<OWLOntologyChange> filteredChanges = new ArrayList<OWLOntologyChange>();
-        OntologyDocumentRevision revision = startRevision;
+        DocumentRevision revision = startRevision;
         for (List<OWLOntologyChange> change : revisionsList) {
             filteredChanges.addAll(change);
             revision = revision.next();
@@ -164,7 +164,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
         try {
             OWLOntology emptyOntology = OWLManager.createOWLOntologyManager().createOntology();
             int hashCode = 314159 * getStartRevision().hashCode() + 271828 * getEndRevision().hashCode();
-            OntologyDocumentRevision currentRevision = getStartRevision();
+            DocumentRevision currentRevision = getStartRevision();
             for (; currentRevision.compareTo(getEndRevision()) < 0; currentRevision = currentRevision.next()) {
                 hashCode = 42 * hashCode + getChangeMetadataForRevision(currentRevision).hashCode();
                 hashCode = hashCode - cropChanges(currentRevision, currentRevision.next()).getChanges(emptyOntology).hashCode();
@@ -188,7 +188,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
                     && getEndRevision().equals(other.getEndRevision()))) {
                 return false;
             }
-            OntologyDocumentRevision currentRevision = getStartRevision();
+            DocumentRevision currentRevision = getStartRevision();
             for (; currentRevision.compareTo(getEndRevision()) < 0; currentRevision = currentRevision.next()) {
                 if (!(getChangeMetadataForRevision(currentRevision).equals(other.getChangeMetadataForRevision(currentRevision)))) {
                     return false;

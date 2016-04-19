@@ -47,12 +47,12 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 
     private ServerDocument serverDocument;
     private OWLOntology ontology;
-    private OntologyDocumentRevision revision;
+    private DocumentRevision revision;
     private ChangeHistory localHistory;
     private boolean isHistoryDirty = false;
 
     public VersionedOWLOntologyImpl(ServerDocument serverDocument, OWLOntology ontology,
-            OntologyDocumentRevision revision, ChangeHistory localHistory) {
+            DocumentRevision revision, ChangeHistory localHistory) {
         this.serverDocument = serverDocument;
         this.ontology = ontology;
         this.revision = revision;
@@ -62,7 +62,7 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     public VersionedOWLOntologyImpl(ServerDocument serverDocument, OWLOntology ontology) {
         this.serverDocument = serverDocument;
         this.ontology = ontology;
-        this.revision = OntologyDocumentRevision.START_REVISION;
+        this.revision = DocumentRevision.START_REVISION;
         this.localHistory = ChangeHistoryImpl.createEmptyChangeHistory();
     }
 
@@ -93,12 +93,12 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     }
 
     @Override
-    public OntologyDocumentRevision getRevision() {
+    public DocumentRevision getRevision() {
         return revision;
     }
 
     @Override
-    public void setRevision(OntologyDocumentRevision revision) {
+    public void setRevision(DocumentRevision revision) {
         this.revision = revision;
     }
 

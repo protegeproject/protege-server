@@ -50,20 +50,20 @@ public class ChangeHistoryUtilities {
         }
     }
 
-    public static ChangeHistory readChanges(@Nonnull HistoryFile historyFile, @Nonnull OntologyDocumentRevision startRevision,
-            @Nonnull OntologyDocumentRevision endRevision) throws IOException, ClassNotFoundException {
+    public static ChangeHistory readChanges(@Nonnull HistoryFile historyFile, @Nonnull DocumentRevision startRevision,
+            @Nonnull DocumentRevision endRevision) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(historyFile)));
         OWLInputStream owlis = new OWLInputStream(ois);
         try {
-            OntologyDocumentRevision originalStartRevision = getStartRevision(ois);
+            DocumentRevision originalStartRevision = getStartRevision(ois);
             if (originalStartRevision.getRevisionDifferenceFrom(startRevision) > 0) {
                 throw new IllegalArgumentException("Changes could not be extracted because the start revision is out of range");
             }
-            SortedMap<OntologyDocumentRevision, ChangeMetadata> metadata = getMetadataMap(ois);
+            SortedMap<DocumentRevision, ChangeMetadata> metadata = getMetadataMap(ois);
             int iteration = getRevisionSize(ois);
             
             List<List<OWLOntologyChange>> revisionsList = new ArrayList<List<OWLOntologyChange>>();
-            OntologyDocumentRevision currentRevision = startRevision;
+            DocumentRevision currentRevision = startRevision;
             while (iteration != 0) {
                 List<OWLOntologyChange> revision = getRevision(owlis);
                 if (currentRevision.getRevisionDifferenceFrom(startRevision) >= 0
@@ -86,17 +86,17 @@ public class ChangeHistoryUtilities {
         ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(historyFile)));
         OWLInputStream owlis = new OWLInputStream(ois);
         try {
-            SortedMap<OntologyDocumentRevision, ChangeMetadata> metadata = getMetadataMap(ois);
+            SortedMap<DocumentRevision, ChangeMetadata> metadata = getMetadataMap(ois);
             int iteration = getRevisionSize(ois);
             
             List<List<OWLOntologyChange>> revisionsList = new ArrayList<List<OWLOntologyChange>>();
-            OntologyDocumentRevision startRevision = OntologyDocumentRevision.START_REVISION;
+            DocumentRevision startRevision = DocumentRevision.START_REVISION;
             while (iteration != 0) {
                 List<OWLOntologyChange> revision = getRevision(owlis);
                 revisionsList.add(revision);
                 iteration--;
             }
-            OntologyDocumentRevision endRevision = startRevision.add(revisionsList.size());
+            DocumentRevision endRevision = startRevision.add(revisionsList.size());
             metadata = metadata.tailMap(startRevision).headMap(endRevision);
             return new ChangeHistoryImpl(startRevision, revisionsList, metadata);
         }
@@ -105,13 +105,13 @@ public class ChangeHistoryUtilities {
         }
     }
 
-    private static OntologyDocumentRevision getStartRevision(ObjectInputStream ois) throws ClassNotFoundException, IOException {
-        return (OntologyDocumentRevision) ois.readObject();
+    private static DocumentRevision getStartRevision(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+        return (DocumentRevision) ois.readObject();
     }
 
     @SuppressWarnings("unchecked")
-    private static SortedMap<OntologyDocumentRevision, ChangeMetadata> getMetadataMap(ObjectInputStream ois) throws ClassNotFoundException, IOException {
-        return (SortedMap<OntologyDocumentRevision, ChangeMetadata>) ois.readObject();
+    private static SortedMap<DocumentRevision, ChangeMetadata> getMetadataMap(ObjectInputStream ois) throws ClassNotFoundException, IOException {
+        return (SortedMap<DocumentRevision, ChangeMetadata>) ois.readObject();
     }
 
     private static int getRevisionSize(ObjectInputStream ois) throws IOException {

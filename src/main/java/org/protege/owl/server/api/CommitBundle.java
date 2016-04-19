@@ -1,6 +1,6 @@
 package org.protege.owl.server.api;
 
-import org.protege.owl.server.versioning.OntologyDocumentRevision;
+import org.protege.owl.server.versioning.DocumentRevision;
 
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
@@ -16,7 +16,7 @@ public interface CommitBundle {
 
     List<OWLOntologyChange> getChanges();
 
-    OntologyDocumentRevision getStartRevision();
+    DocumentRevision getStartRevision();
 
-    OntologyDocumentRevision getEndRevision();
+    DocumentRevision getEndRevision();
 }

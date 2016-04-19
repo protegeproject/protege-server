@@ -1,6 +1,6 @@
 package org.protege.owl.server.versioning.api;
 
-import org.protege.owl.server.versioning.OntologyDocumentRevision;
+import org.protege.owl.server.versioning.DocumentRevision;
 import org.protege.owl.server.versioning.ServerDocument;
 
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -64,9 +64,9 @@ public interface VersionedOWLOntology extends HasDisplayName {
      */
     void appendChangeHistory(ChangeHistory changes);
 
-    OntologyDocumentRevision getRevision();
+    DocumentRevision getRevision();
 
-    void setRevision(OntologyDocumentRevision revision);
+    void setRevision(DocumentRevision revision);
 
     /**
      * This call will save the data about the ontology connection, including the

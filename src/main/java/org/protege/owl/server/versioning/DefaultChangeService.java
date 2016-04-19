@@ -13,26 +13,26 @@ public class DefaultChangeService implements ChangeService {
     }
 
     @Override
-    public ChangeHistory getChanges(HistoryFile historyFile, OntologyDocumentRevision startRevision,
-            OntologyDocumentRevision endRevision) throws OWLServerException {
+    public ChangeHistory getChanges(HistoryFile historyFile, DocumentRevision startRevision,
+            DocumentRevision endRevision) throws OWLServerException {
         return changePool.getChangeDocument(historyFile).cropChanges(startRevision, endRevision);
     }
 
     @Override
     public ChangeHistory getAllChanges(HistoryFile historyFile) throws OWLServerException {
-        OntologyDocumentRevision headRevision = getHeadRevision(historyFile);
-        return getChanges(historyFile, OntologyDocumentRevision.START_REVISION, headRevision);
+        DocumentRevision headRevision = getHeadRevision(historyFile);
+        return getChanges(historyFile, DocumentRevision.START_REVISION, headRevision);
     }
 
     @Override
-    public ChangeHistory getLatestChanges(HistoryFile historyFile, OntologyDocumentRevision startRevision)
+    public ChangeHistory getLatestChanges(HistoryFile historyFile, DocumentRevision startRevision)
             throws OWLServerException {
-        OntologyDocumentRevision headRevision = getHeadRevision(historyFile);
+        DocumentRevision headRevision = getHeadRevision(historyFile);
         return getChanges(historyFile, startRevision, headRevision);
     }
 
     @Override
-    public OntologyDocumentRevision getHeadRevision(HistoryFile historyFile) throws OWLServerException {
+    public DocumentRevision getHeadRevision(HistoryFile historyFile) throws OWLServerException {
         return changePool.getChangeDocument(historyFile).getEndRevision();
     }
 }

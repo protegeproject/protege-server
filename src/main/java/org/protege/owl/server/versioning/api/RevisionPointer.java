@@ -1,6 +1,6 @@
 package org.protege.owl.server.versioning.api;
 
-import org.protege.owl.server.versioning.OntologyDocumentRevision;
+import org.protege.owl.server.versioning.DocumentRevision;
 
 import java.io.Serializable;
 
@@ -18,10 +18,10 @@ public class RevisionPointer implements Serializable {
         HEAD_REVISION.type = RevisionPointerType.HEAD;
     }
 
-    public static final RevisionPointer START_REVISION = OntologyDocumentRevision.START_REVISION.asPointer();
+    public static final RevisionPointer START_REVISION = DocumentRevision.START_REVISION.asPointer();
 
     private RevisionPointerType type;
-    private OntologyDocumentRevision revision;
+    private DocumentRevision revision;
 
     /**
      * Empty constructor
@@ -30,7 +30,7 @@ public class RevisionPointer implements Serializable {
         // NO-OP
     }
 
-    public RevisionPointer(OntologyDocumentRevision revision) {
+    public RevisionPointer(DocumentRevision revision) {
         this.revision = revision;
         this.type = RevisionPointerType.DOCUMENT_REVISION;
     }
@@ -47,7 +47,7 @@ public class RevisionPointer implements Serializable {
         return type == RevisionPointerType.DOCUMENT_REVISION;
     }
 
-    public OntologyDocumentRevision asOntologyDocumentRevision() {
+    public DocumentRevision asOntologyDocumentRevision() {
         if (isSymbolic()) {
             throw new IllegalArgumentException("Programmer error: tried to unravel a symbolic document revision");
         }

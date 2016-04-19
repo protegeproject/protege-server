@@ -4,15 +4,15 @@ import org.protege.owl.server.versioning.api.RevisionPointer;
 
 import java.io.Serializable;
 
-public final class OntologyDocumentRevision implements Comparable<OntologyDocumentRevision>, Serializable {
+public final class DocumentRevision implements Comparable<DocumentRevision>, Serializable {
 
     private static final long serialVersionUID = 7037205560605439026L;
 
-    public static final OntologyDocumentRevision START_REVISION = new OntologyDocumentRevision(0);
+    public static final DocumentRevision START_REVISION = new DocumentRevision(0);
 
     private int revision;
 
-    public OntologyDocumentRevision(int revision) {
+    public DocumentRevision(int revision) {
         this.revision = revision;
     }
 
@@ -24,20 +24,20 @@ public final class OntologyDocumentRevision implements Comparable<OntologyDocume
         return new RevisionPointer(this);
     }
 
-    public int getRevisionDifferenceFrom(OntologyDocumentRevision start) {
+    public int getRevisionDifferenceFrom(DocumentRevision start) {
         return revision - start.revision;
     }
 
-    public OntologyDocumentRevision next() {
-        return new OntologyDocumentRevision(revision + 1);
+    public DocumentRevision next() {
+        return new DocumentRevision(revision + 1);
     }
 
-    public OntologyDocumentRevision add(int delta) {
-        return new OntologyDocumentRevision(revision + delta);
+    public DocumentRevision add(int delta) {
+        return new DocumentRevision(revision + delta);
     }
 
     @Override
-    public int compareTo(OntologyDocumentRevision o) {
+    public int compareTo(DocumentRevision o) {
         if (revision > o.revision) {
             return 1;
         }
@@ -51,10 +51,10 @@ public final class OntologyDocumentRevision implements Comparable<OntologyDocume
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof OntologyDocumentRevision)) {
+        if (!(other instanceof DocumentRevision)) {
             return false;
         }
-        return revision == ((OntologyDocumentRevision) other).revision;
+        return revision == ((DocumentRevision) other).revision;
     }
 
     @Override

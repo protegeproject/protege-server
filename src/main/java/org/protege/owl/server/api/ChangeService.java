@@ -1,7 +1,7 @@
 package org.protege.owl.server.api;
 
 import org.protege.owl.server.versioning.HistoryFile;
-import org.protege.owl.server.versioning.OntologyDocumentRevision;
+import org.protege.owl.server.versioning.DocumentRevision;
 import org.protege.owl.server.versioning.api.ChangeHistory;
 
 /**
@@ -23,13 +23,13 @@ public interface ChangeService {
      * @throws Exception
      */
     ChangeHistory getChanges(HistoryFile historyFile,
-            OntologyDocumentRevision startRevision,
-            OntologyDocumentRevision endRevision) throws Exception;
+            DocumentRevision startRevision,
+            DocumentRevision endRevision) throws Exception;
 
     ChangeHistory getLatestChanges(HistoryFile historyFile,
-            OntologyDocumentRevision startRevision) throws Exception;
+            DocumentRevision startRevision) throws Exception;
 
     ChangeHistory getAllChanges(HistoryFile historyFile) throws Exception;
 
-    OntologyDocumentRevision getHeadRevision(HistoryFile historyFile) throws Exception;
+    DocumentRevision getHeadRevision(HistoryFile historyFile) throws Exception;
 }

@@ -1,6 +1,6 @@
 package org.protege.owl.server.api.exception;
 
-import org.protege.owl.server.versioning.OntologyDocumentRevision;
+import org.protege.owl.server.versioning.DocumentRevision;
 import org.protege.owl.server.versioning.api.ChangeHistory;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -41,7 +41,7 @@ public class ConflictException extends OWLServerException {
             throw new RuntimeException("Could not create empty ontology??", ooce);
         }
         int size = 0;
-        for (OntologyDocumentRevision revision = conflicts.getStartRevision();
+        for (DocumentRevision revision = conflicts.getStartRevision();
                 revision.compareTo(conflicts.getEndRevision()) < 0;
                 revision = revision.next()) {
             size += conflicts.cropChanges(revision, revision.next()).getChanges(fakeOntology).size();

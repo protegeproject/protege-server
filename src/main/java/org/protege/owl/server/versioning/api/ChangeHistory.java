@@ -1,7 +1,7 @@
 package org.protege.owl.server.versioning.api;
 
 import org.protege.owl.server.versioning.ChangeMetadata;
-import org.protege.owl.server.versioning.OntologyDocumentRevision;
+import org.protege.owl.server.versioning.DocumentRevision;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -28,14 +28,14 @@ public interface ChangeHistory {
      * 
      * @return OntologyDocumentRevision
      */
-    OntologyDocumentRevision getStartRevision();
+    DocumentRevision getStartRevision();
 
     /**
      * Get the end revision of this collection of changes.
      * 
      * @return OntologyDocumentRevision
      */
-    OntologyDocumentRevision getEndRevision();
+    DocumentRevision getEndRevision();
 
     /**
      * Returns the ChangeMetaData (user, date of change) for the change document
@@ -49,7 +49,7 @@ public interface ChangeHistory {
      *            revision
      * @return ChangeMetaData
      */
-    ChangeMetadata getChangeMetadataForRevision(OntologyDocumentRevision revision);
+    ChangeMetadata getChangeMetadataForRevision(DocumentRevision revision);
 
     /**
      * This call will return the change document obtained by restricting the set
@@ -64,7 +64,7 @@ public interface ChangeHistory {
      *            end
      * @return ChangeHistory
      */
-    ChangeHistory cropChanges(OntologyDocumentRevision start, OntologyDocumentRevision end);
+    ChangeHistory cropChanges(DocumentRevision start, DocumentRevision end);
 
     ChangeHistory appendChanges(ChangeHistory additionalChanges);
 
@@ -89,5 +89,5 @@ public interface ChangeHistory {
 
     List<List<OWLOntologyChange>> getRevisionsList();
 
-    Map<OntologyDocumentRevision, ChangeMetadata> getMetadataMap();
+    Map<DocumentRevision, ChangeMetadata> getMetadataMap();
 }
