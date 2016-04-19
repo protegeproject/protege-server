@@ -36,7 +36,7 @@ public class ServerActivator implements BundleActivator {
     }
 
     private void displayPlatform(BundleContext context) {
-        logger.info("Server configuration loaded");
+        logger.info("Server environment info:");
         logger.info("... Java: JVM " + System.getProperty("java.runtime.version") + " Memory: " + (Runtime.getRuntime().maxMemory() / 1000000) + "M");
         logger.info("... Language: " + Locale.getDefault().getLanguage() + ", Country: " + Locale.getDefault().getCountry());
         logger.info("... Framework: " + context.getProperty(Constants.FRAMEWORK_VENDOR) + " (" + context.getProperty(Constants.FRAMEWORK_VERSION) + ")");
