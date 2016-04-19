@@ -1,4 +1,4 @@
-package org.protege.owl.server.configuration;
+package org.protege.owl.server.builder;
 
 import org.protege.owl.server.api.BuilderService;
 import org.protege.owl.server.api.ServerFactory;
