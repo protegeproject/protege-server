@@ -13,7 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class VersionedOntologyDocumentImpl implements VersionedOWLOntology {
+public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 
     public static final String BACKING_STORE_PROPERTY = "server.location";
     public static final String VERSION_PROPERTY = "version";
@@ -51,7 +51,7 @@ public class VersionedOntologyDocumentImpl implements VersionedOWLOntology {
     private ChangeHistory localHistory;
     private boolean isHistoryDirty = false;
 
-    public VersionedOntologyDocumentImpl(ServerDocument serverDocument, OWLOntology ontology,
+    public VersionedOWLOntologyImpl(ServerDocument serverDocument, OWLOntology ontology,
             OntologyDocumentRevision revision, ChangeHistory localHistory) {
         this.serverDocument = serverDocument;
         this.ontology = ontology;
@@ -59,7 +59,7 @@ public class VersionedOntologyDocumentImpl implements VersionedOWLOntology {
         this.localHistory = localHistory;
     }
 
-    public VersionedOntologyDocumentImpl(ServerDocument serverDocument, OWLOntology ontology) {
+    public VersionedOWLOntologyImpl(ServerDocument serverDocument, OWLOntology ontology) {
         this.serverDocument = serverDocument;
         this.ontology = ontology;
         this.revision = OntologyDocumentRevision.START_REVISION;
