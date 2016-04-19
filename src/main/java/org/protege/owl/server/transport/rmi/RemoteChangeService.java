@@ -1,4 +1,4 @@
-package org.protege.owl.server.rmi;
+package org.protege.owl.server.transport.rmi;
 
 import org.protege.owl.server.api.ChangeService;
 
