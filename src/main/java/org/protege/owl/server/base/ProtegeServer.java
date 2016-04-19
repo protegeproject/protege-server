@@ -1,4 +1,4 @@
-package org.protege.owl.server.core;
+package org.protege.owl.server.base;
 
 import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.ServerLayer;
