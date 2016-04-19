@@ -1,7 +1,6 @@
 package org.protege.owl.server.changes;
 
 import org.protege.owl.server.changes.api.ChangeHistory;
-import org.protege.owl.server.changes.util.CollectingChangeVisitor;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;

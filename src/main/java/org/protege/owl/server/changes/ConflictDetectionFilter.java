@@ -8,7 +8,6 @@ import org.protege.owl.server.api.TransportHandler;
 import org.protege.owl.server.api.exception.OWLServerException;
 import org.protege.owl.server.api.exception.ServerServiceException;
 import org.protege.owl.server.changes.api.ChangeHistory;
-import org.protege.owl.server.changes.util.CollectingChangeVisitor;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.ImportChange;
