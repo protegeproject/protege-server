@@ -203,8 +203,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>org.protege.owl.server.ServerActivator</Bundle-Activator>
-                        <Bundle-SymbolicName>org.protege.owl.server</Bundle-SymbolicName>
+                        <Bundle-Activator>org.protege.editor.owl.server.ServerActivator</Bundle-Activator>
+                        <Bundle-SymbolicName>org.protege.editor.owl.server</Bundle-SymbolicName>
                         <Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
                         <Export-Package>
                             org.protege.owl.server.*;version=${project.version},

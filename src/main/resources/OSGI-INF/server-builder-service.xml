@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component name="BuilderService" enabled="true" immediate="true" xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
-    <implementation class="org.protege.owl.server.configuration.ServerBuilderService" />
+    <implementation class="org.protege.editor.owl.server.builder.ServerBuilderService" />
     <service>
-        <provide interface="org.protege.owl.server.api.BuilderService" />
+        <provide interface="org.protege.editor.owl.server.api.BuilderService" />
     </service>
     <reference name="configuration"
         interface="edu.stanford.protege.metaproject.api.ServerConfiguration"
         bind="initialize"
         cardinality="1..1" />
     <reference name="serverFactory"
-        interface="org.protege.owl.server.api.ServerFactory"
+        interface="org.protege.editor.owl.server.api.ServerFactory"
         bind="setServerFactory"
         cardinality="1..1"
         policy="static" />
     <reference name="transportFactory"
-        interface="org.protege.owl.server.api.TransportFactory"
+        interface="org.protege.editor.owl.server.api.TransportFactory"
         bind="setTransportFactory"
         cardinality="1..1"
         policy="static" />
