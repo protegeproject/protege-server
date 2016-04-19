@@ -30,7 +30,7 @@ public class ServerBuilderService implements BuilderService {
     @Override
     public void initialize(ServerConfiguration configuration) {
         this.configuration = configuration;
-        logger.info("Loading server configuration");
+        logger.info("Server configuration loaded successfully");
     }
 
     @Override
