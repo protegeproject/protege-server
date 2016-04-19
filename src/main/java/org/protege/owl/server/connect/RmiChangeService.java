@@ -6,14 +6,13 @@ import org.protege.owl.server.changes.OntologyDocumentRevision;
 import org.protege.owl.server.changes.ServerDocument;
 import org.protege.owl.server.changes.api.ChangeHistory;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
  * @author Josef Hardi <johardi@stanford.edu> <br>
  * Stanford Center for Biomedical Informatics Research
  */
-public class RmiChangeService implements RemoteChangeService, Remote {
+public class RmiChangeService implements RemoteChangeService {
 
     public static String CHANGE_SERVICE = "RmiChangeService";
 

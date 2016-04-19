@@ -14,7 +14,7 @@ public abstract class AbstractServerFilter extends ServerLayer {
         this.delegate = delegate;
     }
 
-    public ServerLayer getDelegate() {
+    protected ServerLayer getDelegate() {
         return delegate;
     }
 

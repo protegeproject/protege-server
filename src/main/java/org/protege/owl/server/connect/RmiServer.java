@@ -2,10 +2,9 @@ package org.protege.owl.server.connect;
 
 import org.protege.owl.server.api.CommitBundle;
 import org.protege.owl.server.api.Server;
-import org.protege.owl.server.api.exception.ServerRequestException;
 import org.protege.owl.server.changes.ServerDocument;
 
-import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +22,7 @@ import edu.stanford.protege.metaproject.api.UserId;
  * @author Josef Hardi <johardi@stanford.edu> <br>
  * Stanford Center for Biomedical Informatics Research
  */
-public class RmiServer implements RemoteServer, Remote {
+public class RmiServer implements RemoteServer {
 
     public static final String SERVER_SERVICE = "ProtegeServer";
 
@@ -34,143 +33,274 @@ public class RmiServer implements RemoteServer, Remote {
     }
 
     @Override
-    public void createUser(AuthToken token, User newUser) throws ServerRequestException {
-        server.createUser(token, newUser);
+    public void createUser(AuthToken token, User newUser) throws RemoteException {
+        try {
+            server.createUser(token, newUser);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void deleteUser(AuthToken token, UserId userId) throws ServerRequestException {
-        server.deleteUser(token, userId);
+    public void deleteUser(AuthToken token, UserId userId) throws RemoteException {
+        try {
+            server.deleteUser(token, userId);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void updateUser(AuthToken token, UserId userId, User user) throws ServerRequestException {
-        server.updateUser(token, userId, user);
+    public void updateUser(AuthToken token, UserId userId, User user) throws RemoteException {
+        try {
+            server.updateUser(token, userId, user);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void createProject(AuthToken token, Project newProject) throws ServerRequestException {
-        server.createProject(token, newProject);
+    public void createProject(AuthToken token, Project newProject) throws RemoteException {
+        try {
+            server.createProject(token, newProject);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void deleteProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
-        server.deleteProject(token, projectId);
+    public void deleteProject(AuthToken token, ProjectId projectId) throws RemoteException {
+        try {
+            server.deleteProject(token, projectId);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void updateProject(AuthToken token, ProjectId projectId, Project newProject) throws ServerRequestException {
-        server.updateProject(token, projectId, newProject);
+    public void updateProject(AuthToken token, ProjectId projectId, Project newProject) throws RemoteException {
+        try {
+            server.updateProject(token, projectId, newProject);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public ServerDocument openProject(AuthToken token, ProjectId projectId) throws ServerRequestException {
-        return server.openProject(token, projectId);
+    public ServerDocument openProject(AuthToken token, ProjectId projectId) throws RemoteException {
+        try {
+            return server.openProject(token, projectId);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void createRole(AuthToken token, Role newRole) throws ServerRequestException {
-        server.createRole(token, newRole);
+    public void createRole(AuthToken token, Role newRole) throws RemoteException {
+        try {
+            server.createRole(token, newRole);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void deleteRole(AuthToken token, RoleId roleId) throws ServerRequestException {
-        server.deleteRole(token, roleId);
+    public void deleteRole(AuthToken token, RoleId roleId) throws RemoteException {
+        try {
+            server.deleteRole(token, roleId);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void updateRole(AuthToken token, RoleId roleId, Role newRole) throws ServerRequestException {
-        server.updateRole(token, roleId, newRole);
+    public void updateRole(AuthToken token, RoleId roleId, Role newRole) throws RemoteException {
+        try {
+            server.updateRole(token, roleId, newRole);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void createOperation(AuthToken token, Operation operation) throws ServerRequestException {
-        server.createOperation(token, operation);
+    public void createOperation(AuthToken token, Operation operation) throws RemoteException {
+        try {
+            server.createOperation(token, operation);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void deleteOperation(AuthToken token, OperationId operationId) throws ServerRequestException {
-        server.deleteOperation(token, operationId);
+    public void deleteOperation(AuthToken token, OperationId operationId) throws RemoteException {
+        try {
+            server.deleteOperation(token, operationId);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
     public void updateOperation(AuthToken token, OperationId operationId, Operation newOperation)
-            throws ServerRequestException {
-        server.updateOperation(token, operationId, newOperation);
+            throws RemoteException {
+        try {
+            server.updateOperation(token, operationId, newOperation);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void assignRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
-            throws ServerRequestException {
-        server.assignRole(token, userId, projectId, roleId);
+    public void assignRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId) throws RemoteException {
+        try {
+            server.assignRole(token, userId, projectId, roleId);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void retractRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
-            throws ServerRequestException {
-        server.retractRole(token, userId, projectId, roleId);
+    public void retractRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId) throws RemoteException {
+        try {
+            server.retractRole(token, userId, projectId, roleId);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void setServerConfiguration(AuthToken token, String property, String value)
-            throws ServerRequestException {
-        server.setServerConfiguration(token, property, value);
+    public void setServerConfiguration(AuthToken token, String property, String value) throws RemoteException {
+        try {
+            server.setServerConfiguration(token, property, value);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public void commit(AuthToken token, Project project, CommitBundle changes) throws ServerRequestException {
-        server.commit(token, project, changes);
+    public void commit(AuthToken token, Project project, CommitBundle changes) throws RemoteException {
+        try {
+            server.commit(token, project, changes);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public List<User> getAllUsers(AuthToken token) throws ServerRequestException {
-        return server.getAllUsers(token);
+    public List<User> getAllUsers(AuthToken token) throws RemoteException {
+        try {
+            return server.getAllUsers(token);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public List<Project> getProjects(AuthToken token, UserId userId) throws ServerRequestException {
-        return server.getProjects(token, userId);
+    public List<Project> getProjects(AuthToken token, UserId userId) throws RemoteException {
+        try {
+            return server.getProjects(token, userId);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public List<Project> getAllProjects(AuthToken token) throws ServerRequestException {
-        return server.getAllProjects(token);
+    public List<Project> getAllProjects(AuthToken token) throws RemoteException {
+        try {
+            return server.getAllProjects(token);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId) throws ServerRequestException {
-        return server.getRoles(token, userId);
+    public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId) throws RemoteException {
+        try {
+            return server.getRoles(token, userId);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId) throws ServerRequestException {
-        return server.getRoles(token, userId, projectId);
+    public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId) throws RemoteException {
+        try {
+            return server.getRoles(token, userId, projectId);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public List<Role> getAllRoles(AuthToken token) throws ServerRequestException {
-        return server.getAllRoles(token);
+    public List<Role> getAllRoles(AuthToken token) throws RemoteException {
+        try {
+            return server.getAllRoles(token);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId) throws ServerRequestException {
-        return server.getOperations(token, userId);
+    public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId) throws RemoteException {
+        try {
+            return server.getOperations(token, userId);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId)
-            throws ServerRequestException {
-        return server.getOperations(token, userId, projectId);
+    public List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId) throws RemoteException {
+        try {
+            return server.getOperations(token, userId, projectId);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
-    public List<Operation> getAllOperations(AuthToken token) throws ServerRequestException {
-        return server.getAllOperations(token);
+    public List<Operation> getAllOperations(AuthToken token) throws RemoteException {
+        try {
+            return server.getAllOperations(token);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 
     @Override
     public boolean isOperationAllowed(AuthToken token, OperationId operationId, ProjectId projectId, UserId userId)
-            throws ServerRequestException {
-        return server.isOperationAllowed(token, operationId, projectId, userId);
+            throws RemoteException {
+        try {
+            return server.isOperationAllowed(token, operationId, projectId, userId);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
     }
 }

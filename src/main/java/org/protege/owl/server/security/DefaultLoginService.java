@@ -9,7 +9,6 @@ import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
 import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.UserRegistry;
-import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
 import edu.stanford.protege.metaproject.impl.AuthorizedUserToken;
 
 public class DefaultLoginService implements LoginService {
@@ -36,7 +35,7 @@ public class DefaultLoginService implements LoginService {
     }
 
     @Override
-    public Salt getEncryptionKey(UserId userId) throws UserNotRegisteredException {
+    public Salt getEncryptionKey(UserId userId) throws Exception {
         return authRegistry.getSalt(userId);
     }
 }

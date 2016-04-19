@@ -64,19 +64,26 @@ public class AccessControlFilter extends ServerFilterAdapter {
                 throw new ServerRequestException(new OperationNotAllowedException(operation));
             }
         }
-        catch (MetaprojectException e) {
+        catch (Exception e) {
             throw new ServerRequestException(e);
         }
     }
 
     private void evaluateCommitBundle(AuthToken token, Project project, CommitBundle commitBundle)
             throws ServerRequestException {
-        List<Operation> operations = evaluateCommitChanges(commitBundle);
-        List<Exception> violations = new ArrayList<>();
-        if (checkPermission(token.getUser().getId(), project.getId(), operations, violations)) {
-            getDelegate().commit(token, project, commitBundle);
+        try {
+            List<Operation> operations = evaluateCommitChanges(commitBundle);
+            List<Exception> violations = new ArrayList<>();
+            if (checkPermission(token.getUser().getId(), project.getId(), operations, violations)) {
+                getDelegate().commit(token, project, commitBundle);
+            }
+            else {
+                throw new ServerRequestException(OperationNotAllowedException.create(violations));
+            }
         }
-        throw new ServerRequestException(OperationNotAllowedException.create(violations));
+        catch (Exception e) {
+            throw new ServerRequestException(e);
+        }
     }
 
     private boolean checkPermission(UserId userId, ProjectId projectId, List<Operation> operations, List<Exception> violations)
