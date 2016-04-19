@@ -24,7 +24,7 @@ import java.io.IOException;
  *
  * @author redmond
  */
-public interface VersionedOntologyDocument extends HasDisplayName {
+public interface VersionedOWLOntology extends HasDisplayName {
 
     ServerDocument getServerDocument();
 

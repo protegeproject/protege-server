@@ -1,7 +1,7 @@
 package org.protege.owl.server.versioning;
 
 import org.protege.owl.server.versioning.api.ChangeHistory;
-import org.protege.owl.server.versioning.api.VersionedOntologyDocument;
+import org.protege.owl.server.versioning.api.VersionedOWLOntology;
 
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -13,7 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class VersionedOntologyDocumentImpl implements VersionedOntologyDocument {
+public class VersionedOntologyDocumentImpl implements VersionedOWLOntology {
 
     public static final String BACKING_STORE_PROPERTY = "server.location";
     public static final String VERSION_PROPERTY = "version";
