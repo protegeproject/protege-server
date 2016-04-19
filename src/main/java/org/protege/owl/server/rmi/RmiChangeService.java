@@ -1,4 +1,4 @@
-package org.protege.owl.server.connect;
+package org.protege.owl.server.rmi;
 
 import org.protege.owl.server.api.ChangeService;
 import org.protege.owl.server.changes.HistoryFile;

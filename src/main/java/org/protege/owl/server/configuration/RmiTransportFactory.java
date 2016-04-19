@@ -3,7 +3,7 @@ package org.protege.owl.server.configuration;
 import org.protege.owl.server.api.TransportFactory;
 import org.protege.owl.server.api.TransportHandler;
 import org.protege.owl.server.api.exception.OWLServerException;
-import org.protege.owl.server.connect.RmiTransport;
+import org.protege.owl.server.rmi.RmiTransport;
 
 import java.net.URI;
 
