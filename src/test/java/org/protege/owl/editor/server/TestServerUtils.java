@@ -1,7 +1,7 @@
 package org.protege.owl.editor.server;
 
 import org.protege.osgi.framework.Launcher;
-import org.protege.owl.server.ServerActivator;
+import org.protege.editor.owl.server.ServerActivator;
 
 import org.osgi.framework.launch.Framework;
 
