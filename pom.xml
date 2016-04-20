@@ -207,7 +207,7 @@
                         <Bundle-SymbolicName>org.protege.editor.owl.server</Bundle-SymbolicName>
                         <Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
                         <Export-Package>
-                            org.protege.owl.server.*;version=${project.version},
+                            org.protege.editor.owl.server.*;version=${project.version},
                             edu.stanford.protege.metaproject.*,
                             com.google.gson.*,
                             org.apache.commons.codec.*
