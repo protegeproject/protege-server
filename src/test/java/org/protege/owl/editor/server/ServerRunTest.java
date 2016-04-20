@@ -9,7 +9,7 @@ import org.protege.editor.owl.server.transport.rmi.RmiChangeService;
 import org.protege.editor.owl.server.transport.rmi.RmiLoginService;
 import org.protege.editor.owl.server.transport.rmi.RmiServer;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.rmi.registry.LocateRegistry;
@@ -20,8 +20,8 @@ public class ServerRunTest {
     private static final String HOST_NAME = "localhost";
     private static final int REGISTRY_PORT = 5100;
 
-    @Before
-    public void startServer() throws Exception {
+    @BeforeClass
+    public static void startServer() throws Exception {
         TestServerUtils.startServer("src/test/resources/server-configuration.json");
     }
 
