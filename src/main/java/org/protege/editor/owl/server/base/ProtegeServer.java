@@ -20,6 +20,7 @@ import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.ProjectRegistry;
 import edu.stanford.protege.metaproject.api.Role;
 import edu.stanford.protege.metaproject.api.RoleId;
+import edu.stanford.protege.metaproject.api.RoleRegistry;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
@@ -39,6 +40,7 @@ public class ProtegeServer extends ServerLayer {
     private ServerConfiguration configuration;
     private UserRegistry userRegistry;
     private ProjectRegistry projectRegistry;
+    private RoleRegistry roleRegistry;
 
     private TransportHandler transport;
 
@@ -46,6 +48,7 @@ public class ProtegeServer extends ServerLayer {
         this.configuration = configuration;
         userRegistry = configuration.getMetaproject().getUserRegistry();
         projectRegistry = configuration.getMetaproject().getProjectRegistry();
+        roleRegistry = configuration.getMetaproject().getRoleRegistry();
     }
 
     @Override
@@ -131,20 +134,33 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public void createRole(AuthToken token, Role newRole) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+        try {
+            roleRegistry.add(newRole);
+        }
+        catch (IdAlreadyInUseException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
     public void deleteRole(AuthToken token, RoleId roleId) throws ServerServiceException {
-        // TODO Auto-generated method stub
+        try {
+            roleRegistry.remove(roleRegistry.get(roleId));
+        }
+        catch (UnknownMetaprojectObjectIdException e) {
+            throw new ServerServiceException(e);
+        }
         
     }
 
     @Override
-    public void updateRole(AuthToken token, RoleId roleId, Role newRole) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+    public void updateRole(AuthToken token, RoleId roleId, Role updatedRole) throws ServerServiceException {
+        try {
+            roleRegistry.update(roleId, updatedRole);
+        }
+        catch (UnknownMetaprojectObjectIdException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
