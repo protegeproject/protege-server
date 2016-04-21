@@ -9,6 +9,7 @@ import org.protege.editor.owl.server.versioning.HistoryFile;
 import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 import org.protege.editor.owl.server.versioning.ServerDocument;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -232,8 +233,7 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public List<User> getAllUsers(AuthToken token) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        return null;
+        return new ArrayList<>(userRegistry.getEntries());
     }
 
     @Override
@@ -244,8 +244,7 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public List<Project> getAllProjects(AuthToken token) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        return null;
+        return new ArrayList<>(projectRegistry.getEntries());
     }
 
     @Override
@@ -262,8 +261,7 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public List<Role> getAllRoles(AuthToken token) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        return null;
+        return new ArrayList<>(roleRegistry.getEntries());
     }
 
     @Override
@@ -281,8 +279,7 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public List<Operation> getAllOperations(AuthToken token) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        return null;
+        return new ArrayList<>(operationRegistry.getEntries());
     }
 
     @Override
