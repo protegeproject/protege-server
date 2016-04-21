@@ -1,4 +1,4 @@
-package org.protege.owl.editor.server;
+package org.protege.editor.owl.server;
 
 import org.protege.osgi.framework.Launcher;
 import org.protege.editor.owl.server.ServerActivator;

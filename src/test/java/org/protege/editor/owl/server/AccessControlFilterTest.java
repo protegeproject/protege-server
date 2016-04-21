@@ -1,4 +1,4 @@
-package org.protege.owl.editor.server;
+package org.protege.editor.owl.server;
 
 import static org.mockito.Mockito.when;
 
