@@ -82,7 +82,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
             }
         }
         catch (Exception e) {
-            throw new ServerServiceException(e);
+            throw serverServiceException(e);
         }
     }
 
@@ -143,5 +143,12 @@ public class AccessControlFilter extends ServerFilterAdapter {
         }
         String template = "No suitable operation for ontology change %s";
         throw new OperationForChangeNotFoundException(String.format(template, change.toString()));
+    }
+
+    private ServerServiceException serverServiceException(Exception e) {
+        if (e instanceof ServerServiceException) {
+            return (ServerServiceException) e;
+        }
+        return new ServerServiceException(e);
     }
 }
