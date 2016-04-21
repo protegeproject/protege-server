@@ -16,6 +16,7 @@ import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
 import edu.stanford.protege.metaproject.api.OperationRegistry;
+import edu.stanford.protege.metaproject.api.Policy;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.ProjectRegistry;
@@ -44,6 +45,7 @@ public class ProtegeServer extends ServerLayer {
     private ProjectRegistry projectRegistry;
     private RoleRegistry roleRegistry;
     private OperationRegistry operationRegistry;
+    private Policy policy;
 
     private TransportHandler transport;
 
@@ -52,6 +54,7 @@ public class ProtegeServer extends ServerLayer {
         userRegistry = configuration.getMetaproject().getUserRegistry();
         projectRegistry = configuration.getMetaproject().getProjectRegistry();
         roleRegistry = configuration.getMetaproject().getRoleRegistry();
+        policy = configuration.getMetaproject().getPolicy();
     }
 
     @Override
@@ -200,15 +203,13 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public void assignRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
             throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+        policy.add(roleId, projectId, userId);
     }
 
     @Override
     public void retractRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
             throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+        policy.remove(userId, projectId, roleId);
     }
 
     @Override
