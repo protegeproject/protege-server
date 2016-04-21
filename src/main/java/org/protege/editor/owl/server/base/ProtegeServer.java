@@ -15,6 +15,7 @@ import java.util.Map;
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
+import edu.stanford.protege.metaproject.api.OperationRegistry;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.ProjectRegistry;
@@ -38,9 +39,11 @@ import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectId
 public class ProtegeServer extends ServerLayer {
 
     private ServerConfiguration configuration;
+
     private UserRegistry userRegistry;
     private ProjectRegistry projectRegistry;
     private RoleRegistry roleRegistry;
+    private OperationRegistry operationRegistry;
 
     private TransportHandler transport;
 
@@ -164,22 +167,34 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void createOperation(AuthToken token, Operation operation) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+    public void createOperation(AuthToken token, Operation newOperation) throws ServerServiceException {
+        try {
+            operationRegistry.add(newOperation);
+        }
+        catch (IdAlreadyInUseException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
     public void deleteOperation(AuthToken token, OperationId operationId) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+        try {
+            operationRegistry.remove(operationRegistry.get(operationId));
+        }
+        catch (UnknownMetaprojectObjectIdException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
-    public void updateOperation(AuthToken token, OperationId operationId, Operation newOperation)
+    public void updateOperation(AuthToken token, OperationId operationId, Operation updatedOperation)
             throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+        try {
+            operationRegistry.update(operationId, updatedOperation);
+        }
+        catch (UnknownMetaprojectObjectIdException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
