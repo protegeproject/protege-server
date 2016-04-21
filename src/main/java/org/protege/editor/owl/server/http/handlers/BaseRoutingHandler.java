@@ -1,0 +1,56 @@
+package org.protege.editor.owl.server.http.handlers;
+
+import java.util.Deque;
+import java.util.Map;
+
+import org.protege.editor.owl.server.http.exception.ServerException;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
+
+import com.google.common.base.Strings;
+
+import io.undertow.server.HttpHandler;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HeaderValues;
+import io.undertow.util.HttpString;
+import io.undertow.util.StatusCodes;
+
+public abstract class BaseRoutingHandler implements HttpHandler {
+	
+
+	protected final OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+
+	public BaseRoutingHandler() {}
+
+	protected String getHeaderValue(final HttpServerExchange theExchange,
+	                              final HttpString theAttr,
+	                              final String theDefault) {
+		HeaderValues aVals = theExchange.getRequestHeaders().get(theAttr);
+
+		return !aVals.isEmpty() ? aVals.getFirst()
+		                        : theDefault;
+	}
+	
+	protected String getQueryParameter(final HttpServerExchange theExchange,
+			final String paramName) throws ServerException {
+		final Map<String, Deque<String>> queryParams = theExchange.getQueryParameters();
+
+		if (!queryParams.containsKey(paramName) || queryParams.get(paramName).isEmpty()) {
+			throwBadRequest("Missing required parameter: "+ paramName);
+		}
+
+		final String paramVal = queryParams.get(paramName).getFirst();
+		if (Strings.isNullOrEmpty(paramVal)) {
+			throwBadRequest("Missing required parameter: " + paramName);
+		}
+
+		return paramVal;
+	}
+
+	protected ServerException throwBadRequest(final String theMsg) throws ServerException {
+		throw new ServerException(StatusCodes.BAD_REQUEST, theMsg);
+	}
+
+	
+
+}

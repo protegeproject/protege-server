@@ -9,3 +9,7 @@ META-INF/
 target/
 release.properties
 /bin/
+# OS X
+.DS_Store
+*.history
+*foo*

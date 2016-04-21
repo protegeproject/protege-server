@@ -24,6 +24,8 @@
         <dependencySet>
             <includes>
                 <include>edu.stanford.protege:metaproject:jar</include>
+                <include>io.undertow:undertow-core:jar</include>
+                <include>org.jbos.xnio:xnio-api:jar</include>
                 <include>net.sourceforge.owlapi:owlapi-osgidistribution:jar</include>
                 <include>net.sourceforge.owlapi:binaryowl:jar</include>
                 <include>commons-cli:commons-cli:jar</include>

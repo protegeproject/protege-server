@@ -1,6 +1,6 @@
 {
   "host": {
-    "uri": "rmi://localhost:5100",
+    "uri": "http://localhost:8080",
     "secondaryPort": "5200"
   },
   "root": "root/data",
