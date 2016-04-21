@@ -22,7 +22,7 @@ import java.rmi.registry.Registry;
 public class ServerRunTest {
 
     private static final String HOST_NAME = "localhost";
-    private static final int REGISTRY_PORT = 5100;
+    private static final int REGISTRY_PORT = 5200;
 
     @BeforeClass
     public static void startServer() throws Exception {
