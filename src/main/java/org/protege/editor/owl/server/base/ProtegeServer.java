@@ -20,6 +20,9 @@ import edu.stanford.protege.metaproject.api.RoleId;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
+import edu.stanford.protege.metaproject.api.UserRegistry;
+import edu.stanford.protege.metaproject.api.exception.IdAlreadyInUseException;
+import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
 
 /**
  * The main server that acts as the end-point server where user requests to the server
@@ -31,11 +34,13 @@ import edu.stanford.protege.metaproject.api.UserId;
 public class ProtegeServer extends ServerLayer {
 
     private ServerConfiguration configuration;
+    private UserRegistry userRegistry;
 
     private TransportHandler transport;
 
     public ProtegeServer(ServerConfiguration configuration) {
         this.configuration = configuration;
+        userRegistry = configuration.getMetaproject().getUserRegistry();
     }
 
     @Override
@@ -45,20 +50,33 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public void createUser(AuthToken token, User newUser) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+        try {
+            userRegistry.add(newUser);
+        }
+        catch (IdAlreadyInUseException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
     public void deleteUser(AuthToken token, UserId userId) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+        try {
+            User user = userRegistry.get(userId);
+            userRegistry.remove(user);
+        }
+        catch (UnknownMetaprojectObjectIdException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
-    public void updateUser(AuthToken token, UserId userId, User user) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+    public void updateUser(AuthToken token, UserId userId, User updatedUser) throws ServerServiceException {
+        try {
+            userRegistry.update(userId, updatedUser);
+        }
+        catch (UnknownMetaprojectObjectIdException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
