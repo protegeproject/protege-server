@@ -32,7 +32,6 @@ public class RmiLoginService implements RemoteLoginService {
     @Override
     public Salt getEncryptionKey(UserId userId) throws RemoteException {
         try {
-            System.out.println("RmiLoginService: " + userId.get());
             return (Salt) loginService.getEncryptionKey(userId);
         }
         catch (Exception e) {
