@@ -292,7 +292,6 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public boolean isOperationAllowed(AuthToken token, OperationId operationId, ProjectId projectId, UserId userId)
             throws ServerServiceException {
-        // TODO Auto-generated method stub
-        return false;
+        return metaprojectAgent.isOperationAllowed(operationId, projectId, userId);
     }
 }
