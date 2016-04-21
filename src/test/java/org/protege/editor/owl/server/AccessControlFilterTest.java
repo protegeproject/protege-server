@@ -164,7 +164,7 @@ public class AccessControlFilterTest {
         catch (ServerServiceException e) {
             OperationNotAllowedException onae = (OperationNotAllowedException) e.getCause();
             Set<Operation> unauthorizedOperations = onae.getOperations();
-            assertThat(unauthorizedOperations, containsInAnyOrder(Operations.ADD_AXIOM, Operations.REMOVE_IMPORT));
+            assertThat(unauthorizedOperations, containsInAnyOrder(Operations.ADD_IMPORT, Operations.REMOVE_IMPORT));
             throw e;
         }
     }
