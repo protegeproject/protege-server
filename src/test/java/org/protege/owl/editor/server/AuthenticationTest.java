@@ -22,6 +22,10 @@ import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.UserRegistry;
 import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
 
+/**
+ * @author Josef Hardi <johardi@stanford.edu> <br>
+ * Stanford Center for Biomedical Informatics Research
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class AuthenticationTest {
 

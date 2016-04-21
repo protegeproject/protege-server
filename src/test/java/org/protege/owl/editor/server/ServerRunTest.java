@@ -15,6 +15,10 @@ import org.junit.Test;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+/**
+ * @author Josef Hardi <johardi@stanford.edu> <br>
+ * Stanford Center for Biomedical Informatics Research
+ */
 public class ServerRunTest {
 
     private static final String HOST_NAME = "localhost";
