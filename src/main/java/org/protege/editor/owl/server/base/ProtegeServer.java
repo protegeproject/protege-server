@@ -220,8 +220,7 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public void setServerConfiguration(AuthToken token, String property, String value)
             throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+        configuration.addProperty(property, value);
     }
 
     @Override
