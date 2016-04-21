@@ -4,7 +4,7 @@ import org.protege.editor.owl.server.versioning.api.RevisionPointer;
 
 import java.io.Serializable;
 
-public final class DocumentRevision implements Comparable<DocumentRevision>, Serializable {
+public class DocumentRevision implements Comparable<DocumentRevision>, Serializable {
 
     private static final long serialVersionUID = 7037205560605439026L;
 
