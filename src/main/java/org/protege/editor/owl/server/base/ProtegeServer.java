@@ -5,6 +5,8 @@ import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.TransportHandler;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
+import org.protege.editor.owl.server.versioning.HistoryFile;
+import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 import org.protege.editor.owl.server.versioning.ServerDocument;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.ProjectRegistry;
 import edu.stanford.protege.metaproject.api.Role;
 import edu.stanford.protege.metaproject.api.RoleId;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
@@ -35,12 +38,14 @@ public class ProtegeServer extends ServerLayer {
 
     private ServerConfiguration configuration;
     private UserRegistry userRegistry;
+    private ProjectRegistry projectRegistry;
 
     private TransportHandler transport;
 
     public ProtegeServer(ServerConfiguration configuration) {
         this.configuration = configuration;
         userRegistry = configuration.getMetaproject().getUserRegistry();
+        projectRegistry = configuration.getMetaproject().getProjectRegistry();
     }
 
     @Override
@@ -81,26 +86,47 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public void createProject(AuthToken token, Project newProject) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+        try {
+            projectRegistry.add(newProject);
+        }
+        catch (IdAlreadyInUseException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
     public void deleteProject(AuthToken token, ProjectId projectId) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+        try {
+            Project project = projectRegistry.get(projectId);
+            projectRegistry.remove(project);
+        }
+        catch (UnknownMetaprojectObjectIdException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
-    public void updateProject(AuthToken token, ProjectId projectId, Project newProject) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        
+    public void updateProject(AuthToken token, ProjectId projectId, Project updatedProject) throws ServerServiceException {
+        try {
+            projectRegistry.update(projectId, updatedProject);
+        }
+        catch (UnknownMetaprojectObjectIdException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
     public ServerDocument openProject(AuthToken token, ProjectId projectId) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            Project project = projectRegistry.get(projectId);
+            return new ServerDocument(configuration.getHost(), new HistoryFile(project.getFile())); // TODO: Use factory
+        }
+        catch (UnknownMetaprojectObjectIdException e) {
+            throw new ServerServiceException(e);
+        }
+        catch (InvalidHistoryFileException e) {
+            throw new ServerServiceException("Internal server error", e);
+        }
     }
 
     @Override
