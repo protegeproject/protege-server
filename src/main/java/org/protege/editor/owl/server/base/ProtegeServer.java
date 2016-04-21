@@ -10,10 +10,12 @@ import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 import org.protege.editor.owl.server.versioning.ServerDocument;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.MetaprojectAgent;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
 import edu.stanford.protege.metaproject.api.OperationRegistry;
@@ -47,6 +49,7 @@ public class ProtegeServer extends ServerLayer {
     private RoleRegistry roleRegistry;
     private OperationRegistry operationRegistry;
     private Policy policy;
+    private MetaprojectAgent metaprojectAgent;
 
     private TransportHandler transport;
 
@@ -56,6 +59,7 @@ public class ProtegeServer extends ServerLayer {
         projectRegistry = configuration.getMetaproject().getProjectRegistry();
         roleRegistry = configuration.getMetaproject().getRoleRegistry();
         policy = configuration.getMetaproject().getPolicy();
+        metaprojectAgent = configuration.getMetaproject().getMetaprojectAgent();
     }
 
     @Override
@@ -238,8 +242,7 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public List<Project> getProjects(AuthToken token, UserId userId) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        return null;
+        return new ArrayList<>(metaprojectAgent.getProjects(userId));
     }
 
     @Override
@@ -249,14 +252,16 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        return null;
+        Map<ProjectId, List<Role>> roleMap = new HashMap<>();
+        for (Project project : getAllProjects(token)) {
+            roleMap.put(project.getId(), getRoles(token, userId, project.getId()));
+        }
+        return roleMap;
     }
 
     @Override
     public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        return null;
+        return new ArrayList<>(metaprojectAgent.getRoles(userId, projectId));
     }
 
     @Override
@@ -266,15 +271,17 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId) throws ServerServiceException {
-        // TODO Auto-generated method stub
-        return null;
+        Map<ProjectId, List<Operation>> operationMap = new HashMap<>();
+        for (Project project : getAllProjects(token)) {
+            operationMap.put(project.getId(), getOperations(token, userId, project.getId()));
+        }
+        return operationMap;
     }
 
     @Override
     public List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId)
             throws ServerServiceException {
-        // TODO Auto-generated method stub
-        return null;
+        return new ArrayList<>(metaprojectAgent.getOperations(userId, projectId));
     }
 
     @Override
