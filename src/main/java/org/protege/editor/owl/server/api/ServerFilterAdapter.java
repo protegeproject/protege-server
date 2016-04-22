@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Host;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
 import edu.stanford.protege.metaproject.api.Project;
@@ -105,9 +106,44 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
+    public Host getHost() throws Exception {
+        return getDelegate().getHost();
+    }
+
+    @Override
+    public void setHostAddress(AuthToken token, String hostAddress) throws Exception {
+        getDelegate().setHostAddress(token, hostAddress);
+    }
+
+    @Override
+    public void setSecondaryPort(AuthToken token, int portNumber) throws Exception {
+        getDelegate().setSecondaryPort(token, portNumber);
+    }
+
+    @Override
+    public String getRootDirectory() throws Exception {
+        return getDelegate().getRootDirectory();
+    }
+
+    @Override
+    public void setRootDirectory(AuthToken token, String rootDirectory) throws Exception {
+        getDelegate().setRootDirectory(token, rootDirectory);
+    }
+
+    @Override
+    public Map<String, String> getServerProperties() throws Exception {
+        return getDelegate().getServerProperties();
+    }
+
+    @Override
     public void setServerConfiguration(AuthToken token, String property, String value)
             throws Exception {
         getDelegate().setServerConfiguration(token, property, value);
+    }
+
+    @Override
+    public void unsetServerConfiguration(AuthToken token, String property) throws Exception {
+        getDelegate().unsetServerConfiguration(token, property);
     }
 
     @Override

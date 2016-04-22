@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Host;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
 import edu.stanford.protege.metaproject.api.Project;
@@ -312,6 +313,63 @@ public interface ServerServices {
     void retractRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId) throws Exception;
 
     /**
+     * Gets the host information (including the host address and secondary port, if any)
+     *
+     * @return The {@code Host} object to represent such information
+     * @throws Exception
+     */
+    Host getHost() throws Exception;
+
+    /**
+     * Sets the host server address.
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @param hostAddress
+     *          The host address string.
+     * @throws Exception
+     */
+    void setHostAddress(AuthToken token, String hostAddress) throws Exception;
+
+    /**
+     * Sets the secondary port number.
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @param portNumber
+     *          The port number.
+     * @throws Exception
+     */
+    void setSecondaryPort(AuthToken token, int portNumber) throws Exception;
+
+    /**
+     * Gets the root directory location.
+     *
+     * @return The root directory location string.
+     * @throws Exception
+     */
+    String getRootDirectory() throws Exception;
+
+    /**
+     * Sets the root directory location.
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @param rootDirectory
+     *          The root directory location using the absolute path.
+     * @throws Exception
+     */
+    void setRootDirectory(AuthToken token, String rootDirectory) throws Exception;
+
+    /**
+     * Gets the map of user's server properties.
+     *
+     * @return The server property map.
+     * @throws Exception
+     */
+    Map<String, String> getServerProperties() throws Exception;
+
+    /**
      * Setting a server property by specifying the property name and the value.
      *
      * @param token
@@ -323,6 +381,17 @@ public interface ServerServices {
      * @throws Exception
      */
     void setServerConfiguration(AuthToken token, String property, String value) throws Exception;
+
+    /**
+     * Unsets a server property by specifying the property name.
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @param property
+     *          The target property name
+     * @throws Exception
+     */
+    void unsetServerConfiguration(AuthToken token, String property) throws Exception;
 
     /**
      * Committing the given ontology changes to be applied in the server.

@@ -9,17 +9,24 @@ import org.protege.editor.owl.server.versioning.HistoryFile;
 import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 import org.protege.editor.owl.server.versioning.ServerDocument;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import edu.stanford.protege.metaproject.Manager;
 import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Host;
 import edu.stanford.protege.metaproject.api.MetaprojectAgent;
+import edu.stanford.protege.metaproject.api.MetaprojectFactory;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
 import edu.stanford.protege.metaproject.api.OperationRegistry;
 import edu.stanford.protege.metaproject.api.Policy;
+import edu.stanford.protege.metaproject.api.Port;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.ProjectRegistry;
@@ -52,6 +59,8 @@ public class ProtegeServer extends ServerLayer {
     private MetaprojectAgent metaprojectAgent;
 
     private TransportHandler transport;
+
+    private static final MetaprojectFactory metaprojectFactory = Manager.getFactory();
 
     public ProtegeServer(ServerConfiguration configuration) {
         this.configuration = configuration;
@@ -218,9 +227,53 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
+    public Host getHost() throws Exception {
+        return configuration.getHost();
+    }
+
+    @Override
+    public void setHostAddress(AuthToken token, String hostAddress) throws Exception {
+        URI hostAddresssUri = metaprojectFactory.getUri(hostAddress);
+        Optional<Port> secondaryPort = getHost().getSecondaryPort();
+        Host updatedHost = metaprojectFactory.getHost(hostAddresssUri, secondaryPort);
+        configuration.setHost(updatedHost);
+    }
+
+    @Override
+    public void setSecondaryPort(AuthToken token, int portNumber) throws Exception {
+        URI hostAddress = getHost().getUri();
+        Optional<Port> secondaryPort = Optional.empty();
+        if (portNumber > 0) {
+            secondaryPort = Optional.of(metaprojectFactory.getPort(portNumber));
+        }
+        Host updatedHost = metaprojectFactory.getHost(hostAddress, secondaryPort);
+        configuration.setHost(updatedHost);
+    }
+
+    @Override
+    public String getRootDirectory() throws Exception {
+        return configuration.getServerRoot().toString();
+    }
+
+    @Override
+    public void setRootDirectory(AuthToken token, String rootDirectory) throws Exception {
+        configuration.setServerRoot(new File(rootDirectory));
+    }
+
+    @Override
+    public Map<String, String> getServerProperties() throws Exception {
+        return configuration.getProperties();
+    }
+
+    @Override
     public void setServerConfiguration(AuthToken token, String property, String value)
             throws ServerServiceException {
         configuration.addProperty(property, value);
+    }
+
+    @Override
+    public void unsetServerConfiguration(AuthToken token, String property) throws Exception {
+        configuration.removeProperty(property);
     }
 
     @Override
