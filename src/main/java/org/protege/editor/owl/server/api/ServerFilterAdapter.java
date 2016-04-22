@@ -106,8 +106,8 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public Host getHost() throws Exception {
-        return getDelegate().getHost();
+    public Host getHost(AuthToken token) throws Exception {
+        return getDelegate().getHost(token);
     }
 
     @Override
@@ -121,8 +121,8 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public String getRootDirectory() throws Exception {
-        return getDelegate().getRootDirectory();
+    public String getRootDirectory(AuthToken token) throws Exception {
+        return getDelegate().getRootDirectory(token);
     }
 
     @Override
@@ -131,8 +131,8 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public Map<String, String> getServerProperties() throws Exception {
-        return getDelegate().getServerProperties();
+    public Map<String, String> getServerProperties(AuthToken token) throws Exception {
+        return getDelegate().getServerProperties(token);
     }
 
     @Override

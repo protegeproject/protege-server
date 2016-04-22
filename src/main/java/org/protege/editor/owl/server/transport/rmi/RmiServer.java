@@ -185,9 +185,9 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
-    public Host getHost() throws RemoteException {
+    public Host getHost(AuthToken token) throws RemoteException {
         try {
-            return server.getHost();
+            return server.getHost(token);
         }
         catch (Exception e) {
             throw new RemoteException(e.getMessage(), e);
@@ -215,9 +215,9 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
-    public String getRootDirectory() throws RemoteException {
+    public String getRootDirectory(AuthToken token) throws RemoteException {
         try {
-            return server.getRootDirectory();
+            return server.getRootDirectory(token);
         }
         catch (Exception e) {
             throw new RemoteException(e.getMessage(), e);
@@ -235,9 +235,9 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
-    public Map<String, String> getServerProperties() throws RemoteException {
+    public Map<String, String> getServerProperties(AuthToken token) throws RemoteException {
         try {
-            return server.getServerProperties();
+            return server.getServerProperties(token);
         }
         catch (Exception e) {
             throw new RemoteException(e.getMessage(), e);

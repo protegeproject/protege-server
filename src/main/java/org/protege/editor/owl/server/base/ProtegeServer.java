@@ -227,21 +227,21 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public Host getHost() throws Exception {
+    public Host getHost(AuthToken token) throws Exception {
         return configuration.getHost();
     }
 
     @Override
     public void setHostAddress(AuthToken token, String hostAddress) throws Exception {
         URI hostAddresssUri = metaprojectFactory.getUri(hostAddress);
-        Optional<Port> secondaryPort = getHost().getSecondaryPort();
+        Optional<Port> secondaryPort = getHost(token).getSecondaryPort();
         Host updatedHost = metaprojectFactory.getHost(hostAddresssUri, secondaryPort);
         configuration.setHost(updatedHost);
     }
 
     @Override
     public void setSecondaryPort(AuthToken token, int portNumber) throws Exception {
-        URI hostAddress = getHost().getUri();
+        URI hostAddress = getHost(token).getUri();
         Optional<Port> secondaryPort = Optional.empty();
         if (portNumber > 0) {
             secondaryPort = Optional.of(metaprojectFactory.getPort(portNumber));
@@ -251,7 +251,7 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public String getRootDirectory() throws Exception {
+    public String getRootDirectory(AuthToken token) throws Exception {
         return configuration.getServerRoot().toString();
     }
 
@@ -261,7 +261,7 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public Map<String, String> getServerProperties() throws Exception {
+    public Map<String, String> getServerProperties(AuthToken token) throws Exception {
         return configuration.getProperties();
     }
 

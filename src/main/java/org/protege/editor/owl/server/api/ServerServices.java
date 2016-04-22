@@ -315,10 +315,12 @@ public interface ServerServices {
     /**
      * Gets the host information (including the host address and secondary port, if any)
      *
+     * @param token
+     *            An authentication token to verify the request source.
      * @return The {@code Host} object to represent such information
      * @throws Exception
      */
-    Host getHost() throws Exception;
+    Host getHost(AuthToken token) throws Exception;
 
     /**
      * Sets the host server address.
@@ -345,10 +347,12 @@ public interface ServerServices {
     /**
      * Gets the root directory location.
      *
+     * @param token
+     *            An authentication token to verify the request source.
      * @return The root directory location string.
      * @throws Exception
      */
-    String getRootDirectory() throws Exception;
+    String getRootDirectory(AuthToken token) throws Exception;
 
     /**
      * Sets the root directory location.
@@ -364,10 +368,12 @@ public interface ServerServices {
     /**
      * Gets the map of user's server properties.
      *
+     * @param token
+     *            An authentication token to verify the request source.
      * @return The server property map.
      * @throws Exception
      */
-    Map<String, String> getServerProperties() throws Exception;
+    Map<String, String> getServerProperties(AuthToken token) throws Exception;
 
     /**
      * Setting a server property by specifying the property name and the value.
