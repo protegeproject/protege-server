@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Host;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
 import edu.stanford.protege.metaproject.api.Project;
@@ -184,9 +185,79 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
+    public Host getHost() throws RemoteException {
+        try {
+            return server.getHost();
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void setHostAddress(AuthToken token, String hostAddress) throws RemoteException {
+        try {
+            server.setHostAddress(token, hostAddress);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void setSecondaryPort(AuthToken token, int portNumber) throws RemoteException {
+        try {
+            server.setSecondaryPort(token, portNumber);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public String getRootDirectory() throws RemoteException {
+        try {
+            return server.getRootDirectory();
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void setRootDirectory(AuthToken token, String rootDirectory) throws RemoteException {
+        try {
+            server.setRootDirectory(token, rootDirectory);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Map<String, String> getServerProperties() throws RemoteException {
+        try {
+            return server.getServerProperties();
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
+    }
+
+    @Override
     public void setServerConfiguration(AuthToken token, String property, String value) throws RemoteException {
         try {
             server.setServerConfiguration(token, property, value);
+        }
+        catch (Exception e) {
+            throw new RemoteException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void unsetServerConfiguration(AuthToken token, String property) throws RemoteException {
+        try {
+            server.unsetServerConfiguration(token, property);
         }
         catch (Exception e) {
             throw new RemoteException(e.getMessage(), e);
