@@ -245,9 +245,9 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
-    public void setServerConfiguration(AuthToken token, String property, String value) throws RemoteException {
+    public void setServerProperty(AuthToken token, String property, String value) throws RemoteException {
         try {
-            server.setServerConfiguration(token, property, value);
+            server.setServerProperty(token, property, value);
         }
         catch (Exception e) {
             throw new RemoteException(e.getMessage(), e);
@@ -255,9 +255,9 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
-    public void unsetServerConfiguration(AuthToken token, String property) throws RemoteException {
+    public void unsetServerProperty(AuthToken token, String property) throws RemoteException {
         try {
-            server.unsetServerConfiguration(token, property);
+            server.unsetServerProperty(token, property);
         }
         catch (Exception e) {
             throw new RemoteException(e.getMessage(), e);

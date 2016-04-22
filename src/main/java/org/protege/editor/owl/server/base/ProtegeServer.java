@@ -266,13 +266,13 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void setServerConfiguration(AuthToken token, String property, String value)
+    public void setServerProperty(AuthToken token, String property, String value)
             throws ServerServiceException {
         configuration.addProperty(property, value);
     }
 
     @Override
-    public void unsetServerConfiguration(AuthToken token, String property) throws Exception {
+    public void unsetServerProperty(AuthToken token, String property) throws Exception {
         configuration.removeProperty(property);
     }
 

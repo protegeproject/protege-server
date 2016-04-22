@@ -380,7 +380,7 @@ public interface ServerServices {
      *          The property value
      * @throws Exception
      */
-    void setServerConfiguration(AuthToken token, String property, String value) throws Exception;
+    void setServerProperty(AuthToken token, String property, String value) throws Exception;
 
     /**
      * Unsets a server property by specifying the property name.
@@ -391,7 +391,7 @@ public interface ServerServices {
      *          The target property name
      * @throws Exception
      */
-    void unsetServerConfiguration(AuthToken token, String property) throws Exception;
+    void unsetServerProperty(AuthToken token, String property) throws Exception;
 
     /**
      * Committing the given ontology changes to be applied in the server.

@@ -136,14 +136,14 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void setServerConfiguration(AuthToken token, String property, String value)
+    public void setServerProperty(AuthToken token, String property, String value)
             throws Exception {
-        getDelegate().setServerConfiguration(token, property, value);
+        getDelegate().setServerProperty(token, property, value);
     }
 
     @Override
-    public void unsetServerConfiguration(AuthToken token, String property) throws Exception {
-        getDelegate().unsetServerConfiguration(token, property);
+    public void unsetServerProperty(AuthToken token, String property) throws Exception {
+        getDelegate().unsetServerProperty(token, property);
     }
 
     @Override
