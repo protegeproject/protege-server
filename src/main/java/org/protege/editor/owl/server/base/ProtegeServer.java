@@ -3,6 +3,7 @@ package org.protege.editor.owl.server.base;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.TransportHandler;
+import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.HistoryFile;
@@ -41,11 +42,11 @@ import edu.stanford.protege.metaproject.api.exception.IdAlreadyInUseException;
 import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
 
 /**
- * The main server that acts as the end-point server where user requests to the server
- * get implemented.
+ * The main server that acts as the end-point server where user requests to the
+ * server get implemented.
  *
  * @author Josef Hardi <johardi@stanford.edu> <br>
- * Stanford Center for Biomedical Informatics Research
+ *         Stanford Center for Biomedical Informatics Research
  */
 public class ProtegeServer extends ServerLayer {
 
@@ -77,7 +78,7 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void createUser(AuthToken token, User newUser) throws ServerServiceException {
+    public void createUser(AuthToken token, User newUser) throws AuthorizationException, ServerServiceException {
         try {
             userRegistry.add(newUser);
         }
@@ -87,7 +88,7 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void deleteUser(AuthToken token, UserId userId) throws ServerServiceException {
+    public void deleteUser(AuthToken token, UserId userId) throws AuthorizationException, ServerServiceException {
         try {
             User user = userRegistry.get(userId);
             userRegistry.remove(user);
@@ -98,7 +99,8 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void updateUser(AuthToken token, UserId userId, User updatedUser) throws ServerServiceException {
+    public void updateUser(AuthToken token, UserId userId, User updatedUser)
+            throws AuthorizationException, ServerServiceException {
         try {
             userRegistry.update(userId, updatedUser);
         }
@@ -108,7 +110,8 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void createProject(AuthToken token, Project newProject) throws ServerServiceException {
+    public void createProject(AuthToken token, Project newProject)
+            throws AuthorizationException, ServerServiceException {
         try {
             projectRegistry.add(newProject);
         }
@@ -118,7 +121,8 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void deleteProject(AuthToken token, ProjectId projectId) throws ServerServiceException {
+    public void deleteProject(AuthToken token, ProjectId projectId)
+            throws AuthorizationException, ServerServiceException {
         try {
             Project project = projectRegistry.get(projectId);
             projectRegistry.remove(project);
@@ -129,7 +133,8 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void updateProject(AuthToken token, ProjectId projectId, Project updatedProject) throws ServerServiceException {
+    public void updateProject(AuthToken token, ProjectId projectId, Project updatedProject)
+            throws AuthorizationException, ServerServiceException {
         try {
             projectRegistry.update(projectId, updatedProject);
         }
@@ -139,10 +144,11 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public ServerDocument openProject(AuthToken token, ProjectId projectId) throws ServerServiceException {
+    public ServerDocument openProject(AuthToken token, ProjectId projectId)
+            throws AuthorizationException, ServerServiceException {
         try {
             Project project = projectRegistry.get(projectId);
-            return new ServerDocument(configuration.getHost(), new HistoryFile(project.getFile())); // TODO: Use factory
+            return new ServerDocument(configuration.getHost(), new HistoryFile(project.getFile()));
         }
         catch (UnknownMetaprojectObjectIdException e) {
             throw new ServerServiceException(e);
@@ -153,7 +159,7 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void createRole(AuthToken token, Role newRole) throws ServerServiceException {
+    public void createRole(AuthToken token, Role newRole) throws AuthorizationException, ServerServiceException {
         try {
             roleRegistry.add(newRole);
         }
@@ -163,18 +169,19 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void deleteRole(AuthToken token, RoleId roleId) throws ServerServiceException {
+    public void deleteRole(AuthToken token, RoleId roleId) throws AuthorizationException, ServerServiceException {
         try {
             roleRegistry.remove(roleRegistry.get(roleId));
         }
         catch (UnknownMetaprojectObjectIdException e) {
             throw new ServerServiceException(e);
         }
-        
+
     }
 
     @Override
-    public void updateRole(AuthToken token, RoleId roleId, Role updatedRole) throws ServerServiceException {
+    public void updateRole(AuthToken token, RoleId roleId, Role updatedRole)
+            throws AuthorizationException, ServerServiceException {
         try {
             roleRegistry.update(roleId, updatedRole);
         }
@@ -184,7 +191,8 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void createOperation(AuthToken token, Operation newOperation) throws ServerServiceException {
+    public void createOperation(AuthToken token, Operation newOperation)
+            throws AuthorizationException, ServerServiceException {
         try {
             operationRegistry.add(newOperation);
         }
@@ -194,7 +202,8 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void deleteOperation(AuthToken token, OperationId operationId) throws ServerServiceException {
+    public void deleteOperation(AuthToken token, OperationId operationId)
+            throws AuthorizationException, ServerServiceException {
         try {
             operationRegistry.remove(operationRegistry.get(operationId));
         }
@@ -205,7 +214,7 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public void updateOperation(AuthToken token, OperationId operationId, Operation updatedOperation)
-            throws ServerServiceException {
+            throws AuthorizationException, ServerServiceException {
         try {
             operationRegistry.update(operationId, updatedOperation);
         }
@@ -216,31 +225,31 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public void assignRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
-            throws ServerServiceException {
+            throws AuthorizationException, ServerServiceException {
         policy.add(roleId, projectId, userId);
     }
 
     @Override
     public void retractRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
-            throws ServerServiceException {
+            throws AuthorizationException, ServerServiceException {
         policy.remove(userId, projectId, roleId);
     }
 
     @Override
-    public Host getHost(AuthToken token) throws Exception {
+    public Host getHost(AuthToken token) throws AuthorizationException, ServerServiceException {
         return configuration.getHost();
     }
 
     @Override
-    public void setHostAddress(AuthToken token, String hostAddress) throws Exception {
-        URI hostAddresssUri = metaprojectFactory.getUri(hostAddress);
+    public void setHostAddress(AuthToken token, URI hostAddress) throws AuthorizationException, ServerServiceException {
         Optional<Port> secondaryPort = getHost(token).getSecondaryPort();
-        Host updatedHost = metaprojectFactory.getHost(hostAddresssUri, secondaryPort);
+        Host updatedHost = metaprojectFactory.getHost(hostAddress, secondaryPort);
         configuration.setHost(updatedHost);
     }
 
     @Override
-    public void setSecondaryPort(AuthToken token, int portNumber) throws Exception {
+    public void setSecondaryPort(AuthToken token, int portNumber)
+            throws AuthorizationException, ServerServiceException {
         URI hostAddress = getHost(token).getUri();
         Optional<Port> secondaryPort = Optional.empty();
         if (portNumber > 0) {
@@ -251,35 +260,38 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public String getRootDirectory(AuthToken token) throws Exception {
+    public String getRootDirectory(AuthToken token) throws AuthorizationException, ServerServiceException {
         return configuration.getServerRoot().toString();
     }
 
     @Override
-    public void setRootDirectory(AuthToken token, String rootDirectory) throws Exception {
+    public void setRootDirectory(AuthToken token, String rootDirectory)
+            throws AuthorizationException, ServerServiceException {
         configuration.setServerRoot(new File(rootDirectory));
     }
 
     @Override
-    public Map<String, String> getServerProperties(AuthToken token) throws Exception {
+    public Map<String, String> getServerProperties(AuthToken token)
+            throws AuthorizationException, ServerServiceException {
         return configuration.getProperties();
     }
 
     @Override
     public void setServerProperty(AuthToken token, String property, String value)
-            throws ServerServiceException {
+            throws AuthorizationException, ServerServiceException {
         configuration.addProperty(property, value);
     }
 
     @Override
-    public void unsetServerProperty(AuthToken token, String property) throws Exception {
+    public void unsetServerProperty(AuthToken token, String property)
+            throws AuthorizationException, ServerServiceException {
         configuration.removeProperty(property);
     }
 
     @Override
     public void commit(AuthToken token, Project project, CommitBundle changes) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -288,22 +300,24 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public List<User> getAllUsers(AuthToken token) throws ServerServiceException {
+    public List<User> getAllUsers(AuthToken token) throws AuthorizationException, ServerServiceException {
         return new ArrayList<>(userRegistry.getEntries());
     }
 
     @Override
-    public List<Project> getProjects(AuthToken token, UserId userId) throws ServerServiceException {
+    public List<Project> getProjects(AuthToken token, UserId userId)
+            throws AuthorizationException, ServerServiceException {
         return new ArrayList<>(metaprojectAgent.getProjects(userId));
     }
 
     @Override
-    public List<Project> getAllProjects(AuthToken token) throws ServerServiceException {
+    public List<Project> getAllProjects(AuthToken token) throws AuthorizationException, ServerServiceException {
         return new ArrayList<>(projectRegistry.getEntries());
     }
 
     @Override
-    public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId) throws ServerServiceException {
+    public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId)
+            throws AuthorizationException, ServerServiceException {
         Map<ProjectId, List<Role>> roleMap = new HashMap<>();
         for (Project project : getAllProjects(token)) {
             roleMap.put(project.getId(), getRoles(token, userId, project.getId()));
@@ -312,17 +326,19 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId) throws ServerServiceException {
+    public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId)
+            throws AuthorizationException, ServerServiceException {
         return new ArrayList<>(metaprojectAgent.getRoles(userId, projectId));
     }
 
     @Override
-    public List<Role> getAllRoles(AuthToken token) throws ServerServiceException {
+    public List<Role> getAllRoles(AuthToken token) throws AuthorizationException, ServerServiceException {
         return new ArrayList<>(roleRegistry.getEntries());
     }
 
     @Override
-    public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId) throws ServerServiceException {
+    public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId)
+            throws AuthorizationException, ServerServiceException {
         Map<ProjectId, List<Operation>> operationMap = new HashMap<>();
         for (Project project : getAllProjects(token)) {
             operationMap.put(project.getId(), getOperations(token, userId, project.getId()));
@@ -332,18 +348,18 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId)
-            throws ServerServiceException {
+            throws AuthorizationException, ServerServiceException {
         return new ArrayList<>(metaprojectAgent.getOperations(userId, projectId));
     }
 
     @Override
-    public List<Operation> getAllOperations(AuthToken token) throws ServerServiceException {
+    public List<Operation> getAllOperations(AuthToken token) throws AuthorizationException, ServerServiceException {
         return new ArrayList<>(operationRegistry.getEntries());
     }
 
     @Override
     public boolean isOperationAllowed(AuthToken token, OperationId operationId, ProjectId projectId, UserId userId)
-            throws ServerServiceException {
+            throws AuthorizationException, ServerServiceException {
         return metaprojectAgent.isOperationAllowed(operationId, projectId, userId);
     }
 }
