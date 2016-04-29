@@ -1,5 +1,6 @@
 package org.protege.editor.owl.server.base;
 
+import org.protege.editor.owl.server.ServerActivator;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.TransportHandler;
@@ -11,6 +12,7 @@ import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 import org.protege.editor.owl.server.versioning.ServerDocument;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +41,7 @@ import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.UserRegistry;
 import edu.stanford.protege.metaproject.api.exception.IdAlreadyInUseException;
+import edu.stanford.protege.metaproject.api.exception.ServerConfigurationNotLoadedException;
 import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
 
 /**
@@ -59,6 +62,8 @@ public class ProtegeServer extends ServerLayer {
     private Policy policy;
     private MetaprojectAgent metaprojectAgent;
 
+    private File configurationFile;
+
     private TransportHandler transport;
 
     private static final MetaprojectFactory metaprojectFactory = Manager.getFactory();
@@ -70,6 +75,9 @@ public class ProtegeServer extends ServerLayer {
         roleRegistry = configuration.getMetaproject().getRoleRegistry();
         policy = configuration.getMetaproject().getPolicy();
         metaprojectAgent = configuration.getMetaproject().getMetaprojectAgent();
+        
+        String configLocation = System.getProperty(ServerActivator.SERVER_CONFIGURATION_PROPERTY);
+        configurationFile = new File(configLocation);
     }
 
     @Override
@@ -79,67 +87,85 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public void createUser(AuthToken token, User newUser) throws AuthorizationException, ServerServiceException {
-        try {
-            userRegistry.add(newUser);
-        }
-        catch (IdAlreadyInUseException e) {
-            throw new ServerServiceException(e);
+        synchronized (userRegistry) {
+            try {
+                userRegistry.add(newUser);
+                saveChanges();
+            }
+            catch (IdAlreadyInUseException e) {
+                throw new ServerServiceException(e.getMessage(), e);
+            }
         }
     }
 
     @Override
     public void deleteUser(AuthToken token, UserId userId) throws AuthorizationException, ServerServiceException {
-        try {
-            User user = userRegistry.get(userId);
-            userRegistry.remove(user);
-        }
-        catch (UnknownMetaprojectObjectIdException e) {
-            throw new ServerServiceException(e);
+        synchronized (userRegistry) {
+            try {
+                User user = userRegistry.get(userId);
+                userRegistry.remove(user);
+                saveChanges();
+            }
+            catch (UnknownMetaprojectObjectIdException e) {
+                throw new ServerServiceException(e);
+            }
         }
     }
 
     @Override
     public void updateUser(AuthToken token, UserId userId, User updatedUser)
             throws AuthorizationException, ServerServiceException {
-        try {
-            userRegistry.update(userId, updatedUser);
-        }
-        catch (UnknownMetaprojectObjectIdException e) {
-            throw new ServerServiceException(e);
+        synchronized (userRegistry) {
+            try {
+                userRegistry.update(userId, updatedUser);
+                saveChanges();
+            }
+            catch (UnknownMetaprojectObjectIdException e) {
+                throw new ServerServiceException(e);
+            }
         }
     }
 
     @Override
     public void createProject(AuthToken token, Project newProject)
             throws AuthorizationException, ServerServiceException {
-        try {
-            projectRegistry.add(newProject);
-        }
-        catch (IdAlreadyInUseException e) {
-            throw new ServerServiceException(e);
+        synchronized (projectRegistry) {
+            try {
+                projectRegistry.add(newProject);
+                saveChanges();
+            }
+            catch (IdAlreadyInUseException e) {
+                throw new ServerServiceException(e);
+            }
         }
     }
 
     @Override
     public void deleteProject(AuthToken token, ProjectId projectId)
             throws AuthorizationException, ServerServiceException {
-        try {
-            Project project = projectRegistry.get(projectId);
-            projectRegistry.remove(project);
-        }
-        catch (UnknownMetaprojectObjectIdException e) {
-            throw new ServerServiceException(e);
+        synchronized (projectRegistry) {
+            try {
+                Project project = projectRegistry.get(projectId);
+                projectRegistry.remove(project);
+                saveChanges();
+            }
+            catch (UnknownMetaprojectObjectIdException e) {
+                throw new ServerServiceException(e);
+            }
         }
     }
 
     @Override
     public void updateProject(AuthToken token, ProjectId projectId, Project updatedProject)
             throws AuthorizationException, ServerServiceException {
-        try {
-            projectRegistry.update(projectId, updatedProject);
-        }
-        catch (UnknownMetaprojectObjectIdException e) {
-            throw new ServerServiceException(e);
+        synchronized (projectRegistry) {
+            try {
+                projectRegistry.update(projectId, updatedProject);
+                saveChanges();
+            }
+            catch (UnknownMetaprojectObjectIdException e) {
+                throw new ServerServiceException(e);
+            }
         }
     }
 
@@ -160,79 +186,102 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public void createRole(AuthToken token, Role newRole) throws AuthorizationException, ServerServiceException {
-        try {
-            roleRegistry.add(newRole);
-        }
-        catch (IdAlreadyInUseException e) {
-            throw new ServerServiceException(e);
+        synchronized (roleRegistry) {
+            try {
+                roleRegistry.add(newRole);
+                saveChanges();
+            }
+            catch (IdAlreadyInUseException e) {
+                throw new ServerServiceException(e);
+            }
         }
     }
 
     @Override
     public void deleteRole(AuthToken token, RoleId roleId) throws AuthorizationException, ServerServiceException {
-        try {
-            roleRegistry.remove(roleRegistry.get(roleId));
+        synchronized (roleRegistry) {
+            try {
+                roleRegistry.remove(roleRegistry.get(roleId));
+                saveChanges();
+            }
+            catch (UnknownMetaprojectObjectIdException e) {
+                throw new ServerServiceException(e);
+            }
         }
-        catch (UnknownMetaprojectObjectIdException e) {
-            throw new ServerServiceException(e);
-        }
-
     }
 
     @Override
     public void updateRole(AuthToken token, RoleId roleId, Role updatedRole)
             throws AuthorizationException, ServerServiceException {
-        try {
-            roleRegistry.update(roleId, updatedRole);
-        }
-        catch (UnknownMetaprojectObjectIdException e) {
-            throw new ServerServiceException(e);
+        synchronized (roleRegistry) {
+            try {
+                roleRegistry.update(roleId, updatedRole);
+                saveChanges();
+            }
+            catch (UnknownMetaprojectObjectIdException e) {
+                throw new ServerServiceException(e);
+            }
         }
     }
 
     @Override
     public void createOperation(AuthToken token, Operation newOperation)
             throws AuthorizationException, ServerServiceException {
-        try {
-            operationRegistry.add(newOperation);
-        }
-        catch (IdAlreadyInUseException e) {
-            throw new ServerServiceException(e);
+        synchronized (operationRegistry) {
+            try {
+                operationRegistry.add(newOperation);
+                saveChanges();
+            }
+            catch (IdAlreadyInUseException e) {
+                throw new ServerServiceException(e);
+            }
         }
     }
 
     @Override
     public void deleteOperation(AuthToken token, OperationId operationId)
             throws AuthorizationException, ServerServiceException {
-        try {
-            operationRegistry.remove(operationRegistry.get(operationId));
-        }
-        catch (UnknownMetaprojectObjectIdException e) {
-            throw new ServerServiceException(e);
+        synchronized (operationRegistry) {
+            try {
+                operationRegistry.remove(operationRegistry.get(operationId));
+                saveChanges();
+            }
+            catch (UnknownMetaprojectObjectIdException e) {
+                throw new ServerServiceException(e);
+            }
         }
     }
 
     @Override
     public void updateOperation(AuthToken token, OperationId operationId, Operation updatedOperation)
             throws AuthorizationException, ServerServiceException {
-        try {
-            operationRegistry.update(operationId, updatedOperation);
-        }
-        catch (UnknownMetaprojectObjectIdException e) {
-            throw new ServerServiceException(e);
+        synchronized (operationRegistry) {
+            try {
+                operationRegistry.update(operationId, updatedOperation);
+                saveChanges();
+            }
+            catch (UnknownMetaprojectObjectIdException e) {
+                throw new ServerServiceException(e);
+            }
         }
     }
 
     @Override
     public void assignRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
             throws AuthorizationException, ServerServiceException {
-        policy.add(roleId, projectId, userId);
+        synchronized (policy) {
+            policy.add(roleId, projectId, userId);
+            saveChanges();
+        }
     }
 
     @Override
     public void retractRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
             throws AuthorizationException, ServerServiceException {
-        policy.remove(userId, projectId, roleId);
+        synchronized (policy) {
+            policy.remove(userId, projectId, roleId);
+            saveChanges();
+        }
     }
 
     @Override
@@ -242,21 +291,27 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public void setHostAddress(AuthToken token, URI hostAddress) throws AuthorizationException, ServerServiceException {
-        Optional<Port> secondaryPort = getHost(token).getSecondaryPort();
-        Host updatedHost = metaprojectFactory.getHost(hostAddress, secondaryPort);
-        configuration.setHost(updatedHost);
+        synchronized (configuration) {
+            Optional<Port> secondaryPort = getHost(token).getSecondaryPort();
+            Host updatedHost = metaprojectFactory.getHost(hostAddress, secondaryPort);
+            configuration.setHost(updatedHost);
+            saveChanges();
+        }
     }
 
     @Override
     public void setSecondaryPort(AuthToken token, int portNumber)
             throws AuthorizationException, ServerServiceException {
-        URI hostAddress = getHost(token).getUri();
-        Optional<Port> secondaryPort = Optional.empty();
-        if (portNumber > 0) {
-            secondaryPort = Optional.of(metaprojectFactory.getPort(portNumber));
+        synchronized (configuration) {
+            URI hostAddress = getHost(token).getUri();
+            Optional<Port> secondaryPort = Optional.empty();
+            if (portNumber > 0) {
+                secondaryPort = Optional.of(metaprojectFactory.getPort(portNumber));
+            }
+            Host updatedHost = metaprojectFactory.getHost(hostAddress, secondaryPort);
+            configuration.setHost(updatedHost);
+            saveChanges();
         }
-        Host updatedHost = metaprojectFactory.getHost(hostAddress, secondaryPort);
-        configuration.setHost(updatedHost);
     }
 
     @Override
@@ -267,7 +322,10 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public void setRootDirectory(AuthToken token, String rootDirectory)
             throws AuthorizationException, ServerServiceException {
-        configuration.setServerRoot(new File(rootDirectory));
+        synchronized (configuration) {
+            configuration.setServerRoot(new File(rootDirectory));
+            saveChanges();
+        }
     }
 
     @Override
@@ -279,13 +337,19 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public void setServerProperty(AuthToken token, String property, String value)
             throws AuthorizationException, ServerServiceException {
-        configuration.addProperty(property, value);
+        synchronized (configuration) {
+            configuration.addProperty(property, value);
+            saveChanges();
+        }
     }
 
     @Override
     public void unsetServerProperty(AuthToken token, String property)
             throws AuthorizationException, ServerServiceException {
-        configuration.removeProperty(property);
+        synchronized (configuration) {
+            configuration.removeProperty(property);
+            saveChanges();
+        }
     }
 
     @Override
@@ -361,5 +425,16 @@ public class ProtegeServer extends ServerLayer {
     public boolean isOperationAllowed(AuthToken token, OperationId operationId, ProjectId projectId, UserId userId)
             throws AuthorizationException, ServerServiceException {
         return metaprojectAgent.isOperationAllowed(operationId, projectId, userId);
+    }
+
+    private void saveChanges() throws ServerServiceException {
+        synchronized (configurationFile) {
+            try {
+                Manager.getConfigurationManager().saveServerConfiguration(configurationFile);
+            }
+            catch (ServerConfigurationNotLoadedException | IOException e) {
+                throw new ServerServiceException(e.getMessage(), e);
+            }
+        }
     }
 }
