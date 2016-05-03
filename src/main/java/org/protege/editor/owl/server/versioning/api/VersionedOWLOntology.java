@@ -91,7 +91,7 @@ public interface VersionedOWLOntology extends HasDisplayName {
      * @throws IOException
      *             IOException
      */
-    boolean saveMetaData() throws Exception;
+    boolean saveMetadata() throws Exception;
 
     /**
      * This call will save the local history associated with a versioned

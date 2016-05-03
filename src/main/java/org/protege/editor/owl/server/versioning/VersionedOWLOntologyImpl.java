@@ -15,35 +15,15 @@ import java.io.ObjectOutputStream;
 
 public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 
-    public static final String BACKING_STORE_PROPERTY = "server.location";
-    public static final String VERSION_PROPERTY = "version";
+    /*
+     * Hidden directory name to store history file and other versioning resources
+     */
     public static final String VERSION_DOCUMENT_DIRECTORY = ".owlserver";
+
+    /*
+     * Extension for the metadata file
+     */
     public static final String VERSION_DOCUMENT_EXTENSION = ".vontology";
-
-    public static File getMetaDataFile(File ontologyFile) {
-        File versionInfoDir = getVersionInfoDirectory(ontologyFile);
-        return new File(versionInfoDir, ontologyFile.getName() + VERSION_DOCUMENT_EXTENSION);
-    }
-
-    public static HistoryFile getHistoryFile(File ontologyFile) throws InvalidHistoryFileException {
-        File versionInfoDir = getVersionInfoDirectory(ontologyFile);
-        File historyFile = new File(versionInfoDir, ontologyFile.getName() + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
-        return new HistoryFile(historyFile);
-    }
-
-    public static File getVersionInfoDirectory(File ontologyFile) {
-        File dir = ontologyFile.getParentFile();
-        return new File(dir, VERSION_DOCUMENT_DIRECTORY);
-    }
-
-    public static File getBackingStore(OWLOntology ontology) {
-        OWLOntologyManager manager = ontology.getOWLOntologyManager();
-        IRI documentLocation = manager.getOntologyDocumentIRI(ontology);
-        if (!documentLocation.getScheme().equals("file")) {
-            return null;
-        }
-        return new File(documentLocation.toURI());
-    }
 
     private ServerDocument serverDocument;
     private OWLOntology ontology;
@@ -64,6 +44,31 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
         this.ontology = ontology;
         this.revision = DocumentRevision.START_REVISION;
         this.localHistory = ChangeHistoryImpl.createEmptyChangeHistory();
+    }
+
+    public static File getMetadataFile(File ontologyFile) {
+        File parentDir = getVersioningDirectory(ontologyFile);
+        return new File(parentDir, ontologyFile.getName() + VERSION_DOCUMENT_EXTENSION);
+    }
+
+    public static HistoryFile getHistoryFile(File ontologyFile) throws InvalidHistoryFileException {
+        File parentDir = getVersioningDirectory(ontologyFile);
+        File historyFile = new File(parentDir, ontologyFile.getName() + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
+        return new HistoryFile(historyFile);
+    }
+
+    public static File getVersioningDirectory(File ontologyFile) {
+        File dir = ontologyFile.getParentFile();
+        return new File(dir, VERSION_DOCUMENT_DIRECTORY);
+    }
+
+    public static File getBackingStore(OWLOntology ontology) {
+        OWLOntologyManager manager = ontology.getOWLOntologyManager();
+        IRI documentLocation = manager.getOntologyDocumentIRI(ontology);
+        if (!documentLocation.getScheme().equals("file")) {
+            return null;
+        }
+        return new File(documentLocation.toURI());
     }
 
     @Override
@@ -103,12 +108,12 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     }
 
     @Override
-    public boolean saveMetaData() throws Exception {
+    public boolean saveMetadata() throws Exception {
         File ontologyFile = getBackingStore(ontology);
         if (ontologyFile == null) {
             return false;
         }
-        File metadataFile = getMetaDataFile(ontologyFile);
+        File metadataFile = getMetadataFile(ontologyFile);
         metadataFile.getParentFile().mkdirs();
         ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(metadataFile)));
         try {
