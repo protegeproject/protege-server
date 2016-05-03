@@ -182,9 +182,9 @@ public class ChangeDocumentPoolEntry {
         }
     }
 
-    private HistoryFile getBackupHistoryFile(File historyFile) throws InvalidHistoryFileException, IOException {
-        String path = historyFile.getCanonicalPath();
+    private HistoryFile getBackupHistoryFile(File historyFile) throws InvalidHistoryFileException {
+        String path = historyFile.getAbsolutePath();
         String newPath = new StringBuilder(path).insert(path.lastIndexOf(File.separator), "~").toString();
-        return new HistoryFile(newPath);
+        return HistoryFile.createNew(newPath);
     }
 }

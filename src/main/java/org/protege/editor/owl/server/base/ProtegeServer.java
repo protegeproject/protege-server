@@ -174,7 +174,7 @@ public class ProtegeServer extends ServerLayer {
             throws AuthorizationException, ServerServiceException {
         try {
             Project project = projectRegistry.get(projectId);
-            return new ServerDocument(configuration.getHost(), new HistoryFile(project.getFile()));
+            return new ServerDocument(configuration.getHost(), HistoryFile.openExisting(project.getFile().getAbsolutePath()));
         }
         catch (UnknownMetaprojectObjectIdException e) {
             throw new ServerServiceException(e);

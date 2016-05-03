@@ -54,7 +54,7 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     public static HistoryFile getHistoryFile(File ontologyFile) throws InvalidHistoryFileException {
         File parentDir = getVersioningDirectory(ontologyFile);
         File historyFile = new File(parentDir, ontologyFile.getName() + ChangeHistory.CHANGE_DOCUMENT_EXTENSION);
-        return new HistoryFile(historyFile);
+        return HistoryFile.openExisting(historyFile.getAbsolutePath());
     }
 
     public static File getVersioningDirectory(File ontologyFile) {
