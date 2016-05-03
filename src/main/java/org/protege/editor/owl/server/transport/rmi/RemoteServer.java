@@ -10,13 +10,17 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Description;
 import edu.stanford.protege.metaproject.api.Host;
+import edu.stanford.protege.metaproject.api.Name;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.ProjectOptions;
 import edu.stanford.protege.metaproject.api.Role;
 import edu.stanford.protege.metaproject.api.RoleId;
 import edu.stanford.protege.metaproject.api.User;
@@ -153,8 +157,17 @@ public interface RemoteServer extends Remote {
      *
      * @param token
      *            An authentication token to verify the request source.
-     * @param newProject
-     *            The new project to add.
+     * @param projectId
+     *            The project identifier object
+     * @param projectName
+     *            The name of the project
+     * @param description
+     *            The description of the project
+     * @param owner
+     *            The owner of the project
+     * @param options
+     *            An optional of project options
+     * @return A server document that provide the link information to remote resources
      * @throws AuthorizationException
      *             If the user doesn't have the permission to request this
      *             service.
@@ -165,7 +178,8 @@ public interface RemoteServer extends Remote {
      *             communication problems, failure during parameter or return
      *             value marshalling or unmarshalling, protocol errors.
      */
-    void createProject(AuthToken token, Project newProject)
+    ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName,
+            Description description, UserId owner, Optional<ProjectOptions> options)
             throws AuthorizationException, ServerServiceException, RemoteException;
 
     /**
@@ -219,6 +233,7 @@ public interface RemoteServer extends Remote {
      *            An authentication token to verify the request source.
      * @param projectId
      *            The project to open identified by its ID
+     * @return A server document that provide the link information to remote resources
      * @throws AuthorizationException
      *             If the user doesn't have the permission to request this
      *             service.

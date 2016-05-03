@@ -22,9 +22,11 @@ import java.util.Optional;
 
 import edu.stanford.protege.metaproject.Manager;
 import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Description;
 import edu.stanford.protege.metaproject.api.Host;
 import edu.stanford.protege.metaproject.api.MetaprojectAgent;
 import edu.stanford.protege.metaproject.api.MetaprojectFactory;
+import edu.stanford.protege.metaproject.api.Name;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
 import edu.stanford.protege.metaproject.api.OperationRegistry;
@@ -32,6 +34,7 @@ import edu.stanford.protege.metaproject.api.Policy;
 import edu.stanford.protege.metaproject.api.Port;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.ProjectOptions;
 import edu.stanford.protege.metaproject.api.ProjectRegistry;
 import edu.stanford.protege.metaproject.api.Role;
 import edu.stanford.protege.metaproject.api.RoleId;
@@ -127,17 +130,33 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void createProject(AuthToken token, Project newProject)
+    public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName,
+            Description description, UserId owner, Optional<ProjectOptions> options)
             throws AuthorizationException, ServerServiceException {
+        HistoryFile historyFile = createHistoryFile(projectId.get(), projectName.get());
+        Project newProject = createNewProject(projectId, projectName, description, historyFile, owner, options);
         synchronized (projectRegistry) {
             try {
                 projectRegistry.add(newProject);
                 saveChanges();
+                return new ServerDocument(configuration.getHost(), historyFile);
             }
             catch (IdAlreadyInUseException e) {
                 throw new ServerServiceException(e);
             }
         }
+    }
+
+    private HistoryFile createHistoryFile(String prefix, String suffix) {
+        suffix = suffix.replaceAll("\\s+","_"); // to snake-case
+        String rootDir = configuration.getServerRoot().getAbsolutePath();
+        String filename = String.format("%s-%s", prefix, suffix);
+        return HistoryFile.createNew(rootDir, filename);
+    }
+
+    private Project createNewProject(ProjectId projectId, Name projectName, Description description,
+            HistoryFile historyFile, UserId owner, Optional<ProjectOptions> options) {
+        return metaprojectFactory.getProject(projectId, projectName, description, historyFile, owner, options);
     }
 
     @Override

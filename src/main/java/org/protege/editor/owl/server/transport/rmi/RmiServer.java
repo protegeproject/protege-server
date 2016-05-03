@@ -10,13 +10,17 @@ import java.net.URI;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Description;
 import edu.stanford.protege.metaproject.api.Host;
+import edu.stanford.protege.metaproject.api.Name;
 import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.OperationId;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.ProjectOptions;
 import edu.stanford.protege.metaproject.api.Role;
 import edu.stanford.protege.metaproject.api.RoleId;
 import edu.stanford.protege.metaproject.api.User;
@@ -55,9 +59,10 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
-    public void createProject(AuthToken token, Project newProject)
+    public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName,
+            Description description, UserId owner, Optional<ProjectOptions> options)
             throws AuthorizationException, ServerServiceException, RemoteException {
-        server.createProject(token, newProject);
+        return server.createProject(token, projectId, projectName, description, owner, options);
     }
 
     @Override
