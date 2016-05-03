@@ -1,12 +1,17 @@
 package org.protege.editor.owl.server.security;
 
+import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.LoginService;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
 import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.TransportHandler;
+import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
+import org.protege.editor.owl.server.api.exception.ServerServiceException;
 
+import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
+import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.UserRegistry;
 
 /**
@@ -32,6 +37,15 @@ public class AuthenticationFilter extends ServerFilterAdapter {
 
     public void setLoginService(LoginService loginService) {
         this.loginService = loginService;
+    }
+
+    @Override
+    public void commit(AuthToken token, Project project, CommitBundle changes)
+            throws AuthorizationException, ServerServiceException {
+        if (!sessionManager.check(token)) {
+            throw new AuthorizationException("Access denied");
+        }
+        super.commit(token, project, changes);
     }
 
     @Override
