@@ -23,7 +23,7 @@ public class CommitBundleImpl implements CommitBundle {
     }
 
     @Override
-    public DocumentRevision getStartRevision() {
+    public DocumentRevision getHeadRevision() {
         return startRevision;
     }
 }

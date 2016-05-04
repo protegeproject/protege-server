@@ -87,7 +87,7 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
         ChangeHistory allChangeHistory = changeService.getAllChanges(historyFile);
         
         final DocumentRevision headRevision = changeService.getHeadRevision(historyFile);
-        DocumentRevision revision = commits.getStartRevision();
+        DocumentRevision revision = commits.getHeadRevision();
         for (; revision.compareTo(headRevision) < 0; revision = revision.next()) {
             ChangeHistory singleRevisionChangeHistory = allChangeHistory.cropChanges(revision, revision.next());
             List<OWLOntologyChange> serverChanges = singleRevisionChangeHistory.getChanges(cacheOntology);
