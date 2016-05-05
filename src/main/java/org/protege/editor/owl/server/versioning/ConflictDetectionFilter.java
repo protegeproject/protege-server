@@ -7,21 +7,9 @@ import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.TransportHandler;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
+import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
-import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 
-import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.ImportChange;
-import org.semanticweb.owlapi.model.OWLAnnotation;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLAxiomChange;
-import org.semanticweb.owlapi.model.OWLImportsDeclaration;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyChange;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.Optional;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
@@ -63,62 +51,27 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
     }
     
     @Override
-    public void commit(AuthToken token, Project project, CommitBundle commits) throws ServerServiceException {
-       try {
-            List<OWLOntologyChange> conflicts = getConflicts(project, commits);
-            if (!conflicts.isEmpty()) {
-                throw new ServerServiceException("Conflicts detected: " + conflicts); // TODO: Fix the exception
+    public void commit(AuthToken token, Project project, CommitBundle commits)
+            throws AuthorizationException, OutOfSyncException, ServerServiceException {
+        try {
+            HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getAbsolutePath());
+            DocumentRevision serverHeadRevision = changeService.getHeadRevision(historyFile);
+            DocumentRevision clientHeadRevision = commits.getHeadRevision();
+            if (isOutdated(clientHeadRevision, serverHeadRevision)) {
+                throw new OutOfSyncException("The server contains changes that you do not have locally");
             }
-            super.commit(token, project, commits);
-       }
-       catch (Exception e) {
-           throw new ServerServiceException(e);
-       }
+        }
+        catch (InvalidHistoryFileException e) {
+            throw new ServerServiceException("Could not found remote history file", e);
+        }
+        catch (Exception e) {
+            throw new ServerServiceException("Could not retreive remote head revision", e);
+        }
+        super.commit(token, project, commits);
     }
 
-    private List<OWLOntologyChange> getConflicts(Project project, CommitBundle commits) throws Exception {
-        List<OWLOntologyChange> conflicts = new ArrayList<OWLOntologyChange>();
-        OWLOntology cacheOntology = OWLManager.createOWLOntologyManager().createOntology();
-        
-        List<OWLOntologyChange> clientChanges = commits.getChanges();
-        CollectingChangeVisitor collectedClientChanges = CollectingChangeVisitor.collectChanges(clientChanges);
-        
-        HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getAbsolutePath());
-        ChangeHistory allChangeHistory = changeService.getAllChanges(historyFile);
-        
-        final DocumentRevision headRevision = changeService.getHeadRevision(historyFile);
-        DocumentRevision revision = commits.getHeadRevision();
-        for (; revision.compareTo(headRevision) < 0; revision = revision.next()) {
-            ChangeHistory singleRevisionChangeHistory = allChangeHistory.cropChanges(revision, revision.next());
-            List<OWLOntologyChange> serverChanges = singleRevisionChangeHistory.getChanges(cacheOntology);
-            CollectingChangeVisitor collectedServerChanges = CollectingChangeVisitor.collectChanges(serverChanges);
-            computeConflicts(collectedClientChanges, collectedServerChanges, conflicts);
-        }
-        return conflicts;
-    }
-
-    private void computeConflicts(CollectingChangeVisitor clientChanges, CollectingChangeVisitor serverChanges, List<OWLOntologyChange> conflicts) {
-        if (clientChanges.getLastOntologyIDChange() != null && serverChanges.getLastOntologyIDChange() != null) {
-            conflicts.add(clientChanges.getLastOntologyIDChange());
-        }
-        for (Entry<OWLImportsDeclaration, ImportChange> entry : clientChanges.getLastImportChangeMap().entrySet()) {
-            OWLImportsDeclaration decl = entry.getKey();
-            if (serverChanges.getLastImportChangeMap().containsKey(decl)) {
-                conflicts.add(entry.getValue());
-            }
-        }
-        for (Entry<OWLAnnotation, OWLOntologyChange> entry : clientChanges.getLastOntologyAnnotationChangeMap().entrySet()) {
-            OWLAnnotation annotation = entry.getKey();
-            if (serverChanges.getLastOntologyAnnotationChangeMap().containsKey(annotation)) {
-                conflicts.add(entry.getValue());
-            }
-        }
-        for (Entry<OWLAxiom, OWLAxiomChange> entry : clientChanges.getLastAxiomChangeMap().entrySet()) {
-            OWLAxiom axiom = entry.getKey();
-            if (serverChanges.getLastAxiomChangeMap().containsKey(axiom)) {
-                conflicts.add(entry.getValue());
-            }
-        }
+    private boolean isOutdated(DocumentRevision clientHeadRevision, DocumentRevision serverHeadRevision) {
+        return clientHeadRevision.compareTo(serverHeadRevision) < 0;
     }
 
     @Override

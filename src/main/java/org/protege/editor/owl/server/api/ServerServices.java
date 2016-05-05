@@ -1,6 +1,7 @@
 package org.protege.editor.owl.server.api;
 
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
+import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.ServerDocument;
 
@@ -576,11 +577,14 @@ public interface ServerServices {
      * @throws AuthorizationException
      *             If the user doesn't have the permission to request this
      *             service.
+     * @throws OutOfSyncException
+     *             If the incoming changes are coming from a client's copy that
+     *             is out-of-date.
      * @throws ServerServiceException
      *             If the server failed to fulfill the user request.
      */
     void commit(AuthToken token, Project project, CommitBundle changes)
-            throws AuthorizationException, ServerServiceException;
+            throws AuthorizationException, OutOfSyncException, ServerServiceException;
 
     /**
      * Checking if an operation is allowed for the given user id and the project

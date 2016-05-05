@@ -3,6 +3,7 @@ package org.protege.editor.owl.server.transport.rmi;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.Server;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
+import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.ServerDocument;
 
@@ -180,7 +181,7 @@ public class RmiServer implements RemoteServer {
 
     @Override
     public void commit(AuthToken token, Project project, CommitBundle changes)
-            throws AuthorizationException, ServerServiceException, RemoteException {
+            throws AuthorizationException, OutOfSyncException, ServerServiceException, RemoteException {
         server.commit(token, project, changes);
     }
 

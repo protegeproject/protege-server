@@ -7,6 +7,7 @@ import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.TransportHandler;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
+import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.ServerDocument;
 
@@ -219,7 +220,7 @@ public class AuthenticationFilter extends ServerFilterAdapter {
 
     @Override
     public void commit(AuthToken token, Project project, CommitBundle changes)
-            throws AuthorizationException, ServerServiceException {
+            throws AuthorizationException, OutOfSyncException, ServerServiceException {
         verifyRequest(token);
         super.commit(token, project, changes);
     }

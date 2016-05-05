@@ -2,6 +2,7 @@ package org.protege.editor.owl.server.transport.rmi;
 
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
+import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.ServerDocument;
 
@@ -717,6 +718,9 @@ public interface RemoteServer extends Remote {
      * @throws AuthorizationException
      *             If the user doesn't have the permission to request this
      *             service.
+     * @throws OutOfSyncException
+     *             If the incoming changes are coming from a client's copy that
+     *             is out-of-date.
      * @throws ServerServiceException
      *             If the server failed to fulfill the user request.
      * @throws RemoteException
@@ -725,7 +729,7 @@ public interface RemoteServer extends Remote {
      *             value marshalling or unmarshalling, protocol errors.
      */
     void commit(AuthToken token, Project project, CommitBundle changes)
-            throws AuthorizationException, ServerServiceException, RemoteException;
+            throws AuthorizationException, OutOfSyncException, ServerServiceException, RemoteException;
 
     /**
      * Checking if an operation is allowed for the given user id and the project
