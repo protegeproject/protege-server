@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import edu.stanford.protege.metaproject.Manager;
 import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
 import edu.stanford.protege.metaproject.api.Description;
 import edu.stanford.protege.metaproject.api.Host;
 import edu.stanford.protege.metaproject.api.MetaprojectAgent;
@@ -39,6 +40,7 @@ import edu.stanford.protege.metaproject.api.ProjectRegistry;
 import edu.stanford.protege.metaproject.api.Role;
 import edu.stanford.protege.metaproject.api.RoleId;
 import edu.stanford.protege.metaproject.api.RoleRegistry;
+import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
@@ -58,6 +60,7 @@ public class ProtegeServer extends ServerLayer {
 
     private ServerConfiguration configuration;
 
+    private AuthenticationRegistry authenticationRegistry;
     private UserRegistry userRegistry;
     private ProjectRegistry projectRegistry;
     private RoleRegistry roleRegistry;
@@ -73,6 +76,7 @@ public class ProtegeServer extends ServerLayer {
 
     public ProtegeServer(ServerConfiguration configuration) {
         this.configuration = configuration;
+        authenticationRegistry = configuration.getAuthenticationRegistry();
         userRegistry = configuration.getMetaproject().getUserRegistry();
         projectRegistry = configuration.getMetaproject().getProjectRegistry();
         roleRegistry = configuration.getMetaproject().getRoleRegistry();
@@ -89,7 +93,8 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void createUser(AuthToken token, User newUser) throws AuthorizationException, ServerServiceException {
+    public void createUser(AuthToken token, User newUser, Optional<SaltedPasswordDigest> password)
+            throws AuthorizationException, ServerServiceException {
         synchronized (userRegistry) {
             try {
                 userRegistry.add(newUser);
@@ -97,6 +102,17 @@ public class ProtegeServer extends ServerLayer {
             }
             catch (IdAlreadyInUseException e) {
                 throw new ServerServiceException(e.getMessage(), e);
+            }
+        }
+        if (password.isPresent()) {
+            synchronized (authenticationRegistry) {
+                try {
+                    authenticationRegistry.add(newUser.getId(), password.get());
+                }
+                catch (IdAlreadyInUseException e) {
+                    throw new ServerServiceException(e.getMessage(), e);
+                }
+                saveChanges();
             }
         }
     }

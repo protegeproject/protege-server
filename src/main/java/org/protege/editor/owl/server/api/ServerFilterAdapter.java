@@ -22,6 +22,7 @@ import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.ProjectOptions;
 import edu.stanford.protege.metaproject.api.Role;
 import edu.stanford.protege.metaproject.api.RoleId;
+import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
 import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
 
@@ -36,8 +37,9 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void createUser(AuthToken token, User newUser) throws AuthorizationException, ServerServiceException {
-        getDelegate().createUser(token, newUser);
+    public void createUser(AuthToken token, User newUser, Optional<SaltedPasswordDigest> password)
+            throws AuthorizationException, ServerServiceException {
+        getDelegate().createUser(token, newUser, password);
     }
 
     @Override

@@ -24,6 +24,7 @@ import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.ProjectOptions;
 import edu.stanford.protege.metaproject.api.Role;
 import edu.stanford.protege.metaproject.api.RoleId;
+import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
 import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
 
@@ -58,6 +59,8 @@ public interface RemoteServer extends Remote {
      *            An authentication token to verify the request source.
      * @param newUser
      *            The new user to add.
+     * @param password
+     *            The password associated to the new user.
      * @throws AuthorizationException
      *             If the user doesn't have the permission to request this
      *             service.
@@ -68,7 +71,7 @@ public interface RemoteServer extends Remote {
      *             communication problems, failure during parameter or return
      *             value marshalling or unmarshalling, protocol errors.
      */
-    void createUser(AuthToken token, User newUser)
+    void createUser(AuthToken token, User newUser, Optional<SaltedPasswordDigest> password)
             throws AuthorizationException, ServerServiceException, RemoteException;
 
     /**

@@ -24,6 +24,7 @@ import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.ProjectOptions;
 import edu.stanford.protege.metaproject.api.Role;
 import edu.stanford.protege.metaproject.api.RoleId;
+import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
 import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
 
@@ -42,9 +43,9 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
-    public void createUser(AuthToken token, User newUser)
+    public void createUser(AuthToken token, User newUser, Optional<SaltedPasswordDigest> password)
             throws AuthorizationException, ServerServiceException, RemoteException {
-        server.createUser(token, newUser);
+        server.createUser(token, newUser, password);
     }
 
     @Override
