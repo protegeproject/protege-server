@@ -1,7 +1,5 @@
 package org.protege.editor.owl.server.versioning;
 
-import org.protege.editor.owl.server.versioning.api.RevisionPointer;
-
 import java.io.Serializable;
 
 public class DocumentRevision implements Comparable<DocumentRevision>, Serializable {
@@ -18,10 +16,6 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
 
     public int getRevisionNumber() {
         return revision;
-    }
-
-    public RevisionPointer asPointer() {
-        return new RevisionPointer(this);
     }
 
     public int getRevisionDifferenceFrom(DocumentRevision start) {
