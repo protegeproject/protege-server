@@ -48,6 +48,13 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
     }
 
     /**
+     * Gets the revision number.
+     */
+    public int getRevisionNumber() {
+        return revision;
+    }
+
+    /**
      * Returns <code>true</code> if this revision is greater than the given
      * origin revision.
      */
