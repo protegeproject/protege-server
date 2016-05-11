@@ -61,8 +61,8 @@ public class ChangeHistoryUtils {
             }
             SortedMap<DocumentRevision, ChangeMetadata> metadata = getMetadataMap(ois);
             List<List<OWLOntologyChange>> revisionsList = getRevisionsList(ois);
-            int start = startRevision.getRevisionNumber() - (baseStartRevision.getRevisionNumber() - 1); // inclusive
-            int end = endRevision.getRevisionNumber() - baseStartRevision.getRevisionNumber(); // exclusive
+            int start = startRevision.getRevisionDifferenceFrom(baseStartRevision) - 1; // inclusive
+            int end = endRevision.getRevisionDifferenceFrom(baseStartRevision); // exclusive
             return new ChangeHistoryImpl(startRevision,
                     revisionsList.subList(start, end),
                     metadata.tailMap(startRevision).headMap(endRevision));

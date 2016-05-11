@@ -29,10 +29,6 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
         return new DocumentRevision(revision);
     }
 
-    public int getRevisionNumber() {
-        return revision;
-    }
-
     public int getRevisionDifferenceFrom(DocumentRevision start) {
         return revision - start.revision;
     }
