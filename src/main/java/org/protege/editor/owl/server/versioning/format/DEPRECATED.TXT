@@ -1,4 +1,0 @@
-
-These files are just here temporarily to give me some idea of the eventual performance of the server.  Right now, serializing in the 
-OWL/XML format, I can hardly even write the NCIThesaurus to the server, let alone play with it.  When Matthew's library is ready, I
-will switch to that.
