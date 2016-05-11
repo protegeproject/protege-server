@@ -98,7 +98,7 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     }
 
     @Override
-    public DocumentRevision getRevision() {
+    public DocumentRevision getRevision() { // TODO: Rename to getHeadRevision()?
         return revision;
     }
 
@@ -137,7 +137,7 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
         HistoryFile historyFile = getHistoryFile(ontologyFile);
         if (isHistoryDirty || !historyFile.exists()) {
             historyFile.getParentFile().mkdirs();
-            ChangeHistoryUtilities.writeChanges(localHistory, historyFile);
+            ChangeHistoryUtils.writeChanges(localHistory, historyFile);
             isHistoryDirty = false;
         }
         return true;

@@ -106,17 +106,17 @@ public class ChangeDocumentPoolEntry {
         public ChangeHistory call() throws Exception {
             HistoryFile backup = getBackupHistoryFile(historyFile);
             try {
-                return ChangeHistoryUtilities.readChanges(historyFile);
+                return ChangeHistoryUtils.readChanges(historyFile);
             }
             catch (RuntimeException e) {
                 if (backup.exists()) {
-                    return ChangeHistoryUtilities.readChanges(backup);
+                    return ChangeHistoryUtils.readChanges(backup);
                 }
                 throw e;
             }
             catch (Exception e) {
                 if (backup.exists()) {
-                    return ChangeHistoryUtilities.readChanges(backup);
+                    return ChangeHistoryUtils.readChanges(backup);
                 }
                 throw e;
             }
@@ -140,7 +140,7 @@ public class ChangeDocumentPoolEntry {
                 if (changeHistory == newChangeDocument) {
                     prepareToSave(historyFile);
                     long startTime = System.currentTimeMillis();
-                    ChangeHistoryUtilities.writeChanges(newChangeDocument, historyFile);
+                    ChangeHistoryUtils.writeChanges(newChangeDocument, historyFile);
                     long interval = System.currentTimeMillis() - startTime;
                     if (interval > 1000) {
                         logger.info("Save of " + historyFile + " took " + (interval / 1000) + " seconds.");

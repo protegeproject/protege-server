@@ -28,7 +28,7 @@ import java.util.SortedMap;
 
 import javax.annotation.Nonnull;
 
-public class ChangeHistoryUtilities {
+public class ChangeHistoryUtils {
 
     public static void writeEmptyChanges(@Nonnull HistoryFile historyFile) throws IOException {
         writeChanges(ChangeHistoryImpl.createEmptyChangeHistory(), historyFile);
@@ -84,6 +84,10 @@ public class ChangeHistoryUtilities {
             ois.close();
         }
     }
+
+    /*
+     * Private helper methods
+     */
 
     private static DocumentRevision getBaseStartRevision(ObjectInputStream ois) throws ClassNotFoundException, IOException {
         return (DocumentRevision) ois.readObject();
