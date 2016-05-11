@@ -64,6 +64,14 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
     }
 
     /**
+     * Returns <code>true</code> if this revision is equal to the given
+     * origin revision.
+     */
+    public boolean sameAs(DocumentRevision origin) {
+        return delta(this, origin) == 0;
+    }
+
+    /**
      * Gets the next document revision.
      *
      * @return The next document revision.
