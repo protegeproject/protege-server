@@ -2,16 +2,31 @@ package org.protege.editor.owl.server.versioning;
 
 import java.io.Serializable;
 
+/**
+ * @author Josef Hardi <johardi@stanford.edu> <br>
+ * Stanford Center for Biomedical Informatics Research
+ */
 public class DocumentRevision implements Comparable<DocumentRevision>, Serializable {
 
     private static final long serialVersionUID = 7037205560605439026L;
 
-    public static final DocumentRevision START_REVISION = new DocumentRevision(0);
+    public static final DocumentRevision START_REVISION = DocumentRevision.create(0);
 
     private int revision;
 
-    public DocumentRevision(int revision) {
+    private DocumentRevision(int revision) {
         this.revision = revision;
+    }
+
+    /**
+     * Creates a document revision given its revision number.
+     *
+     * @param revision
+     *          The revision number
+     * @return an instance of {@code DocumentRevision}.
+     */
+    public static DocumentRevision create(int revision) {
+        return new DocumentRevision(revision);
     }
 
     public int getRevisionNumber() {
