@@ -1,13 +1,9 @@
 package org.protege.editor.owl.server.versioning;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
+import org.semanticweb.owlapi.model.AnnotationChange;
 import org.semanticweb.owlapi.model.ImportChange;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -20,11 +16,16 @@ import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 import org.semanticweb.owlapi.model.SetOntologyID;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 public class CollectingChangeVisitor implements OWLOntologyChangeVisitor {
 
     private SetOntologyID lastOntologyIDChange;
     private Map<OWLImportsDeclaration, ImportChange> lastImportChangeMap;
-    private Map<OWLAnnotation, OWLOntologyChange> lastOntologyAnnotationChangeMap;
+    private Map<OWLAnnotation, AnnotationChange> lastOntologyAnnotationChangeMap;
     private Map<OWLAxiom, OWLAxiomChange> lastAxiomChangeMap;
 
     public static CollectingChangeVisitor collectChanges(List<OWLOntologyChange> changes) {
@@ -36,9 +37,9 @@ public class CollectingChangeVisitor implements OWLOntologyChangeVisitor {
     }
 
     private CollectingChangeVisitor() {
-        lastImportChangeMap = new TreeMap<OWLImportsDeclaration, ImportChange>();
-        lastOntologyAnnotationChangeMap = new TreeMap<OWLAnnotation, OWLOntologyChange>();
-        lastAxiomChangeMap = new HashMap<OWLAxiom, OWLAxiomChange>();
+        lastImportChangeMap = new TreeMap<>();
+        lastOntologyAnnotationChangeMap = new TreeMap<>();
+        lastAxiomChangeMap = new HashMap<>();
     }
 
     public SetOntologyID getLastOntologyIDChange() {
@@ -49,7 +50,7 @@ public class CollectingChangeVisitor implements OWLOntologyChangeVisitor {
         return lastImportChangeMap;
     }
 
-    public Map<OWLAnnotation, OWLOntologyChange> getLastOntologyAnnotationChangeMap() {
+    public Map<OWLAnnotation, AnnotationChange> getLastOntologyAnnotationChangeMap() {
         return lastOntologyAnnotationChangeMap;
     }
 
