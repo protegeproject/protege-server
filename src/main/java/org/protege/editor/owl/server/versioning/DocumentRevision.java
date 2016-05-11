@@ -29,8 +29,38 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
         return new DocumentRevision(revision);
     }
 
-    public int getRevisionDifferenceFrom(DocumentRevision start) {
-        return revision - start.revision;
+    /**
+     * Measures the length difference between the start revision and the end
+     * revision. A positive result means the end revision is greater than the
+     * start revision (forward-step). A negative result means the end revision
+     * is lesser than the start revision (backward-step). A zero result means
+     * both revisions are the same (no-step).
+     * 
+     * @param start
+     *            The start revision.
+     * @param end
+     *            The end revision.
+     * @return An integer number that measures the distance from the start to
+     *         the end revision.
+     */
+    public static int delta(DocumentRevision start, DocumentRevision end) {
+        return -1 * (start.revision - end.revision);
+    }
+
+    /**
+     * Returns <code>true</code> if this revision is greater than the given
+     * origin revision.
+     */
+    public boolean aheadOf(DocumentRevision origin) {
+        return delta(this, origin) < 0;
+    }
+
+    /**
+     * Returns <code>true</code> if this revision is lesser than the given
+     * origin revision.
+     */
+    public boolean behind(DocumentRevision origin) {
+        return delta(this, origin) > 0;
     }
 
     public DocumentRevision next() {

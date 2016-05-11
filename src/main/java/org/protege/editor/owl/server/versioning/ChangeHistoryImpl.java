@@ -91,8 +91,8 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
             return this;
         }
         List<List<OWLOntologyChange>> subChanges = revisionsList.subList(
-                start.getRevisionDifferenceFrom(startRevision),
-                end.getRevisionDifferenceFrom(startRevision));
+                DocumentRevision.delta(start, startRevision),
+                DocumentRevision.delta(end, startRevision));
         SortedMap<DocumentRevision, ChangeMetadata> subMetaDataMap = cropMap(metadataMap, start, end);
         return new ChangeHistoryImpl(start, subChanges, subMetaDataMap);
     }

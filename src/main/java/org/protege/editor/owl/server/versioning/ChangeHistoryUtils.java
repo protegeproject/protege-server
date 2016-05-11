@@ -56,16 +56,16 @@ public class ChangeHistoryUtils {
         ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(historyFile)));
         try {
             DocumentRevision baseStartRevision = getBaseStartRevision(ois); // Start revision from the input history file
-            if (baseStartRevision.getRevisionDifferenceFrom(startRevision) > 0) {
+            if (startRevision.behind(baseStartRevision)) {
                 throw new IllegalArgumentException("Changes could not be extracted because the input start revision is out of range");
             }
             SortedMap<DocumentRevision, ChangeMetadata> metadata = getMetadataMap(ois);
             List<List<OWLOntologyChange>> revisionsList = getRevisionsList(ois);
-            int start = startRevision.getRevisionDifferenceFrom(baseStartRevision) - 1; // inclusive
-            int end = endRevision.getRevisionDifferenceFrom(baseStartRevision); // exclusive
-            return new ChangeHistoryImpl(startRevision,
-                    revisionsList.subList(start, end),
-                    metadata.tailMap(startRevision).headMap(endRevision));
+            List<List<OWLOntologyChange>> subChanges = revisionsList.subList(
+                    DocumentRevision.delta(startRevision, baseStartRevision),
+                    DocumentRevision.delta(endRevision, baseStartRevision));
+            SortedMap<DocumentRevision, ChangeMetadata> subMetadataMap = metadata.tailMap(startRevision).headMap(endRevision);
+            return new ChangeHistoryImpl(startRevision, subChanges, subMetadataMap);
         }
         finally {
             ois.close();
