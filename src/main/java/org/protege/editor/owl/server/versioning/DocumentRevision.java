@@ -43,7 +43,7 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
      * @return An integer number that measures the distance from the start to
      *         the end revision.
      */
-    public static int delta(DocumentRevision start, DocumentRevision end) {
+    public static int distance(DocumentRevision start, DocumentRevision end) {
         return -1 * (start.revision - end.revision);
     }
 
@@ -52,7 +52,7 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
      * origin revision.
      */
     public boolean aheadOf(DocumentRevision origin) {
-        return delta(this, origin) < 0;
+        return distance(this, origin) < 0;
     }
 
     /**
@@ -60,7 +60,7 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
      * origin revision.
      */
     public boolean behind(DocumentRevision origin) {
-        return delta(this, origin) > 0;
+        return distance(this, origin) > 0;
     }
 
     /**
@@ -68,7 +68,7 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
      * origin revision.
      */
     public boolean sameAs(DocumentRevision origin) {
-        return delta(this, origin) == 0;
+        return distance(this, origin) == 0;
     }
 
     /**

@@ -62,8 +62,8 @@ public class ChangeHistoryUtils {
             SortedMap<DocumentRevision, ChangeMetadata> metadata = getMetadataMap(ois);
             List<List<OWLOntologyChange>> revisionsList = getRevisionsList(ois);
             List<List<OWLOntologyChange>> subChanges = revisionsList.subList(
-                    DocumentRevision.delta(startRevision, baseStartRevision),
-                    DocumentRevision.delta(endRevision, baseStartRevision));
+                    DocumentRevision.distance(startRevision, baseStartRevision),
+                    DocumentRevision.distance(endRevision, baseStartRevision));
             SortedMap<DocumentRevision, ChangeMetadata> subMetadataMap = metadata.tailMap(startRevision).headMap(endRevision);
             return new ChangeHistoryImpl(startRevision, subChanges, subMetadataMap);
         }
