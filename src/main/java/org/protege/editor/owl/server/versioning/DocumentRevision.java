@@ -63,12 +63,24 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
         return delta(this, origin) > 0;
     }
 
+    /**
+     * Gets the next document revision.
+     *
+     * @return The next document revision.
+     */
     public DocumentRevision next() {
-        return new DocumentRevision(revision + 1);
+        return next(1);
     }
 
-    public DocumentRevision add(int delta) {
-        return new DocumentRevision(revision + delta);
+    /**
+     * Gets the next document revision after <code>i</code> steps.
+     *
+     * @param i
+     *            The distance from the current revision
+     * @return The next document revision after <code>i</code> steps.
+     */
+    public DocumentRevision next(int i) {
+        return new DocumentRevision(revision + i);
     }
 
     @Override

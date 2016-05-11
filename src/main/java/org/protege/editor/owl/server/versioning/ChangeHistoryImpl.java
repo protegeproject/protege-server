@@ -56,7 +56,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 
     @Override
     public DocumentRevision getEndRevision() {
-        return startRevision.add(revisionsList.size());
+        return startRevision.next(revisionsList.size());
     }
 
     @Override
