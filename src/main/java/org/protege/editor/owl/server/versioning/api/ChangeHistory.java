@@ -36,8 +36,11 @@ public interface ChangeHistory {
      */
     DocumentRevision getHeadRevision();
 
-    
-    void addRevisionBundle(ChangeMetadata metadata, List<OWLOntologyChange> changes);
+    void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes);
+
+    SortedMap<DocumentRevision, List<OWLOntologyChange>> getRevisions();
+
+    SortedMap<DocumentRevision, ChangeMetadata> getRevisionLogs();
 
     /**
      * Returns the ChangeMetaData (user, date of change) for the change document
@@ -56,8 +59,4 @@ public interface ChangeHistory {
     List<OWLOntologyChange> getChangesForRevision(DocumentRevision revision);
 
     boolean isEmpty();
-
-    SortedMap<DocumentRevision, List<OWLOntologyChange>> getRevisions();
-
-    SortedMap<DocumentRevision, ChangeMetadata> getRevisionLogs();
 }

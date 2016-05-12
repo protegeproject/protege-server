@@ -103,7 +103,7 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 
     @Override
     public void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes) {
-        localHistory.addRevisionBundle(metadata, changes);
+        localHistory.addRevision(metadata, changes);
         logCache.add(metadata);
     }
 

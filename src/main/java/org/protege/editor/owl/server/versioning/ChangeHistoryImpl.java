@@ -46,7 +46,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
     }
 
     @Override
-    public void addRevisionBundle(ChangeMetadata metadata, List<OWLOntologyChange> changes) {
+    public void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes) {
         DocumentRevision nextRevision = headRevision.next();
         logs.put(nextRevision, metadata);
         revisions.put(nextRevision, changes);
