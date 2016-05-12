@@ -50,7 +50,7 @@ public class ChangeHistoryUtils {
                     DocumentRevision.distance(end, changeHistory.getStartRevision())));
             subMetadata.putAll(changeHistory.getMetadataMap().headMap(start).tailMap(end));
         }
-        return new ChangeHistoryImpl(start, subRevisions, subMetadata);
+        return ChangeHistoryImpl.recreate(start, subRevisions, subMetadata);
     }
 
     public static ChangeHistory crop(@Nonnull ChangeHistory changeHistory, @Nonnull DocumentRevision start) {
@@ -96,7 +96,7 @@ public class ChangeHistoryUtils {
                     DocumentRevision.distance(startRevision, baseStartRevision),
                     DocumentRevision.distance(endRevision, baseStartRevision));
             SortedMap<DocumentRevision, ChangeMetadata> subMetadataMap = metadata.tailMap(startRevision).headMap(endRevision);
-            return new ChangeHistoryImpl(startRevision, subChanges, subMetadataMap);
+            return ChangeHistoryImpl.recreate(startRevision, subChanges, subMetadataMap);
         }
         finally {
             ois.close();
@@ -109,7 +109,7 @@ public class ChangeHistoryUtils {
             DocumentRevision startRevision = getBaseStartRevision(ois); // Start revision from the input history file
             SortedMap<DocumentRevision, ChangeMetadata> metadata = getMetadataMap(ois);
             List<List<OWLOntologyChange>> revisionsList = getRevisionsList(ois);
-            return new ChangeHistoryImpl(startRevision, revisionsList, metadata);
+            return ChangeHistoryImpl.recreate(startRevision, revisionsList, metadata);
         }
         finally {
             ois.close();

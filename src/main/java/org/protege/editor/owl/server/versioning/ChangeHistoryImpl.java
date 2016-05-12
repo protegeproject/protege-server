@@ -28,7 +28,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
         this.headRevision = DocumentRevision.START_REVISION;
     }
 
-    /* package */ ChangeHistoryImpl(@Nonnull DocumentRevision startRevision,
+    private ChangeHistoryImpl(@Nonnull DocumentRevision startRevision,
             @Nonnull List<List<OWLOntologyChange>> revisionsList,
             @Nonnull SortedMap<DocumentRevision, ChangeMetadata> metaDataMap) {
         this.startRevision = startRevision;
@@ -39,6 +39,12 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     public static ChangeHistoryImpl createEmptyChangeHistory() {
         return new ChangeHistoryImpl();
+    }
+
+    public static ChangeHistoryImpl recreate(@Nonnull DocumentRevision startRevision,
+            @Nonnull List<List<OWLOntologyChange>> revisionsList,
+            @Nonnull SortedMap<DocumentRevision, ChangeMetadata> changeMetadata) {
+        return new ChangeHistoryImpl(startRevision, revisionsList, changeMetadata);
     }
 
     @Override
