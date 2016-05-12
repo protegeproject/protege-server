@@ -1,11 +1,14 @@
 package org.protege.editor.owl.server.versioning.api;
 
+import org.protege.editor.owl.server.versioning.ChangeMetadata;
 import org.protege.editor.owl.server.versioning.DocumentRevision;
 import org.protege.editor.owl.server.versioning.ServerDocument;
 
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * This is an open OWL ontology held by the client with an association to a
@@ -51,6 +54,8 @@ public interface VersionedOWLOntology extends HasDisplayName {
      * @return a copy of the changes from revision zero to getRevision().
      */
     ChangeHistory getLocalHistory();
+
+    void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes);
 
     DocumentRevision getStartRevision();
 

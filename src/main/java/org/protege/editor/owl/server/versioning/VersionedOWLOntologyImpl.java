@@ -5,6 +5,7 @@ import org.protege.editor.owl.server.versioning.api.VersionedOWLOntology;
 
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import java.io.BufferedOutputStream;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.List;
 
 public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 
@@ -77,6 +79,11 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     @Override
     public OWLOntology getOntology() {
         return ontology;
+    }
+
+    @Override
+    public void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes) {
+        localHistory.addRevisionBundle(metadata, changes);
     }
 
     @Override
