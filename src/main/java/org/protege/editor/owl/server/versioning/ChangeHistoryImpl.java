@@ -129,48 +129,20 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 
     @Override
     public int hashCode() {
-        try {
-            OWLOntology emptyOntology = OWLManager.createOWLOntologyManager().createOntology();
-            int hashCode = 314159 * getStartRevision().hashCode() + 271828 * getEndRevision().hashCode();
-            DocumentRevision currentRevision = getStartRevision();
-            for (; currentRevision.compareTo(getEndRevision()) < 0; currentRevision = currentRevision.next()) {
-                hashCode = 42 * hashCode + getChangeMetadataForRevision(currentRevision).hashCode();
-                hashCode = hashCode - ChangeHistoryUtils.crop(this, currentRevision, 1).getChanges(emptyOntology).hashCode();
-            }
-            return hashCode;
-        }
-        catch (OWLOntologyCreationException e) {
-            throw new IllegalStateException("Could not create an empty ontology");
-        }
+        return startRevision.hashCode() + 42 * revisionsList.hashCode() + metadataMap.hashCode() / 42;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof ChangeHistory)) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        ChangeHistory other = (ChangeHistory) o;
-        try {
-            OWLOntology emptyOntology = OWLManager.createOWLOntologyManager().createOntology();
-            if (!(getStartRevision().equals(other.getStartRevision())
-                    && getEndRevision().equals(other.getEndRevision()))) {
-                return false;
-            }
-            DocumentRevision currentRevision = getStartRevision();
-            for (; currentRevision.compareTo(getEndRevision()) < 0; currentRevision = currentRevision.next()) {
-                if (!(getChangeMetadataForRevision(currentRevision).equals(other.getChangeMetadataForRevision(currentRevision)))) {
-                    return false;
-                }
-                if (!ChangeHistoryUtils.crop(this, currentRevision, 1).getChanges(emptyOntology)
-                        .equals(ChangeHistoryUtils.crop(other, currentRevision, 1).getChanges(emptyOntology))) {
-                    return false;
-                }
-            }
-            return true;
+        if (!(obj instanceof ChangeHistoryImpl)) {
+            return false;
         }
-        catch (OWLOntologyCreationException e) {
-            throw new IllegalStateException("Could not create an empty ontology");
-        }
+        ChangeHistoryImpl other = (ChangeHistoryImpl) obj;
+        return other.getStartRevision().equals(getStartRevision()) && other.getRevisionsList().equals(getRevisionsList())
+                && other.getMetadataMap().equals(getMetadataMap());
     }
 
     @Override
