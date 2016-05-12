@@ -52,18 +52,6 @@ public interface VersionedOWLOntology extends HasDisplayName {
      */
     ChangeHistory getLocalHistory();
 
-    /**
-     * This call adds to the local copy of the server history when some more of
-     * the history of the document has been retrieved from the server.
-     * <p>
-     * This call should only be made by callers who know that the invariants of
-     * the local history will be satisfied after the call.
-     * 
-     * @param changes
-     *            changes
-     */
-    void appendChangeHistory(ChangeHistory changes);
-
     DocumentRevision getRevision();
 
     void setRevision(DocumentRevision revision);

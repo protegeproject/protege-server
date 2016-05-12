@@ -92,12 +92,6 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     }
 
     @Override
-    public void appendChangeHistory(ChangeHistory changes) {
-        localHistory = localHistory.appendChanges(changes);
-        isHistoryDirty = true;
-    }
-
-    @Override
     public DocumentRevision getRevision() { // TODO: Rename to getHeadRevision()?
         return revision;
     }
