@@ -13,7 +13,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.EvictingQueue;
 
 public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 
@@ -26,6 +30,13 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
      * Extension for the metadata file
      */
     public static final String VERSION_DOCUMENT_EXTENSION = ".vontology";
+
+    private static final int REVISION_LOG_CACHE_SIZE = 10;
+
+    /*
+     * Log cache that stores the last REVISION_LOG_CACHE_SIZE revisions.
+     */
+    private EvictingQueue<ChangeMetadata> logCache = EvictingQueue.create(REVISION_LOG_CACHE_SIZE);
 
     private ServerDocument serverDocument;
     private OWLOntology ontology;
@@ -72,6 +83,11 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     }
 
     @Override
+    public String getDisplayName() {
+        return ontology.getOntologyID().getOntologyIRI().get().toString();
+    }
+
+    @Override
     public ServerDocument getServerDocument() {
         return serverDocument;
     }
@@ -82,18 +98,27 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     }
 
     @Override
-    public void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes) {
-        localHistory.addRevisionBundle(metadata, changes);
-    }
-
-    @Override
-    public String getDisplayName() {
-        return ontology.getOntologyID().getOntologyIRI().get().toString();
-    }
-
-    @Override
     public ChangeHistory getLocalHistory() {
         return localHistory;
+    }
+
+    @Override
+    public void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes) {
+        localHistory.addRevisionBundle(metadata, changes);
+        logCache.add(metadata);
+    }
+
+    @Override
+    public ChangeMetadata getRevisionLog(DocumentRevision revision) {
+        return localHistory.getChangeMetadataForRevision(revision);
+    }
+
+    @Override
+    public List<ChangeMetadata> getLatestRevisionLog(int offset) {
+        if (offset > REVISION_LOG_CACHE_SIZE) {
+            offset = REVISION_LOG_CACHE_SIZE; // handle until the maximum cache size
+        }
+        return logCache.stream().limit(offset).collect(Collectors.toList());
     }
 
     @Override
@@ -107,7 +132,7 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     }
 
     @Override
-    public boolean saveMetadata() throws Exception {
+    public boolean saveMetadata() throws Exception { // TODO Change to saveConfig()?
         File ontologyFile = getBackingStore(ontology);
         if (ontologyFile == null) {
             return false;
@@ -142,7 +167,10 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 
     @Override
     public String toString() {
-        String template = "%s at revision #%s [Remote HEAD %s]";
-        return String.format(template, ontology.getOntologyID(), getHeadRevision(), serverDocument.getHost());
+        File ontologyFile = getBackingStore(ontology);
+        String template = "Working ontology: %s\n"
+                + "HEAD: %s\n"
+                + "Remote host: %s\n";
+        return String.format(template, ontologyFile.getAbsolutePath(), getHeadRevision(), serverDocument.getHost());
     }
 }

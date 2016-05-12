@@ -57,6 +57,10 @@ public interface VersionedOWLOntology extends HasDisplayName {
 
     void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes);
 
+    ChangeMetadata getRevisionLog(DocumentRevision revision);
+
+    List<ChangeMetadata> getLatestRevisionLog(int offset);
+
     DocumentRevision getStartRevision();
 
     DocumentRevision getHeadRevision();
