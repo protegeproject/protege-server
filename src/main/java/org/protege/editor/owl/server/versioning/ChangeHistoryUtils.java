@@ -25,10 +25,41 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 
 public class ChangeHistoryUtils {
+
+    public static ChangeHistory crop(@Nonnull ChangeHistory changeHistory, @Nonnull DocumentRevision start, @Nonnull DocumentRevision end) {
+        if (start.behind(changeHistory.getStartRevision())) {
+            throw new IllegalArgumentException("The input start is out of the range");
+        }
+        if (end.aheadOf(changeHistory.getEndRevision())) {
+            throw new IllegalArgumentException("The input start is out of the range");
+        }
+        List<List<OWLOntologyChange>> subRevisions = new ArrayList<>();
+        SortedMap<DocumentRevision, ChangeMetadata> subMetadata = new TreeMap<>();
+        if (start.sameAs(changeHistory.getStartRevision()) && end.sameAs(changeHistory.getEndRevision())) {
+            subRevisions.addAll(changeHistory.getRevisionsList());
+            subMetadata.putAll(changeHistory.getMetadataMap());
+        }
+        else {
+            subRevisions.addAll(changeHistory.getRevisionsList().subList(
+                    DocumentRevision.distance(start, changeHistory.getStartRevision()),
+                    DocumentRevision.distance(end, changeHistory.getStartRevision())));
+            subMetadata.putAll(changeHistory.getMetadataMap().headMap(start).tailMap(end));
+        }
+        return new ChangeHistoryImpl(start, subRevisions, subMetadata);
+    }
+
+    public static ChangeHistory crop(@Nonnull ChangeHistory changeHistory, @Nonnull DocumentRevision start) {
+        return crop(changeHistory, start, changeHistory.getEndRevision());
+    }
+
+    public static ChangeHistory crop(@Nonnull ChangeHistory changeHistory, @Nonnull DocumentRevision start, int offset) {
+        return crop(changeHistory, start, start.next(offset));
+    }
 
     public static void writeEmptyChanges(@Nonnull HistoryFile historyFile) throws IOException {
         writeChanges(ChangeHistoryImpl.createEmptyChangeHistory(), historyFile);

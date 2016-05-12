@@ -7,7 +7,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * This is a lightweight class that captures the collection of changes to a
@@ -51,21 +51,6 @@ public interface ChangeHistory {
      */
     ChangeMetadata getChangeMetadataForRevision(DocumentRevision revision);
 
-    /**
-     * This call will return the change document obtained by restricting the set
-     * of changes from the start revision to the end revision.
-     * <p>
-     * If the start or the end revision is out of the range of the
-     * ChangeDocument then this call can fail with an exception.
-     * 
-     * @param start
-     *            start
-     * @param end
-     *            end
-     * @return ChangeHistory
-     */
-    ChangeHistory cropChanges(DocumentRevision start, DocumentRevision end);
-
     ChangeHistory appendChanges(ChangeHistory additionalChanges);
 
     /**
@@ -89,5 +74,5 @@ public interface ChangeHistory {
 
     List<List<OWLOntologyChange>> getRevisionsList();
 
-    Map<DocumentRevision, ChangeMetadata> getMetadataMap();
+    SortedMap<DocumentRevision, ChangeMetadata> getMetadataMap();
 }

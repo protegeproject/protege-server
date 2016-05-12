@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -70,44 +69,13 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
     }
 
     @Override
-    public Map<DocumentRevision, ChangeMetadata> getMetadataMap() {
+    public SortedMap<DocumentRevision, ChangeMetadata> getMetadataMap() {
         return metadataMap;
     }
 
     @Override
     public boolean isEmpty() {
         return revisionsList.isEmpty();
-    }
-
-    @Override
-    public ChangeHistory cropChanges(DocumentRevision start, DocumentRevision end) {
-        if (start == null || start.compareTo(getStartRevision()) < 0) {
-            start = getStartRevision();
-        }
-        if (end == null || end.compareTo(getEndRevision()) > 0) {
-            end = getEndRevision();
-        }
-        if (start.equals(getStartRevision()) && end.equals(getEndRevision())) {
-            return this;
-        }
-        List<List<OWLOntologyChange>> subChanges = revisionsList.subList(
-                DocumentRevision.distance(start, startRevision),
-                DocumentRevision.distance(end, startRevision));
-        SortedMap<DocumentRevision, ChangeMetadata> subMetaDataMap = cropMap(metadataMap, start, end);
-        return new ChangeHistoryImpl(start, subChanges, subMetaDataMap);
-    }
-
-    private <X extends Comparable<X>, Y> SortedMap<X, Y> cropMap(SortedMap<X, Y> map, X start, X end) {
-        if (map.isEmpty()) {
-            return new TreeMap<X, Y>();
-        }
-        if (start.compareTo(map.lastKey()) > 0) {
-            return new TreeMap<X, Y>();
-        }
-        if (end.compareTo(map.firstKey()) < 0) {
-            return new TreeMap<X, Y>();
-        }
-        return map.tailMap(start).headMap(end);
     }
 
     @Override
@@ -126,7 +94,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
             DocumentRevision currentRevision = changeHistory.getEndRevision();
             for (; additionalChangeHistory.getEndRevision().compareTo(currentRevision) > 0; currentRevision = currentRevision.next()) {
                 ChangeMetadata metadata = additionalChangeHistory.getChangeMetadataForRevision(currentRevision);
-                List<OWLOntologyChange> changes = additionalChangeHistory.cropChanges(currentRevision, currentRevision.next()).getChanges(emptyOntology);
+                List<OWLOntologyChange> changes = ChangeHistoryUtils.crop(additionalChangeHistory, currentRevision, 1).getChanges(emptyOntology);
                 changeHistory.addRevisionBundle(currentRevision, metadata, changes);
             }
             return changeHistory;
@@ -167,7 +135,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
             DocumentRevision currentRevision = getStartRevision();
             for (; currentRevision.compareTo(getEndRevision()) < 0; currentRevision = currentRevision.next()) {
                 hashCode = 42 * hashCode + getChangeMetadataForRevision(currentRevision).hashCode();
-                hashCode = hashCode - cropChanges(currentRevision, currentRevision.next()).getChanges(emptyOntology).hashCode();
+                hashCode = hashCode - ChangeHistoryUtils.crop(this, currentRevision, 1).getChanges(emptyOntology).hashCode();
             }
             return hashCode;
         }
@@ -193,8 +161,8 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
                 if (!(getChangeMetadataForRevision(currentRevision).equals(other.getChangeMetadataForRevision(currentRevision)))) {
                     return false;
                 }
-                if (!cropChanges(currentRevision, currentRevision.next()).getChanges(emptyOntology)
-                        .equals(other.cropChanges(currentRevision, currentRevision.next()).getChanges(emptyOntology))) {
+                if (!ChangeHistoryUtils.crop(this, currentRevision, 1).getChanges(emptyOntology)
+                        .equals(ChangeHistoryUtils.crop(other, currentRevision, 1).getChanges(emptyOntology))) {
                     return false;
                 }
             }

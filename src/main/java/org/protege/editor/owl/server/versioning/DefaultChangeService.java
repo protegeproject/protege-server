@@ -15,7 +15,8 @@ public class DefaultChangeService implements ChangeService {
     @Override
     public ChangeHistory getChanges(HistoryFile historyFile, DocumentRevision startRevision,
             DocumentRevision endRevision) throws OWLServerException {
-        return changePool.getChangeDocument(historyFile).cropChanges(startRevision, endRevision);
+        ChangeHistory changeHistory = getCachedChangeHistory(historyFile);
+        return ChangeHistoryUtils.crop(changeHistory, startRevision, endRevision);
     }
 
     @Override
@@ -33,6 +34,10 @@ public class DefaultChangeService implements ChangeService {
 
     @Override
     public DocumentRevision getHeadRevision(HistoryFile historyFile) throws OWLServerException {
-        return changePool.getChangeDocument(historyFile).getEndRevision();
+        return getCachedChangeHistory(historyFile).getEndRevision();
+    }
+
+    private ChangeHistory getCachedChangeHistory(HistoryFile historyFile) throws OWLServerException {
+        return changePool.getChangeDocument(historyFile);
     }
 }
