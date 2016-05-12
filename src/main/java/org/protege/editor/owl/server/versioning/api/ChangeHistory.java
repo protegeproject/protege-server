@@ -38,7 +38,7 @@ public interface ChangeHistory {
     DocumentRevision getHeadRevision();
 
     
-    void addRevisionBundle(DocumentRevision revision, ChangeMetadata metadata, List<OWLOntologyChange> changes);
+    void addRevisionBundle(ChangeMetadata metadata, List<OWLOntologyChange> changes);
 
     /**
      * Returns the ChangeMetaData (user, date of change) for the change document

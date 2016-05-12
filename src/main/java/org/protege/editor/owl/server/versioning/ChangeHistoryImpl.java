@@ -19,11 +19,13 @@ public class ChangeHistoryImpl implements ChangeHistory {
     public static Logger logger = LoggerFactory.getLogger(ChangeHistoryImpl.class);
 
     private DocumentRevision startRevision;
+    private DocumentRevision headRevision;
     private List<List<OWLOntologyChange>> revisionsList = new ArrayList<>();
     private SortedMap<DocumentRevision, ChangeMetadata> metadataMap = new TreeMap<>();
 
     public ChangeHistoryImpl() {
         this.startRevision = DocumentRevision.START_REVISION;
+        this.headRevision = DocumentRevision.START_REVISION;
     }
 
     /* package */ ChangeHistoryImpl(@Nonnull DocumentRevision startRevision,
@@ -32,6 +34,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
         this.startRevision = startRevision;
         this.revisionsList = revisionsList;
         this.metadataMap = metaDataMap;
+        headRevision = startRevision.next(revisionsList.size());
     }
 
     public static ChangeHistoryImpl createEmptyChangeHistory() {
@@ -39,9 +42,11 @@ public class ChangeHistoryImpl implements ChangeHistory {
     }
 
     @Override
-    public void addRevisionBundle(DocumentRevision revision, ChangeMetadata metadata, List<OWLOntologyChange> changes) {
-        metadataMap.put(revision, metadata);
+    public void addRevisionBundle(ChangeMetadata metadata, List<OWLOntologyChange> changes) {
+        DocumentRevision nextRevision = headRevision.next();
+        metadataMap.put(nextRevision, metadata);
         revisionsList.add(changes);
+        headRevision = nextRevision;
     }
 
     @Override
@@ -51,7 +56,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     @Override
     public DocumentRevision getHeadRevision() {
-        return startRevision.next(revisionsList.size());
+        return headRevision;
     }
 
     @Override
