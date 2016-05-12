@@ -64,7 +64,9 @@ public final class ChangeMetadata implements Serializable {
 
     @Override
     public String toString() {
-        String template = "Committed by %s <%s> at %s: %s";
+        String template = "Author: %s <%s>\n"
+                + "Date: %s\n"
+                + "Comment: %s\n";
         return String.format(template, getAuthorId(), getAuthorEmail(), getDate(), getCommitComment());
     }
 }
