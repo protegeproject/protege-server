@@ -126,6 +126,6 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
 
     @Override
     public String toString() {
-        return "" + revision;
+        return "#" + revision;
     }
 }
