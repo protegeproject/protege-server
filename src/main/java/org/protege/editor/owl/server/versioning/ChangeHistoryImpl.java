@@ -2,7 +2,6 @@ package org.protege.editor.owl.server.versioning;
 
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 
-import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,29 +82,6 @@ public class ChangeHistoryImpl implements ChangeHistory {
     @Override
     public boolean isEmpty() {
         return revisionsList.isEmpty();
-    }
-
-    @Override
-    public List<OWLOntologyChange> getChanges(OWLOntology sourceOntology) {
-        List<OWLOntologyChange> filteredChanges = new ArrayList<OWLOntologyChange>();
-        DocumentRevision revision = startRevision;
-        for (List<OWLOntologyChange> change : revisionsList) {
-            filteredChanges.addAll(change);
-            revision = revision.next();
-        }
-        return ReplaceChangedOntologyVisitor.mutate(sourceOntology, normalizeChangeDelta(filteredChanges));
-    }
-
-    private List<OWLOntologyChange> normalizeChangeDelta(List<OWLOntologyChange> revision) {
-        CollectingChangeVisitor visitor = CollectingChangeVisitor.collectChanges(revision);
-        List<OWLOntologyChange> normalizedChanges = new ArrayList<OWLOntologyChange>();
-        if (visitor.getLastOntologyIDChange() != null) {
-            normalizedChanges.add(visitor.getLastOntologyIDChange());
-        }
-        normalizedChanges.addAll(visitor.getLastImportChangeMap().values());
-        normalizedChanges.addAll(visitor.getLastOntologyAnnotationChangeMap().values());
-        normalizedChanges.addAll(visitor.getLastAxiomChangeMap().values());
-        return normalizedChanges;
     }
 
     @Override

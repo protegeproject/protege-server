@@ -3,7 +3,6 @@ package org.protege.editor.owl.server.versioning.api;
 import org.protege.editor.owl.server.versioning.ChangeMetadata;
 import org.protege.editor.owl.server.versioning.DocumentRevision;
 
-import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 import java.util.List;
@@ -53,23 +52,6 @@ public interface ChangeHistory {
      * @return ChangeMetaData
      */
     ChangeMetadata getChangeMetadataForRevision(DocumentRevision revision);
-
-    /**
-     * Gets the list of changes associated with this document and associates
-     * them with the ontology.
-     * <p>
-     * The changes returned are guaranteed to be minimal. That is if an axiom is
-     * added it will not be added again or removed. Similarly for annotations
-     * and imports. The SetOntologyID change can only occur once.
-     * <p>
-     * The minimality simplifies processing of the returned changes. For example
-     * the order of the changes is no longer important.
-     * 
-     * @param ontology
-     *            ontology
-     * @return List of OWLOntologyChange
-     */
-    List<OWLOntologyChange> getChanges(OWLOntology ontology);
 
     boolean isEmpty();
 

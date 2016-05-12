@@ -116,6 +116,32 @@ public class ChangeHistoryUtils {
         }
     }
 
+    public static List<OWLOntologyChange> getOntologyChanges(@Nonnull ChangeHistory changeHistory, @Nonnull OWLOntology targetOntology) {
+        List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
+        for (List<OWLOntologyChange> change : changeHistory.getRevisionsList()) {
+            changes.addAll(change);
+        }
+        return ReplaceChangedOntologyVisitor.mutate(targetOntology, normalizeChangeDelta(changes));
+    }
+
+    public static List<OWLOntologyChange> getOntologyChanges(@Nonnull ChangeHistory changeHistory,
+            @Nonnull DocumentRevision start, @Nonnull DocumentRevision end, OWLOntology targetOntology) {
+        ChangeHistory subChangeHistory = crop(changeHistory, start, end);
+        return getOntologyChanges(subChangeHistory, targetOntology);
+    }
+
+    public static List<OWLOntologyChange> getOntologyChanges(@Nonnull ChangeHistory changeHistory,
+            @Nonnull DocumentRevision start, OWLOntology targetOntology) {
+        ChangeHistory subChangeHistory = crop(changeHistory, start);
+        return getOntologyChanges(subChangeHistory, targetOntology);
+    }
+
+    public static List<OWLOntologyChange> getOntologyChanges(@Nonnull ChangeHistory changeHistory,
+            @Nonnull DocumentRevision start, int offset, OWLOntology targetOntology) {
+        ChangeHistory subChangeHistory = crop(changeHistory, start, offset);
+        return getOntologyChanges(subChangeHistory, targetOntology);
+    }
+
     /*
      * Private helper methods
      */
@@ -153,5 +179,17 @@ public class ChangeHistoryUtils {
             throw new IOException("Internal error while computing changes", e);
         }
         return revisionsList;
+    }
+
+    private static List<OWLOntologyChange> normalizeChangeDelta(List<OWLOntologyChange> revision) {
+        CollectingChangeVisitor visitor = CollectingChangeVisitor.collectChanges(revision);
+        List<OWLOntologyChange> normalizedChanges = new ArrayList<OWLOntologyChange>();
+        if (visitor.getLastOntologyIDChange() != null) {
+            normalizedChanges.add(visitor.getLastOntologyIDChange());
+        }
+        normalizedChanges.addAll(visitor.getLastImportChangeMap().values());
+        normalizedChanges.addAll(visitor.getLastOntologyAnnotationChangeMap().values());
+        normalizedChanges.addAll(visitor.getLastAxiomChangeMap().values());
+        return normalizedChanges;
     }
 }
