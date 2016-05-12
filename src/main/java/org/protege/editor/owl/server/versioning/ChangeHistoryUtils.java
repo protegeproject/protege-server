@@ -103,7 +103,7 @@ public class ChangeHistoryUtils {
         }
     }
 
-    public static ChangeHistory readChanges(@Nonnull HistoryFile historyFile) throws IOException, ClassNotFoundException {
+    public static ChangeHistory readChanges(@Nonnull HistoryFile historyFile) throws IOException {
         ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(historyFile)));
         try {
             DocumentRevision startRevision = getBaseStartRevision(ois); // Start revision from the input history file
@@ -146,13 +146,23 @@ public class ChangeHistoryUtils {
      * Private helper methods
      */
 
-    private static DocumentRevision getBaseStartRevision(ObjectInputStream ois) throws ClassNotFoundException, IOException {
-        return (DocumentRevision) ois.readObject();
+    private static DocumentRevision getBaseStartRevision(ObjectInputStream ois) throws IOException {
+        try {
+            return (DocumentRevision) ois.readObject();
+        }
+        catch (ClassNotFoundException e) {
+            throw new IOException("Failed to deserialize DocumentRevision from the input stream", e);
+        }
     }
 
     @SuppressWarnings("unchecked")
-    private static SortedMap<DocumentRevision, ChangeMetadata> getMetadataMap(ObjectInputStream ois) throws ClassNotFoundException, IOException {
-        return (SortedMap<DocumentRevision, ChangeMetadata>) ois.readObject();
+    private static SortedMap<DocumentRevision, ChangeMetadata> getMetadataMap(ObjectInputStream ois) throws IOException {
+        try {
+            return (SortedMap<DocumentRevision, ChangeMetadata>) ois.readObject();
+        }
+        catch (ClassNotFoundException e) {
+            throw new IOException("Failed to deserialize ChangeMetadata from the input stream", e);
+        }
     }
 
     private static List<List<OWLOntologyChange>> getRevisionsList(ObjectInputStream ois) throws IOException {
