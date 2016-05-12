@@ -7,7 +7,6 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
@@ -15,9 +14,7 @@ import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 
-public class ChangeHistoryImpl implements ChangeHistory, Serializable {
-
-    private static final long serialVersionUID = -3842895051205436375L;
+public class ChangeHistoryImpl implements ChangeHistory {
 
     public static Logger logger = LoggerFactory.getLogger(ChangeHistoryImpl.class);
 
