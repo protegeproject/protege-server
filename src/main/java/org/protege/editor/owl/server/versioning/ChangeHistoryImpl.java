@@ -129,7 +129,8 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 
     @Override
     public int hashCode() {
-        return startRevision.hashCode() + 42 * revisionsList.hashCode() + metadataMap.hashCode() / 42;
+        return getStartRevision().hashCode() + getEndRevision().hashCode() + 42 * getRevisionsList().hashCode()
+                + getMetadataMap().hashCode() / 42;
     }
 
     @Override
@@ -141,7 +142,8 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
             return false;
         }
         ChangeHistoryImpl other = (ChangeHistoryImpl) obj;
-        return other.getStartRevision().equals(getStartRevision()) && other.getRevisionsList().equals(getRevisionsList())
+        return other.getStartRevision().equals(getStartRevision()) && other.getEndRevision().equals(getEndRevision())
+                && other.getRevisionsList().equals(getRevisionsList())
                 && other.getMetadataMap().equals(getMetadataMap());
     }
 
