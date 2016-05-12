@@ -72,7 +72,7 @@ public class ChangeDocumentPoolEntry {
 
     public void setChangeDocument(final ChangeHistory newChangeDocument) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Setting change document for " + historyFile + " to change doc ending at revision " + newChangeDocument.getEndRevision());
+            logger.debug("Setting change document for " + historyFile + " to change doc ending at revision " + newChangeDocument.getHeadRevision());
         }
         touch();
         this.changeHistory = newChangeDocument;
@@ -130,7 +130,7 @@ public class ChangeDocumentPoolEntry {
         public WriteChanges(ChangeHistory newChangeDocument) {
             this.newChangeDocument = newChangeDocument;
             if (logger.isDebugEnabled()) {
-                logger.debug("Created writer for " + historyFile + " and change document ending at " + newChangeDocument.getEndRevision());
+                logger.debug("Created writer for " + historyFile + " and change document ending at " + newChangeDocument.getHeadRevision());
             }
         }
 
@@ -151,8 +151,8 @@ public class ChangeDocumentPoolEntry {
                 }
                 else if (logger.isDebugEnabled()) {
                     logger.debug("This is not the latest change document");
-                    logger.debug("Was supposed to save doc with end revision " + newChangeDocument.getEndRevision());
-                    logger.debug("But now have new save doc with end revision " + changeHistory.getEndRevision());
+                    logger.debug("Was supposed to save doc with end revision " + newChangeDocument.getHeadRevision());
+                    logger.debug("But now have new save doc with end revision " + changeHistory.getHeadRevision());
                 }
                 return true;
             }

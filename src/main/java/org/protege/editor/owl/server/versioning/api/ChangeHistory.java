@@ -31,11 +31,11 @@ public interface ChangeHistory {
     DocumentRevision getStartRevision();
 
     /**
-     * Get the end revision of this collection of changes.
+     * Get the head revision of this collection of changes.
      * 
      * @return OntologyDocumentRevision
      */
-    DocumentRevision getEndRevision();
+    DocumentRevision getHeadRevision();
 
     
     void addRevisionBundle(DocumentRevision revision, ChangeMetadata metadata, List<OWLOntologyChange> changes);

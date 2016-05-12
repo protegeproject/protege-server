@@ -53,7 +53,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
     }
 
     @Override
-    public DocumentRevision getEndRevision() {
+    public DocumentRevision getHeadRevision() {
         return startRevision.next(revisionsList.size());
     }
 
@@ -102,7 +102,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
 
     @Override
     public int hashCode() {
-        return getStartRevision().hashCode() + getEndRevision().hashCode() + 42 * getRevisionsList().hashCode()
+        return getStartRevision().hashCode() + getHeadRevision().hashCode() + 42 * getRevisionsList().hashCode()
                 + getMetadataMap().hashCode() / 42;
     }
 
@@ -115,7 +115,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
             return false;
         }
         ChangeHistoryImpl other = (ChangeHistoryImpl) obj;
-        return other.getStartRevision().equals(getStartRevision()) && other.getEndRevision().equals(getEndRevision())
+        return other.getStartRevision().equals(getStartRevision()) && other.getHeadRevision().equals(getHeadRevision())
                 && other.getRevisionsList().equals(getRevisionsList())
                 && other.getMetadataMap().equals(getMetadataMap());
     }
@@ -126,7 +126,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
         sb.append("{");
         sb.append(startRevision);
         sb.append(" --> ");
-        sb.append(getEndRevision());
+        sb.append(getHeadRevision());
         sb.append(": ");
         for (List<OWLOntologyChange> changesAtRevision : revisionsList) {
             sb.append("[");

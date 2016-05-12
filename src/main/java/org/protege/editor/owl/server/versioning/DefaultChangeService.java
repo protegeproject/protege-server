@@ -34,7 +34,7 @@ public class DefaultChangeService implements ChangeService {
 
     @Override
     public DocumentRevision getHeadRevision(HistoryFile historyFile) throws OWLServerException {
-        return getCachedChangeHistory(historyFile).getEndRevision();
+        return getCachedChangeHistory(historyFile).getHeadRevision();
     }
 
     private ChangeHistory getCachedChangeHistory(HistoryFile historyFile) throws OWLServerException {
