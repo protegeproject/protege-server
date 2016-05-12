@@ -27,22 +27,20 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 
     private ServerDocument serverDocument;
     private OWLOntology ontology;
-    private DocumentRevision revision;
     private ChangeHistory localHistory;
+
     private boolean isHistoryDirty = false;
 
     public VersionedOWLOntologyImpl(ServerDocument serverDocument, OWLOntology ontology,
-            DocumentRevision revision, ChangeHistory localHistory) {
+            DocumentRevision initialRevision, ChangeHistory localHistory) {
         this.serverDocument = serverDocument;
         this.ontology = ontology;
-        this.revision = revision;
         this.localHistory = localHistory;
     }
 
     public VersionedOWLOntologyImpl(ServerDocument serverDocument, OWLOntology ontology) {
         this.serverDocument = serverDocument;
         this.ontology = ontology;
-        this.revision = DocumentRevision.START_REVISION;
         this.localHistory = ChangeHistoryImpl.createEmptyChangeHistory();
     }
 
@@ -92,13 +90,13 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     }
 
     @Override
-    public DocumentRevision getRevision() { // TODO: Rename to getHeadRevision()?
-        return revision;
+    public DocumentRevision getStartRevision() {
+        return localHistory.getStartRevision();
     }
 
     @Override
-    public void setRevision(DocumentRevision revision) {
-        this.revision = revision;
+    public DocumentRevision getHeadRevision() {
+        return localHistory.getHeadRevision();
     }
 
     @Override
@@ -112,13 +110,11 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
         ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(metadataFile)));
         try {
             oos.writeObject(serverDocument);
-            oos.writeObject(revision);
         }
         finally {
             oos.flush();
             oos.close();
         }
-        saveLocalHistory();
         return true;
     }
 
@@ -140,6 +136,6 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     @Override
     public String toString() {
         String template = "%s at revision #%s [Remote HEAD %s]";
-        return String.format(template, ontology.getOntologyID(), revision, serverDocument.getHost());
+        return String.format(template, ontology.getOntologyID(), getHeadRevision(), serverDocument.getHost());
     }
 }

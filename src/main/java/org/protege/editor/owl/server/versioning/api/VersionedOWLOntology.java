@@ -52,9 +52,9 @@ public interface VersionedOWLOntology extends HasDisplayName {
      */
     ChangeHistory getLocalHistory();
 
-    DocumentRevision getRevision();
+    DocumentRevision getStartRevision();
 
-    void setRevision(DocumentRevision revision);
+    DocumentRevision getHeadRevision();
 
     /**
      * This call will save the data about the ontology connection, including the
