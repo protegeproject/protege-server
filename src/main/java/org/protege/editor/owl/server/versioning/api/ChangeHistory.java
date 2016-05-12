@@ -37,6 +37,9 @@ public interface ChangeHistory {
      */
     DocumentRevision getEndRevision();
 
+    
+    void addRevisionBundle(DocumentRevision revision, ChangeMetadata metadata, List<OWLOntologyChange> changes);
+
     /**
      * Returns the ChangeMetaData (user, date of change) for the change document
      * at a given revision.
@@ -50,8 +53,6 @@ public interface ChangeHistory {
      * @return ChangeMetaData
      */
     ChangeMetadata getChangeMetadataForRevision(DocumentRevision revision);
-
-    ChangeHistory appendChanges(ChangeHistory additionalChanges);
 
     /**
      * Gets the list of changes associated with this document and associates

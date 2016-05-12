@@ -2,10 +2,8 @@ package org.protege.editor.owl.server.versioning;
 
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 
-import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +41,7 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
         return new ChangeHistoryImpl();
     }
 
+    @Override
     public void addRevisionBundle(DocumentRevision revision, ChangeMetadata metadata, List<OWLOntologyChange> changes) {
         metadataMap.put(revision, metadata);
         revisionsList.add(changes);
@@ -76,32 +75,6 @@ public class ChangeHistoryImpl implements ChangeHistory, Serializable {
     @Override
     public boolean isEmpty() {
         return revisionsList.isEmpty();
-    }
-
-    @Override
-    public ChangeHistory appendChanges(ChangeHistory additionalChangeHistory) {
-        if (additionalChangeHistory.getEndRevision().compareTo(getEndRevision()) <= 0) {
-            return this;
-        }
-        if (additionalChangeHistory.getStartRevision().compareTo(getEndRevision()) > 0) {
-            throw new IllegalArgumentException("Changes could not be merged because there was a gap in the change history");
-        }
-        try {
-            OWLOntology emptyOntology = OWLManager.createOWLOntologyManager().createOntology();
-            ChangeHistoryImpl changeHistory = new ChangeHistoryImpl(startRevision,
-                    new ArrayList<List<OWLOntologyChange>>(revisionsList),
-                    new TreeMap<DocumentRevision, ChangeMetadata>(metadataMap));
-            DocumentRevision currentRevision = changeHistory.getEndRevision();
-            for (; additionalChangeHistory.getEndRevision().compareTo(currentRevision) > 0; currentRevision = currentRevision.next()) {
-                ChangeMetadata metadata = additionalChangeHistory.getChangeMetadataForRevision(currentRevision);
-                List<OWLOntologyChange> changes = ChangeHistoryUtils.crop(additionalChangeHistory, currentRevision, 1).getChanges(emptyOntology);
-                changeHistory.addRevisionBundle(currentRevision, metadata, changes);
-            }
-            return changeHistory;
-        }
-        catch (OWLOntologyCreationException e) {
-            throw new IllegalStateException("Could not create an empty ontology");
-        }
     }
 
     @Override
