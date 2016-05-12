@@ -6,7 +6,6 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -19,8 +18,8 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     private DocumentRevision startRevision;
     private DocumentRevision headRevision;
-    private List<List<OWLOntologyChange>> revisionsList = new ArrayList<>();
-    private SortedMap<DocumentRevision, ChangeMetadata> metadataMap = new TreeMap<>();
+    private SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions = new TreeMap<>();
+    private SortedMap<DocumentRevision, ChangeMetadata> logs = new TreeMap<>();
 
     public ChangeHistoryImpl() {
         this.startRevision = DocumentRevision.START_REVISION;
@@ -28,12 +27,12 @@ public class ChangeHistoryImpl implements ChangeHistory {
     }
 
     private ChangeHistoryImpl(@Nonnull DocumentRevision startRevision,
-            @Nonnull List<List<OWLOntologyChange>> revisionsList,
-            @Nonnull SortedMap<DocumentRevision, ChangeMetadata> metaDataMap) {
+            @Nonnull SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions,
+            @Nonnull SortedMap<DocumentRevision, ChangeMetadata> logs) {
         this.startRevision = startRevision;
-        this.revisionsList = revisionsList;
-        this.metadataMap = metaDataMap;
-        headRevision = startRevision.next(revisionsList.size());
+        this.revisions = revisions;
+        this.logs = logs;
+        headRevision = startRevision.next(revisions.size());
     }
 
     public static ChangeHistoryImpl createEmptyChangeHistory() {
@@ -41,16 +40,16 @@ public class ChangeHistoryImpl implements ChangeHistory {
     }
 
     public static ChangeHistoryImpl recreate(@Nonnull DocumentRevision startRevision,
-            @Nonnull List<List<OWLOntologyChange>> revisionsList,
-            @Nonnull SortedMap<DocumentRevision, ChangeMetadata> changeMetadata) {
-        return new ChangeHistoryImpl(startRevision, revisionsList, changeMetadata);
+            @Nonnull SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions,
+            @Nonnull SortedMap<DocumentRevision, ChangeMetadata> logs) {
+        return new ChangeHistoryImpl(startRevision, revisions, logs);
     }
 
     @Override
     public void addRevisionBundle(ChangeMetadata metadata, List<OWLOntologyChange> changes) {
         DocumentRevision nextRevision = headRevision.next();
-        metadataMap.put(nextRevision, metadata);
-        revisionsList.add(changes);
+        logs.put(nextRevision, metadata);
+        revisions.put(nextRevision, changes);
         headRevision = nextRevision;
     }
 
@@ -66,28 +65,28 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     @Override
     public ChangeMetadata getChangeMetadataForRevision(DocumentRevision revision) {
-        return metadataMap.get(revision);
+        return logs.get(revision);
     }
 
     @Override
-    public List<List<OWLOntologyChange>> getRevisionsList() {
-        return revisionsList;
+    public SortedMap<DocumentRevision, List<OWLOntologyChange>> getRevisions() {
+        return revisions;
     }
 
     @Override
-    public SortedMap<DocumentRevision, ChangeMetadata> getMetadataMap() {
-        return metadataMap;
+    public SortedMap<DocumentRevision, ChangeMetadata> getRevisionLogs() {
+        return logs;
     }
 
     @Override
     public boolean isEmpty() {
-        return revisionsList.isEmpty();
+        return revisions.isEmpty();
     }
 
     @Override
     public int hashCode() {
-        return getStartRevision().hashCode() + getHeadRevision().hashCode() + 42 * getRevisionsList().hashCode()
-                + getMetadataMap().hashCode() / 42;
+        return getStartRevision().hashCode() + getHeadRevision().hashCode() + 42 * getRevisions().hashCode()
+                + getRevisionLogs().hashCode() / 42;
     }
 
     @Override
@@ -100,8 +99,8 @@ public class ChangeHistoryImpl implements ChangeHistory {
         }
         ChangeHistoryImpl other = (ChangeHistoryImpl) obj;
         return other.getStartRevision().equals(getStartRevision()) && other.getHeadRevision().equals(getHeadRevision())
-                && other.getRevisionsList().equals(getRevisionsList())
-                && other.getMetadataMap().equals(getMetadataMap());
+                && other.getRevisions().equals(getRevisions())
+                && other.getRevisionLogs().equals(getRevisionLogs());
     }
 
     @Override
@@ -112,7 +111,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
         sb.append(" --> ");
         sb.append(getHeadRevision());
         sb.append(": ");
-        for (List<OWLOntologyChange> changesAtRevision : revisionsList) {
+        for (List<OWLOntologyChange> changesAtRevision : revisions.values()) {
             sb.append("[");
             boolean needComma = false;
             for (OWLOntologyChange particularChangeAtRevision : changesAtRevision) {

@@ -55,7 +55,7 @@ public interface ChangeHistory {
 
     boolean isEmpty();
 
-    List<List<OWLOntologyChange>> getRevisionsList();
+    SortedMap<DocumentRevision, List<OWLOntologyChange>> getRevisions();
 
-    SortedMap<DocumentRevision, ChangeMetadata> getMetadataMap();
+    SortedMap<DocumentRevision, ChangeMetadata> getRevisionLogs();
 }

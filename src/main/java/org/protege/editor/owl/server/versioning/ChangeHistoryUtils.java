@@ -38,19 +38,17 @@ public class ChangeHistoryUtils {
         if (end.aheadOf(changeHistory.getHeadRevision())) {
             throw new IllegalArgumentException("The input start is out of the range");
         }
-        List<List<OWLOntologyChange>> subRevisions = new ArrayList<>();
-        SortedMap<DocumentRevision, ChangeMetadata> subMetadata = new TreeMap<>();
+        SortedMap<DocumentRevision, List<OWLOntologyChange>> subRevisions = new TreeMap<>();
+        SortedMap<DocumentRevision, ChangeMetadata> subLogs = new TreeMap<>();
         if (start.sameAs(changeHistory.getStartRevision()) && end.sameAs(changeHistory.getHeadRevision())) {
-            subRevisions.addAll(changeHistory.getRevisionsList());
-            subMetadata.putAll(changeHistory.getMetadataMap());
+            subRevisions.putAll(changeHistory.getRevisions());
+            subLogs.putAll(changeHistory.getRevisionLogs());
         }
         else {
-            subRevisions.addAll(changeHistory.getRevisionsList().subList(
-                    DocumentRevision.distance(start, changeHistory.getStartRevision()),
-                    DocumentRevision.distance(end, changeHistory.getStartRevision())));
-            subMetadata.putAll(changeHistory.getMetadataMap().headMap(start).tailMap(end));
+            subRevisions.putAll(changeHistory.getRevisions().headMap(start).tailMap(end));
+            subLogs.putAll(changeHistory.getRevisionLogs().headMap(start).tailMap(end));
         }
-        return ChangeHistoryImpl.recreate(start, subRevisions, subMetadata);
+        return ChangeHistoryImpl.recreate(start, subRevisions, subLogs);
     }
 
     public static ChangeHistory crop(@Nonnull ChangeHistory changeHistory, @Nonnull DocumentRevision start) {
@@ -69,10 +67,10 @@ public class ChangeHistoryUtils {
         ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(historyFile)));
         try {
             oos.writeObject(changeHistory.getStartRevision());
-            oos.writeObject(changeHistory.getMetadataMap());
+            oos.writeObject(changeHistory.getRevisionLogs());
 
             BinaryOWLOntologyChangeLog log = new BinaryOWLOntologyChangeLog();
-            for (List<OWLOntologyChange> changeSet : changeHistory.getRevisionsList()) {
+            for (List<OWLOntologyChange> changeSet : changeHistory.getRevisions().values()) {
                 log.appendChanges(changeSet, System.currentTimeMillis(), BinaryOWLMetadata.emptyMetadata(), oos);
             }
         }
@@ -82,21 +80,19 @@ public class ChangeHistoryUtils {
         }
     }
 
-    public static ChangeHistory readChanges(@Nonnull HistoryFile historyFile, @Nonnull DocumentRevision startRevision,
-            @Nonnull DocumentRevision endRevision) throws IOException, ClassNotFoundException {
+    public static ChangeHistory readChanges(@Nonnull HistoryFile historyFile, @Nonnull DocumentRevision start,
+            @Nonnull DocumentRevision end) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(historyFile)));
         try {
-            DocumentRevision baseStartRevision = getBaseStartRevision(ois); // Start revision from the input history file
-            if (startRevision.behind(baseStartRevision)) {
+            DocumentRevision baseRevision = getBaseRevision(ois); // Start revision from the input history file
+            if (start.behind(baseRevision)) {
                 throw new IllegalArgumentException("Changes could not be extracted because the input start revision is out of range");
             }
-            SortedMap<DocumentRevision, ChangeMetadata> metadata = getMetadataMap(ois);
-            List<List<OWLOntologyChange>> revisionsList = getRevisionsList(ois);
-            List<List<OWLOntologyChange>> subChanges = revisionsList.subList(
-                    DocumentRevision.distance(startRevision, baseStartRevision),
-                    DocumentRevision.distance(endRevision, baseStartRevision));
-            SortedMap<DocumentRevision, ChangeMetadata> subMetadataMap = metadata.tailMap(startRevision).headMap(endRevision);
-            return ChangeHistoryImpl.recreate(startRevision, subChanges, subMetadataMap);
+            SortedMap<DocumentRevision, ChangeMetadata> logs = getRevisionLogsFromInputStream(ois);
+            SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions = getRevisionsFromInputStream(ois);
+            SortedMap<DocumentRevision, List<OWLOntologyChange>> subRevisions = revisions.tailMap(start).headMap(end);
+            SortedMap<DocumentRevision, ChangeMetadata> subLogs = logs.tailMap(start).headMap(end);
+            return ChangeHistoryImpl.recreate(start, subRevisions, subLogs);
         }
         finally {
             ois.close();
@@ -106,9 +102,9 @@ public class ChangeHistoryUtils {
     public static ChangeHistory readChanges(@Nonnull HistoryFile historyFile) throws IOException {
         ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(historyFile)));
         try {
-            DocumentRevision startRevision = getBaseStartRevision(ois); // Start revision from the input history file
-            SortedMap<DocumentRevision, ChangeMetadata> metadata = getMetadataMap(ois);
-            List<List<OWLOntologyChange>> revisionsList = getRevisionsList(ois);
+            DocumentRevision startRevision = getBaseRevision(ois); // Start revision from the input history file
+            SortedMap<DocumentRevision, ChangeMetadata> metadata = getRevisionLogsFromInputStream(ois);
+            SortedMap<DocumentRevision, List<OWLOntologyChange>> revisionsList = getRevisionsFromInputStream(ois);
             return ChangeHistoryImpl.recreate(startRevision, revisionsList, metadata);
         }
         finally {
@@ -118,7 +114,7 @@ public class ChangeHistoryUtils {
 
     public static List<OWLOntologyChange> getOntologyChanges(@Nonnull ChangeHistory changeHistory, @Nonnull OWLOntology targetOntology) {
         List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
-        for (List<OWLOntologyChange> change : changeHistory.getRevisionsList()) {
+        for (List<OWLOntologyChange> change : changeHistory.getRevisions().values()) {
             changes.addAll(change);
         }
         return ReplaceChangedOntologyVisitor.mutate(targetOntology, normalizeChangeDelta(changes));
@@ -146,7 +142,7 @@ public class ChangeHistoryUtils {
      * Private helper methods
      */
 
-    private static DocumentRevision getBaseStartRevision(ObjectInputStream ois) throws IOException {
+    private static DocumentRevision getBaseRevision(ObjectInputStream ois) throws IOException {
         try {
             return (DocumentRevision) ois.readObject();
         }
@@ -156,7 +152,8 @@ public class ChangeHistoryUtils {
     }
 
     @SuppressWarnings("unchecked")
-    private static SortedMap<DocumentRevision, ChangeMetadata> getMetadataMap(ObjectInputStream ois) throws IOException {
+    private static SortedMap<DocumentRevision, ChangeMetadata> getRevisionLogsFromInputStream(ObjectInputStream ois)
+            throws IOException {
         try {
             return (SortedMap<DocumentRevision, ChangeMetadata>) ois.readObject();
         }
@@ -165,30 +162,34 @@ public class ChangeHistoryUtils {
         }
     }
 
-    private static List<List<OWLOntologyChange>> getRevisionsList(ObjectInputStream ois) throws IOException {
-        List<List<OWLOntologyChange>> revisionsList = new ArrayList<List<OWLOntologyChange>>();
+    private static SortedMap<DocumentRevision, List<OWLOntologyChange>> getRevisionsFromInputStream(ObjectInputStream ois)
+            throws IOException {
+        SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions = new TreeMap<>();
         try {
             BinaryOWLOntologyChangeLog log = new BinaryOWLOntologyChangeLog();
             OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
             OWLOntology placeholder = owlManager.createOntology();
+            DocumentRevision baseRevision = getBaseRevision(ois);
             log.readChanges(ois, owlManager.getOWLDataFactory(), new BinaryOWLChangeLogHandler() {
+                private DocumentRevision nextRevision = baseRevision.next();
                 @Override
                 public void handleChangesRead(OntologyChangeRecordList list, SkipSetting skipSetting, long filePosition) {
                     List<OWLOntologyChangeRecord> changeRecords = list.getChangeRecords();
-                    List<OWLOntologyChange> revisions = new ArrayList<OWLOntologyChange>();
+                    List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
                     for (OWLOntologyChangeRecord cr : changeRecords) {
                         OWLOntologyChangeData changeData = cr.getData();
                         OWLOntologyChange change = changeData.createOntologyChange(placeholder);
-                        revisions.add(change);
+                        changes.add(change);
                     }
-                    revisionsList.add(revisions);
+                    revisions.put(nextRevision, changes);
+                    nextRevision = nextRevision.next();
                 }
             });
         }
         catch (OWLOntologyCreationException e) {
             throw new IOException("Internal error while computing changes", e);
         }
-        return revisionsList;
+        return revisions;
     }
 
     private static List<OWLOntologyChange> normalizeChangeDelta(List<OWLOntologyChange> revision) {
