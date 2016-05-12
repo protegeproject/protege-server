@@ -69,6 +69,11 @@ public class ChangeHistoryImpl implements ChangeHistory {
     }
 
     @Override
+    public List<OWLOntologyChange> getChangesForRevision(DocumentRevision revision) {
+        return revisions.get(revision);
+    }
+
+    @Override
     public SortedMap<DocumentRevision, List<OWLOntologyChange>> getRevisions() {
         return revisions;
     }

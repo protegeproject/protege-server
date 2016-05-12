@@ -53,6 +53,8 @@ public interface ChangeHistory {
      */
     ChangeMetadata getChangeMetadataForRevision(DocumentRevision revision);
 
+    List<OWLOntologyChange> getChangesForRevision(DocumentRevision revision);
+
     boolean isEmpty();
 
     SortedMap<DocumentRevision, List<OWLOntologyChange>> getRevisions();
