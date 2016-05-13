@@ -11,21 +11,9 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * This is an open OWL ontology held by the client with an association to a
- * corresponding server document at a particular revision.
- * <p>
- * This is a central class but it is more a container of the required data than
- * a set of required methods for manipulating a versioned ontology document.
- * Devloper who want to manipulate this class should look at the ClientUtilities
- * class which contains utilities that
- * <ol>
- * <li>load a versioned ontology document from a server,</li>
- * <li>load or save a versioned ontology document from disk and</li>
- * <li>commit or update a versioned ontology document by interacting with a
- * server</li>
- * </ol>
- *
- * @author redmond
+ * @author Josef Hardi <johardi@stanford.edu> <br>
+ * @author Timothy Redmond (tredmond) <br>
+ * Stanford Center for Biomedical Informatics Research
  */
 public interface VersionedOWLOntology extends HasDisplayName {
 
@@ -61,7 +49,7 @@ public interface VersionedOWLOntology extends HasDisplayName {
 
     List<ChangeMetadata> getLatestRevisionLog(int offset);
 
-    DocumentRevision getStartRevision();
+    DocumentRevision getBaseRevision();
 
     DocumentRevision getHeadRevision();
 

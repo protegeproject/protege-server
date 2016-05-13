@@ -48,7 +48,7 @@ public class ChangeHistoryUtils {
      * @return The specified sub history.
      */
     public static ChangeHistory crop(@Nonnull ChangeHistory changeHistory, @Nonnull DocumentRevision start, @Nonnull DocumentRevision end) {
-        if (start.behind(changeHistory.getStartRevision())) {
+        if (start.behind(changeHistory.getBaseRevision())) {
             throw new IllegalArgumentException("The input start is out of the range");
         }
         if (end.aheadOf(changeHistory.getHeadRevision())) {
@@ -56,7 +56,7 @@ public class ChangeHistoryUtils {
         }
         SortedMap<DocumentRevision, List<OWLOntologyChange>> subRevisions = new TreeMap<>();
         SortedMap<DocumentRevision, ChangeMetadata> subLogs = new TreeMap<>();
-        if (start.sameAs(changeHistory.getStartRevision()) && end.sameAs(changeHistory.getHeadRevision())) {
+        if (start.sameAs(changeHistory.getBaseRevision()) && end.sameAs(changeHistory.getHeadRevision())) {
             subRevisions.putAll(changeHistory.getRevisions());
             subLogs.putAll(changeHistory.getRevisionLogs());
         }
@@ -121,7 +121,7 @@ public class ChangeHistoryUtils {
     public static void writeChanges(@Nonnull ChangeHistory changeHistory, @Nonnull HistoryFile historyFile) throws IOException {
         ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(historyFile)));
         try {
-            oos.writeObject(changeHistory.getStartRevision());
+            oos.writeObject(changeHistory.getBaseRevision());
             oos.writeObject(changeHistory.getRevisionLogs());
 
             BinaryOWLOntologyChangeLog log = new BinaryOWLOntologyChangeLog();

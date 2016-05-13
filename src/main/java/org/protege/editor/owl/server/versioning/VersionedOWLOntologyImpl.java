@@ -146,8 +146,8 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     }
 
     @Override
-    public DocumentRevision getStartRevision() {
-        return changeHistory.getStartRevision();
+    public DocumentRevision getBaseRevision() {
+        return changeHistory.getBaseRevision();
     }
 
     @Override

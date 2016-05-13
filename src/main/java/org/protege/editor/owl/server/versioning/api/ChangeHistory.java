@@ -9,25 +9,20 @@ import java.util.List;
 import java.util.SortedMap;
 
 /**
- * This is a lightweight class that captures the collection of changes to a
- * collection of ontology documents between two revisions. So for example, using
- * Matthew's binary data format, the data in this class will consist of a start
- * revision, an end revision and the file containing the change set. When the
- * data is serialized essentially a selection of the change file is sent and it
- * is reconstituted on the remote side.
- * 
- * @author tredmond
+ * @author Josef Hardi <johardi@stanford.edu> <br>
+ * @author Timothy Redmond (tredmond) <br>
+ * Stanford Center for Biomedical Informatics Research
  */
 public interface ChangeHistory {
 
     String CHANGE_DOCUMENT_EXTENSION = ".history";
 
     /**
-     * Get the start revision of this collection of changes.
+     * Get the base revision of this collection of changes.
      * 
      * @return OntologyDocumentRevision
      */
-    DocumentRevision getStartRevision();
+    DocumentRevision getBaseRevision();
 
     /**
      * Get the head revision of this collection of changes.

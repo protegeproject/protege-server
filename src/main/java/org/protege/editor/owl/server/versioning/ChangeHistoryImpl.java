@@ -59,7 +59,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
     }
 
     @Override
-    public DocumentRevision getStartRevision() {
+    public DocumentRevision getBaseRevision() {
         return startRevision;
     }
 
@@ -95,7 +95,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     @Override
     public int hashCode() {
-        return getStartRevision().hashCode() + getHeadRevision().hashCode() + 42 * getRevisions().hashCode()
+        return getBaseRevision().hashCode() + getHeadRevision().hashCode() + 42 * getRevisions().hashCode()
                 + getRevisionLogs().hashCode() / 42;
     }
 
@@ -108,7 +108,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
             return false;
         }
         ChangeHistoryImpl other = (ChangeHistoryImpl) obj;
-        return other.getStartRevision().equals(getStartRevision()) && other.getHeadRevision().equals(getHeadRevision())
+        return other.getBaseRevision().equals(getBaseRevision()) && other.getHeadRevision().equals(getHeadRevision())
                 && other.getRevisions().equals(getRevisions())
                 && other.getRevisionLogs().equals(getRevisionLogs());
     }
