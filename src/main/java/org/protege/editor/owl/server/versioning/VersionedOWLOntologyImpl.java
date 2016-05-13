@@ -18,6 +18,11 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.EvictingQueue;
 
+/**
+ * @author Josef Hardi <johardi@stanford.edu> <br>
+ * @author Timothy Redmond (tredmond) <br>
+ * Stanford Center for Biomedical Informatics Research
+ */
 public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 
     /*
@@ -43,17 +48,37 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 
     private boolean isHistoryDirty = false;
 
-    public VersionedOWLOntologyImpl(ServerDocument serverDocument, OWLOntology ontology,
-            DocumentRevision initialRevision, ChangeHistory changeHistory) {
+    /**
+     * Creates a versioned ontology that tracks changes of the specified underlying OWL ontology.
+     * The input <code>serverDocument</code> will contain the reference to a remote resource
+     * for collaboration and public sharing.
+     *
+     * @param serverDocument
+     *          A reference information to a remote resource.
+     * @param ontology
+     *          The ontology to be tracked for changes.
+     */
+    public VersionedOWLOntologyImpl(ServerDocument serverDocument, OWLOntology ontology) {
+        this(serverDocument, ontology, ChangeHistoryImpl.createEmptyChangeHistory());
+    }
+
+    /**
+     * Creates a versioned ontology that tracks changes of the specified underlying OWL ontology
+     * with an addition of an initial change records specified by <code>changeHistory</code> input.
+     * The input <code>serverDocument</code> will contain the reference to a remote resource
+     * for collaboration and public sharing.
+     *
+     * @param serverDocument
+     *          A reference information to a remote resource.
+     * @param ontology
+     *          The ontology to be tracked for changes.
+     * @param changeHistory
+     *          The initial change records of the input ontology.
+     */
+    public VersionedOWLOntologyImpl(ServerDocument serverDocument, OWLOntology ontology, ChangeHistory changeHistory) {
         this.serverDocument = serverDocument;
         this.ontology = ontology;
         this.changeHistory = changeHistory;
-    }
-
-    public VersionedOWLOntologyImpl(ServerDocument serverDocument, OWLOntology ontology) {
-        this.serverDocument = serverDocument;
-        this.ontology = ontology;
-        this.changeHistory = ChangeHistoryImpl.createEmptyChangeHistory();
     }
 
     public static File getMetadataFile(File ontologyFile) {
