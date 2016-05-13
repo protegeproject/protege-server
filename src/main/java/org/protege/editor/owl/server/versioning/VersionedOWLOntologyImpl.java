@@ -107,11 +107,6 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     }
 
     @Override
-    public String getDisplayName() {
-        return ontology.getOntologyID().getOntologyIRI().get().toString();
-    }
-
-    @Override
     public ServerDocument getServerDocument() {
         return serverDocument;
     }

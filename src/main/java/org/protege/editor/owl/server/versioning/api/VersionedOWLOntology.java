@@ -15,7 +15,7 @@ import java.util.List;
  * @author Timothy Redmond (tredmond) <br>
  * Stanford Center for Biomedical Informatics Research
  */
-public interface VersionedOWLOntology extends HasDisplayName {
+public interface VersionedOWLOntology {
 
     ServerDocument getServerDocument();
 
