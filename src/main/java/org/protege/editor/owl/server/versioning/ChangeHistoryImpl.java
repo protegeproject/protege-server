@@ -24,7 +24,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
     private DocumentRevision startRevision;
     private DocumentRevision headRevision;
     private SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions = new TreeMap<>();
-    private SortedMap<DocumentRevision, ChangeMetadata> logs = new TreeMap<>();
+    private SortedMap<DocumentRevision, RevisionMetadata> logs = new TreeMap<>();
 
     public ChangeHistoryImpl() {
         this.startRevision = DocumentRevision.START_REVISION;
@@ -33,7 +33,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     private ChangeHistoryImpl(@Nonnull DocumentRevision startRevision,
             @Nonnull SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions,
-            @Nonnull SortedMap<DocumentRevision, ChangeMetadata> logs) {
+            @Nonnull SortedMap<DocumentRevision, RevisionMetadata> logs) {
         this.startRevision = startRevision;
         this.revisions = revisions;
         this.logs = logs;
@@ -46,12 +46,12 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     public static ChangeHistoryImpl recreate(@Nonnull DocumentRevision startRevision,
             @Nonnull SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions,
-            @Nonnull SortedMap<DocumentRevision, ChangeMetadata> logs) {
+            @Nonnull SortedMap<DocumentRevision, RevisionMetadata> logs) {
         return new ChangeHistoryImpl(startRevision, revisions, logs);
     }
 
     @Override
-    public void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes) {
+    public void addRevision(RevisionMetadata metadata, List<OWLOntologyChange> changes) {
         DocumentRevision nextRevision = headRevision.next();
         logs.put(nextRevision, metadata);
         revisions.put(nextRevision, changes);
@@ -69,7 +69,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
     }
 
     @Override
-    public ChangeMetadata getChangeMetadataForRevision(DocumentRevision revision) {
+    public RevisionMetadata getMetadataForRevision(DocumentRevision revision) {
         return logs.get(revision);
     }
 
@@ -84,7 +84,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
     }
 
     @Override
-    public SortedMap<DocumentRevision, ChangeMetadata> getRevisionLogs() {
+    public SortedMap<DocumentRevision, RevisionMetadata> getRevisionLogs() {
         return logs;
     }
 

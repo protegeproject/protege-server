@@ -1,6 +1,6 @@
 package org.protege.editor.owl.server.versioning.api;
 
-import org.protege.editor.owl.server.versioning.ChangeMetadata;
+import org.protege.editor.owl.server.versioning.RevisionMetadata;
 import org.protege.editor.owl.server.versioning.DocumentRevision;
 
 import org.semanticweb.owlapi.model.OWLOntologyChange;
@@ -31,11 +31,11 @@ public interface ChangeHistory {
      */
     DocumentRevision getHeadRevision();
 
-    void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes);
+    void addRevision(RevisionMetadata metadata, List<OWLOntologyChange> changes);
 
     SortedMap<DocumentRevision, List<OWLOntologyChange>> getRevisions();
 
-    SortedMap<DocumentRevision, ChangeMetadata> getRevisionLogs();
+    SortedMap<DocumentRevision, RevisionMetadata> getRevisionLogs();
 
     /**
      * Returns the ChangeMetaData (user, date of change) for the change document
@@ -49,7 +49,7 @@ public interface ChangeHistory {
      *            revision
      * @return ChangeMetaData
      */
-    ChangeMetadata getChangeMetadataForRevision(DocumentRevision revision);
+    RevisionMetadata getMetadataForRevision(DocumentRevision revision);
 
     List<OWLOntologyChange> getChangesForRevision(DocumentRevision revision);
 

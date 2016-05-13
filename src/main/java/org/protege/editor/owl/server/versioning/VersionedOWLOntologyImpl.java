@@ -40,7 +40,7 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     /*
      * Log cache that stores the last REVISION_LOG_CACHE_SIZE revisions.
      */
-    private EvictingQueue<ChangeMetadata> logCache = EvictingQueue.create(REVISION_LOG_CACHE_SIZE);
+    private EvictingQueue<RevisionMetadata> logCache = EvictingQueue.create(REVISION_LOG_CACHE_SIZE);
 
     private ServerDocument serverDocument;
     private OWLOntology ontology;
@@ -122,18 +122,18 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     }
 
     @Override
-    public void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes) {
+    public void addRevision(RevisionMetadata metadata, List<OWLOntologyChange> changes) {
         changeHistory.addRevision(metadata, changes);
         logCache.add(metadata);
     }
 
     @Override
-    public ChangeMetadata getRevisionLog(DocumentRevision revision) {
-        return changeHistory.getChangeMetadataForRevision(revision);
+    public RevisionMetadata getRevisionMetadata(DocumentRevision revision) {
+        return changeHistory.getMetadataForRevision(revision);
     }
 
     @Override
-    public List<ChangeMetadata> getLatestRevisionLog(int offset) {
+    public List<RevisionMetadata> getLatestRevisionMetadata(int offset) {
         if (offset > REVISION_LOG_CACHE_SIZE) {
             offset = REVISION_LOG_CACHE_SIZE; // handle until the maximum cache size
         }

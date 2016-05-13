@@ -1,6 +1,6 @@
 package org.protege.editor.owl.server.versioning.api;
 
-import org.protege.editor.owl.server.versioning.ChangeMetadata;
+import org.protege.editor.owl.server.versioning.RevisionMetadata;
 import org.protege.editor.owl.server.versioning.DocumentRevision;
 import org.protege.editor.owl.server.versioning.ServerDocument;
 
@@ -43,11 +43,11 @@ public interface VersionedOWLOntology {
      */
     ChangeHistory getChangeHistory();
 
-    void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes);
+    void addRevision(RevisionMetadata metadata, List<OWLOntologyChange> changes);
 
-    ChangeMetadata getRevisionLog(DocumentRevision revision);
+    RevisionMetadata getRevisionMetadata(DocumentRevision revision);
 
-    List<ChangeMetadata> getLatestRevisionLog(int offset);
+    List<RevisionMetadata> getLatestRevisionMetadata(int offset);
 
     DocumentRevision getBaseRevision();
 
