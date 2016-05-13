@@ -53,7 +53,7 @@ public interface VersionedOWLOntology extends HasDisplayName {
      * 
      * @return a copy of the changes from revision zero to getRevision().
      */
-    ChangeHistory getLocalHistory();
+    ChangeHistory getChangeHistory();
 
     void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes);
 

@@ -39,21 +39,21 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 
     private ServerDocument serverDocument;
     private OWLOntology ontology;
-    private ChangeHistory localHistory;
+    private ChangeHistory changeHistory;
 
     private boolean isHistoryDirty = false;
 
     public VersionedOWLOntologyImpl(ServerDocument serverDocument, OWLOntology ontology,
-            DocumentRevision initialRevision, ChangeHistory localHistory) {
+            DocumentRevision initialRevision, ChangeHistory changeHistory) {
         this.serverDocument = serverDocument;
         this.ontology = ontology;
-        this.localHistory = localHistory;
+        this.changeHistory = changeHistory;
     }
 
     public VersionedOWLOntologyImpl(ServerDocument serverDocument, OWLOntology ontology) {
         this.serverDocument = serverDocument;
         this.ontology = ontology;
-        this.localHistory = ChangeHistoryImpl.createEmptyChangeHistory();
+        this.changeHistory = ChangeHistoryImpl.createEmptyChangeHistory();
     }
 
     public static File getMetadataFile(File ontologyFile) {
@@ -97,19 +97,19 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     }
 
     @Override
-    public ChangeHistory getLocalHistory() {
-        return localHistory;
+    public ChangeHistory getChangeHistory() {
+        return changeHistory;
     }
 
     @Override
     public void addRevision(ChangeMetadata metadata, List<OWLOntologyChange> changes) {
-        localHistory.addRevision(metadata, changes);
+        changeHistory.addRevision(metadata, changes);
         logCache.add(metadata);
     }
 
     @Override
     public ChangeMetadata getRevisionLog(DocumentRevision revision) {
-        return localHistory.getChangeMetadataForRevision(revision);
+        return changeHistory.getChangeMetadataForRevision(revision);
     }
 
     @Override
@@ -122,12 +122,12 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 
     @Override
     public DocumentRevision getStartRevision() {
-        return localHistory.getStartRevision();
+        return changeHistory.getStartRevision();
     }
 
     @Override
     public DocumentRevision getHeadRevision() {
-        return localHistory.getHeadRevision();
+        return changeHistory.getHeadRevision();
     }
 
     @Override
@@ -158,7 +158,7 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
         HistoryFile historyFile = getHistoryFile(ontologyFile);
         if (isHistoryDirty || !historyFile.exists()) {
             historyFile.getParentFile().mkdirs();
-            ChangeHistoryUtils.writeChanges(localHistory, historyFile);
+            ChangeHistoryUtils.writeChanges(changeHistory, historyFile);
             isHistoryDirty = false;
         }
         return true;
