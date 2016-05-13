@@ -29,8 +29,24 @@ import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 
+/**
+ * @author Josef Hardi <johardi@stanford.edu> <br>
+ * Stanford Center for Biomedical Informatics Research
+ */
 public class ChangeHistoryUtils {
 
+    /**
+     * Returns a change history that is a sub history of the input <code>changeHistory</code>. The crop begins
+     * at the specified <code>start + 1</code> revision and extends to the to the <code>end</code> revision.
+     *
+     * @param changeHistory
+     *          The input change history.
+     * @param start
+     *          The beginning revision, exclusive
+     * @param end
+     *          The ending revision, inclusive
+     * @return The specified sub history.
+     */
     public static ChangeHistory crop(@Nonnull ChangeHistory changeHistory, @Nonnull DocumentRevision start, @Nonnull DocumentRevision end) {
         if (start.behind(changeHistory.getStartRevision())) {
             throw new IllegalArgumentException("The input start is out of the range");
@@ -45,24 +61,63 @@ public class ChangeHistoryUtils {
             subLogs.putAll(changeHistory.getRevisionLogs());
         }
         else {
-            subRevisions.putAll(changeHistory.getRevisions().headMap(start).tailMap(end));
-            subLogs.putAll(changeHistory.getRevisionLogs().headMap(start).tailMap(end));
+            subRevisions.putAll(changeHistory.getRevisions().headMap(start.next()).tailMap(end));
+            subLogs.putAll(changeHistory.getRevisionLogs().headMap(start.next()).tailMap(end));
         }
         return ChangeHistoryImpl.recreate(start, subRevisions, subLogs);
     }
 
+    /**
+     * Returns a change history that is a sub history of the input <code>changeHistory</code>. The crop begins
+     * at the specified <code>start + 1</code> revision and extends to the to end of the change history.
+     *
+     * @param changeHistory
+     *          The input change history.
+     * @param start
+     *          The beginning revision, exclusive
+     * @return The specified sub history.
+     */
     public static ChangeHistory crop(@Nonnull ChangeHistory changeHistory, @Nonnull DocumentRevision start) {
         return crop(changeHistory, start, changeHistory.getHeadRevision());
     }
 
+    /**
+     * Returns a change history that is a sub history of the input <code>changeHistory</code>. The crop begins
+     * at the specified <code>start + 1</code> revision and extends to the length of the <code>offset</code> size.
+     *
+     * @param changeHistory
+     *          The input change history.
+     * @param start
+     *          The beginning revision, exclusive
+     * @param offset
+     *          Length of the sub history
+     * @return The specified sub history.
+     */
     public static ChangeHistory crop(@Nonnull ChangeHistory changeHistory, @Nonnull DocumentRevision start, int offset) {
         return crop(changeHistory, start, start.next(offset));
     }
 
+    /**
+     * Writes an empty change history into the file system specified by the input <code>historyFile</code>
+     *
+     * @param historyFile
+     *          The destination file.
+     * @throws IOException
+     */
     public static void writeEmptyChanges(@Nonnull HistoryFile historyFile) throws IOException {
         writeChanges(ChangeHistoryImpl.createEmptyChangeHistory(), historyFile);
     }
 
+    /**
+     * Writes the given <code>changeHistory</code> into the file system specified by the input
+     * <code>historyFile</code>.
+     *
+     * @param changeHistory
+     *          The input change history
+     * @param historyFile
+     *          The destination file
+     * @throws IOException
+     */
     public static void writeChanges(@Nonnull ChangeHistory changeHistory, @Nonnull HistoryFile historyFile) throws IOException {
         ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(historyFile)));
         try {
@@ -80,6 +135,20 @@ public class ChangeHistoryUtils {
         }
     }
 
+    /**
+     * Reads change history from the input <code>historyFile</code>. The method returns a change history that begins
+     * at the specified <code>start + 1</code> revision and extends to the to the <code>end</code> revision.
+     *
+     * @param historyFile
+     *          The input history file
+     * @param start
+     *          The beginning revision, exclusive
+     * @param end
+     *          The ending revision, inclusive
+     * @return The specified sub history
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public static ChangeHistory readChanges(@Nonnull HistoryFile historyFile, @Nonnull DocumentRevision start,
             @Nonnull DocumentRevision end) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(historyFile)));
@@ -90,8 +159,8 @@ public class ChangeHistoryUtils {
             }
             SortedMap<DocumentRevision, ChangeMetadata> logs = getRevisionLogsFromInputStream(ois);
             SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions = getRevisionsFromInputStream(ois);
-            SortedMap<DocumentRevision, List<OWLOntologyChange>> subRevisions = revisions.tailMap(start).headMap(end);
-            SortedMap<DocumentRevision, ChangeMetadata> subLogs = logs.tailMap(start).headMap(end);
+            SortedMap<DocumentRevision, List<OWLOntologyChange>> subRevisions = revisions.tailMap(start.next()).headMap(end);
+            SortedMap<DocumentRevision, ChangeMetadata> subLogs = logs.tailMap(start.next()).headMap(end);
             return ChangeHistoryImpl.recreate(start, subRevisions, subLogs);
         }
         finally {
@@ -99,6 +168,14 @@ public class ChangeHistoryUtils {
         }
     }
 
+    /**
+     * Reads the whole change history from the input <code>historyFile</code>.
+     *
+     * @param historyFile
+     *          The input history file.
+     * @return A complete change history from the input history file.
+     * @throws IOException
+     */
     public static ChangeHistory readChanges(@Nonnull HistoryFile historyFile) throws IOException {
         ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(historyFile)));
         try {
@@ -112,7 +189,18 @@ public class ChangeHistoryUtils {
         }
     }
 
-    public static List<OWLOntologyChange> getOntologyChanges(@Nonnull ChangeHistory changeHistory, @Nonnull OWLOntology targetOntology) {
+    /**
+     * Extracts the ontology changes from the input <code>changeHistory</code> where these changes
+     * are encoded to be applicable to the <code>targetOntology</code>.
+     *
+     * @param changeHistory
+     *          The input change history.
+     * @param targetOntology
+     *          The ontology where the changes can be applied to.
+     * @return A list of {@link OWLOntologyChange} instances.
+     */
+    public static List<OWLOntologyChange> getOntologyChanges(@Nonnull ChangeHistory changeHistory,
+            @Nonnull OWLOntology targetOntology) {
         List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
         for (List<OWLOntologyChange> change : changeHistory.getRevisions().values()) {
             changes.addAll(change);
@@ -120,18 +208,61 @@ public class ChangeHistoryUtils {
         return ReplaceChangedOntologyVisitor.mutate(targetOntology, normalizeChangeDelta(changes));
     }
 
+    /**
+     * Extracts the ontology changes from the input <code>changeHistory</code> that begins
+     * at the specified <code>start + 1</code> revision and extends to the to the <code>end</code> revision.
+     * These changes are encoded to be applicable to the given <code>targetOntology</code>
+     *
+     * @param changeHistory
+     *          The input change history
+     * @param start
+     *          The beginning revision, exclusive
+     * @param end
+     *          The ending revision, inclusive
+     * @param targetOntology
+     *          The ontology where the changes can be applied to.
+     * @return A list of {@link OWLOntologyChange} instances.
+     */
     public static List<OWLOntologyChange> getOntologyChanges(@Nonnull ChangeHistory changeHistory,
             @Nonnull DocumentRevision start, @Nonnull DocumentRevision end, OWLOntology targetOntology) {
         ChangeHistory subChangeHistory = crop(changeHistory, start, end);
         return getOntologyChanges(subChangeHistory, targetOntology);
     }
 
+    /**
+     * Extracts the ontology changes from the input <code>changeHistory</code> that begins
+     * at the specified <code>start + 1</code> revision and extends to the to end of the change history.
+     * These changes are encoded to be applicable to the given <code>targetOntology</code>
+     *
+     * @param changeHistory
+     *          The input change history
+     * @param start
+     *          The beginning revision, exclusive
+     * @param targetOntology
+     *          The ontology where the changes can be applied to.
+     * @return A list of {@link OWLOntologyChange} instances.
+     */
     public static List<OWLOntologyChange> getOntologyChanges(@Nonnull ChangeHistory changeHistory,
             @Nonnull DocumentRevision start, OWLOntology targetOntology) {
         ChangeHistory subChangeHistory = crop(changeHistory, start);
         return getOntologyChanges(subChangeHistory, targetOntology);
     }
 
+    /**
+     * Extracts the ontology changes from the input <code>changeHistory</code> that begins
+     * at the specified <code>start + 1</code> revision and extends to the length of <code>offset</code>
+     * size. These changes are encoded to be applicable to the given <code>targetOntology</code>
+     *
+     * @param changeHistory
+     *          The input change history
+     * @param start
+     *          The beginning revision, exclusive
+     * @param offset
+     *          Length of the sub history
+     * @param targetOntology
+     *          The ontology where the changes can be applied to.
+     * @return A list of {@link OWLOntologyChange} instances.
+     */
     public static List<OWLOntologyChange> getOntologyChanges(@Nonnull ChangeHistory changeHistory,
             @Nonnull DocumentRevision start, int offset, OWLOntology targetOntology) {
         ChangeHistory subChangeHistory = crop(changeHistory, start, offset);
