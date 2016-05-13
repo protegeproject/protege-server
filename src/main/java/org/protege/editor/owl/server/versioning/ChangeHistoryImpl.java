@@ -84,7 +84,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
     }
 
     @Override
-    public SortedMap<DocumentRevision, RevisionMetadata> getRevisionLogs() {
+    public SortedMap<DocumentRevision, RevisionMetadata> getMetadata() {
         return logs;
     }
 
@@ -96,7 +96,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
     @Override
     public int hashCode() {
         return getBaseRevision().hashCode() + getHeadRevision().hashCode() + 42 * getRevisions().hashCode()
-                + getRevisionLogs().hashCode() / 42;
+                + getMetadata().hashCode() / 42;
     }
 
     @Override
@@ -110,7 +110,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
         ChangeHistoryImpl other = (ChangeHistoryImpl) obj;
         return other.getBaseRevision().equals(getBaseRevision()) && other.getHeadRevision().equals(getHeadRevision())
                 && other.getRevisions().equals(getRevisions())
-                && other.getRevisionLogs().equals(getRevisionLogs());
+                && other.getMetadata().equals(getMetadata());
     }
 
     @Override

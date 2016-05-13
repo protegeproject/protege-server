@@ -55,16 +55,16 @@ public class ChangeHistoryUtils {
             throw new IllegalArgumentException("The input start is out of the range");
         }
         SortedMap<DocumentRevision, List<OWLOntologyChange>> subRevisions = new TreeMap<>();
-        SortedMap<DocumentRevision, RevisionMetadata> subLogs = new TreeMap<>();
+        SortedMap<DocumentRevision, RevisionMetadata> subMetadata = new TreeMap<>();
         if (start.sameAs(changeHistory.getBaseRevision()) && end.sameAs(changeHistory.getHeadRevision())) {
             subRevisions.putAll(changeHistory.getRevisions());
-            subLogs.putAll(changeHistory.getRevisionLogs());
+            subMetadata.putAll(changeHistory.getMetadata());
         }
         else {
             subRevisions.putAll(changeHistory.getRevisions().headMap(start.next()).tailMap(end));
-            subLogs.putAll(changeHistory.getRevisionLogs().headMap(start.next()).tailMap(end));
+            subMetadata.putAll(changeHistory.getMetadata().headMap(start.next()).tailMap(end));
         }
-        return ChangeHistoryImpl.recreate(start, subRevisions, subLogs);
+        return ChangeHistoryImpl.recreate(start, subRevisions, subMetadata);
     }
 
     /**
@@ -122,7 +122,7 @@ public class ChangeHistoryUtils {
         ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(historyFile)));
         try {
             oos.writeObject(changeHistory.getBaseRevision());
-            oos.writeObject(changeHistory.getRevisionLogs());
+            oos.writeObject(changeHistory.getMetadata());
 
             BinaryOWLOntologyChangeLog log = new BinaryOWLOntologyChangeLog();
             for (List<OWLOntologyChange> changeSet : changeHistory.getRevisions().values()) {
@@ -157,11 +157,11 @@ public class ChangeHistoryUtils {
             if (start.behind(baseRevision)) {
                 throw new IllegalArgumentException("Changes could not be extracted because the input start revision is out of range");
             }
-            SortedMap<DocumentRevision, RevisionMetadata> logs = getRevisionLogsFromInputStream(ois);
+            SortedMap<DocumentRevision, RevisionMetadata> metadata = getRevisionMetadataFromInputStream(ois);
             SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions = getRevisionsFromInputStream(ois);
             SortedMap<DocumentRevision, List<OWLOntologyChange>> subRevisions = revisions.tailMap(start.next()).headMap(end);
-            SortedMap<DocumentRevision, RevisionMetadata> subLogs = logs.tailMap(start.next()).headMap(end);
-            return ChangeHistoryImpl.recreate(start, subRevisions, subLogs);
+            SortedMap<DocumentRevision, RevisionMetadata> subMetadata = metadata.tailMap(start.next()).headMap(end);
+            return ChangeHistoryImpl.recreate(start, subRevisions, subMetadata);
         }
         finally {
             ois.close();
@@ -180,7 +180,7 @@ public class ChangeHistoryUtils {
         ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(historyFile)));
         try {
             DocumentRevision startRevision = getBaseRevision(ois); // Start revision from the input history file
-            SortedMap<DocumentRevision, RevisionMetadata> metadata = getRevisionLogsFromInputStream(ois);
+            SortedMap<DocumentRevision, RevisionMetadata> metadata = getRevisionMetadataFromInputStream(ois);
             SortedMap<DocumentRevision, List<OWLOntologyChange>> revisionsList = getRevisionsFromInputStream(ois);
             return ChangeHistoryImpl.recreate(startRevision, revisionsList, metadata);
         }
@@ -283,7 +283,7 @@ public class ChangeHistoryUtils {
     }
 
     @SuppressWarnings("unchecked")
-    private static SortedMap<DocumentRevision, RevisionMetadata> getRevisionLogsFromInputStream(ObjectInputStream ois)
+    private static SortedMap<DocumentRevision, RevisionMetadata> getRevisionMetadataFromInputStream(ObjectInputStream ois)
             throws IOException {
         try {
             return (SortedMap<DocumentRevision, RevisionMetadata>) ois.readObject();

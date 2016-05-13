@@ -35,7 +35,7 @@ public interface ChangeHistory {
 
     SortedMap<DocumentRevision, List<OWLOntologyChange>> getRevisions();
 
-    SortedMap<DocumentRevision, RevisionMetadata> getRevisionLogs();
+    SortedMap<DocumentRevision, RevisionMetadata> getMetadata();
 
     /**
      * Returns the ChangeMetaData (user, date of change) for the change document
