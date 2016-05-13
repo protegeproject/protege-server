@@ -86,7 +86,7 @@ public class ChangeDocumentPool {
         }, timeout, timeout, TimeUnit.MILLISECONDS);
     }
 
-    public ChangeHistory getChangeDocument(HistoryFile historyFile) throws OWLServerException {
+    public ChangeHistory lookup(HistoryFile historyFile) throws OWLServerException {
         ChangeDocumentPoolEntry entry;
         synchronized (pool) {
             entry = pool.get(historyFile);
@@ -99,7 +99,7 @@ public class ChangeDocumentPool {
         return entry.getChangeDocument();
     }
 
-    public void setChangeDocument(HistoryFile historyFile, ChangeHistory changes) {
+    public void put(HistoryFile historyFile, ChangeHistory changes) {
         synchronized (pool) {
             ChangeDocumentPoolEntry entry = pool.get(historyFile);
             if (entry != null) {

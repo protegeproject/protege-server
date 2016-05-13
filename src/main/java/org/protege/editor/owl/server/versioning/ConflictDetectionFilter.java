@@ -46,7 +46,7 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
             Description description, UserId owner, Optional<ProjectOptions> options)
             throws AuthorizationException, ServerServiceException {
         ServerDocument serverDocument = super.createProject(token, projectId, projectName, description, owner, options);
-        changePool.setChangeDocument(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
+        changePool.put(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
         return serverDocument;
     }
     

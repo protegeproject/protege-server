@@ -38,6 +38,6 @@ public class DefaultChangeService implements ChangeService {
     }
 
     private ChangeHistory getCachedChangeHistory(HistoryFile historyFile) throws OWLServerException {
-        return changePool.getChangeDocument(historyFile);
+        return changePool.lookup(historyFile);
     }
 }
