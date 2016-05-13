@@ -1,7 +1,7 @@
 package org.protege.editor.owl.server.versioning.api;
 
-import org.protege.editor.owl.server.versioning.RevisionMetadata;
 import org.protege.editor.owl.server.versioning.DocumentRevision;
+import org.protege.editor.owl.server.versioning.RevisionMetadata;
 import org.protege.editor.owl.server.versioning.ServerDocument;
 
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -17,40 +17,61 @@ import java.util.List;
  */
 public interface VersionedOWLOntology {
 
+    /**
+     * Returns a server document that stores the reference to a remote resource
+     * which link to the local resource.
+     */
     ServerDocument getServerDocument();
 
+    /**
+     * Returns the OWL ontology that is being tracked for changes.
+     */
     OWLOntology getOntology();
 
     /**
-     * This returns a change document which is a copy of the server-side change
-     * document from revision zero to the current revision (getRevision()) of
-     * this document.
-     * <p>
-     * The idea is that the client will keep a cache of the history locally so
-     * that certain operations (e.g. commit) can be completed without going to
-     * the server. If I do not keep a copy of the server side history document
-     * then the commit operation in particular could be much slower.
-     * <p>
-     * The local history must satisfy the following invariants:
-     * <ol>
-     * <li>the local history starts at revision zero,</li>
-     * <li>the local history ends at some revision at or after the current
-     * revision of this document (getRevision()) and
-     * <li>the local history is a subset of the history on the server.
-     * </ol>
-     * 
-     * @return a copy of the changes from revision zero to getRevision().
+     * Returns the change recording that contains all the revisions that are created during
+     * the track changes. The returned object is associated to the <b>local</b> change history.
      */
     ChangeHistory getChangeHistory();
 
+    /**
+     * Records a revision specified by the given <code>metadata</code> and <code>changes</code>.
+     *
+     * @param metadata
+     *          The meta information about the change (e.g., author details, comment)
+     * @param changes
+     *          A list of changes that make this revision.
+     */
     void addRevision(RevisionMetadata metadata, List<OWLOntologyChange> changes);
 
+    /**
+     * Retrieves a particular metadata specified by the given <code>revision</code>.
+     *
+     * @param revision
+     *          The revision number (as {link DocumentRevision} instance) to get the metadata.
+     * @return The revision metadata
+     */
     RevisionMetadata getRevisionMetadata(DocumentRevision revision);
 
+    /**
+     * Retrieves the latest metadata items from the HEAD revision to the length of the given
+     * <code>offset</code> size. Calling <code>getLatestRevisionMetadata(1)</code> equals to
+     * getting the metadata of the latest revision.
+     *
+     * @param offset
+     *          Length of latest revision to retrieve
+     * @return A list of revision metadata
+     */
     List<RevisionMetadata> getLatestRevisionMetadata(int offset);
 
+    /**
+     * Returns the local base revision number (local/BASE).
+     */
     DocumentRevision getBaseRevision();
 
+    /**
+     * Returns the local head (latest) revision number (local/HEAD).
+     */
     DocumentRevision getHeadRevision();
 
     /**

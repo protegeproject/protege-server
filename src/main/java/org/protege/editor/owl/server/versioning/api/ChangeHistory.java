@@ -31,27 +31,53 @@ public interface ChangeHistory {
      */
     DocumentRevision getHeadRevision();
 
+    /**
+     * Records a revision specified by the given <code>metadata</code> and <code>changes</code>.
+     *
+     * @param metadata
+     *          The meta information about the change (e.g., author details, comment)
+     * @param changes
+     *          A list of changes that make this revision.
+     */
     void addRevision(RevisionMetadata metadata, List<OWLOntologyChange> changes);
 
+    /**
+     * Get all the revisions stored in this change history. Each revision has a revision number
+     * presented as {@link DocumentRevision}. This method returns a sorted revisions.
+     *
+     * @return All the revisions sorted by its revision number.
+     */
     SortedMap<DocumentRevision, List<OWLOntologyChange>> getRevisions();
 
+    /**
+     * Get all the metadata associated to the revisions. This method returns a sorted metadata.
+     *
+     * @return All the revision metadata sorted by its revision number.
+     */
     SortedMap<DocumentRevision, RevisionMetadata> getMetadata();
 
     /**
-     * Returns the ChangeMetaData (user, date of change) for the change document
-     * at a given revision.
-     * <p>
-     * It should be non-null for all revisions from the start revision of the
-     * change document (inclusive) to the end revision of the document
-     * (exclusive). Passing any other revision id in leads to unknown results.
-     * 
+     * Retrieves a particular metadata specified by the given <code>revision</code>.
+     *
      * @param revision
-     *            revision
-     * @return ChangeMetaData
+     *          The revision number (as {link DocumentRevision} instance) to get the metadata.
+     * @return The revision metadata
      */
     RevisionMetadata getMetadataForRevision(DocumentRevision revision);
 
+    /**
+     * Retrieves a list of ontology changes specified by the given <code>revision</code>.
+     *
+     * @param revision
+     *          The revision number (as {link DocumentRevision} instance) to get the changes.
+     * @return A list of ontology changes.
+     */
     List<OWLOntologyChange> getChangesForRevision(DocumentRevision revision);
 
+    /**
+     * Checks if the change history is empty or not.
+     *
+     * @return Returns <code>true</code> if it is empty, or <code>false</code> otherwise.
+     */
     boolean isEmpty();
 }
