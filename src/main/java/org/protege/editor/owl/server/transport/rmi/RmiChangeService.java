@@ -1,10 +1,10 @@
 package org.protege.editor.owl.server.transport.rmi;
 
 import org.protege.editor.owl.server.api.ChangeService;
-import org.protege.editor.owl.server.versioning.DocumentRevision;
-import org.protege.editor.owl.server.versioning.HistoryFile;
-import org.protege.editor.owl.server.versioning.ServerDocument;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
+import org.protege.editor.owl.server.versioning.api.DocumentRevision;
+import org.protege.editor.owl.server.versioning.api.HistoryFile;
+import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
 import java.rmi.RemoteException;
 

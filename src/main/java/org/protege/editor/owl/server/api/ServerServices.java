@@ -3,7 +3,7 @@ package org.protege.editor.owl.server.api;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
-import org.protege.editor.owl.server.versioning.ServerDocument;
+import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
 import java.net.URI;
 import java.util.List;

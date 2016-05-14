@@ -10,7 +10,7 @@ import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.policy.AccessControlFilter;
 import org.protege.editor.owl.server.policy.CommitBundleImpl;
-import org.protege.editor.owl.server.versioning.DocumentRevision;
+import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 
 import org.junit.Before;
 import org.junit.Test;

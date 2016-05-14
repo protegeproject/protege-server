@@ -1,7 +1,7 @@
 package org.protege.editor.owl.server.policy;
 
 import org.protege.editor.owl.server.api.CommitBundle;
-import org.protege.editor.owl.server.versioning.DocumentRevision;
+import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 

@@ -1,8 +1,5 @@
 package org.protege.editor.owl.server.versioning.api;
 
-import org.protege.editor.owl.server.versioning.RevisionMetadata;
-import org.protege.editor.owl.server.versioning.DocumentRevision;
-
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 import java.util.List;

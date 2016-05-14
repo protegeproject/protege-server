@@ -1,6 +1,6 @@
 package org.protege.editor.owl.server.api;
 
-import org.protege.editor.owl.server.versioning.DocumentRevision;
+import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 

@@ -1,4 +1,6 @@
-package org.protege.editor.owl.server.versioning;
+package org.protege.editor.owl.server.versioning.api;
+
+import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 
 import java.io.File;
 

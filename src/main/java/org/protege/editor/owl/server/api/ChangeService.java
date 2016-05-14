@@ -1,8 +1,8 @@
 package org.protege.editor.owl.server.api;
 
-import org.protege.editor.owl.server.versioning.DocumentRevision;
-import org.protege.editor.owl.server.versioning.HistoryFile;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
+import org.protege.editor.owl.server.versioning.api.DocumentRevision;
+import org.protege.editor.owl.server.versioning.api.HistoryFile;
 
 /**
  * @author Josef Hardi <johardi@stanford.edu> <br>

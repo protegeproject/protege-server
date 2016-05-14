@@ -1,4 +1,4 @@
-package org.protege.editor.owl.server.versioning;
+package org.protege.editor.owl.server.versioning.api;
 
 import java.io.Serializable;
 

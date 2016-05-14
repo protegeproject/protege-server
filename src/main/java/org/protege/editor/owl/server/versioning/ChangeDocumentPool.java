@@ -2,6 +2,7 @@ package org.protege.editor.owl.server.versioning;
 
 import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
+import org.protege.editor.owl.server.versioning.api.HistoryFile;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

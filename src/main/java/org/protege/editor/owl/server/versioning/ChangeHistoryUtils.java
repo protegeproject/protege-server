@@ -1,6 +1,9 @@
 package org.protege.editor.owl.server.versioning;
 
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
+import org.protege.editor.owl.server.versioning.api.DocumentRevision;
+import org.protege.editor.owl.server.versioning.api.HistoryFile;
+import org.protege.editor.owl.server.versioning.api.RevisionMetadata;
 
 import org.semanticweb.binaryowl.BinaryOWLChangeLogHandler;
 import org.semanticweb.binaryowl.BinaryOWLMetadata;

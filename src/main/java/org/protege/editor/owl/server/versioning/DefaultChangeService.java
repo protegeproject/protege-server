@@ -3,6 +3,8 @@ package org.protege.editor.owl.server.versioning;
 import org.protege.editor.owl.server.api.ChangeService;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
+import org.protege.editor.owl.server.versioning.api.DocumentRevision;
+import org.protege.editor.owl.server.versioning.api.HistoryFile;
 
 public class DefaultChangeService implements ChangeService {
 

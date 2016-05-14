@@ -1,6 +1,10 @@
 package org.protege.editor.owl.server.versioning;
 
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
+import org.protege.editor.owl.server.versioning.api.DocumentRevision;
+import org.protege.editor.owl.server.versioning.api.HistoryFile;
+import org.protege.editor.owl.server.versioning.api.RevisionMetadata;
+import org.protege.editor.owl.server.versioning.api.ServerDocument;
 import org.protege.editor.owl.server.versioning.api.VersionedOWLOntology;
 
 import org.semanticweb.owlapi.model.IRI;
