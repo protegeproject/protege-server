@@ -7,9 +7,9 @@ import org.protege.editor.owl.server.api.TransportHandler;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
-import org.protege.editor.owl.server.versioning.HistoryFile;
 import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
-import org.protege.editor.owl.server.versioning.ServerDocument;
+import org.protege.editor.owl.server.versioning.api.HistoryFile;
+import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,8 +46,10 @@ import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.UserRegistry;
 import edu.stanford.protege.metaproject.api.exception.IdAlreadyInUseException;
+import edu.stanford.protege.metaproject.api.exception.ProjectNotInPolicyException;
 import edu.stanford.protege.metaproject.api.exception.ServerConfigurationNotLoadedException;
 import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
+import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
 
 /**
  * The main server that acts as the end-point server where user requests to the
@@ -406,7 +408,12 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public List<Project> getProjects(AuthToken token, UserId userId)
             throws AuthorizationException, ServerServiceException {
-        return new ArrayList<>(metaprojectAgent.getProjects(userId));
+        try {
+            return new ArrayList<>(metaprojectAgent.getProjects(userId));
+        }
+        catch (UserNotInPolicyException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
@@ -427,7 +434,12 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId)
             throws AuthorizationException, ServerServiceException {
-        return new ArrayList<>(metaprojectAgent.getRoles(userId, projectId));
+        try {
+            return new ArrayList<>(metaprojectAgent.getRoles(userId, projectId));
+        }
+        catch (UserNotInPolicyException | ProjectNotInPolicyException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
@@ -448,7 +460,12 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId)
             throws AuthorizationException, ServerServiceException {
-        return new ArrayList<>(metaprojectAgent.getOperations(userId, projectId));
+        try {
+            return new ArrayList<>(metaprojectAgent.getOperations(userId, projectId));
+        }
+        catch (UserNotInPolicyException | ProjectNotInPolicyException e) {
+            throw new ServerServiceException(e);
+        }
     }
 
     @Override
