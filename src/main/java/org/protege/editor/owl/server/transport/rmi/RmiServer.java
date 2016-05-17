@@ -43,9 +43,9 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
-    public void createUser(AuthToken token, User newUser, Optional<SaltedPasswordDigest> password)
+    public void createUser(AuthToken token, User newUser, SaltedPasswordDigest password)
             throws AuthorizationException, ServerServiceException, RemoteException {
-        server.createUser(token, newUser, password);
+        server.createUser(token, newUser, Optional.ofNullable(password));
     }
 
     @Override
@@ -62,9 +62,9 @@ public class RmiServer implements RemoteServer {
 
     @Override
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName,
-            Description description, UserId owner, Optional<ProjectOptions> options)
+            Description description, UserId owner, ProjectOptions options)
             throws AuthorizationException, ServerServiceException, RemoteException {
-        return server.createProject(token, projectId, projectName, description, owner, options);
+        return server.createProject(token, projectId, projectName, description, owner, Optional.ofNullable(options));
     }
 
     @Override

@@ -11,7 +11,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Description;
@@ -60,7 +59,8 @@ public interface RemoteServer extends Remote {
      * @param newUser
      *            The new user to add.
      * @param password
-     *            The password associated to the new user.
+     *            The password associated to the new user. Use <code>null</code>
+     *            if credential is not required.
      * @throws AuthorizationException
      *             If the user doesn't have the permission to request this
      *             service.
@@ -71,7 +71,7 @@ public interface RemoteServer extends Remote {
      *             communication problems, failure during parameter or return
      *             value marshalling or unmarshalling, protocol errors.
      */
-    void createUser(AuthToken token, User newUser, Optional<SaltedPasswordDigest> password)
+    void createUser(AuthToken token, User newUser, SaltedPasswordDigest password)
             throws AuthorizationException, ServerServiceException, RemoteException;
 
     /**
@@ -170,8 +170,10 @@ public interface RemoteServer extends Remote {
      * @param owner
      *            The owner of the project
      * @param options
-     *            An optional of project options
-     * @return A server document that provide the link information to remote resources
+     *            An optional of project options. Use <code>null</code> if
+     *            project options are not required.
+     * @return A server document that provide the link information to remote
+     *         resources
      * @throws AuthorizationException
      *             If the user doesn't have the permission to request this
      *             service.
@@ -183,7 +185,7 @@ public interface RemoteServer extends Remote {
      *             value marshalling or unmarshalling, protocol errors.
      */
     ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName,
-            Description description, UserId owner, Optional<ProjectOptions> options)
+            Description description, UserId owner, ProjectOptions options)
             throws AuthorizationException, ServerServiceException, RemoteException;
 
     /**
