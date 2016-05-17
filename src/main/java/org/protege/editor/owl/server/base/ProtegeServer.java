@@ -151,30 +151,34 @@ public class ProtegeServer extends ServerLayer {
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName,
             Description description, UserId owner, Optional<ProjectOptions> options)
             throws AuthorizationException, ServerServiceException {
-        HistoryFile historyFile = createHistoryFile(projectId.get(), projectName.get());
-        Project newProject = createNewProject(projectId, projectName, description, historyFile, owner, options);
-        synchronized (projectRegistry) {
-            try {
-                projectRegistry.add(newProject);
-                saveChanges();
-                final URI serverAddress = configuration.getHost().getUri();
-                final Optional<Port> registryPort = configuration.getHost().getSecondaryPort();
-                if (registryPort.isPresent()) {
-                    Port port = registryPort.get();
-                    return new ServerDocument(serverAddress, port.get(), historyFile);
+        try {
+            HistoryFile historyFile = createHistoryFile(projectId.get(), projectName.get());
+            Project newProject = createNewProject(projectId, projectName, description, historyFile, owner, options);
+            synchronized (projectRegistry) {
+                try {
+                    projectRegistry.add(newProject);
+                    saveChanges();
+                    final URI serverAddress = configuration.getHost().getUri();
+                    final Optional<Port> registryPort = configuration.getHost().getSecondaryPort();
+                    if (registryPort.isPresent()) {
+                        Port port = registryPort.get();
+                        return new ServerDocument(serverAddress, port.get(), historyFile);
+                    }
+                    else {
+                        return new ServerDocument(serverAddress, historyFile);
+                    }
                 }
-                else {
-                    return new ServerDocument(serverAddress, historyFile);
+                catch (IdAlreadyInUseException e) {
+                    throw new ServerServiceException(e);
                 }
             }
-            catch (IdAlreadyInUseException e) {
-                throw new ServerServiceException(e);
-            }
-            
+        }
+        catch (IOException e) {
+            throw new ServerServiceException("Failed to create history file in remote server", e);
         }
     }
 
-    private HistoryFile createHistoryFile(String projectDir, String filename) {
+    private HistoryFile createHistoryFile(String projectDir, String filename) throws IOException {
         String rootDir = configuration.getServerRoot().getAbsolutePath() + File.separator + projectDir;
         filename = filename.replaceAll("\\s+","_"); // to snake-case
         return HistoryFile.createNew(rootDir, filename);
