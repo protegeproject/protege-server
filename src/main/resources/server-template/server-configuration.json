@@ -1,6 +1,6 @@
 {
   "host": {
-    "uri": "rmi-owl2-server://localhost:5100",
+    "uri": "rmi://localhost:5100",
     "secondaryPort": "5200"
   },
   "root": "target/server-distribution/server/root",
