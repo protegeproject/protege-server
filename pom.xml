@@ -235,7 +235,8 @@
                             edu.stanford.protege.metaproject.*,
                             com.google.gson.*,
                             org.semanticweb.binaryowl.*,
-                            org.apache.commons.codec.*
+                            org.apache.commons.codec.*,
+                            org.apache.commons.io.*
                         </Export-Package>
                         <Service-Component>OSGI-INF/*.xml</Service-Component>
                     </instructions>
