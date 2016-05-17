@@ -1,7 +1,7 @@
 package org.protege.editor.owl.server;
 
-import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.protege.editor.owl.server.api.CommitBundle;
@@ -11,6 +11,7 @@ import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.policy.AccessControlFilter;
 import org.protege.editor.owl.server.policy.CommitBundleImpl;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
+import org.protege.editor.owl.server.versioning.api.RevisionMetadata;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -129,26 +130,29 @@ public class AccessControlFilterTest {
     @Test
     public void authorizeCommitTest() throws ServerServiceException {
         List<OWLOntologyChange> changes = new ArrayList<>();
+        RevisionMetadata metadata = new RevisionMetadata("user_a", "User A", "user_a@example.com", "Comment");
         changes.add(new AddAxiom(ontology, axiom2));
         changes.add(new AddAxiom(ontology, axiom3));
         changes.add(new RemoveAxiom(ontology, axiom1));
-        CommitBundle commits = new CommitBundleImpl(changes, headRevision);
-        policyFilter.commit(tokenUserA, projectX, commits);
+        CommitBundle commits = new CommitBundleImpl(metadata, changes, headRevision);
+        policyFilter.commit(tokenUserA, projectId, commits);
     }
 
     @Test(expected=ServerServiceException.class)
     public void unauthorizeCommitTest() throws ServerServiceException {
         List<OWLOntologyChange> changes = new ArrayList<>();
+        RevisionMetadata metadata = new RevisionMetadata("user_b", "User B", "user_b@example.com", "Comment");
         changes.add(new AddAxiom(ontology, axiom2));
         changes.add(new AddAxiom(ontology, axiom3));
         changes.add(new RemoveAxiom(ontology, axiom1));
-        CommitBundle commits = new CommitBundleImpl(changes, headRevision);
-        policyFilter.commit(tokenUserB, projectX, commits);
+        CommitBundle commits = new CommitBundleImpl(metadata, changes, headRevision);
+        policyFilter.commit(tokenUserB, projectId, commits);
     }
 
     @Test(expected=ServerServiceException.class)
     public void unauthorizeOperationsUserATest() throws ServerServiceException {
         List<OWLOntologyChange> changes = new ArrayList<>();
+        RevisionMetadata metadata = new RevisionMetadata("user_a", "User A", "user_a@example.com", "Comment");
         changes.add(new AddAxiom(ontology, axiom2));
         changes.add(new RemoveAxiom(ontology, axiom1));
         changes.add(new AddOntologyAnnotation(ontology, annotation2));
@@ -156,10 +160,10 @@ public class AccessControlFilterTest {
         changes.add(new AddImport(ontology, importDecl2));
         changes.add(new RemoveImport(ontology, importDecl1));
         changes.add(new SetOntologyID(ontology, otherOntologyId));
-        CommitBundle commits = new CommitBundleImpl(changes, headRevision);
+        CommitBundle commits = new CommitBundleImpl(metadata, changes, headRevision);
         
         try {
-            policyFilter.commit(tokenUserA, projectX, commits);
+            policyFilter.commit(tokenUserA, projectId, commits);
         }
         catch (ServerServiceException e) {
             OperationNotAllowedException onae = (OperationNotAllowedException) e.getCause();
@@ -172,6 +176,7 @@ public class AccessControlFilterTest {
     @Test(expected=ServerServiceException.class)
     public void unauthorizeOperationsUserBTest() throws ServerServiceException {
         List<OWLOntologyChange> changes = new ArrayList<>();
+        RevisionMetadata metadata = new RevisionMetadata("user_b", "User B", "user_b@example.com", "Comment");
         changes.add(new AddAxiom(ontology, axiom2));
         changes.add(new RemoveAxiom(ontology, axiom1));
         changes.add(new AddOntologyAnnotation(ontology, annotation2));
@@ -179,10 +184,10 @@ public class AccessControlFilterTest {
         changes.add(new AddImport(ontology, importDecl2));
         changes.add(new RemoveImport(ontology, importDecl1));
         changes.add(new SetOntologyID(ontology, otherOntologyId));
-        CommitBundle commits = new CommitBundleImpl(changes, headRevision);
+        CommitBundle commits = new CommitBundleImpl(metadata, changes, headRevision);
         
         try {
-            policyFilter.commit(tokenUserB, projectX, commits);
+            policyFilter.commit(tokenUserB, projectId, commits);
         }
         catch (ServerServiceException e) {
             OperationNotAllowedException onae = (OperationNotAllowedException) e.getCause();
