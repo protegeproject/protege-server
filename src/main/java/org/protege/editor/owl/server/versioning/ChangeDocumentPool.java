@@ -97,17 +97,18 @@ public class ChangeDocumentPool {
                 logger.info("Checked out in-memory change history for " + historyFile.getName());
             }
         }
-        return entry.getChangeDocument();
+        return entry.readChangeHistory();
     }
 
-    public void put(HistoryFile historyFile, ChangeHistory changes) {
+    public void put(HistoryFile historyFile, ChangeHistory changeHistory) {
         synchronized (pool) {
             ChangeDocumentPoolEntry entry = pool.get(historyFile);
             if (entry != null) {
-                entry.setChangeDocument(changes);
+                entry.writeChangeHistory(changeHistory);
             }
             else {
-                entry = new ChangeDocumentPoolEntry(historyFile, changes);
+                entry = new ChangeDocumentPoolEntry(historyFile);
+                entry.writeChangeHistory(changeHistory);
                 pool.put(historyFile, entry);
             }
         }
