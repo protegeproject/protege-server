@@ -716,9 +716,9 @@ public interface RemoteServer extends Remote {
      *
      * @param token
      *            An authentication token to verify the request source.
-     * @param project
+     * @param projectId
      *            The target project for such changes
-     * @param changes
+     * @param commitBundle
      *            A list of changes coming from the client
      * @throws AuthorizationException
      *             If the user doesn't have the permission to request this
@@ -733,7 +733,7 @@ public interface RemoteServer extends Remote {
      *             communication problems, failure during parameter or return
      *             value marshalling or unmarshalling, protocol errors.
      */
-    void commit(AuthToken token, Project project, CommitBundle changes)
+    void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, OutOfSyncException, ServerServiceException, RemoteException;
 
     /**

@@ -221,10 +221,10 @@ public class AuthenticationFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public void commit(AuthToken token, Project project, CommitBundle changes)
+    public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, OutOfSyncException, ServerServiceException {
         verifyRequest(token);
-        super.commit(token, project, changes);
+        super.commit(token, projectId, commitBundle);
     }
 
     @Override

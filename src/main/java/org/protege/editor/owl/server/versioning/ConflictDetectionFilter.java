@@ -21,6 +21,7 @@ import edu.stanford.protege.metaproject.api.Name;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.ProjectOptions;
+import edu.stanford.protege.metaproject.api.ProjectRegistry;
 import edu.stanford.protege.metaproject.api.UserId;
 
 /**
@@ -54,12 +55,13 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
     }
     
     @Override
-    public void commit(AuthToken token, Project project, CommitBundle commits)
+    public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, OutOfSyncException, ServerServiceException {
         try {
+            Project project = getConfiguration().getMetaproject().getProjectRegistry().get(projectId);
             HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getAbsolutePath());
             DocumentRevision serverHeadRevision = changeService.getHeadRevision(historyFile);
-            DocumentRevision clientHeadRevision = commits.getHeadRevision();
+            DocumentRevision clientHeadRevision = commitBundle.getHeadRevision();
             if (isOutdated(clientHeadRevision, serverHeadRevision)) {
                 throw new OutOfSyncException("The server contains changes that you do not have locally");
             }
@@ -70,7 +72,7 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
         catch (Exception e) {
             throw new ServerServiceException("Could not retreive remote head revision", e);
         }
-        super.commit(token, project, commits);
+        super.commit(token, projectId, commitBundle);
     }
 
     private boolean isOutdated(DocumentRevision clientHeadRevision, DocumentRevision serverHeadRevision) {

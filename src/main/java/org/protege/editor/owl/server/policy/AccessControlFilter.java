@@ -22,7 +22,6 @@ import java.util.List;
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.MetaprojectAgent;
 import edu.stanford.protege.metaproject.api.Operation;
-import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.exception.MetaprojectException;
@@ -44,21 +43,21 @@ public class AccessControlFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public void commit(AuthToken token, Project project, CommitBundle commitBundle) throws ServerServiceException {
+    public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle) throws ServerServiceException {
         if (commitBundle instanceof PerOperationCommitBundle) {
-            evaluatePerOperationCommitBundle(token, project, (PerOperationCommitBundle) commitBundle);
+            evaluatePerOperationCommitBundle(token, projectId, (PerOperationCommitBundle) commitBundle);
         }
         else {
-            evaluateCommitBundle(token, project, commitBundle);
+            evaluateCommitBundle(token, projectId, commitBundle);
         }
     }
 
-    private void evaluatePerOperationCommitBundle(AuthToken token, Project project, PerOperationCommitBundle commitBundle)
+    private void evaluatePerOperationCommitBundle(AuthToken token, ProjectId projectId, PerOperationCommitBundle commitBundle)
             throws ServerServiceException {
         try {
             Operation operation = commitBundle.getOperation();
-            if (checkPermission(token.getUser().getId(), project.getId(), operation)) {
-                getDelegate().commit(token, project, commitBundle);
+            if (checkPermission(token.getUser().getId(), projectId, operation)) {
+                getDelegate().commit(token, projectId, commitBundle);
             }
             else {
                 throw new ServerServiceException(new OperationNotAllowedException(operation));
@@ -69,13 +68,13 @@ public class AccessControlFilter extends ServerFilterAdapter {
         }
     }
 
-    private void evaluateCommitBundle(AuthToken token, Project project, CommitBundle commitBundle)
+    private void evaluateCommitBundle(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws ServerServiceException {
         try {
             List<Operation> operations = evaluateCommitChanges(commitBundle);
             List<Exception> violations = new ArrayList<>();
-            if (checkPermission(token.getUser().getId(), project.getId(), operations, violations)) {
-                getDelegate().commit(token, project, commitBundle);
+            if (checkPermission(token.getUser().getId(), projectId, operations, violations)) {
+                getDelegate().commit(token, projectId, commitBundle);
             }
             else {
                 throw new ServerServiceException(OperationNotAllowedException.create(violations));

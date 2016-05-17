@@ -181,9 +181,9 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
-    public void commit(AuthToken token, Project project, CommitBundle changes)
+    public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, OutOfSyncException, ServerServiceException, RemoteException {
-        server.commit(token, project, changes);
+        server.commit(token, projectId, commitBundle);
     }
 
     @Override

@@ -170,9 +170,9 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void commit(AuthToken token, Project project, CommitBundle changes)
+    public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, OutOfSyncException, ServerServiceException {
-        getDelegate().commit(token, project, changes);
+        getDelegate().commit(token, projectId, commitBundle);
     }
 
     @Override
