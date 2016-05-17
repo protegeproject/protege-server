@@ -157,18 +157,26 @@ public class ProtegeServer extends ServerLayer {
             try {
                 projectRegistry.add(newProject);
                 saveChanges();
-                return new ServerDocument(configuration.getHost(), historyFile);
+                final URI serverAddress = configuration.getHost().getUri();
+                final Optional<Port> registryPort = configuration.getHost().getSecondaryPort();
+                if (registryPort.isPresent()) {
+                    Port port = registryPort.get();
+                    return new ServerDocument(serverAddress, port.get(), historyFile);
+                }
+                else {
+                    return new ServerDocument(serverAddress, historyFile);
+                }
             }
             catch (IdAlreadyInUseException e) {
                 throw new ServerServiceException(e);
             }
+            
         }
     }
 
-    private HistoryFile createHistoryFile(String prefix, String suffix) {
-        suffix = suffix.replaceAll("\\s+","_"); // to snake-case
-        String rootDir = configuration.getServerRoot().getAbsolutePath();
-        String filename = String.format("%s-%s", prefix, suffix);
+    private HistoryFile createHistoryFile(String projectDir, String filename) {
+        String rootDir = configuration.getServerRoot().getAbsolutePath() + File.separator + projectDir;
+        filename = filename.replaceAll("\\s+","_"); // to snake-case
         return HistoryFile.createNew(rootDir, filename);
     }
 
@@ -211,12 +219,21 @@ public class ProtegeServer extends ServerLayer {
             throws AuthorizationException, ServerServiceException {
         try {
             Project project = projectRegistry.get(projectId);
-            return new ServerDocument(configuration.getHost(), HistoryFile.openExisting(project.getFile().getAbsolutePath()));
+            final URI serverAddress = configuration.getHost().getUri();
+            final Optional<Port> registryPort = configuration.getHost().getSecondaryPort();
+            final String path = project.getFile().getAbsolutePath();
+            if (registryPort.isPresent()) {
+                Port port = registryPort.get();
+                return new ServerDocument(serverAddress, port.get(), HistoryFile.openExisting(path));
+            }
+            else {
+                return new ServerDocument(serverAddress, HistoryFile.openExisting(path));
+            }
         }
         catch (UnknownMetaprojectObjectIdException e) {
             throw new ServerServiceException(e);
         }
-        catch (InvalidHistoryFileException e) {
+        catch (InvalidHistoryFileException e ) {
             throw new ServerServiceException("Internal server error", e);
         }
     }

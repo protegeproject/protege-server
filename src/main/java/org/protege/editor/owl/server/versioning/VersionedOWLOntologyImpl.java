@@ -194,6 +194,6 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
         String template = "Working ontology: %s\n"
                 + "HEAD: %s\n"
                 + "Remote host: %s\n";
-        return String.format(template, ontologyFile.getAbsolutePath(), getHeadRevision(), serverDocument.getHost());
+        return String.format(template, ontologyFile.getAbsolutePath(), getHeadRevision(), serverDocument.getServerAddress());
     }
 }

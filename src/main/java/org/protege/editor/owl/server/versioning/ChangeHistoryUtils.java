@@ -161,7 +161,7 @@ public class ChangeHistoryUtils {
                 throw new IllegalArgumentException("Changes could not be extracted because the input start revision is out of range");
             }
             SortedMap<DocumentRevision, RevisionMetadata> metadata = getRevisionMetadataFromInputStream(ois);
-            SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions = getRevisionsFromInputStream(ois);
+            SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions = getRevisionsFromInputStream(ois, baseRevision);
             SortedMap<DocumentRevision, List<OWLOntologyChange>> subRevisions = revisions.tailMap(start.next()).headMap(end);
             SortedMap<DocumentRevision, RevisionMetadata> subMetadata = metadata.tailMap(start.next()).headMap(end);
             return ChangeHistoryImpl.recreate(start, subRevisions, subMetadata);
@@ -182,10 +182,10 @@ public class ChangeHistoryUtils {
     public static ChangeHistory readChanges(@Nonnull HistoryFile historyFile) throws IOException {
         ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(historyFile)));
         try {
-            DocumentRevision startRevision = getBaseRevision(ois); // Start revision from the input history file
+            DocumentRevision baseRevision = getBaseRevision(ois); // Start revision from the input history file
             SortedMap<DocumentRevision, RevisionMetadata> metadata = getRevisionMetadataFromInputStream(ois);
-            SortedMap<DocumentRevision, List<OWLOntologyChange>> revisionsList = getRevisionsFromInputStream(ois);
-            return ChangeHistoryImpl.recreate(startRevision, revisionsList, metadata);
+            SortedMap<DocumentRevision, List<OWLOntologyChange>> revisionsList = getRevisionsFromInputStream(ois, baseRevision);
+            return ChangeHistoryImpl.recreate(baseRevision, revisionsList, metadata);
         }
         finally {
             ois.close();
@@ -296,14 +296,13 @@ public class ChangeHistoryUtils {
         }
     }
 
-    private static SortedMap<DocumentRevision, List<OWLOntologyChange>> getRevisionsFromInputStream(ObjectInputStream ois)
-            throws IOException {
+    private static SortedMap<DocumentRevision, List<OWLOntologyChange>> getRevisionsFromInputStream(ObjectInputStream ois,
+            DocumentRevision baseRevision) throws IOException {
         SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions = new TreeMap<>();
         try {
             BinaryOWLOntologyChangeLog log = new BinaryOWLOntologyChangeLog();
             OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
             OWLOntology placeholder = owlManager.createOntology();
-            DocumentRevision baseRevision = getBaseRevision(ois);
             log.readChanges(ois, owlManager.getOWLDataFactory(), new BinaryOWLChangeLogHandler() {
                 private DocumentRevision nextRevision = baseRevision.next();
                 @Override
