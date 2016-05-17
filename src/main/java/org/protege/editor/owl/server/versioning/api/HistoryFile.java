@@ -2,7 +2,10 @@ package org.protege.editor.owl.server.versioning.api;
 
 import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Represents the binary history file used by the Protege server to track changes.
@@ -20,7 +23,7 @@ public class HistoryFile extends File {
         super(pathname);
     }
 
-    public static HistoryFile createNew(String rootDir, String filename) {
+    public static HistoryFile createNew(String rootDir, String filename) throws IOException {
         if (!rootDir.endsWith(File.separator)) {
             rootDir = rootDir + File.separator;
         }
@@ -30,8 +33,10 @@ public class HistoryFile extends File {
         return createNew(rootDir + filename);
     }
 
-    public static HistoryFile createNew(String pathname) {
-        return new HistoryFile(pathname);
+    public static HistoryFile createNew(String pathname) throws IOException {
+        HistoryFile f = new HistoryFile(pathname);
+        FileUtils.touch(f); // Create an empty file in the file system
+        return f;
     }
 
     public static HistoryFile openExisting(String rootDir, String filename) throws InvalidHistoryFileException {
