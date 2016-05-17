@@ -1,6 +1,7 @@
 package org.protege.editor.owl.server.api;
 
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
+import org.protege.editor.owl.server.versioning.api.RevisionMetadata;
 
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
@@ -13,6 +14,8 @@ import java.util.List;
  * Stanford Center for Biomedical Informatics Research
  */
 public interface CommitBundle {
+
+    RevisionMetadata getRevisionMetadata();
 
     List<OWLOntologyChange> getChanges();
 
