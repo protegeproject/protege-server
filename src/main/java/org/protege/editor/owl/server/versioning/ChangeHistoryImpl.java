@@ -21,6 +21,8 @@ import javax.annotation.Nonnull;
  */
 public class ChangeHistoryImpl implements ChangeHistory {
 
+    private static final long serialVersionUID = -8436246195642942303L;
+
     public static Logger logger = LoggerFactory.getLogger(ChangeHistoryImpl.class);
 
     private DocumentRevision startRevision;

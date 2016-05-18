@@ -4,6 +4,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
  * @author Timothy Redmond (tredmond) <br>
  * Stanford Center for Biomedical Informatics Research
  */
-public interface VersionedOWLOntology {
+public interface VersionedOWLOntology extends Serializable {
 
     /**
      * Returns a server document that stores the reference to a remote resource

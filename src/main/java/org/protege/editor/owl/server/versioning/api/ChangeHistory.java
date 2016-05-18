@@ -2,6 +2,7 @@ package org.protege.editor.owl.server.versioning.api;
 
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.SortedMap;
 
@@ -10,7 +11,7 @@ import java.util.SortedMap;
  * @author Timothy Redmond (tredmond) <br>
  * Stanford Center for Biomedical Informatics Research
  */
-public interface ChangeHistory {
+public interface ChangeHistory extends Serializable {
 
     String CHANGE_DOCUMENT_EXTENSION = ".history";
 

@@ -29,6 +29,8 @@ import com.google.common.collect.EvictingQueue;
  */
 public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
 
+    private static final long serialVersionUID = 807389509276703528L;
+
     /*
      * Hidden directory name to store history file and other versioning resources
      */
