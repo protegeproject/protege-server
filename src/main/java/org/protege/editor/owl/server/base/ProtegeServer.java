@@ -148,30 +148,35 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName,
-            Description description, UserId owner, Optional<ProjectOptions> options)
-            throws AuthorizationException, ServerServiceException {
+    public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
+            UserId owner, Optional<ProjectOptions> options, Optional<CommitBundle> initialCommit)
+                    throws AuthorizationException, ServerServiceException {
         try {
             HistoryFile historyFile = createHistoryFile(projectId.get(), projectName.get());
-            Project newProject = createNewProject(projectId, projectName, description, historyFile, owner, options);
             synchronized (projectRegistry) {
+                Project newProject = metaprojectFactory.getProject(projectId, projectName, description, historyFile, owner, options);
                 try {
                     projectRegistry.add(newProject);
+                    if (initialCommit.isPresent()) {
+                        commit(token, projectId, initialCommit.get());
+                    }
                     saveChanges();
-                    final URI serverAddress = configuration.getHost().getUri();
-                    final Optional<Port> registryPort = configuration.getHost().getSecondaryPort();
-                    if (registryPort.isPresent()) {
-                        Port port = registryPort.get();
-                        return new ServerDocument(serverAddress, port.get(), historyFile);
-                    }
-                    else {
-                        return new ServerDocument(serverAddress, historyFile);
-                    }
+                }
+                catch (ServerServiceException e) {
+                    /*
+                     * If something wrong happened during the commit or write the project properties
+                     * then clean all project artifacts (i.e., history file and project object in the
+                     * project registry before throwing the exception.
+                     */
+                    historyFile.getParentFile().delete();
+                    projectRegistry.remove(newProject);
+                    throw e;
                 }
                 catch (IdAlreadyInUseException e) {
                     throw new ServerServiceException(e);
                 }
             }
+            return createServerDocument(historyFile);
         }
         catch (IOException e) {
             throw new ServerServiceException("Failed to create history file in remote server", e);
@@ -184,9 +189,16 @@ public class ProtegeServer extends ServerLayer {
         return HistoryFile.createNew(rootDir, filename);
     }
 
-    private Project createNewProject(ProjectId projectId, Name projectName, Description description,
-            HistoryFile historyFile, UserId owner, Optional<ProjectOptions> options) {
-        return metaprojectFactory.getProject(projectId, projectName, description, historyFile, owner, options);
+    private ServerDocument createServerDocument(HistoryFile historyFile) {
+        final URI serverAddress = configuration.getHost().getUri();
+        final Optional<Port> registryPort = configuration.getHost().getSecondaryPort();
+        if (registryPort.isPresent()) {
+            Port port = registryPort.get();
+            return new ServerDocument(serverAddress, port.get(), historyFile);
+        }
+        else {
+            return new ServerDocument(serverAddress, historyFile);
+        }
     }
 
     @Override
@@ -412,8 +424,7 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle) {
-        // TODO Auto-generated method stub
-
+    
     }
 
     @Override

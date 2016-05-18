@@ -21,7 +21,6 @@ import edu.stanford.protege.metaproject.api.Name;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.ProjectRegistry;
 import edu.stanford.protege.metaproject.api.UserId;
 
 /**
@@ -46,14 +45,14 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName,
-            Description description, UserId owner, Optional<ProjectOptions> options)
-            throws AuthorizationException, ServerServiceException {
-        ServerDocument serverDocument = super.createProject(token, projectId, projectName, description, owner, options);
+    public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
+            UserId owner, Optional<ProjectOptions> options, Optional<CommitBundle> initialCommit)
+                    throws AuthorizationException, ServerServiceException {
+        ServerDocument serverDocument = super.createProject(token, projectId, projectName, description, owner, options, initialCommit);
         changePool.put(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
         return serverDocument;
     }
-    
+
     @Override
     public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, OutOfSyncException, ServerServiceException {

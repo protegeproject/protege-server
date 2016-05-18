@@ -145,6 +145,8 @@ public interface ServerServices {
      *            The owner of the project
      * @param options
      *            An optional of project options
+     * @param initialCommit
+     *            An optional initial commit bundle when creating this project.
      * @return A server document that provide the link information to remote resources
      * @throws AuthorizationException
      *             If the user doesn't have the permission to request this
@@ -152,9 +154,9 @@ public interface ServerServices {
      * @throws ServerServiceException
      *             If the server failed to fulfill the user request.
      */
-    ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName,
-            Description description, UserId owner, Optional<ProjectOptions> options)
-            throws AuthorizationException, ServerServiceException;
+    ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
+            UserId owner, Optional<ProjectOptions> options, Optional<CommitBundle> initialCommit)
+                    throws AuthorizationException, ServerServiceException;
 
     /**
      * Deleting an existing project from the server.

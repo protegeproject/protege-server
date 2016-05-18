@@ -172,6 +172,9 @@ public interface RemoteServer extends Remote {
      * @param options
      *            An optional of project options. Use <code>null</code> if
      *            project options are not required.
+     * @param initialCommit
+     *            An optional initial commit bundle when creating this project.
+     *            Use <code>null</code> if initial commit does not present.
      * @return A server document that provide the link information to remote
      *         resources
      * @throws AuthorizationException
@@ -185,7 +188,7 @@ public interface RemoteServer extends Remote {
      *             value marshalling or unmarshalling, protocol errors.
      */
     ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName,
-            Description description, UserId owner, ProjectOptions options)
+            Description description, UserId owner, ProjectOptions options, CommitBundle initialCommit)
             throws AuthorizationException, ServerServiceException, RemoteException;
 
     /**

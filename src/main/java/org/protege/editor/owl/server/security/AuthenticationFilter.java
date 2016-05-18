@@ -85,11 +85,11 @@ public class AuthenticationFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName,
-           Description description, UserId owner, Optional<ProjectOptions> options)
-           throws AuthorizationException, ServerServiceException {
+    public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
+            UserId owner, Optional<ProjectOptions> options, Optional<CommitBundle> initialCommit)
+                    throws AuthorizationException, ServerServiceException {
         verifyRequest(token);
-        return super.createProject(token, projectId, projectName, description, owner, options);
+        return super.createProject(token, projectId, projectName, description, owner, options, initialCommit);
     }
 
     @Override

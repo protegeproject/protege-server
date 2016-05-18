@@ -54,10 +54,10 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName,
-           Description description, UserId owner, Optional<ProjectOptions> options)
-           throws AuthorizationException, ServerServiceException {
-        return getDelegate().createProject(token, projectId, projectName, description, owner, options);
+    public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
+            UserId owner, Optional<ProjectOptions> options, Optional<CommitBundle> initialCommit)
+                    throws AuthorizationException, ServerServiceException {
+        return getDelegate().createProject(token, projectId, projectName, description, owner, options, initialCommit);
     }
 
     @Override

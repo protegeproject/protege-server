@@ -62,9 +62,10 @@ public class RmiServer implements RemoteServer {
 
     @Override
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName,
-            Description description, UserId owner, ProjectOptions options)
-            throws AuthorizationException, ServerServiceException, RemoteException {
-        return server.createProject(token, projectId, projectName, description, owner, Optional.ofNullable(options));
+            Description description, UserId owner, ProjectOptions options, CommitBundle initialCommit)
+                    throws AuthorizationException, ServerServiceException, RemoteException {
+        return server.createProject(token, projectId, projectName, description, owner,
+                Optional.ofNullable(options), Optional.ofNullable(initialCommit));
     }
 
     @Override
