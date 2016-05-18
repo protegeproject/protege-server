@@ -10,6 +10,7 @@ import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.policy.AccessControlFilter;
 import org.protege.editor.owl.server.policy.CommitBundleImpl;
+import org.protege.editor.owl.server.versioning.Commit;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.RevisionMetadata;
 
@@ -134,8 +135,8 @@ public class AccessControlFilterTest {
         changes.add(new AddAxiom(ontology, axiom2));
         changes.add(new AddAxiom(ontology, axiom3));
         changes.add(new RemoveAxiom(ontology, axiom1));
-        CommitBundle commits = new CommitBundleImpl(metadata, changes, headRevision);
-        policyFilter.commit(tokenUserA, projectId, commits);
+        CommitBundle commitBundle = new CommitBundleImpl(headRevision, new Commit(metadata, changes));
+        policyFilter.commit(tokenUserA, projectId, commitBundle);
     }
 
     @Test(expected=ServerServiceException.class)
@@ -145,8 +146,8 @@ public class AccessControlFilterTest {
         changes.add(new AddAxiom(ontology, axiom2));
         changes.add(new AddAxiom(ontology, axiom3));
         changes.add(new RemoveAxiom(ontology, axiom1));
-        CommitBundle commits = new CommitBundleImpl(metadata, changes, headRevision);
-        policyFilter.commit(tokenUserB, projectId, commits);
+        CommitBundle commitBundle = new CommitBundleImpl(headRevision, new Commit(metadata, changes));
+        policyFilter.commit(tokenUserB, projectId, commitBundle);
     }
 
     @Test(expected=ServerServiceException.class)
@@ -160,10 +161,10 @@ public class AccessControlFilterTest {
         changes.add(new AddImport(ontology, importDecl2));
         changes.add(new RemoveImport(ontology, importDecl1));
         changes.add(new SetOntologyID(ontology, otherOntologyId));
-        CommitBundle commits = new CommitBundleImpl(metadata, changes, headRevision);
+        CommitBundle commitBundle = new CommitBundleImpl(headRevision, new Commit(metadata, changes));
         
         try {
-            policyFilter.commit(tokenUserA, projectId, commits);
+            policyFilter.commit(tokenUserA, projectId, commitBundle);
         }
         catch (ServerServiceException e) {
             OperationNotAllowedException onae = (OperationNotAllowedException) e.getCause();
@@ -184,10 +185,10 @@ public class AccessControlFilterTest {
         changes.add(new AddImport(ontology, importDecl2));
         changes.add(new RemoveImport(ontology, importDecl1));
         changes.add(new SetOntologyID(ontology, otherOntologyId));
-        CommitBundle commits = new CommitBundleImpl(metadata, changes, headRevision);
+        CommitBundle commitBundle = new CommitBundleImpl(headRevision, new Commit(metadata, changes));
         
         try {
-            policyFilter.commit(tokenUserB, projectId, commits);
+            policyFilter.commit(tokenUserB, projectId, commitBundle);
         }
         catch (ServerServiceException e) {
             OperationNotAllowedException onae = (OperationNotAllowedException) e.getCause();
