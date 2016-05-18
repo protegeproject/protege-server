@@ -3,7 +3,7 @@
     "uri": "rmi://localhost:5100",
     "secondaryPort": "5200"
   },
-  "root": "target/server-distribution/server/root",
+  "root": "root/data",
   "metaproject": {
     "policy": {
       "root": {
