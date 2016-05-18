@@ -6,6 +6,7 @@ import org.protege.editor.owl.server.api.ServerFilterAdapter;
 import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.exception.OperationNotAllowedException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
+import org.protege.editor.owl.server.versioning.Commit;
 
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
@@ -109,8 +110,11 @@ public class AccessControlFilter extends ServerFilterAdapter {
     }
 
     private List<Operation> evaluateCommitChanges(CommitBundle commitBundle) throws ServerServiceException {
-        final List<OWLOntologyChange> changes = commitBundle.getChanges();
-        List<Operation> operations = new ArrayList<>();
+        final List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
+        for (Commit commit : commitBundle.getCommits()) {
+            changes.addAll(commit.getChanges());
+        }
+        final List<Operation> operations = new ArrayList<>();
         for (OWLOntologyChange change : changes) {
             Operation op = getOperationForChange(change);
             operations.add(op);

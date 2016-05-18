@@ -1,9 +1,7 @@
 package org.protege.editor.owl.server.api;
 
+import org.protege.editor.owl.server.versioning.Commit;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
-import org.protege.editor.owl.server.versioning.api.RevisionMetadata;
-
-import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,9 +14,7 @@ import java.util.List;
  */
 public interface CommitBundle extends Serializable {
 
-    RevisionMetadata getRevisionMetadata();
-
-    List<OWLOntologyChange> getChanges();
-
     DocumentRevision getHeadRevision();
+
+    List<Commit> getCommits();
 }

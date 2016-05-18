@@ -1,39 +1,37 @@
 package org.protege.editor.owl.server.policy;
 
 import org.protege.editor.owl.server.api.CommitBundle;
+import org.protege.editor.owl.server.versioning.Commit;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
-import org.protege.editor.owl.server.versioning.api.RevisionMetadata;
 
-import org.semanticweb.owlapi.model.OWLOntologyChange;
-
+import java.util.Collections;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 public class CommitBundleImpl implements CommitBundle {
 
     private static final long serialVersionUID = -6145139680901780930L;
 
-    private RevisionMetadata metadata;
-    private List<OWLOntologyChange> changes;
-    private DocumentRevision startRevision;
+    private DocumentRevision headRevision;
+    private List<Commit> commits;
 
-    public CommitBundleImpl(final RevisionMetadata metadata, final List<OWLOntologyChange> changes, DocumentRevision headRevision) {
-        this.metadata = metadata;
-        this.changes = changes;
-        this.startRevision = headRevision;
+    public CommitBundleImpl(DocumentRevision headRevision, List<Commit> multipleCommits) {
+        this.headRevision = headRevision;
+        this.commits = multipleCommits;
     }
 
-    @Override
-    public RevisionMetadata getRevisionMetadata() {
-        return metadata;
-    }
-
-    @Override
-    public List<OWLOntologyChange> getChanges() {
-        return changes;
+    public CommitBundleImpl(DocumentRevision headRevision, Commit singleCommit) {
+        this(headRevision, Lists.newArrayList(singleCommit));
     }
 
     @Override
     public DocumentRevision getHeadRevision() {
-        return startRevision;
+        return headRevision;
+    }
+
+    @Override
+    public List<Commit> getCommits() {
+        return Collections.unmodifiableList(commits);
     }
 }
