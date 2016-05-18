@@ -5,6 +5,7 @@ import org.protege.editor.owl.server.versioning.api.RevisionMetadata;
 
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  * @author Josef Hardi <johardi@stanford.edu> <br>
  * Stanford Center for Biomedical Informatics Research
  */
-public interface CommitBundle {
+public interface CommitBundle extends Serializable {
 
     RevisionMetadata getRevisionMetadata();
 

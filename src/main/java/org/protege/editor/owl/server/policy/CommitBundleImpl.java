@@ -10,6 +10,8 @@ import java.util.List;
 
 public class CommitBundleImpl implements CommitBundle {
 
+    private static final long serialVersionUID = -6145139680901780930L;
+
     private RevisionMetadata metadata;
     private List<OWLOntologyChange> changes;
     private DocumentRevision startRevision;
