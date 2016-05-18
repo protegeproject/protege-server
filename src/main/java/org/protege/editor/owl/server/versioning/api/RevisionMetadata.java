@@ -25,11 +25,11 @@ public final class RevisionMetadata implements Serializable {
     private String comment;
 
     public RevisionMetadata(@Nonnull String authorId, String authorName, String authorEmail, @Nonnull String comment) {
-        this.authorId = authorId;
-        this.authorName = authorName;
-        this.authorEmail = authorEmail;
+        this.authorId = authorId.trim();
+        this.authorName = authorName.trim();
+        this.authorEmail = authorEmail.trim();
         this.changeDate = new Date();
-        this.comment = comment;
+        this.comment = comment.trim();
     }
 
     public String getAuthorName() {
@@ -54,14 +54,14 @@ public final class RevisionMetadata implements Serializable {
 
     public String getLogMessage() {
         String authorFormat = String.format("%s", getAuthorId());
-        if (authorName != null || !authorName.isEmpty()) {
+        if (authorName != null && !authorName.isEmpty()) {
             authorFormat = String.format("%s (%s)", getAuthorName(), getAuthorId());
-            if (authorEmail != null || !authorEmail.isEmpty()) {
+            if (authorEmail != null && !authorEmail.isEmpty()) {
                 authorFormat = String.format("%s (%s) <%s>", getAuthorName(), getAuthorId(), getAuthorEmail());
             }
         }
         else {
-            if (authorEmail != null || !authorEmail.isEmpty()) {
+            if (authorEmail != null && !authorEmail.isEmpty()) {
                 authorFormat = String.format("%s <%s>", getAuthorId(), getAuthorEmail());
             }
         }
