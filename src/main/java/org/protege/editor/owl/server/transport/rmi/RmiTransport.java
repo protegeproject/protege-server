@@ -22,6 +22,14 @@ public class RmiTransport implements TransportHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(RmiTransport.class);
 
+    /*
+     * Keep the server and remote services as static fields to keep a strong reference to
+     * the objects so that they remain reachable, i.e., avoiding garbage collection.
+     */
+    private static RmiServer remoteServer;
+    private static RmiLoginService remoteLoginService;
+    private static RmiChangeService remoteChangeService;
+
     private int registryPort;
     private int serverPort;
 
@@ -36,22 +44,22 @@ public class RmiTransport implements TransportHandler {
     public void bind(Object object) throws RemoteException {
         initialize();
         if (object instanceof Server) {
-            RmiServer remoteServer = new RmiServer((Server) object);
-            Remote remoteStub = UnicastRemoteObject.exportObject(remoteServer, serverPort);
+            remoteServer = new RmiServer((Server) object);
+            final Remote remoteStub = UnicastRemoteObject.exportObject(remoteServer, serverPort);
             registry.rebind(RmiServer.SERVER_SERVICE, remoteStub);
             logger.info("Server broadcasted through RMI Registry on port {}", registryPort);
             logger.info("Server exported through RMI on port {}", serverPort);
         }
         else if (object instanceof LoginService) {
-            RmiLoginService remoteLoginService = new RmiLoginService((LoginService) object);
-            Remote remoteStub = UnicastRemoteObject.exportObject(remoteLoginService, serverPort);
+            remoteLoginService = new RmiLoginService((LoginService) object);
+            final Remote remoteStub = UnicastRemoteObject.exportObject(remoteLoginService, serverPort);
             registry.rebind(RmiLoginService.LOGIN_SERVICE, remoteStub);
             logger.info("Login service broadcasted through RMI Registry on port {}", registryPort);
             logger.info("Login service exported through RMI on port {}", serverPort);
         }
         else if (object instanceof ChangeService) {
-            RmiChangeService remoteChangeService = new RmiChangeService((ChangeService) object);
-            Remote remoteStub = UnicastRemoteObject.exportObject(remoteChangeService, serverPort);
+            remoteChangeService = new RmiChangeService((ChangeService) object);
+            final Remote remoteStub = UnicastRemoteObject.exportObject(remoteChangeService, serverPort);
             registry.rebind(RmiChangeService.CHANGE_SERVICE, remoteStub);
             logger.info("Change service broadcasted through RMI Registry on port {}", registryPort);
             logger.info("Change service exported through RMI on port {}", serverPort);
