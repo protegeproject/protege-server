@@ -128,13 +128,13 @@ public class VersionedOWLOntologyImpl implements VersionedOWLOntology {
     }
 
     @Override
-    public void update(ChangeHistory changeHistory) {
-        final DocumentRevision base = changeHistory.getBaseRevision();
-        final DocumentRevision end = changeHistory.getHeadRevision();
+    public void update(ChangeHistory incomingChangeHistory) {
+        final DocumentRevision base = incomingChangeHistory.getBaseRevision();
+        final DocumentRevision end = incomingChangeHistory.getHeadRevision();
         for (DocumentRevision current = base; current.behind(end);) {
             current = current.next();
-            RevisionMetadata metadata = changeHistory.getMetadataForRevision(current);
-            List<OWLOntologyChange> changes = changeHistory.getChangesForRevision(current);
+            RevisionMetadata metadata = incomingChangeHistory.getMetadataForRevision(current);
+            List<OWLOntologyChange> changes = incomingChangeHistory.getChangesForRevision(current);
             changeHistory.addRevision(metadata, changes);
             logCache.add(metadata);
         }
