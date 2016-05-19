@@ -154,6 +154,7 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
             UserId owner, Optional<ProjectOptions> options) throws AuthorizationException, ServerServiceException {
+        ServerDocument serverDocument = null;
         try {
             HistoryFile historyFile = createHistoryFile(projectId.get(), projectName.get());
             synchronized (projectRegistry) {
@@ -162,7 +163,6 @@ public class ProtegeServer extends ServerLayer {
                     projectRegistry.add(newProject);
                     policy.add(owner, projectId, metaprojectFactory.getRoleId("mp-admin")); // TODO Change this, too hacky
                     saveChanges();
-                    return createServerDocument(historyFile);
                 }
                 catch (ServerServiceException e) {
                     /*
@@ -178,10 +178,12 @@ public class ProtegeServer extends ServerLayer {
                     throw new ServerServiceException(e);
                 }
             }
+            serverDocument = createServerDocument(historyFile);
         }
         catch (IOException e) {
             throw new ServerServiceException("Failed to create history file in remote server", e);
         }
+        return serverDocument;
     }
 
     private HistoryFile createHistoryFile(String projectDir, String filename) throws IOException {
