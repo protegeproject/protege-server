@@ -6,6 +6,7 @@ import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.TransportHandler;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
+import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.ChangeHistoryImpl;
 import org.protege.editor.owl.server.versioning.ChangeHistoryUtils;
@@ -53,6 +54,7 @@ import edu.stanford.protege.metaproject.api.exception.IdAlreadyInUseException;
 import edu.stanford.protege.metaproject.api.exception.ProjectNotInPolicyException;
 import edu.stanford.protege.metaproject.api.exception.ServerConfigurationNotLoadedException;
 import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
+import edu.stanford.protege.metaproject.api.exception.UnknownProjectIdException;
 import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
 
 /**
@@ -427,7 +429,8 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle) {
+    public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
+            throws AuthorizationException, ServerServiceException {
         try {
             File projectFile = projectRegistry.get(projectId).getFile();
             HistoryFile projectHistoryFile = HistoryFile.openExisting(projectFile.getAbsolutePath());
@@ -437,8 +440,11 @@ public class ProtegeServer extends ServerLayer {
             }
             ChangeHistoryUtils.writeChanges(changeHistory, projectHistoryFile);
         }
-        catch (Exception e) {
-            throw new RuntimeException(e);
+        catch (UnknownMetaprojectObjectIdException e) {
+            throw new ServerServiceException(e);
+        }
+        catch (InvalidHistoryFileException | IOException e) {
+            throw new ServerServiceException("Internal server error", e);
         }
     }
 
