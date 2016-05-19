@@ -51,7 +51,7 @@ public class Commit implements Serializable {
         }
         finally {
             out.flush();
-//            out.close();
+//            out.close(); // Do not close the stream! The other end point might not get the whole data stream.
         }
     }
 
