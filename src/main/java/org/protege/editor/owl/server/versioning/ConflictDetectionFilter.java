@@ -40,10 +40,6 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
         changeService = new DefaultChangeService(changePool);
     }
 
-    public void setLoginService(ChangeService changeService) {
-        this.changeService = changeService;
-    }
-
     @Override
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
             UserId owner, Optional<ProjectOptions> options, Optional<CommitBundle> initialCommit)
