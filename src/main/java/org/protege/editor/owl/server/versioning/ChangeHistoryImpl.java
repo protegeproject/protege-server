@@ -25,20 +25,25 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     public static Logger logger = LoggerFactory.getLogger(ChangeHistoryImpl.class);
 
-    private DocumentRevision startRevision;
+    private DocumentRevision baseRevision;
     private DocumentRevision headRevision;
     private SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions = new TreeMap<>();
     private SortedMap<DocumentRevision, RevisionMetadata> logs = new TreeMap<>();
 
     public ChangeHistoryImpl() {
-        this.startRevision = DocumentRevision.START_REVISION;
+        this.baseRevision = DocumentRevision.START_REVISION;
         this.headRevision = DocumentRevision.START_REVISION;
+    }
+
+    public ChangeHistoryImpl(@Nonnull DocumentRevision baseRevision) {
+        this.baseRevision = baseRevision;
+        this.headRevision = baseRevision;
     }
 
     private ChangeHistoryImpl(@Nonnull DocumentRevision startRevision,
             @Nonnull SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions,
             @Nonnull SortedMap<DocumentRevision, RevisionMetadata> logs) {
-        this.startRevision = startRevision;
+        this.baseRevision = startRevision;
         this.revisions = revisions;
         this.logs = logs;
         headRevision = startRevision.next(revisions.size());
@@ -46,6 +51,14 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     public static ChangeHistoryImpl createEmptyChangeHistory() {
         return new ChangeHistoryImpl();
+    }
+
+    public static ChangeHistoryImpl createEmptyChangeHistory(DocumentRevision baseRevision) {
+        return new ChangeHistoryImpl(baseRevision);
+    }
+
+    public static ChangeHistoryImpl createEmptyChangeHistory(int baseRevisionNumber) {
+        return new ChangeHistoryImpl(DocumentRevision.create(baseRevisionNumber));
     }
 
     public static ChangeHistoryImpl recreate(@Nonnull DocumentRevision startRevision,
@@ -64,7 +77,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     @Override
     public DocumentRevision getBaseRevision() {
-        return startRevision;
+        return baseRevision;
     }
 
     @Override
@@ -121,7 +134,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("{");
-        sb.append(startRevision);
+        sb.append(baseRevision);
         sb.append(" --> ");
         sb.append(getHeadRevision());
         sb.append(": ");
