@@ -43,9 +43,8 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
 
     @Override
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
-            UserId owner, Optional<ProjectOptions> options, Optional<CommitBundle> initialCommit)
-                    throws AuthorizationException, ServerServiceException {
-        ServerDocument serverDocument = super.createProject(token, projectId, projectName, description, owner, options, initialCommit);
+            UserId owner, Optional<ProjectOptions> options) throws AuthorizationException, ServerServiceException {
+        ServerDocument serverDocument = super.createProject(token, projectId, projectName, description, owner, options);
         changePool.put(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
         return serverDocument;
     }

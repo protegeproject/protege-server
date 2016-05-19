@@ -5,7 +5,6 @@ import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
-import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
 import java.net.URI;
@@ -57,9 +56,8 @@ public class ServerFilterAdapter extends AbstractServerFilter {
 
     @Override
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
-            UserId owner, Optional<ProjectOptions> options, Optional<CommitBundle> initialCommit)
-                    throws AuthorizationException, ServerServiceException {
-        return getDelegate().createProject(token, projectId, projectName, description, owner, options, initialCommit);
+            UserId owner, Optional<ProjectOptions> options) throws AuthorizationException, ServerServiceException {
+        return getDelegate().createProject(token, projectId, projectName, description, owner, options);
     }
 
     @Override
