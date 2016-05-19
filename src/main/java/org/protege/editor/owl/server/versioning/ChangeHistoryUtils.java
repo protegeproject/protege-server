@@ -101,10 +101,10 @@ public class ChangeHistoryUtils {
     }
 
     /**
-     * Writes an empty change history into the file system specified by the input <code>historyFile</code>
+     * Writes an empty change history to the specified input <code>historyFile</code>
      *
      * @param historyFile
-     *          The destination file.
+     *          The destination file. It must already exist in the file system.
      * @throws IOException
      */
     public static void writeEmptyChanges(@Nonnull HistoryFile historyFile) throws IOException {
@@ -112,13 +112,12 @@ public class ChangeHistoryUtils {
     }
 
     /**
-     * Writes the given <code>changeHistory</code> into the file system specified by the input
-     * <code>historyFile</code>.
+     * Writes the given <code>changeHistory</code> to the specified input <code>historyFile</code>.
      *
      * @param changeHistory
      *          The input change history
      * @param historyFile
-     *          The destination file
+     *          The destination file. It must already exist in the file system.
      * @throws IOException
      */
     public static void writeChanges(@Nonnull ChangeHistory changeHistory, @Nonnull HistoryFile historyFile) throws IOException {
