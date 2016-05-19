@@ -124,6 +124,8 @@ public class AccessControlFilterTest {
         when(metaprojectAgent.isOperationAllowed(Operations.MODIFY_ONTOLOGY_IRI.getId(), projectId, userIdA)).thenReturn(true);
         when(metaprojectAgent.isOperationAllowed(Operations.MODIFY_ONTOLOGY_IRI.getId(), projectId, userIdB)).thenReturn(false);
         
+        System.setProperty(ServerActivator.SERVER_CONFIGURATION_PROPERTY, "server-configuration.json");
+        
         baseServer = new ProtegeServer(configuration);
         policyFilter = new AccessControlFilter(baseServer);
     }
