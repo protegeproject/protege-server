@@ -1,7 +1,6 @@
 package org.protege.editor.owl.server.versioning.api;
 
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyChange;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -26,20 +25,20 @@ public interface VersionedOWLOntology extends Serializable {
     OWLOntology getOntology();
 
     /**
-     * Returns the change recording that contains all the revisions that are created during
-     * the track changes. The returned object is associated to the <b>local</b> change history.
+     * Returns the change recording that contains all the revisions that are created and accepted
+     * by the central repository server. The returned object is the <b>local</b> copy of the
+     * remote change history.
      */
     ChangeHistory getChangeHistory();
 
     /**
-     * Records a revision specified by the given <code>metadata</code> and <code>changes</code>.
+     * Updates the ontology with the specified input <code>changeHistory</code>. The input instance
+     * should represent changes that are already committed to the server and got accepted.
      *
-     * @param metadata
-     *          The meta information about the change (e.g., author details, comment)
-     * @param changes
-     *          A list of changes that make this revision.
+     * @param changeHistory
+     *          The changes that were accepted by the server.
      */
-    void addRevision(RevisionMetadata metadata, List<OWLOntologyChange> changes);
+    void update(ChangeHistory changeHistory);
 
     /**
      * Retrieves a particular metadata specified by the given <code>revision</code>.
