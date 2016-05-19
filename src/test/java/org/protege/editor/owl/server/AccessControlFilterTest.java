@@ -82,7 +82,7 @@ public class AccessControlFilterTest {
 
     @Mock private ProjectId projectId;
 
-    @Mock private DocumentRevision headRevision;
+    private DocumentRevision headRevision = DocumentRevision.START_REVISION;
 
     @Mock private Metaproject metaproject;
     @Mock private ServerConfiguration configuration;
