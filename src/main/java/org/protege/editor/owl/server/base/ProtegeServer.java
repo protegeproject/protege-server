@@ -160,6 +160,7 @@ public class ProtegeServer extends ServerLayer {
                 Project newProject = metaprojectFactory.getProject(projectId, projectName, description, historyFile, owner, options);
                 try {
                     projectRegistry.add(newProject);
+                    policy.add(owner, projectId, metaprojectFactory.getRoleId("mp-admin")); // TODO Change this, too hacky
                     saveChanges();
                     return createServerDocument(historyFile);
                 }
