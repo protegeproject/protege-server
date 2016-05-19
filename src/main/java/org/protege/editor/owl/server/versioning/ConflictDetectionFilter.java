@@ -9,6 +9,7 @@ import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
+import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
@@ -50,7 +51,7 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
+    public ChangeHistory commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, OutOfSyncException, ServerServiceException {
         try {
             Project project = getConfiguration().getMetaproject().getProjectRegistry().get(projectId);
@@ -60,6 +61,9 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
             if (isOutdated(clientHeadRevision, serverHeadRevision)) {
                 throw new OutOfSyncException("The server contains changes that you do not have locally");
             }
+            ChangeHistory changeHistory = super.commit(token, projectId, commitBundle);
+            changePool.put(historyFile, changeHistory);
+            return changeHistory;
         }
         catch (InvalidHistoryFileException e) {
             throw new ServerServiceException("Could not found remote history file", e);
@@ -67,7 +71,6 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
         catch (Exception e) {
             throw new ServerServiceException("Could not retreive remote head revision", e);
         }
-        super.commit(token, projectId, commitBundle);
     }
 
     private boolean isOutdated(DocumentRevision clientHeadRevision, DocumentRevision serverHeadRevision) {
