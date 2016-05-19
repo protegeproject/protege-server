@@ -3,6 +3,7 @@ package org.protege.editor.owl.server.api;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
+import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
 import java.net.URI;
@@ -580,6 +581,8 @@ public interface ServerServices {
      *            The target project for such changes
      * @param commitBundle
      *            A list of changes coming from the client
+     * @return Returns the change history that contains the changes that are
+     *         accepted by the server.
      * @throws AuthorizationException
      *             If the user doesn't have the permission to request this
      *             service.
@@ -589,7 +592,7 @@ public interface ServerServices {
      * @throws ServerServiceException
      *             If the server failed to fulfill the user request.
      */
-    void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
+    ChangeHistory commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, OutOfSyncException, ServerServiceException;
 
     /**

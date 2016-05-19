@@ -4,6 +4,8 @@ import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
+import org.protege.editor.owl.server.versioning.api.ChangeHistory;
+import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
 import java.net.URI;
@@ -170,9 +172,9 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
+    public ChangeHistory commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, OutOfSyncException, ServerServiceException {
-        getDelegate().commit(token, projectId, commitBundle);
+        return getDelegate().commit(token, projectId, commitBundle);
     }
 
     @Override

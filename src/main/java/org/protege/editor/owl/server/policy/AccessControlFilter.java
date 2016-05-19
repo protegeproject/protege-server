@@ -7,6 +7,7 @@ import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.exception.OperationNotAllowedException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.Commit;
+import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
@@ -44,21 +45,21 @@ public class AccessControlFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle) throws ServerServiceException {
+    public ChangeHistory commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle) throws ServerServiceException {
         if (commitBundle instanceof PerOperationCommitBundle) {
-            evaluatePerOperationCommitBundle(token, projectId, (PerOperationCommitBundle) commitBundle);
+            return evaluatePerOperationCommitBundle(token, projectId, (PerOperationCommitBundle) commitBundle);
         }
         else {
-            evaluateCommitBundle(token, projectId, commitBundle);
+            return evaluateCommitBundle(token, projectId, commitBundle);
         }
     }
 
-    private void evaluatePerOperationCommitBundle(AuthToken token, ProjectId projectId, PerOperationCommitBundle commitBundle)
+    private ChangeHistory evaluatePerOperationCommitBundle(AuthToken token, ProjectId projectId, PerOperationCommitBundle commitBundle)
             throws ServerServiceException {
         try {
             Operation operation = commitBundle.getOperation();
             if (checkPermission(token.getUser().getId(), projectId, operation)) {
-                getDelegate().commit(token, projectId, commitBundle);
+                return getDelegate().commit(token, projectId, commitBundle);
             }
             else {
                 throw new ServerServiceException(new OperationNotAllowedException(operation));
@@ -69,13 +70,13 @@ public class AccessControlFilter extends ServerFilterAdapter {
         }
     }
 
-    private void evaluateCommitBundle(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
+    private ChangeHistory evaluateCommitBundle(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws ServerServiceException {
         try {
             List<Operation> operations = evaluateCommitChanges(commitBundle);
             List<Exception> violations = new ArrayList<>();
             if (checkPermission(token.getUser().getId(), projectId, operations, violations)) {
-                getDelegate().commit(token, projectId, commitBundle);
+                return getDelegate().commit(token, projectId, commitBundle);
             }
             else {
                 throw new ServerServiceException(OperationNotAllowedException.create(violations));

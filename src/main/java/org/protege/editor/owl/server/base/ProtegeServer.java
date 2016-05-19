@@ -6,13 +6,12 @@ import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.TransportHandler;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
-import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.ChangeHistoryImpl;
-import org.protege.editor.owl.server.versioning.ChangeHistoryUtils;
 import org.protege.editor.owl.server.versioning.Commit;
 import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
+import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
@@ -54,7 +53,6 @@ import edu.stanford.protege.metaproject.api.exception.IdAlreadyInUseException;
 import edu.stanford.protege.metaproject.api.exception.ProjectNotInPolicyException;
 import edu.stanford.protege.metaproject.api.exception.ServerConfigurationNotLoadedException;
 import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
-import edu.stanford.protege.metaproject.api.exception.UnknownProjectIdException;
 import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
 
 /**
@@ -163,10 +161,8 @@ public class ProtegeServer extends ServerLayer {
                 Project newProject = metaprojectFactory.getProject(projectId, projectName, description, historyFile, owner, options);
                 try {
                     projectRegistry.add(newProject);
-                    if (initialCommit.isPresent()) {
-                        commit(token, projectId, initialCommit.get());
-                    }
                     saveChanges();
+                    return createServerDocument(historyFile);
                 }
                 catch (ServerServiceException e) {
                     /*
@@ -182,7 +178,6 @@ public class ProtegeServer extends ServerLayer {
                     throw new ServerServiceException(e);
                 }
             }
-            return createServerDocument(historyFile);
         }
         catch (IOException e) {
             throw new ServerServiceException("Failed to create history file in remote server", e);
@@ -429,23 +424,14 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
+    public ChangeHistory commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, ServerServiceException {
-        try {
-            File projectFile = projectRegistry.get(projectId).getFile();
-            HistoryFile projectHistoryFile = HistoryFile.openExisting(projectFile.getAbsolutePath());
-            ChangeHistory changeHistory = ChangeHistoryImpl.createEmptyChangeHistory();
-            for (Commit commit : commitBundle.getCommits()) {
-                changeHistory.addRevision(commit.getMetadata(), commit.getChanges());
-            }
-            ChangeHistoryUtils.writeChanges(changeHistory, projectHistoryFile);
+        DocumentRevision headRevision = commitBundle.getHeadRevision();
+        ChangeHistory changeHistory = ChangeHistoryImpl.createEmptyChangeHistory(headRevision);
+        for (Commit commit : commitBundle.getCommits()) {
+            changeHistory.addRevision(commit.getMetadata(), commit.getChanges());
         }
-        catch (UnknownMetaprojectObjectIdException e) {
-            throw new ServerServiceException(e);
-        }
-        catch (InvalidHistoryFileException | IOException e) {
-            throw new ServerServiceException("Internal server error", e);
-        }
+        return changeHistory;
     }
 
     @Override
