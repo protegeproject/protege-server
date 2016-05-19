@@ -7,7 +7,11 @@ import org.protege.editor.owl.server.api.TransportHandler;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
+import org.protege.editor.owl.server.versioning.ChangeHistoryImpl;
+import org.protege.editor.owl.server.versioning.ChangeHistoryUtils;
+import org.protege.editor.owl.server.versioning.Commit;
 import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
+import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
@@ -424,7 +428,18 @@ public class ProtegeServer extends ServerLayer {
 
     @Override
     public void commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle) {
-    
+        try {
+            File projectFile = projectRegistry.get(projectId).getFile();
+            HistoryFile projectHistoryFile = HistoryFile.openExisting(projectFile.getAbsolutePath());
+            ChangeHistory changeHistory = ChangeHistoryImpl.createEmptyChangeHistory();
+            for (Commit commit : commitBundle.getCommits()) {
+                changeHistory.addRevision(commit.getMetadata(), commit.getChanges());
+            }
+            ChangeHistoryUtils.writeChanges(changeHistory, projectHistoryFile);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
