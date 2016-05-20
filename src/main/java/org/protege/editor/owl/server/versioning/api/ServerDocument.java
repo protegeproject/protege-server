@@ -1,5 +1,13 @@
 package org.protege.editor.owl.server.versioning.api;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.URI;
 
@@ -17,8 +25,8 @@ public class ServerDocument implements Serializable {
 
     public ServerDocument(URI serverAddress, int registryPort, HistoryFile historyFile) {
         this.serverAddress = serverAddress;
-        this.historyFile = historyFile;
         this.registryPort = registryPort;
+        this.historyFile = historyFile;
     }
 
     public ServerDocument(URI serverAddress, HistoryFile historyFile) {
@@ -44,6 +52,34 @@ public class ServerDocument implements Serializable {
 
     public HistoryFile getHistoryFile() {
         return historyFile;
+    }
+
+    public static void writeDocument(ServerDocument document, String workspaceDir) throws IOException {
+        File parentDir = new File(workspaceDir, FileNaming.VERSIONING_DIR);
+        File destination = new File(parentDir, FileNaming.CONFIG_FILE);
+        ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(destination)));
+        try {
+            oos.writeObject(document);
+        }
+        finally {
+            oos.flush();
+            oos.close();
+        }
+    }
+
+    public static ServerDocument readDocument(String workspaceDir) throws IOException {
+        File parentDir = new File(workspaceDir, FileNaming.VERSIONING_DIR);
+        File source = new File(parentDir, FileNaming.CONFIG_FILE);
+        ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(source)));
+        try {
+            return (ServerDocument) ois.readObject();
+        }
+        catch (ClassNotFoundException e) {
+            throw new IOException("Unknown source file format", e);
+        }
+        finally {
+            ois.close();
+        }
     }
 
     @Override
