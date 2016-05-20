@@ -23,40 +23,50 @@ public class HistoryFile extends File {
         super(pathname);
     }
 
-    public static HistoryFile createNew(String rootDir, String filename) throws IOException {
-        if (!rootDir.endsWith(File.separator)) {
-            rootDir = rootDir + File.separator;
+    public static HistoryFile createNew(String parentDir, String filename) throws IOException {
+        return createNew(parentDir, filename, true);
+    }
+
+    public static HistoryFile createNew(String parentDir, String filename, boolean doCreate) throws IOException {
+        if (!parentDir.endsWith(File.separator)) {
+            parentDir = parentDir + File.separator;
         }
         if (!filename.endsWith(EXTENSION)) {
             filename = filename + EXTENSION;
         }
-        return createNew(rootDir + filename);
+        return createNew(parentDir + filename, doCreate);
     }
 
-    public static HistoryFile createNew(String pathname) throws IOException {
-        HistoryFile f = new HistoryFile(pathname);
-        FileUtils.touch(f); // Create an empty file in the file system
+    public static HistoryFile createNew(String filepath) throws IOException {
+        return createNew(filepath, true);
+    }
+
+    public static HistoryFile createNew(String filepath, boolean doCreate) throws IOException {
+        HistoryFile f = new HistoryFile(filepath);
+        if (doCreate) {
+            FileUtils.touch(f); // Create an empty file in the file system
+        }
         return f;
     }
 
-    public static HistoryFile openExisting(String rootDir, String filename) throws InvalidHistoryFileException {
-        if (!rootDir.endsWith(File.separator)) {
-            rootDir = rootDir + File.separator;
+    public static HistoryFile openExisting(String parentDir, String filename) throws InvalidHistoryFileException {
+        if (!parentDir.endsWith(File.separator)) {
+            parentDir = parentDir + File.separator;
         }
         if (!filename.endsWith(EXTENSION)) {
             filename = filename + EXTENSION;
         }
-        return openExisting(rootDir + filename);
+        return openExisting(parentDir + filename);
     }
 
-    public static HistoryFile openExisting(String pathname) throws InvalidHistoryFileException {
-        HistoryFile f = new HistoryFile(pathname);
+    public static HistoryFile openExisting(String filepath) throws InvalidHistoryFileException {
+        HistoryFile f = new HistoryFile(filepath);
         if (!f.exists()) {
-            throw new InvalidHistoryFileException("Cannot found history file at path " + pathname);
+            throw new InvalidHistoryFileException("Cannot found history file at path " + filepath);
         }
-        if (!pathname.endsWith(EXTENSION)) {
+        if (!filepath.endsWith(EXTENSION)) {
             String template = "Invalid history file extension: %s";
-            throw new InvalidHistoryFileException(String.format(template, EXTENSION, pathname));
+            throw new InvalidHistoryFileException(String.format(template, EXTENSION, filepath));
         }
         return f;
     }
