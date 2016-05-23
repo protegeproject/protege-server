@@ -164,16 +164,6 @@ public class ProtegeServer extends ServerLayer {
                     policy.add(owner, projectId, metaprojectFactory.getRoleId("mp-admin")); // TODO Change this, too hacky
                     saveChanges();
                 }
-                catch (ServerServiceException e) {
-                    /*
-                     * If something wrong happened during the commit or write the project properties
-                     * then clean all project artifacts (i.e., history file and project object in the
-                     * project registry before throwing the exception.
-                     */
-                    historyFile.getParentFile().delete();
-                    projectRegistry.remove(newProject);
-                    throw e;
-                }
                 catch (IdAlreadyInUseException e) {
                     throw new ServerServiceException(e);
                 }
@@ -205,15 +195,22 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public void deleteProject(AuthToken token, ProjectId projectId)
+    public void deleteProject(AuthToken token, ProjectId projectId, boolean includeFile)
             throws AuthorizationException, ServerServiceException {
         synchronized (projectRegistry) {
             try {
                 Project project = projectRegistry.get(projectId);
                 projectRegistry.remove(project);
+                if (includeFile) {
+                    HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getAbsolutePath());
+                    historyFile.getParentFile().delete();
+                }
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
+                throw new ServerServiceException(e);
+            }
+            catch (InvalidHistoryFileException e) {
                 throw new ServerServiceException(e);
             }
         }

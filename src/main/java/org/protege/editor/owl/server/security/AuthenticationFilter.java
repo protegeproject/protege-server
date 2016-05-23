@@ -93,10 +93,10 @@ public class AuthenticationFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public void deleteProject(AuthToken token, ProjectId projectId)
+    public void deleteProject(AuthToken token, ProjectId projectId, boolean includeFile)
             throws AuthorizationException, ServerServiceException {
         verifyRequest(token);
-        super.deleteProject(token, projectId);
+        super.deleteProject(token, projectId, includeFile);
     }
 
     @Override

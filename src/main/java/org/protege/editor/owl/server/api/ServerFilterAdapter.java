@@ -4,6 +4,7 @@ import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
+import org.protege.editor.owl.server.change.ChangeDocumentPool;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
@@ -33,8 +34,14 @@ import edu.stanford.protege.metaproject.api.UserId;
  */
 public class ServerFilterAdapter extends AbstractServerFilter {
 
+    private static ChangeDocumentPool changePool = new ChangeDocumentPool();
+
     public ServerFilterAdapter(ServerLayer delegate) {
         super(delegate);
+    }
+
+    public ChangeDocumentPool getChangePool() {
+        return changePool;
     }
 
     @Override
@@ -61,9 +68,9 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void deleteProject(AuthToken token, ProjectId projectId)
+    public void deleteProject(AuthToken token, ProjectId projectId, boolean includeFile)
             throws AuthorizationException, ServerServiceException {
-        getDelegate().deleteProject(token, projectId);
+        getDelegate().deleteProject(token, projectId, includeFile);
     }
 
     @Override

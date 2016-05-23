@@ -169,7 +169,8 @@ public interface ServerServices {
      * @throws ServerServiceException
      *             If the server failed to fulfill the user request.
      */
-    void deleteProject(AuthToken token, ProjectId projectId) throws AuthorizationException, ServerServiceException;
+    void deleteProject(AuthToken token, ProjectId projectId, boolean includeFile)
+            throws AuthorizationException, ServerServiceException;
 
     /**
      * Updating information of an existing project in the server.

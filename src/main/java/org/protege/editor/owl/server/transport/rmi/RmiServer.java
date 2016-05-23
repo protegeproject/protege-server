@@ -69,9 +69,9 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
-    public void deleteProject(AuthToken token, ProjectId projectId)
+    public void deleteProject(AuthToken token, ProjectId projectId, boolean includeFile)
             throws AuthorizationException, ServerServiceException, RemoteException {
-        server.deleteProject(token, projectId);
+        server.deleteProject(token, projectId, includeFile);
     }
 
     @Override
