@@ -1,5 +1,6 @@
 package org.protege.editor.owl.server.api;
 
+import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
@@ -22,14 +23,8 @@ public interface ChangeService {
      * @return The change history from the start revision until the end revision
      * @throws Exception
      */
-    ChangeHistory getChanges(HistoryFile historyFile,
-            DocumentRevision startRevision,
-            DocumentRevision endRevision) throws Exception;
+    ChangeHistory getChanges(HistoryFile historyFile, DocumentRevision startRevision, DocumentRevision endRevision)
+            throws ServerServiceException;
 
-    ChangeHistory getLatestChanges(HistoryFile historyFile,
-            DocumentRevision startRevision) throws Exception;
-
-    ChangeHistory getAllChanges(HistoryFile historyFile) throws Exception;
-
-    DocumentRevision getHeadRevision(HistoryFile historyFile) throws Exception;
+    DocumentRevision getHeadRevision(HistoryFile historyFile) throws ServerServiceException;
 }

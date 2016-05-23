@@ -1,6 +1,7 @@
 package org.protege.editor.owl.server.transport.rmi;
 
 import org.protege.editor.owl.server.api.ChangeService;
+import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
@@ -29,7 +30,7 @@ public class RmiChangeService implements RemoteChangeService {
         try {
             return changeService.getChanges(historyFile, startRevision, endRevision);
         }
-        catch (Exception e) {
+        catch (ServerServiceException e) {
             throw new RemoteException(e.getMessage(), e);
         }
     }
@@ -47,9 +48,10 @@ public class RmiChangeService implements RemoteChangeService {
     public ChangeHistory getLatestChanges(HistoryFile historyFile,
             DocumentRevision startRevision) throws RemoteException {
         try {
-            return changeService.getLatestChanges(historyFile, startRevision);
+            DocumentRevision headRevision = getHeadRevision(historyFile);
+            return changeService.getChanges(historyFile, startRevision, headRevision);
         }
-        catch (Exception e) {
+        catch (ServerServiceException e) {
             throw new RemoteException(e.getMessage(), e);
         }
     }
@@ -65,9 +67,10 @@ public class RmiChangeService implements RemoteChangeService {
     @Override
     public ChangeHistory getAllChanges(HistoryFile historyFile) throws RemoteException {
         try {
-            return changeService.getAllChanges(historyFile);
+            DocumentRevision headRevision = getHeadRevision(historyFile);
+            return changeService.getChanges(historyFile, DocumentRevision.START_REVISION, headRevision);
         }
-        catch (Exception e) {
+        catch (ServerServiceException e) {
             throw new RemoteException(e.getMessage(), e);
         }
     }
@@ -84,7 +87,7 @@ public class RmiChangeService implements RemoteChangeService {
         try {
             return changeService.getHeadRevision(historyFile);
         }
-        catch (Exception e) {
+        catch (ServerServiceException e) {
             throw new RemoteException(e.getMessage(), e);
         }
     }
