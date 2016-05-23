@@ -86,13 +86,13 @@ public class AuthenticationTest {
 
     @Test
     public void getEncryptionKeyTest() throws Exception {
-        Salt salt = loginService.getEncryptionKey(validUserId);
+        Salt salt = loginService.getSalt(validUserId);
         assertNotNull(salt);
     }
 
     @Test(expected=UserNotRegisteredException.class)
     public void notGetEncryptionKeyTest() throws Exception {
-        Salt salt = loginService.getEncryptionKey(invalidUserId);
+        Salt salt = loginService.getSalt(invalidUserId);
         assertNull(salt);
     }
 }

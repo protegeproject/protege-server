@@ -1,6 +1,7 @@
 package org.protege.editor.owl.server.transport.rmi;
 
 import org.protege.editor.owl.server.api.LoginService;
+import org.protege.editor.owl.server.security.SaltedChallengeLoginService;
 
 import java.rmi.RemoteException;
 
@@ -13,10 +14,13 @@ public class RmiLoginService implements RemoteLoginService {
 
     public static String LOGIN_SERVICE = "RmiLoginService";
 
-    private LoginService loginService;
+    private SaltedChallengeLoginService loginService;
 
-    public RmiLoginService(LoginService loginService) {
-        this.loginService = loginService;
+    public RmiLoginService(LoginService loginService) throws RemoteException {
+        if (loginService instanceof SaltedChallengeLoginService) {
+            this.loginService = (SaltedChallengeLoginService) loginService;
+        }
+        throw new RemoteException("Unable to setup the login protocol. Invalid type of login service.");
     }
 
     @Override
@@ -30,9 +34,9 @@ public class RmiLoginService implements RemoteLoginService {
     }
 
     @Override
-    public Salt getEncryptionKey(UserId userId) throws RemoteException {
+    public Salt getSalt(UserId userId) throws RemoteException {
         try {
-            return (Salt) loginService.getEncryptionKey(userId);
+            return loginService.getSalt(userId);
         }
         catch (Exception e) {
             throw new RemoteException(e.getMessage(), e);

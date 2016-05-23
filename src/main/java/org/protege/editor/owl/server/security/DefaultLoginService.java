@@ -1,6 +1,6 @@
 package org.protege.editor.owl.server.security;
 
-import org.protege.editor.owl.server.api.LoginService;
+import org.protege.editor.owl.server.api.exception.ServerServiceException;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
@@ -9,9 +9,11 @@ import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
 import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.UserRegistry;
+import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
+import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
 import edu.stanford.protege.metaproject.impl.AuthorizedUserToken;
 
-public class DefaultLoginService implements LoginService {
+public class DefaultLoginService implements SaltedChallengeLoginService {
 
     private AuthenticationRegistry authRegistry;
     private UserRegistry userRegistry;
@@ -24,18 +26,31 @@ public class DefaultLoginService implements LoginService {
     }
 
     @Override
-    public AuthToken login(UserId userId, SaltedPasswordDigest password) throws Exception {
-        if (authRegistry.hasValidCredentials(userId, password)) {
-            User user = userRegistry.get(userId);
-            AuthToken authToken = new AuthorizedUserToken(user);
-            sessionManager.add(authToken);
-            return authToken;
+    public AuthToken login(UserId userId, SaltedPasswordDigest password) throws ServerServiceException {
+        try {
+            if (authRegistry.hasValidCredentials(userId, password)) {
+                User user = userRegistry.get(userId);
+                AuthToken authToken = new AuthorizedUserToken(user);
+                sessionManager.add(authToken);
+                return authToken;
+            }
+            throw new ServerServiceException("Invalid combination of username and password");
         }
-        throw new Exception("Invalid combination of username and password");
+        catch (UserNotRegisteredException e) {
+            throw new ServerServiceException("Invalid combination of username and password");
+        }
+        catch (UnknownMetaprojectObjectIdException e) {
+            throw new ServerServiceException("Bad error. User has the credential but not registered", e);
+        }
     }
 
     @Override
-    public Salt getEncryptionKey(UserId userId) throws Exception {
-        return authRegistry.getSalt(userId);
+    public Salt getSalt(UserId userId) throws ServerServiceException {
+        try {
+            return authRegistry.getSalt(userId);
+        }
+        catch (UserNotRegisteredException e) {
+            throw new ServerServiceException("Unknown user id: " + userId.get(), e);
+        }
     }
 }

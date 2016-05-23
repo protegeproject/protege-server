@@ -1,5 +1,7 @@
 package org.protege.editor.owl.server.api;
 
+import org.protege.editor.owl.server.api.exception.ServerServiceException;
+
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
 import edu.stanford.protege.metaproject.api.UserId;
@@ -12,7 +14,5 @@ import edu.stanford.protege.metaproject.api.UserId;
  */
 public interface LoginService {
 
-    AuthToken login(UserId username, SaltedPasswordDigest password) throws Exception;
-
-    Object getEncryptionKey(UserId userId) throws Exception;
+    AuthToken login(UserId username, SaltedPasswordDigest password) throws ServerServiceException;
 }
