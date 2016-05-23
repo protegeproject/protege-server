@@ -23,6 +23,7 @@ import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.ProjectOptions;
 import edu.stanford.protege.metaproject.api.UserId;
+import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
 
 /**
  * Represents the change document layer that will validate the user changes in the commit document.
@@ -64,11 +65,11 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
             changePool.put(historyFile, changeHistory);
             return changeHistory;
         }
-        catch (InvalidHistoryFileException e) {
-            throw new ServerServiceException("Could not found remote history file", e);
+        catch (UnknownMetaprojectObjectIdException e) {
+            throw new ServerServiceException("Unknown project ID: " + projectId.get(), e);
         }
-        catch (Exception e) {
-            throw new ServerServiceException("Could not retreive remote head revision", e);
+        catch (InvalidHistoryFileException e) {
+            throw new ServerServiceException("Could not find remote history file", e);
         }
     }
 
