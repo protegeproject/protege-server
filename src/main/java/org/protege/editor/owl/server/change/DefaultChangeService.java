@@ -1,11 +1,13 @@
-package org.protege.editor.owl.server.versioning;
+package org.protege.editor.owl.server.change;
 
 import org.protege.editor.owl.server.api.ChangeService;
-import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
+import org.protege.editor.owl.server.versioning.ChangeHistoryUtils;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
+
+import java.io.IOException;
 
 public class DefaultChangeService implements ChangeService {
 
@@ -31,7 +33,7 @@ public class DefaultChangeService implements ChangeService {
         try {
             return changePool.lookup(historyFile);
         }
-        catch (OWLServerException e) {
+        catch (IOException e) {
             throw new ServerServiceException("Error while getting the change history at the server", e);
         }
     }

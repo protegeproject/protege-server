@@ -1,6 +1,7 @@
-package org.protege.editor.owl.server.versioning;
+package org.protege.editor.owl.server.change;
 
-import org.protege.editor.owl.server.api.exception.OWLServerException;
+import org.protege.editor.owl.server.versioning.ChangeHistoryUtils;
+import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
 
@@ -57,7 +58,7 @@ public class ChangeDocumentPoolEntry {
         executor.submit(new WriteChanges(changes));
     }
 
-    public ChangeHistory readChangeHistory() throws OWLServerException {
+    public ChangeHistory readChangeHistory() throws IOException {
         try {
             doRead();
             return readTask.get();
@@ -66,8 +67,8 @@ public class ChangeDocumentPoolEntry {
             throw new RuntimeException(ie);
         }
         catch (ExecutionException ee) {
-            if (ee.getCause() instanceof OWLServerException) {
-                throw (OWLServerException) ee.getCause();
+            if (ee.getCause() instanceof IOException) {
+                throw (IOException) ee.getCause();
             }
             else {
                 throw new RuntimeException(ee);

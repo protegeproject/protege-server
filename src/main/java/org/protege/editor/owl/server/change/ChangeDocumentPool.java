@@ -1,6 +1,5 @@
-package org.protege.editor.owl.server.versioning;
+package org.protege.editor.owl.server.change;
 
-import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
 
@@ -8,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -87,7 +87,7 @@ public class ChangeDocumentPool {
         }, timeout, timeout, TimeUnit.MILLISECONDS);
     }
 
-    public ChangeHistory lookup(HistoryFile historyFile) throws OWLServerException {
+    public ChangeHistory lookup(HistoryFile historyFile) throws IOException {
         ChangeDocumentPoolEntry entry;
         synchronized (pool) {
             entry = pool.get(historyFile);

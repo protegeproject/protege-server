@@ -3,9 +3,10 @@ package org.protege.editor.owl.server.builder;
 import org.protege.editor.owl.server.api.ServerFactory;
 import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.base.ProtegeServer;
+import org.protege.editor.owl.server.change.ChangeManagementFilter;
+import org.protege.editor.owl.server.conflict.ConflictDetectionFilter;
 import org.protege.editor.owl.server.policy.AccessControlFilter;
 import org.protege.editor.owl.server.security.AuthenticationFilter;
-import org.protege.editor.owl.server.versioning.ConflictDetectionFilter;
 
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 
@@ -19,7 +20,8 @@ public class ProtegeServerFactory implements ServerFactory {
 
     @Override
     public ServerLayer build(ServerConfiguration configuration) {
-        ServerLayer server = addConflictDetectionLayer(createBaseServer(configuration));
+        ServerLayer server = addChangeManagementLayer(createBaseServer(configuration));
+        server = addConflictDetectionLayer(server);
         server = addAccessControlLayer(server);
         server = addAuthenticationLayer(server);
         return server;
@@ -27,6 +29,10 @@ public class ProtegeServerFactory implements ServerFactory {
 
     private ServerLayer createBaseServer(ServerConfiguration configuration) {
         return new ProtegeServer(configuration);
+    }
+
+    private ServerLayer addChangeManagementLayer(ServerLayer server) {
+        return new ChangeManagementFilter(server);
     }
 
     private ServerLayer addConflictDetectionLayer(ServerLayer server) {

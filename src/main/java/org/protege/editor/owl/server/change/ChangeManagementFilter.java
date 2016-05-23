@@ -1,4 +1,4 @@
-package org.protege.editor.owl.server.versioning;
+package org.protege.editor.owl.server.change;
 
 import org.protege.editor.owl.server.api.ChangeService;
 import org.protege.editor.owl.server.api.CommitBundle;
@@ -9,8 +9,9 @@ import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
+import org.protege.editor.owl.server.versioning.ChangeHistoryImpl;
+import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
-import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
@@ -25,28 +26,20 @@ import edu.stanford.protege.metaproject.api.ProjectOptions;
 import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
 
-/**
- * Represents the change document layer that will validate the user changes in the commit document.
- *
- * @author Josef Hardi <johardi@stanford.edu> <br>
- * Stanford Center for Biomedical Informatics Research
- */
-public class ConflictDetectionFilter extends ServerFilterAdapter {
-
-    private ChangeDocumentPool changePool = new ChangeDocumentPool();
+public class ChangeManagementFilter extends ServerFilterAdapter {
 
     private ChangeService changeService;
 
-    public ConflictDetectionFilter(ServerLayer delegate) {
+    public ChangeManagementFilter(ServerLayer delegate) {
         super(delegate);
-        changeService = new DefaultChangeService(changePool);
+        changeService = new DefaultChangeService(getChangePool());
     }
 
     @Override
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
             UserId owner, Optional<ProjectOptions> options) throws AuthorizationException, ServerServiceException {
         ServerDocument serverDocument = super.createProject(token, projectId, projectName, description, owner, options);
-        changePool.put(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
+        getChangePool().put(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
         return serverDocument;
     }
 
@@ -54,15 +47,10 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
     public ChangeHistory commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, OutOfSyncException, ServerServiceException {
         try {
+            ChangeHistory changeHistory = super.commit(token, projectId, commitBundle);
             Project project = getConfiguration().getMetaproject().getProjectRegistry().get(projectId);
             HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getAbsolutePath());
-            DocumentRevision serverHeadRevision = changeService.getHeadRevision(historyFile);
-            DocumentRevision clientHeadRevision = commitBundle.getHeadRevision();
-            if (isOutdated(clientHeadRevision, serverHeadRevision)) {
-                throw new OutOfSyncException("The local copy is outdated. Please do update.");
-            }
-            ChangeHistory changeHistory = super.commit(token, projectId, commitBundle);
-            changePool.put(historyFile, changeHistory);
+            getChangePool().put(historyFile, changeHistory);
             return changeHistory;
         }
         catch (UnknownMetaprojectObjectIdException e) {
@@ -71,10 +59,6 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
         catch (InvalidHistoryFileException e) {
             throw new ServerServiceException("Could not find remote history file", e);
         }
-    }
-
-    private boolean isOutdated(DocumentRevision clientHeadRevision, DocumentRevision serverHeadRevision) {
-        return clientHeadRevision.compareTo(serverHeadRevision) < 0;
     }
 
     @Override
