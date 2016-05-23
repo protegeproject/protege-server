@@ -58,7 +58,7 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
             DocumentRevision serverHeadRevision = changeService.getHeadRevision(historyFile);
             DocumentRevision clientHeadRevision = commitBundle.getHeadRevision();
             if (isOutdated(clientHeadRevision, serverHeadRevision)) {
-                throw new OutOfSyncException("The server contains changes that you do not have locally");
+                throw new OutOfSyncException("The local copy is outdated. Please do update.");
             }
             ChangeHistory changeHistory = super.commit(token, projectId, commitBundle);
             changePool.put(historyFile, changeHistory);
