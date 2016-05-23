@@ -20,7 +20,9 @@ public class RmiLoginService implements RemoteLoginService {
         if (loginService instanceof SaltedChallengeLoginService) {
             this.loginService = (SaltedChallengeLoginService) loginService;
         }
-        throw new RemoteException("Unable to setup the login protocol. Invalid type of login service.");
+        else {
+            throw new RemoteException("Unable to setup the login protocol. Invalid type of login service.");
+        }
     }
 
     @Override
