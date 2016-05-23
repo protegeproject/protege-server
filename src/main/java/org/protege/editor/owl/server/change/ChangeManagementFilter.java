@@ -54,10 +54,10 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
             return changeHistory;
         }
         catch (UnknownMetaprojectObjectIdException e) {
-            throw new ServerServiceException("Unknown project ID: " + projectId.get(), e);
+            throw new ServerServiceException(e.getMessage(), e);
         }
         catch (InvalidHistoryFileException e) {
-            throw new ServerServiceException("Could not find remote history file", e);
+            throw new ServerServiceException(e.getMessage(), e);
         }
     }
 
