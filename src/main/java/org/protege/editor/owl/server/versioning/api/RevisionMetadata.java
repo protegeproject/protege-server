@@ -15,6 +15,12 @@ public final class RevisionMetadata implements Serializable {
 
     private static final long serialVersionUID = -1198003999159038367L;
 
+    public static final String AUTHOR_USERNAME = "author.username";
+    public static final String AUTHOR_NAME = "author.name";
+    public static final String AUTHOR_EMAIL = "author.email";
+    public static final String CHANGE_DATE = "change.date";
+    public static final String CHANGE_COMMENT = "change.comment";
+
     private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     private String authorName;
@@ -25,10 +31,14 @@ public final class RevisionMetadata implements Serializable {
     private String comment;
 
     public RevisionMetadata(@Nonnull String authorId, String authorName, String authorEmail, @Nonnull String comment) {
+        this(authorId, authorName, authorEmail, new Date(), comment);
+    }
+
+    public RevisionMetadata(@Nonnull String authorId, String authorName, String authorEmail, Date changeDate, @Nonnull String comment) {
         this.authorId = authorId.trim();
         this.authorName = authorName.trim();
         this.authorEmail = authorEmail.trim();
-        this.changeDate = new Date();
+        this.changeDate = changeDate;
         this.comment = comment.trim();
     }
 
