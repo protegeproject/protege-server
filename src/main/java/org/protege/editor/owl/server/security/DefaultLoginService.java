@@ -4,6 +4,7 @@ import org.protege.editor.owl.server.api.exception.ServerServiceException;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
+import edu.stanford.protege.metaproject.api.Password;
 import edu.stanford.protege.metaproject.api.Salt;
 import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
 import edu.stanford.protege.metaproject.api.User;
@@ -26,6 +27,17 @@ public class DefaultLoginService implements SaltedChallengeLoginService {
     }
 
     @Override
+    public AuthToken login(UserId username, Password password) throws ServerServiceException {
+        if (password instanceof SaltedPasswordDigest) {
+            SaltedPasswordDigest saltedPassword = (SaltedPasswordDigest) password;
+            return login(username, saltedPassword);
+        }
+        else {
+            throw new ServerServiceException("Unsupported password object type: " + password.getClass());
+        }
+    }
+
+    @Override
     public AuthToken login(UserId userId, SaltedPasswordDigest password) throws ServerServiceException {
         try {
             if (authRegistry.hasValidCredentials(userId, password)) {
@@ -42,6 +54,7 @@ public class DefaultLoginService implements SaltedChallengeLoginService {
         catch (UnknownMetaprojectObjectIdException e) {
             throw new ServerServiceException("Bad error. User has the credential but not registered", e);
         }
+
     }
 
     @Override
