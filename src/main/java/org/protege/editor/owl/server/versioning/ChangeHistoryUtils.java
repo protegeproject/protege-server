@@ -143,7 +143,7 @@ public class ChangeHistoryUtils {
      *          The destination file. It must already exist in the file system.
      * @throws IOException
      */
-    public static void writeChanges(@Nonnull ChangeHistory changeHistory, @Nonnull HistoryFile historyFile) throws IOException {
+    public static void appendChanges(@Nonnull ChangeHistory changeHistory, @Nonnull HistoryFile historyFile) throws IOException {
         ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(historyFile)));
         try {
             BinaryOWLOntologyChangeLog log = new BinaryOWLOntologyChangeLog();

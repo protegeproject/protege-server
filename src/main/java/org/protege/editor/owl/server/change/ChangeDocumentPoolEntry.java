@@ -55,7 +55,7 @@ public class ChangeDocumentPoolEntry {
 
     protected void doWrite(ChangeHistory changes) {
         touch();
-        executor.submit(new WriteChanges(changes));
+        executor.submit(new AppendChanges(changes));
     }
 
     public ChangeHistory readChangeHistory() throws IOException {
@@ -131,20 +131,21 @@ public class ChangeDocumentPoolEntry {
         }
     }
 
-    private class WriteChanges implements Callable<Boolean> {
+    private class AppendChanges implements Callable<Boolean> {
 
         private ChangeHistory changeHistory;
 
-        public WriteChanges(ChangeHistory changeHistory) {
+        public AppendChanges(ChangeHistory changeHistory) {
             this.changeHistory = changeHistory;
         }
 
         @Override
         public Boolean call() {
-            logger.info("Writing change history");
+            logger.info("Appending change history");
+            logger.info(changeHistory.toString());
             try {
                 long startTime = System.currentTimeMillis();
-                ChangeHistoryUtils.writeChanges(changeHistory, historyFile);
+                ChangeHistoryUtils.appendChanges(changeHistory, historyFile);
                 long interval = System.currentTimeMillis() - startTime;
                 logger.info("... success in " + (interval / 1000) + " seconds.");
                 createBackup(historyFile);
