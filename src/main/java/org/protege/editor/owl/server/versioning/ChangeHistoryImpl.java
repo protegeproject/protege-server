@@ -132,24 +132,31 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     @Override
     public String toString() {
+        final int SHOW_LIMIT = 5;
         StringBuffer sb = new StringBuffer();
-        sb.append("{");
+        sb.append("BASE: ");
         sb.append(baseRevision);
-        sb.append(" --> ");
+        sb.append("\n");
+        sb.append("HEAD: ");
         sb.append(getHeadRevision());
-        sb.append(": ");
-        for (List<OWLOntologyChange> changesAtRevision : revisions.values()) {
-            sb.append("[");
+        sb.append("\n");
+        for (DocumentRevision revision : revisions.keySet()) {
+            sb.append(revision);
+            sb.append(" : [");
             boolean needComma = false;
-            for (OWLOntologyChange particularChangeAtRevision : changesAtRevision) {
+            int i = 1;
+            for (OWLOntologyChange change : revisions.get(revision)) {
+                if (i++ > SHOW_LIMIT) {
+                    break;
+                }
                 if (needComma) {
                     sb.append(", ");
                 }
-                sb.append(particularChangeAtRevision);
+                sb.append(change);
             }
             sb.append("]");
+            sb.append("\n");
         }
-        sb.append("}");
         return sb.toString();
     }
 }
