@@ -14,7 +14,13 @@ import java.util.List;
  */
 public interface CommitBundle extends Serializable {
 
+    /**
+     * @deprecated Use getBaseRevision() instead.
+     */
+    @Deprecated
     DocumentRevision getHeadRevision();
+
+    DocumentRevision getBaseRevision();
 
     List<Commit> getCommits();
 }

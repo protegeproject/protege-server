@@ -13,11 +13,11 @@ public class CommitBundleImpl implements CommitBundle {
 
     private static final long serialVersionUID = -6145139680901780930L;
 
-    private DocumentRevision headRevision;
+    private DocumentRevision baseRevision;
     private List<Commit> commits;
 
-    public CommitBundleImpl(DocumentRevision headRevision, List<Commit> multipleCommits) {
-        this.headRevision = headRevision;
+    public CommitBundleImpl(DocumentRevision baseRevision, List<Commit> multipleCommits) {
+        this.baseRevision = baseRevision;
         this.commits = multipleCommits;
     }
 
@@ -26,8 +26,14 @@ public class CommitBundleImpl implements CommitBundle {
     }
 
     @Override
+    public DocumentRevision getBaseRevision() {
+        return baseRevision;
+    }
+
+    @Override
+    @Deprecated
     public DocumentRevision getHeadRevision() {
-        return headRevision;
+        return baseRevision;
     }
 
     @Override

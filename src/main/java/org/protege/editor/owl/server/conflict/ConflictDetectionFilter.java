@@ -37,8 +37,8 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
             Project project = getConfiguration().getMetaproject().getProjectRegistry().get(projectId);
             HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getAbsolutePath());
             DocumentRevision serverHeadRevision = getHeadRevision(historyFile);
-            DocumentRevision clientHeadRevision = commitBundle.getHeadRevision();
-            if (isOutdated(clientHeadRevision, serverHeadRevision)) {
+            DocumentRevision commitBaseRevision = commitBundle.getBaseRevision();
+            if (isOutdated(commitBaseRevision, serverHeadRevision)) {
                 throw new OutOfSyncException("The local copy is outdated. Please do update.");
             }
             return super.commit(token, projectId, commitBundle);

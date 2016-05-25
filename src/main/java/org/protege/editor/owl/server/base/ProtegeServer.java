@@ -431,8 +431,8 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public ChangeHistory commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, ServerServiceException {
-        DocumentRevision headRevision = commitBundle.getHeadRevision();
-        ChangeHistory changeHistory = ChangeHistoryImpl.createEmptyChangeHistory(headRevision);
+        DocumentRevision baseRevision = commitBundle.getBaseRevision();
+        ChangeHistory changeHistory = ChangeHistoryImpl.createEmptyChangeHistory(baseRevision);
         for (Commit commit : commitBundle.getCommits()) {
             changeHistory.addRevision(commit.getMetadata(), commit.getChanges());
         }
