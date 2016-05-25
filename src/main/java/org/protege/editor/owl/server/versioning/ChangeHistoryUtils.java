@@ -198,10 +198,13 @@ public class ChangeHistoryUtils {
     public static List<OWLOntologyChange> getOntologyChanges(@Nonnull ChangeHistory changeHistory,
             @Nonnull OWLOntology targetOntology) {
         List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
-        for (List<OWLOntologyChange> change : changeHistory.getRevisions().values()) {
-            changes.addAll(change);
+        if (!changeHistory.isEmpty()) {
+            for (List<OWLOntologyChange> change : changeHistory.getRevisions().values()) {
+                changes.addAll(change);
+            }
+            return ReplaceChangedOntologyVisitor.mutate(targetOntology, normalizeChangeDelta(changes));
         }
-        return ReplaceChangedOntologyVisitor.mutate(targetOntology, normalizeChangeDelta(changes));
+        return changes;
     }
 
     /**
