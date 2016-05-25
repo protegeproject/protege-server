@@ -71,6 +71,14 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
     }
 
     /**
+     * Returns <code>true</code> if this revision is lesser than the given
+     * origin revision.
+     */
+    public boolean behindOrSameAs(DocumentRevision origin) {
+        return distance(this, origin) >= 0;
+    }
+
+    /**
      * Returns <code>true</code> if this revision is equal to the given
      * origin revision.
      */
@@ -88,7 +96,7 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
     }
 
     /**
-     * Gets the next document revision after <code>i</code> steps.
+     * Gets the next document revision for <code>i</code> steps.
      *
      * @param i
      *            The distance from the current revision
@@ -96,6 +104,26 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
      */
     public DocumentRevision next(int i) {
         return new DocumentRevision(revision + i);
+    }
+
+    /**
+     * Gets the previous document revision.
+     *
+     * @return The previous document revision.
+     */
+    public DocumentRevision previous() {
+        return previous(1);
+    }
+
+    /**
+     * Gets the previous document revision for <code>i</code> steps.
+     *
+     * @param i
+     *            The distance from the current revision
+     * @return The next document revision after <code>i</code> steps.
+     */
+    public DocumentRevision previous(int i) {
+        return new DocumentRevision(revision - i);
     }
 
     @Override
