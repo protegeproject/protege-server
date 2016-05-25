@@ -100,23 +100,17 @@ public class ChangeDocumentPool {
         return entry.readChangeHistory();
     }
 
-    public void put(HistoryFile historyFile, ChangeHistory changeHistory) {
+    public void update(HistoryFile historyFile, ChangeHistory changeHistory) {
         synchronized (pool) {
             ChangeDocumentPoolEntry entry = pool.get(historyFile);
-            if (entry != null) {
-                entry.writeChangeHistory(changeHistory);
-            }
-            else {
+            if (entry == null) {
                 entry = new ChangeDocumentPoolEntry(historyFile);
-                entry.writeChangeHistory(changeHistory);
+                entry.appendChangeHistory(changeHistory);
                 pool.put(historyFile, entry);
             }
-        }
-    }
-
-    public boolean testServerLocation(File historyFile) {
-        synchronized (pool) {
-            return pool.containsKey(historyFile);
+            else {
+                entry.appendChangeHistory(changeHistory);
+            }
         }
     }
 

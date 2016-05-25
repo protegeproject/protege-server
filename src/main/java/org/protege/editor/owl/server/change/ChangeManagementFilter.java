@@ -39,7 +39,7 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
             UserId owner, Optional<ProjectOptions> options) throws AuthorizationException, ServerServiceException {
         ServerDocument serverDocument = super.createProject(token, projectId, projectName, description, owner, options);
-        getChangePool().put(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
+        getChangePool().update(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
         return serverDocument;
     }
 
@@ -50,7 +50,7 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
             ChangeHistory changeHistory = super.commit(token, projectId, commitBundle);
             Project project = getConfiguration().getMetaproject().getProjectRegistry().get(projectId);
             HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getAbsolutePath());
-            getChangePool().put(historyFile, changeHistory);
+            getChangePool().update(historyFile, changeHistory);
             return changeHistory;
         }
         catch (UnknownMetaprojectObjectIdException e) {

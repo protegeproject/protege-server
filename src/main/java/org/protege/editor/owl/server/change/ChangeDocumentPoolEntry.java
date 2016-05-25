@@ -53,7 +53,7 @@ public class ChangeDocumentPoolEntry {
         readTask = executor.submit(new ReadChangeDocument());
     }
 
-    protected void doWrite(ChangeHistory changes) {
+    protected void doAppend(ChangeHistory changes) {
         touch();
         executor.submit(new AppendChanges(changes));
     }
@@ -76,8 +76,8 @@ public class ChangeDocumentPoolEntry {
         }
     }
 
-    public void writeChangeHistory(final ChangeHistory changeHistory) {
-        doWrite(changeHistory);
+    public void appendChangeHistory(final ChangeHistory changeHistory) {
+        doAppend(changeHistory);
     }
 
     public long getLastTouch() {
@@ -141,20 +141,21 @@ public class ChangeDocumentPoolEntry {
 
         @Override
         public Boolean call() {
-            logger.info("Appending change history");
-            logger.info(changeHistory.toString());
-            try {
-                long startTime = System.currentTimeMillis();
-                ChangeHistoryUtils.appendChanges(changeHistory, historyFile);
-                long interval = System.currentTimeMillis() - startTime;
-                logger.info("... success in " + (interval / 1000) + " seconds.");
-                createBackup(historyFile);
-                return true;
+            if (!changeHistory.isEmpty()) {
+                logger.info("Writing change history\n" + changeHistory.toString());
+                try {
+                    long startTime = System.currentTimeMillis();
+                    ChangeHistoryUtils.appendChanges(changeHistory, historyFile);
+                    long interval = System.currentTimeMillis() - startTime;
+                    logger.info("... success in " + (interval / 1000) + " seconds.");
+                    createBackup(historyFile);
+                }
+                catch (Throwable t) {
+                    logger.error("Exception caught while writing history file", t);
+                    return false;
+                }
             }
-            catch (Throwable t) {
-                logger.error("Exception caught while writing history file", t);
-                return false;
-            }
+            return true;
         }
 
         private void createBackup(File historyFile) throws InvalidHistoryFileException, IOException {
