@@ -140,22 +140,32 @@ public class ChangeHistoryImpl implements ChangeHistory {
         sb.append("HEAD: ");
         sb.append(getHeadRevision());
         sb.append("\n");
-        for (DocumentRevision revision : revisions.keySet()) {
-            sb.append(revision);
-            sb.append(" : [");
-            boolean needComma = false;
-            int i = 1;
-            for (OWLOntologyChange change : revisions.get(revision)) {
-                if (i++ > SHOW_LIMIT) {
-                    break;
+        if (isEmpty()) {
+            sb.append("(empty)");
+        }
+        else {
+            boolean needNewline = false;
+            for (DocumentRevision revision : revisions.keySet()) {
+                if (needNewline) {
+                    sb.append("\n");
                 }
-                if (needComma) {
-                    sb.append(", ");
+                sb.append(revision);
+                sb.append(" : [");
+                boolean needInnerNewline = false;
+                int i = 1;
+                for (OWLOntologyChange change : revisions.get(revision)) {
+                    if (i++ > SHOW_LIMIT) {
+                        break;
+                    }
+                    if (needInnerNewline) {
+                        sb.append("\n");
+                    }
+                    sb.append(change);
+                    needInnerNewline = true;
                 }
-                sb.append(change);
+                sb.append("]");
+                needNewline = true;
             }
-            sb.append("]");
-            sb.append("\n");
         }
         return sb.toString();
     }
