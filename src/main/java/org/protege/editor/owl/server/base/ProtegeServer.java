@@ -15,6 +15,8 @@ import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -203,15 +205,19 @@ public class ProtegeServer extends ServerLayer {
                 projectRegistry.remove(project);
                 if (includeFile) {
                     HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getAbsolutePath());
-                    historyFile.getParentFile().delete();
+                    File projectDir = historyFile.getParentFile();
+                    FileUtils.deleteDirectory(projectDir);
                 }
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
-                throw new ServerServiceException(e);
+                throw new ServerServiceException(e.getMessage(), e);
             }
             catch (InvalidHistoryFileException e) {
-                throw new ServerServiceException(e);
+                throw new ServerServiceException(e.getMessage(), e);
+            }
+            catch (IOException e) {
+                throw new ServerServiceException(e.getMessage(), e);
             }
         }
     }
