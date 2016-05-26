@@ -21,8 +21,8 @@ public class CommitBundleImpl implements CommitBundle {
         this.commits = multipleCommits;
     }
 
-    public CommitBundleImpl(DocumentRevision headRevision, Commit singleCommit) {
-        this(headRevision, Lists.newArrayList(singleCommit));
+    public CommitBundleImpl(DocumentRevision baseRevision, Commit singleCommit) {
+        this(baseRevision, Lists.newArrayList(singleCommit));
     }
 
     @Override
