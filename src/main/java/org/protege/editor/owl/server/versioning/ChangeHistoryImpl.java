@@ -4,10 +4,23 @@ import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.RevisionMetadata;
 
+import org.semanticweb.binaryowl.BinaryOWLMetadata;
+import org.semanticweb.binaryowl.BinaryOWLOntologyChangeLog;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.change.OWLOntologyChangeData;
+import org.semanticweb.owlapi.change.OWLOntologyChangeRecord;
+import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -108,6 +121,92 @@ public class ChangeHistoryImpl implements ChangeHistory {
     @Override
     public boolean isEmpty() {
         return revisions.isEmpty();
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        try {
+            BinaryOWLOntologyChangeLog log = new BinaryOWLOntologyChangeLog();
+            DocumentRevision base = getBaseRevision();
+            DocumentRevision head = getHeadRevision();
+            for (DocumentRevision current = base.next(); current.behindOrSameAs(head); current = current.next()) {
+                List<OWLOntologyChange> changeSet = getChangesForRevision(current);
+                RevisionMetadata metadata = getMetadataForRevision(current);
+                BinaryOWLMetadata changeMetadata = getBinaryOWLMetadata(metadata);
+                log.appendChanges(changeSet, current.getRevisionNumber(), changeMetadata, out);
+            }
+        }
+        finally {
+            out.flush();
+        }
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException {
+        final SortedMap<DocumentRevision, RevisionMetadata> logs = new TreeMap<>();
+        final SortedMap<DocumentRevision, List<OWLOntologyChange>> revisions = new TreeMap<>();
+        readBinaryOWLChangeLog(in, logs, revisions);
+        if (logs.isEmpty() && revisions.isEmpty()) {
+            this.baseRevision = DocumentRevision.START_REVISION;
+            this.headRevision = DocumentRevision.START_REVISION;
+            this.logs = logs;
+            this.revisions = revisions;
+        }
+        else {
+            this.baseRevision = revisions.firstKey().previous();
+            this.headRevision = baseRevision.next(revisions.size());
+            this.logs = logs;
+            this.revisions = revisions;
+        }
+    }
+
+    private static void readBinaryOWLChangeLog(ObjectInputStream inputStream,
+            SortedMap<DocumentRevision, RevisionMetadata> resultMetadata,
+            SortedMap<DocumentRevision, List<OWLOntologyChange>> resultRevisions) throws IOException {
+        try {
+            BinaryOWLOntologyChangeLog log = new BinaryOWLOntologyChangeLog();
+            OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
+            OWLOntology placeholder = owlManager.createOntology();
+            log.readChanges(inputStream, owlManager.getOWLDataFactory(), (list, skipSetting, filePosition) -> {
+                // Get the revision number
+                int revision = (int) list.getTimestamp(); // TODO Report API misuse, timestamp == revision number
+                
+                // Get the metadata
+                BinaryOWLMetadata metadataRecord = list.getMetadata();
+                RevisionMetadata metadata = getRevisionMetadata(metadataRecord);
+                resultMetadata.put(DocumentRevision.create(revision), metadata);
+    
+                // Get the changes 
+                List<OWLOntologyChangeRecord> changeRecords = list.getChangeRecords();
+                List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
+                for (OWLOntologyChangeRecord cr : changeRecords) {
+                    OWLOntologyChangeData changeData = cr.getData();
+                    OWLOntologyChange change = changeData.createOntologyChange(placeholder);
+                    changes.add(change);
+                }
+                resultRevisions.put(DocumentRevision.create(revision), changes);
+            });
+        }
+        catch (OWLOntologyCreationException e) {
+            throw new IOException("Internal error while computing changes", e);
+        }
+    }
+
+    private static BinaryOWLMetadata getBinaryOWLMetadata(RevisionMetadata metadata) {
+        BinaryOWLMetadata metadataRecord = new BinaryOWLMetadata();
+        metadataRecord.setStringAttribute(RevisionMetadata.AUTHOR_USERNAME, metadata.getAuthorId());
+        metadataRecord.setStringAttribute(RevisionMetadata.AUTHOR_NAME, metadata.getAuthorName());
+        metadataRecord.setStringAttribute(RevisionMetadata.AUTHOR_EMAIL, metadata.getAuthorEmail());
+        metadataRecord.setLongAttribute(RevisionMetadata.CHANGE_DATE, metadata.getDate().getTime());
+        metadataRecord.setStringAttribute(RevisionMetadata.CHANGE_COMMENT, metadata.getComment());
+        return metadataRecord;
+    }
+
+    private static RevisionMetadata getRevisionMetadata(BinaryOWLMetadata metadata) {
+        String authorId = metadata.getStringAttribute(RevisionMetadata.AUTHOR_USERNAME, "");
+        String authorName = metadata.getStringAttribute(RevisionMetadata.AUTHOR_NAME, "");
+        String authorEmail = metadata.getStringAttribute(RevisionMetadata.AUTHOR_EMAIL, "");
+        Date changeDate = new Date(metadata.getLongAttribute(RevisionMetadata.CHANGE_DATE, 0L));
+        String comment = metadata.getStringAttribute(RevisionMetadata.CHANGE_COMMENT, "");
+        return new RevisionMetadata(authorId, authorName, authorEmail, changeDate, comment);
     }
 
     @Override
