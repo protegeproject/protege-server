@@ -50,7 +50,7 @@ public class ChangeHistoryUtils {
             throw new IllegalArgumentException("The input start is out of the range");
         }
         if (end.aheadOf(changeHistory.getHeadRevision())) {
-            throw new IllegalArgumentException("The input start is out of the range");
+            throw new IllegalArgumentException("The input end is out of the range");
         }
         SortedMap<DocumentRevision, List<OWLOntologyChange>> subRevisions = new TreeMap<>();
         SortedMap<DocumentRevision, RevisionMetadata> subMetadata = new TreeMap<>();
@@ -59,8 +59,8 @@ public class ChangeHistoryUtils {
             subMetadata.putAll(changeHistory.getMetadata());
         }
         else {
-            subRevisions.putAll(changeHistory.getRevisions().headMap(start.next()).tailMap(end));
-            subMetadata.putAll(changeHistory.getMetadata().headMap(start.next()).tailMap(end));
+            subRevisions.putAll(changeHistory.getRevisions().tailMap(start).headMap(end.next()));
+            subMetadata.putAll(changeHistory.getMetadata().tailMap(start).headMap(end.next()));
         }
         return ChangeHistoryImpl.recreate(start, subRevisions, subMetadata);
     }
