@@ -42,6 +42,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <protege.version>5.0.0-RC1</protege.version>
+        <metaproject.version>1.0.0-SNAPSHOT</metaproject.version>
         <owlapi.version>4.2.3</owlapi.version>
         <binaryowl.version>2.0.0</binaryowl.version>
         <slf4j.version>1.7.12</slf4j.version>
@@ -64,7 +65,7 @@
         <dependency>
             <groupId>edu.stanford.protege</groupId>
             <artifactId>metaproject</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${metaproject.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.owlapi</groupId>
@@ -90,11 +91,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>18.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
