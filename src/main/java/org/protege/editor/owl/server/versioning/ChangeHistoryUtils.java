@@ -59,8 +59,8 @@ public class ChangeHistoryUtils {
             subMetadata.putAll(changeHistory.getMetadata());
         }
         else {
-            subRevisions.putAll(changeHistory.getRevisions().tailMap(start).headMap(end.next()));
-            subMetadata.putAll(changeHistory.getMetadata().tailMap(start).headMap(end.next()));
+            subRevisions.putAll(changeHistory.getRevisions().tailMap(start.next()).headMap(end.next()));
+            subMetadata.putAll(changeHistory.getMetadata().tailMap(start.next()).headMap(end.next()));
         }
         return ChangeHistoryImpl.recreate(start, subRevisions, subMetadata);
     }
