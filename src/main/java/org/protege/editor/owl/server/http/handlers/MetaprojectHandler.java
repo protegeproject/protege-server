@@ -9,7 +9,10 @@ import java.util.Optional;
 import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.change.ChangeManagementFilter;
 import org.protege.editor.owl.server.http.HTTPServer;
+import org.protege.editor.owl.server.http.messages.HttpAuthResponse;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
+
+import com.google.gson.Gson;
 
 import edu.stanford.protege.metaproject.Manager;
 import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
@@ -24,9 +27,11 @@ import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.ProjectOptions;
 import edu.stanford.protege.metaproject.api.ProjectRegistry;
 import edu.stanford.protege.metaproject.api.RoleRegistry;
+import edu.stanford.protege.metaproject.api.Serializer;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.UserRegistry;
+import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Methods;
 
@@ -99,6 +104,14 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 	        
 	        os.writeObject(sdoc);
+			exchange.endExchange();
+			
+		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.METAPROJECT) &&
+				exchange.getRequestMethod().equals(Methods.GET)) {
+			Serializer<Gson> serl = new DefaultJsonSerializer();
+			
+			exchange.getResponseSender().send(serl.write(configuration, ServerConfiguration.class));
+			
 			exchange.endExchange();
 			
 		}

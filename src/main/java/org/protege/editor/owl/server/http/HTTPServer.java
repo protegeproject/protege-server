@@ -43,10 +43,14 @@ public final class HTTPServer {
 	public static final int DEFAULT_PORT = 8080;
 
 	public static final String ROOT_PATH = "/nci_protege";
+	
 	public static final String LOGIN = ROOT_PATH + "/login";
+	
 	public static final String CREATE_PROJECT = ROOT_PATH + "/meta/project";
 	public static final String PROJECT = ROOT_PATH + "/meta/open_project";
 	public static final String PROJECTS = ROOT_PATH + "/meta/projects";
+	public static final String METAPROJECT = ROOT_PATH + "/meta/metaproject";
+	
 	public static final String ALL_CHANGES = ROOT_PATH + "/all_changes"; 
 	public static final String LATEST_CHANGES = ROOT_PATH + "/latest_changes"; 
 	public static final String COMMIT = ROOT_PATH + "/commit";
@@ -154,11 +158,12 @@ public final class HTTPServer {
 		AuthenticationHandler mp = new AuthenticationHandler(
 				new BlockingHandler(
 						new MetaprojectHandler(pserver)));
-		router.add("GET", ROOT_PATH + "/meta", mp);
+		router.add("GET", METAPROJECT, mp);
+		router.add("POST", METAPROJECT, mp);
 		router.add("POST", CREATE_PROJECT,  mp);
 		router.add("GET", PROJECT,  mp);
 		router.add("GET", PROJECTS, mp);
-		router.add("PUT", ROOT_PATH + "/meta", mp);      
+		      
 
 
 		final ExceptionHandler aExceptionHandler = Handlers.exceptionHandler(router);
