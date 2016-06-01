@@ -106,7 +106,7 @@ public class ProtegeServer extends ServerLayer {
             throws AuthorizationException, ServerServiceException {
         synchronized (userRegistry) {
             try {
-                userRegistry.add(newUser);
+                metaprojectAgent.add(newUser);
                 saveChanges();
             }
             catch (IdAlreadyInUseException e) {
@@ -130,8 +130,7 @@ public class ProtegeServer extends ServerLayer {
     public void deleteUser(AuthToken token, UserId userId) throws AuthorizationException, ServerServiceException {
         synchronized (userRegistry) {
             try {
-                User user = userRegistry.get(userId);
-                userRegistry.remove(user);
+                metaprojectAgent.remove(userRegistry.get(userId));
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
@@ -163,7 +162,7 @@ public class ProtegeServer extends ServerLayer {
             synchronized (projectRegistry) {
                 Project newProject = metaprojectFactory.getProject(projectId, projectName, description, historyFile, owner, options);
                 try {
-                    projectRegistry.add(newProject);
+                    metaprojectAgent.add(newProject);
                     policy.add(owner, projectId, MetaprojectUtils.getProjectManagerRole().getId());
                     saveChanges();
                 }
@@ -203,7 +202,7 @@ public class ProtegeServer extends ServerLayer {
         synchronized (projectRegistry) {
             try {
                 Project project = projectRegistry.get(projectId);
-                projectRegistry.remove(project);
+                metaprojectAgent.remove(project);
                 if (includeFile) {
                     HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getAbsolutePath());
                     File projectDir = historyFile.getParentFile();
@@ -265,7 +264,7 @@ public class ProtegeServer extends ServerLayer {
     public void createRole(AuthToken token, Role newRole) throws AuthorizationException, ServerServiceException {
         synchronized (roleRegistry) {
             try {
-                roleRegistry.add(newRole);
+                metaprojectAgent.add(newRole);
                 saveChanges();
             }
             catch (IdAlreadyInUseException e) {
@@ -278,7 +277,7 @@ public class ProtegeServer extends ServerLayer {
     public void deleteRole(AuthToken token, RoleId roleId) throws AuthorizationException, ServerServiceException {
         synchronized (roleRegistry) {
             try {
-                roleRegistry.remove(roleRegistry.get(roleId));
+                metaprojectAgent.remove(roleRegistry.get(roleId));
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
@@ -306,7 +305,7 @@ public class ProtegeServer extends ServerLayer {
             throws AuthorizationException, ServerServiceException {
         synchronized (operationRegistry) {
             try {
-                operationRegistry.add(newOperation);
+                metaprojectAgent.add(newOperation);
                 saveChanges();
             }
             catch (IdAlreadyInUseException e) {
@@ -320,7 +319,7 @@ public class ProtegeServer extends ServerLayer {
             throws AuthorizationException, ServerServiceException {
         synchronized (operationRegistry) {
             try {
-                operationRegistry.remove(operationRegistry.get(operationId));
+                metaprojectAgent.remove(operationRegistry.get(operationId));
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
