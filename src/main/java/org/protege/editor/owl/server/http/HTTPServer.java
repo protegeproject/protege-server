@@ -48,6 +48,7 @@ public final class HTTPServer {
 	public static final String PROJECT = ROOT_PATH + "/meta/open_project";
 	public static final String PROJECTS = ROOT_PATH + "/meta/projects";
 	public static final String ALL_CHANGES = ROOT_PATH + "/all_changes"; 
+	public static final String LATEST_CHANGES = ROOT_PATH + "/latest_changes"; 
 	public static final String COMMIT = ROOT_PATH + "/commit";
 
 	private ServerConfiguration config;
@@ -138,7 +139,7 @@ public final class HTTPServer {
 
 		router.add("POST", COMMIT,  cs);
 		router.add("GET", ROOT_PATH + "/changes",  cs);
-		router.add("GET", ROOT_PATH + "/latest_changes",  cs);
+		router.add("POST", LATEST_CHANGES,  cs);
 		router.add("POST", ALL_CHANGES,  cs);
 
 		// create code generator handler
