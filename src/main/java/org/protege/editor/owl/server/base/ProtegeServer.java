@@ -55,6 +55,7 @@ import edu.stanford.protege.metaproject.api.exception.ProjectNotInPolicyExceptio
 import edu.stanford.protege.metaproject.api.exception.ServerConfigurationNotLoadedException;
 import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
 import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
+import edu.stanford.protege.metaproject.impl.MetaprojectUtils;
 
 /**
  * The main server that acts as the end-point server where user requests to the
@@ -163,7 +164,7 @@ public class ProtegeServer extends ServerLayer {
                 Project newProject = metaprojectFactory.getProject(projectId, projectName, description, historyFile, owner, options);
                 try {
                     projectRegistry.add(newProject);
-                    policy.add(owner, projectId, metaprojectFactory.getRoleId("mp-admin")); // TODO Change this, too hacky
+                    policy.add(owner, projectId, MetaprojectUtils.getProjectManagerRole().getId());
                     saveChanges();
                 }
                 catch (IdAlreadyInUseException e) {
