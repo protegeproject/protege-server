@@ -233,11 +233,11 @@ public class ChangeHistoryImpl implements ChangeHistory {
     public String toString() {
         final int SHOW_LIMIT = 5;
         StringBuffer sb = new StringBuffer();
-        sb.append("BASE: ");
+        sb.append("(BASE: ");
         sb.append(baseRevision);
-        sb.append("\n");
-        sb.append("HEAD: ");
+        sb.append(", HEAD: ");
         sb.append(getHeadRevision());
+        sb.append(")");
         sb.append("\n");
         if (isEmpty()) {
             sb.append("(empty)");
@@ -249,20 +249,28 @@ public class ChangeHistoryImpl implements ChangeHistory {
                     sb.append("\n");
                 }
                 sb.append(revision);
-                sb.append(" : [");
-                boolean needInnerNewline = false;
+                sb.append(" : ");
+                
+                List<OWLOntologyChange> changes = revisions.get(revision);
+                boolean needInnerSerparator = false;
                 int i = 1;
-                for (OWLOntologyChange change : revisions.get(revision)) {
+                for (OWLOntologyChange change : changes) {
                     if (i++ > SHOW_LIMIT) {
                         break;
                     }
-                    if (needInnerNewline) {
+                    if (needInnerSerparator) {
+                        sb.append(",");
                         sb.append("\n");
                     }
                     sb.append(change);
-                    needInnerNewline = true;
+                    needInnerSerparator = true;
                 }
-                sb.append("]");
+                int remainings = changes.size() - SHOW_LIMIT;
+                if (remainings > 0) {
+                    sb.append("\n");
+                    sb.append("... ");
+                    sb.append("(").append(remainings).append(" more)");
+                }
                 needNewline = true;
             }
         }
