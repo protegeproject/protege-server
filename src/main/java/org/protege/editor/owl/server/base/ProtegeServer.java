@@ -1,5 +1,15 @@
 package org.protege.editor.owl.server.base;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.apache.commons.io.FileUtils;
 import org.protege.editor.owl.server.ServerActivator;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.ServerLayer;
@@ -14,17 +24,6 @@ import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
-
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import edu.stanford.protege.metaproject.Manager;
 import edu.stanford.protege.metaproject.api.AuthToken;
@@ -66,15 +65,15 @@ import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
  */
 public class ProtegeServer extends ServerLayer {
 
-    private ServerConfiguration configuration;
+    private final ServerConfiguration configuration;
 
-    private AuthenticationRegistry authenticationRegistry;
-    private UserRegistry userRegistry;
-    private ProjectRegistry projectRegistry;
-    private RoleRegistry roleRegistry;
-    private OperationRegistry operationRegistry;
-    private Policy policy;
-    private MetaprojectAgent metaprojectAgent;
+    private final AuthenticationRegistry authenticationRegistry;
+    private final UserRegistry userRegistry;
+    private final ProjectRegistry projectRegistry;
+    private final RoleRegistry roleRegistry;
+    private final OperationRegistry operationRegistry;
+    private final Policy policy;
+    private final MetaprojectAgent metaprojectAgent;
 
     private File configurationFile;
 
@@ -88,6 +87,7 @@ public class ProtegeServer extends ServerLayer {
         userRegistry = configuration.getMetaproject().getUserRegistry();
         projectRegistry = configuration.getMetaproject().getProjectRegistry();
         roleRegistry = configuration.getMetaproject().getRoleRegistry();
+        operationRegistry = configuration.getMetaproject().getOperationRegistry();
         policy = configuration.getMetaproject().getPolicy();
         metaprojectAgent = configuration.getMetaproject().getMetaprojectAgent();
         
