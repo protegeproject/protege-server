@@ -134,7 +134,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
-                throw new ServerServiceException(e);
+                throw new ServerServiceException(e.getMessage(), e);
             }
         }
     }
@@ -148,7 +148,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
-                throw new ServerServiceException(e);
+                throw new ServerServiceException(e.getMessage(), e);
             }
         }
     }
@@ -167,7 +167,7 @@ public class ProtegeServer extends ServerLayer {
                     saveChanges();
                 }
                 catch (IdAlreadyInUseException e) {
-                    throw new ServerServiceException(e);
+                    throw new ServerServiceException(e.getMessage(), e);
                 }
             }
             serverDocument = createServerDocument(historyFile);
@@ -231,7 +231,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
-                throw new ServerServiceException(e);
+                throw new ServerServiceException(e.getMessage(), e);
             }
         }
     }
@@ -255,8 +255,8 @@ public class ProtegeServer extends ServerLayer {
         catch (UnknownMetaprojectObjectIdException e) {
             throw new ServerServiceException(e);
         }
-        catch (InvalidHistoryFileException e ) {
-            throw new ServerServiceException("Internal server error", e);
+        catch (InvalidHistoryFileException e) {
+            throw new ServerServiceException("Unable to access history file in remote server", e);
         }
     }
 
@@ -268,7 +268,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (IdAlreadyInUseException e) {
-                throw new ServerServiceException(e);
+                throw new ServerServiceException(e.getMessage(), e);
             }
         }
     }
@@ -281,7 +281,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
-                throw new ServerServiceException(e);
+                throw new ServerServiceException(e.getMessage(), e);
             }
         }
     }
@@ -295,7 +295,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
-                throw new ServerServiceException(e);
+                throw new ServerServiceException(e.getMessage(), e);
             }
         }
     }
@@ -309,7 +309,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (IdAlreadyInUseException e) {
-                throw new ServerServiceException(e);
+                throw new ServerServiceException(e.getMessage(), e);
             }
         }
     }
@@ -323,7 +323,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
-                throw new ServerServiceException(e);
+                throw new ServerServiceException(e.getMessage(), e);
             }
         }
     }
@@ -337,7 +337,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
-                throw new ServerServiceException(e);
+                throw new ServerServiceException(e.getMessage(), e);
             }
         }
     }
@@ -456,7 +456,7 @@ public class ProtegeServer extends ServerLayer {
             return new ArrayList<>(metaprojectAgent.getProjects(userId));
         }
         catch (UserNotInPolicyException e) {
-            throw new ServerServiceException(e);
+            throw new ServerServiceException(e.getMessage(), e.getCause());
         }
     }
 
@@ -482,7 +482,7 @@ public class ProtegeServer extends ServerLayer {
             return new ArrayList<>(metaprojectAgent.getRoles(userId, projectId));
         }
         catch (UserNotInPolicyException | ProjectNotInPolicyException e) {
-            throw new ServerServiceException(e);
+            throw new ServerServiceException(e.getMessage(), e);
         }
     }
 
@@ -508,7 +508,7 @@ public class ProtegeServer extends ServerLayer {
             return new ArrayList<>(metaprojectAgent.getOperations(userId, projectId));
         }
         catch (UserNotInPolicyException | ProjectNotInPolicyException e) {
-            throw new ServerServiceException(e);
+            throw new ServerServiceException(e.getMessage(), e);
         }
     }
 
