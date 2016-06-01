@@ -1,5 +1,7 @@
 package org.protege.editor.owl.server.http.handlers;
 
+import java.io.File;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -9,7 +11,6 @@ import java.util.Optional;
 import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.change.ChangeManagementFilter;
 import org.protege.editor.owl.server.http.HTTPServer;
-import org.protege.editor.owl.server.http.messages.HttpAuthResponse;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
 import com.google.gson.Gson;
@@ -49,6 +50,8 @@ public class MetaprojectHandler extends BaseRoutingHandler {
     private Policy policy;
     private MetaprojectAgent metaprojectAgent;
     
+    private File cfgFile;
+    
     public MetaprojectHandler(ProtegeServer pserver) {
     	server = pserver;
     	cf = new ChangeManagementFilter(server);
@@ -58,7 +61,10 @@ public class MetaprojectHandler extends BaseRoutingHandler {
         projectRegistry = configuration.getMetaproject().getProjectRegistry();
         roleRegistry = configuration.getMetaproject().getRoleRegistry();
         policy = configuration.getMetaproject().getPolicy();
-        metaprojectAgent = configuration.getMetaproject().getMetaprojectAgent();    	
+        metaprojectAgent = configuration.getMetaproject().getMetaprojectAgent();
+        
+        String configLocation = System.getProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY);
+        cfgFile = new File(configLocation);
     }
 
 	@Override
@@ -111,6 +117,17 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			Serializer<Gson> serl = new DefaultJsonSerializer();
 			
 			exchange.getResponseSender().send(serl.write(configuration, ServerConfiguration.class));
+			
+			exchange.endExchange();
+			
+		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.METAPROJECT) &&
+				exchange.getRequestMethod().equals(Methods.POST)) {
+			Serializer<Gson> serl = new DefaultJsonSerializer();
+			
+			ServerConfiguration cfg = serl.parse(new InputStreamReader(exchange.getInputStream()), ServerConfiguration.class);
+			
+			Manager.getConfigurationManager().setServerConfiguration(cfg);
+			Manager.getConfigurationManager().saveServerConfiguration(cfgFile);
 			
 			exchange.endExchange();
 			
