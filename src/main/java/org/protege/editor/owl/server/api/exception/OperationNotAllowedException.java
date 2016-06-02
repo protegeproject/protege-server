@@ -46,9 +46,15 @@ public class OperationNotAllowedException extends Exception
             if (needComma) {
                 sb.append(", ");
             }
-            sb.append(op.getName());
+            sb.append("'");
+            sb.append(op.getName().get());
+            sb.append("'");
             needComma = true;
         }
-        return String.format("User has no permission for %s operation", sb.toString());
+        sb.append(" operation");
+        if (operations.size() > 1) {
+            sb.append("s");
+        }
+        return String.format("User has no permission for %s", sb.toString());
     }
 }
