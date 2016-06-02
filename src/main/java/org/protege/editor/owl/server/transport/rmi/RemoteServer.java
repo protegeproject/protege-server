@@ -1,17 +1,17 @@
 package org.protege.editor.owl.server.transport.rmi;
 
+import java.net.URI;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
+
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
-
-import java.net.URI;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.util.List;
-import java.util.Map;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Description;
@@ -425,6 +425,27 @@ public interface RemoteServer extends Remote {
      *             value marshalling or unmarshalling, protocol errors.
      */
     List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId)
+            throws AuthorizationException, ServerServiceException, RemoteException;
+
+    /**
+     * Getting all operations given the role id
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @param roleId
+     *            The target role identified by the ID
+     * @return A list of {@code Operation}
+     * @throws AuthorizationException
+     *             If the user doesn't have the permission to request this
+     *             service.
+     * @throws ServerServiceException
+     *             If the server failed to fulfill the user request.
+     * @throws RemoteException
+     *             If the remote method invocation fails for some reason, e.g.,
+     *             communication problems, failure during parameter or return
+     *             value marshalling or unmarshalling, protocol errors.
+     */
+    List<Operation> getOperations(AuthToken token, RoleId roleId)
             throws AuthorizationException, ServerServiceException, RemoteException;
 
     /**

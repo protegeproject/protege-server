@@ -513,6 +513,17 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
+    public List<Operation> getOperations(AuthToken token, RoleId roleId)
+            throws AuthorizationException, ServerServiceException {
+        try {
+            return new ArrayList<>(metaprojectAgent.getOperations(roleRegistry.get(roleId)));
+        }
+        catch (UnknownMetaprojectObjectIdException e) {
+            throw new ServerServiceException(e.getMessage(), e);
+        }
+    }
+
+    @Override
     public List<Operation> getAllOperations(AuthToken token) throws AuthorizationException, ServerServiceException {
         return new ArrayList<>(operationRegistry.getEntries());
     }

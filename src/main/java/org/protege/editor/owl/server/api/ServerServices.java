@@ -347,6 +347,23 @@ public interface ServerServices {
             throws AuthorizationException, ServerServiceException;
 
     /**
+     * Getting all operations given the role id
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @param roleId
+     *            The target role identified by the ID
+     * @return A list of {@code Operation}
+     * @throws AuthorizationException
+     *             If the user doesn't have the permission to request this
+     *             service.
+     * @throws ServerServiceException
+     *             If the server failed to fulfill the user request.
+     */
+    List<Operation> getOperations(AuthToken token, RoleId roleId)
+            throws AuthorizationException, ServerServiceException;
+
+    /**
      * Getting all operations known by the server.
      *
      * @param token

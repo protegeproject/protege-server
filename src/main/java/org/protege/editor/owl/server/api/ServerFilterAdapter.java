@@ -243,6 +243,12 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
+    public List<Operation> getOperations(AuthToken token, RoleId roleId)
+            throws AuthorizationException, ServerServiceException {
+        return getDelegate().getOperations(token, roleId);
+    }
+
+    @Override
     public List<Operation> getAllOperations(AuthToken token) throws AuthorizationException, ServerServiceException {
         return getDelegate().getAllOperations(token);
     }
