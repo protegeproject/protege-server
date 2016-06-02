@@ -52,17 +52,22 @@ public class ChangeHistoryUtils {
         if (end.aheadOf(changeHistory.getHeadRevision())) {
             throw new IllegalArgumentException("The input end is out of the range");
         }
-        SortedMap<DocumentRevision, List<OWLOntologyChange>> subRevisions = new TreeMap<>();
-        SortedMap<DocumentRevision, RevisionMetadata> subMetadata = new TreeMap<>();
-        if (start.sameAs(changeHistory.getBaseRevision()) && end.sameAs(changeHistory.getHeadRevision())) {
-            subRevisions.putAll(changeHistory.getRevisions());
-            subMetadata.putAll(changeHistory.getMetadata());
+        if (start.equals(end)) {
+            return ChangeHistoryImpl.createEmptyChangeHistory(start);
         }
         else {
-            subRevisions.putAll(changeHistory.getRevisions().tailMap(start.next()).headMap(end.next()));
-            subMetadata.putAll(changeHistory.getMetadata().tailMap(start.next()).headMap(end.next()));
+            SortedMap<DocumentRevision, List<OWLOntologyChange>> subRevisions = new TreeMap<>();
+            SortedMap<DocumentRevision, RevisionMetadata> subMetadata = new TreeMap<>();
+            if (start.sameAs(changeHistory.getBaseRevision()) && end.sameAs(changeHistory.getHeadRevision())) {
+                subRevisions.putAll(changeHistory.getRevisions());
+                subMetadata.putAll(changeHistory.getMetadata());
+            }
+            else {
+                subRevisions.putAll(changeHistory.getRevisions().tailMap(start.next()).headMap(end.next()));
+                subMetadata.putAll(changeHistory.getMetadata().tailMap(start.next()).headMap(end.next()));
+            }
+            return ChangeHistoryImpl.recreate(start, subRevisions, subMetadata);
         }
-        return ChangeHistoryImpl.recreate(start, subRevisions, subMetadata);
     }
 
     /**
