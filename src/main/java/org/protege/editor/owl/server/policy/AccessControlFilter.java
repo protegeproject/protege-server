@@ -11,6 +11,7 @@ import org.protege.editor.owl.server.api.ServerFilterAdapter;
 import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OperationNotAllowedException;
+import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.Commit;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
@@ -38,7 +39,6 @@ import edu.stanford.protege.metaproject.api.RoleId;
 import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
 import edu.stanford.protege.metaproject.api.User;
 import edu.stanford.protege.metaproject.api.UserId;
-import edu.stanford.protege.metaproject.api.exception.MetaprojectException;
 import edu.stanford.protege.metaproject.impl.Operations;
 
 /**
@@ -86,14 +86,14 @@ public class AccessControlFilter extends ServerFilterAdapter {
     @Override
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
             UserId owner, Optional<ProjectOptions> options) throws AuthorizationException, ServerServiceException {
-        checkPermission(token.getUser(), Operations.ADD_PROJECT);
+//        checkPermission(token.getUser(), Operations.ADD_PROJECT);
         return super.createProject(token, projectId, projectName, description, owner, options);
     }
 
     @Override
     public void deleteProject(AuthToken token, ProjectId projectId, boolean includeFile)
             throws AuthorizationException, ServerServiceException {
-        checkPermission(token.getUser(), Operations.REMOVE_PROJECT);
+//        checkPermission(token.getUser(), Operations.REMOVE_PROJECT);
         super.deleteProject(token, projectId, includeFile);
     }
 
@@ -154,7 +154,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
     @Override
     public void assignRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
             throws AuthorizationException, ServerServiceException {
-        checkPermission(token.getUser(), Operations.ASSIGN_ROLE);
+//        checkPermission(token.getUser(), Operations.ASSIGN_ROLE);
         super.assignRole(token, userId, projectId, roleId);
     }
 
@@ -200,7 +200,8 @@ public class AccessControlFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public ChangeHistory commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle) throws ServerServiceException {
+    public ChangeHistory commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
+            throws AuthorizationException, OutOfSyncException, ServerServiceException {
         if (commitBundle instanceof PerOperationCommitBundle) {
             return evaluatePerOperationCommitBundle(token, projectId, (PerOperationCommitBundle) commitBundle);
         }
@@ -210,59 +211,40 @@ public class AccessControlFilter extends ServerFilterAdapter {
     }
 
     private ChangeHistory evaluatePerOperationCommitBundle(AuthToken token, ProjectId projectId, PerOperationCommitBundle commitBundle)
-            throws ServerServiceException {
-        try {
-            Operation operation = commitBundle.getOperation();
-            if (checkPermission(token.getUser().getId(), projectId, operation)) {
-                return getDelegate().commit(token, projectId, commitBundle);
-            }
-            else {
-                throw new ServerServiceException(new OperationNotAllowedException(operation));
-            }
+            throws AuthorizationException, OutOfSyncException, ServerServiceException {
+        User user = token.getUser();
+        Operation operation = commitBundle.getOperation();
+        if (metaprojectAgent.isOperationAllowed(operation.getId(), projectId, user.getId())) {
+            return getDelegate().commit(token, projectId, commitBundle);
         }
-        catch (Exception e) {
-            throw new ServerServiceException(e);
+        else {
+            OperationNotAllowedException e = new OperationNotAllowedException(operation);
+            throw new ServerServiceException(e.getMessage(), e);
         }
     }
 
     private ChangeHistory evaluateCommitBundle(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
-            throws ServerServiceException {
-        try {
-            List<Operation> operations = evaluateCommitChanges(commitBundle);
-            List<Exception> violations = new ArrayList<>();
-            if (checkPermission(token.getUser().getId(), projectId, operations, violations)) {
-                return getDelegate().commit(token, projectId, commitBundle);
-            }
-            else {
-                throw new ServerServiceException(OperationNotAllowedException.create(violations));
-            }
+            throws AuthorizationException, OutOfSyncException, ServerServiceException {
+        User user = token.getUser();
+        List<Operation> operations = evaluateCommitChanges(commitBundle);
+        List<Exception> violations = new ArrayList<>();
+        batchCheckPermission(user.getId(), projectId, operations, violations);
+        if (violations.isEmpty()) {
+            return getDelegate().commit(token, projectId, commitBundle);
         }
-        catch (Exception e) {
-            throw serverServiceException(e);
+        else {
+            OperationNotAllowedException e = OperationNotAllowedException.create(violations);
+            throw new ServerServiceException(e.getMessage(), e);
         }
     }
 
-    private boolean checkPermission(UserId userId, ProjectId projectId, List<Operation> operations, List<Exception> violations)
-            throws ServerServiceException {
-        for (Operation op : operations) {
-            try {
-                if (!checkPermission(userId, projectId, op)) {
-                    Exception e = new OperationNotAllowedException(op);
-                    violations.add(e);
-                }
-            }
-            catch (MetaprojectException e) {
-                throw new ServerServiceException(e);
+    private void batchCheckPermission(UserId userId, ProjectId projectId, List<Operation> operations, List<Exception> violations) {
+        for (Operation operation : operations) {
+            if (!metaprojectAgent.isOperationAllowed(operation.getId(), projectId, userId)) {
+                Exception e = new OperationNotAllowedException(operation);
+                violations.add(e);
             }
         }
-        return violations.isEmpty() ? true : false;
-    }
-
-    private boolean checkPermission(UserId userId, ProjectId projectId, Operation operation) throws MetaprojectException {
-        if (!metaprojectAgent.isOperationAllowed(operation.getId(), projectId, userId)) {
-            return false;
-        }
-        return true;
     }
 
     private List<Operation> evaluateCommitChanges(CommitBundle commitBundle) throws ServerServiceException {
@@ -302,12 +284,5 @@ public class AccessControlFilter extends ServerFilterAdapter {
         }
         String template = "No suitable operation for ontology change %s";
         throw new OperationForChangeNotFoundException(String.format(template, change.toString()));
-    }
-
-    private ServerServiceException serverServiceException(Exception e) {
-        if (e instanceof ServerServiceException) {
-            return (ServerServiceException) e;
-        }
-        return new ServerServiceException(e);
     }
 }
