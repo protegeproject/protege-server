@@ -86,14 +86,14 @@ public class AccessControlFilter extends ServerFilterAdapter {
     @Override
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
             UserId owner, Optional<ProjectOptions> options) throws AuthorizationException, ServerServiceException {
-//        checkPermission(token.getUser(), Operations.ADD_PROJECT);
+        checkPermission(token.getUser(), Operations.ADD_PROJECT);
         return super.createProject(token, projectId, projectName, description, owner, options);
     }
 
     @Override
     public void deleteProject(AuthToken token, ProjectId projectId, boolean includeFile)
             throws AuthorizationException, ServerServiceException {
-//        checkPermission(token.getUser(), Operations.REMOVE_PROJECT);
+        checkPermission(token.getUser(), Operations.REMOVE_PROJECT);
         super.deleteProject(token, projectId, includeFile);
     }
 
@@ -154,7 +154,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
     @Override
     public void assignRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
             throws AuthorizationException, ServerServiceException {
-//        checkPermission(token.getUser(), Operations.ASSIGN_ROLE);
+        checkPermission(token.getUser(), Operations.ASSIGN_ROLE);
         super.assignRole(token, userId, projectId, roleId);
     }
 
