@@ -4,14 +4,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
-import org.protege.editor.owl.server.security.DefaultLoginService;
-import org.protege.editor.owl.server.security.SessionManager;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.protege.editor.owl.server.api.exception.ServerServiceException;
+import org.protege.editor.owl.server.security.DefaultLoginService;
+import org.protege.editor.owl.server.security.SessionManager;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
@@ -66,19 +66,19 @@ public class AuthenticationTest {
         assertNotNull(token);
     }
 
-    @Test(expected=Exception.class)
+    @Test(expected=ServerServiceException.class)
     public void invalidLoginTest() throws Exception {
         AuthToken token = loginService.login(invalidUserId, invalidSaltedPassword);
         assertNull(token);
     }
 
-    @Test(expected=Exception.class)
+    @Test(expected=ServerServiceException.class)
     public void invalidUsernameTest() throws Exception {
         AuthToken token = loginService.login(invalidUserId, validSaltedPassword);
         assertNull(token);
     }
 
-    @Test(expected=Exception.class)
+    @Test(expected=ServerServiceException.class)
     public void invalidPasswordTest() throws Exception {
         AuthToken token = loginService.login(validUserId, invalidSaltedPassword);
         assertNull(token);
@@ -90,7 +90,7 @@ public class AuthenticationTest {
         assertNotNull(salt);
     }
 
-    @Test(expected=UserNotRegisteredException.class)
+    @Test(expected=ServerServiceException.class)
     public void notGetEncryptionKeyTest() throws Exception {
         Salt salt = loginService.getSalt(invalidUserId);
         assertNull(salt);

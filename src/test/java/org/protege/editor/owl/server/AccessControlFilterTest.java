@@ -1,9 +1,17 @@
 package org.protege.editor.owl.server;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.exception.OperationNotAllowedException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
@@ -13,12 +21,6 @@ import org.protege.editor.owl.server.policy.CommitBundleImpl;
 import org.protege.editor.owl.server.versioning.Commit;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.RevisionMetadata;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.AddImport;
 import org.semanticweb.owlapi.model.AddOntologyAnnotation;
@@ -34,14 +36,9 @@ import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 import org.semanticweb.owlapi.model.SetOntologyID;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Metaproject;
 import edu.stanford.protege.metaproject.api.MetaprojectAgent;
-import edu.stanford.protege.metaproject.api.Operation;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
@@ -88,6 +85,9 @@ public class AccessControlFilterTest {
     @Mock private ServerConfiguration configuration;
     @Mock private MetaprojectAgent metaprojectAgent;
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Before
     public void setUp() throws Exception {
         when(tokenUserA.getUser()).thenReturn(userA);
@@ -131,7 +131,7 @@ public class AccessControlFilterTest {
     }
 
     @Test
-    public void authorizeCommitTest() throws ServerServiceException {
+    public void authorizeCommitTest() throws Exception {
         List<OWLOntologyChange> changes = new ArrayList<>();
         RevisionMetadata metadata = new RevisionMetadata("user_a", "User A", "user_a@example.com", "Comment");
         changes.add(new AddAxiom(ontology, axiom2));
@@ -141,19 +141,24 @@ public class AccessControlFilterTest {
         policyFilter.commit(tokenUserA, projectId, commitBundle);
     }
 
-    @Test(expected=ServerServiceException.class)
-    public void unauthorizeCommitTest() throws ServerServiceException {
+    @Test
+    public void unauthorizeCommitTest() throws Exception {
         List<OWLOntologyChange> changes = new ArrayList<>();
         RevisionMetadata metadata = new RevisionMetadata("user_b", "User B", "user_b@example.com", "Comment");
         changes.add(new AddAxiom(ontology, axiom2));
         changes.add(new AddAxiom(ontology, axiom3));
         changes.add(new RemoveAxiom(ontology, axiom1));
         CommitBundle commitBundle = new CommitBundleImpl(headRevision, new Commit(metadata, changes));
+        
+        thrown.expect(ServerServiceException.class);
+        thrown.expectCause(new CauseMatcher(OperationNotAllowedException.class,
+                "User has no permission for 'Remove axiom' operation"));
+        
         policyFilter.commit(tokenUserB, projectId, commitBundle);
     }
 
-    @Test(expected=ServerServiceException.class)
-    public void unauthorizeOperationsUserATest() throws ServerServiceException {
+    @Test
+    public void unauthorizeOperationsUserATest() throws Exception {
         List<OWLOntologyChange> changes = new ArrayList<>();
         RevisionMetadata metadata = new RevisionMetadata("user_a", "User A", "user_a@example.com", "Comment");
         changes.add(new AddAxiom(ontology, axiom2));
@@ -165,19 +170,15 @@ public class AccessControlFilterTest {
         changes.add(new SetOntologyID(ontology, otherOntologyId));
         CommitBundle commitBundle = new CommitBundleImpl(headRevision, new Commit(metadata, changes));
         
-        try {
-            policyFilter.commit(tokenUserA, projectId, commitBundle);
-        }
-        catch (ServerServiceException e) {
-            OperationNotAllowedException onae = (OperationNotAllowedException) e.getCause();
-            Set<Operation> unauthorizedOperations = onae.getOperations();
-            assertThat(unauthorizedOperations, containsInAnyOrder(Operations.ADD_IMPORT, Operations.REMOVE_IMPORT));
-            throw e;
-        }
+        thrown.expect(ServerServiceException.class);
+        thrown.expectCause(new CauseMatcher(OperationNotAllowedException.class,
+                "User has no permission for 'Remove ontology import', 'Add ontology import' operations"));
+        
+        policyFilter.commit(tokenUserA, projectId, commitBundle);
     }
 
-    @Test(expected=ServerServiceException.class)
-    public void unauthorizeOperationsUserBTest() throws ServerServiceException {
+    @Test
+    public void unauthorizeOperationsUserBTest() throws Exception {
         List<OWLOntologyChange> changes = new ArrayList<>();
         RevisionMetadata metadata = new RevisionMetadata("user_b", "User B", "user_b@example.com", "Comment");
         changes.add(new AddAxiom(ontology, axiom2));
@@ -189,15 +190,10 @@ public class AccessControlFilterTest {
         changes.add(new SetOntologyID(ontology, otherOntologyId));
         CommitBundle commitBundle = new CommitBundleImpl(headRevision, new Commit(metadata, changes));
         
-        try {
-            policyFilter.commit(tokenUserB, projectId, commitBundle);
-        }
-        catch (ServerServiceException e) {
-            OperationNotAllowedException onae = (OperationNotAllowedException) e.getCause();
-            Set<Operation> unauthorizedOperations = onae.getOperations();
-            assertThat(unauthorizedOperations,
-                    containsInAnyOrder(Operations.REMOVE_AXIOM, Operations.REMOVE_ONTOLOGY_ANNOTATION, Operations.MODIFY_ONTOLOGY_IRI));
-            throw e;
-        }
+        thrown.expect(ServerServiceException.class);
+        thrown.expectCause(new CauseMatcher(OperationNotAllowedException.class,
+                "User has no permission for 'Remove axiom', 'Remove ontology annotation', 'Modify the ontology IRI' operations"));
+        
+        policyFilter.commit(tokenUserB, projectId, commitBundle);
     }
 }
