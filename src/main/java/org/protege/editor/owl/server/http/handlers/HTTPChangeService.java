@@ -11,6 +11,7 @@ import org.protege.editor.owl.server.change.ChangeManagementFilter;
 import org.protege.editor.owl.server.change.DefaultChangeService;
 import org.protege.editor.owl.server.conflict.ConflictDetectionFilter;
 import org.protege.editor.owl.server.http.HTTPServer;
+import org.protege.editor.owl.server.policy.AccessControlFilter;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
@@ -22,10 +23,12 @@ public class HTTPChangeService extends BaseRoutingHandler {
 	
 	private ChangeService changeService;
 	private ConflictDetectionFilter cf;
+	private AccessControlFilter acf;
 
     public HTTPChangeService(ProtegeServer s) {
     	super();
     	cf = new ConflictDetectionFilter(new ChangeManagementFilter(s));
+    	acf = new AccessControlFilter(cf);
     	changeService = new DefaultChangeService(new ChangeDocumentPool());    	
     }
 
@@ -37,7 +40,7 @@ public class HTTPChangeService extends BaseRoutingHandler {
 			ProjectId pid = (ProjectId) ois.readObject();
 			CommitBundle bundle = (CommitBundle) ois.readObject();
 			
-			ChangeHistory hist = cf.commit(null, pid, bundle);		
+			ChangeHistory hist = acf.commit(getAuthToken(exchange), pid, bundle);		
 
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 

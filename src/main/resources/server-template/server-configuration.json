@@ -29,21 +29,7 @@
         "emailAddress": ""
       }
     ],
-    "projects": [{"id":"top-project",
-                  "name":"top-project",
-                  "description": "foo",
-                  "file":"pets.history",
-                  "owner":"guest",
-                  "options": {"complexProperties":[],
-                              "immutableAnnotations":[],
-                              "requiredEntities":{},
-                              "requiredAnnotations":{},
-                              "optionalAnnotations":{},
-                              "customProperties":{},
-                              "codePrefix":"C",
-                              "codeSuffix":"S",
-                              "delimeter":"-",
-                              "code":0}}],
+    "projects": [],
     "roles": [
       {
         "id": "mp-admin",

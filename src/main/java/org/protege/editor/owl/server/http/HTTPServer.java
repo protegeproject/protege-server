@@ -90,6 +90,10 @@ public final class HTTPServer {
 			return false;
 		}
 	}
+	
+	public AuthToken getAuthToken(String tok) {
+		return token_map.get(tok);		
+	}
 
 	public HTTPServer() {server = this;}
 

@@ -3,15 +3,19 @@ package org.protege.editor.owl.server.http.handlers;
 import java.util.Deque;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
+import org.protege.editor.owl.server.http.HTTPServer;
 import org.protege.editor.owl.server.http.exception.ServerException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import com.google.common.base.Strings;
 
+import edu.stanford.protege.metaproject.api.AuthToken;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
+import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
 import io.undertow.util.StatusCodes;
 
@@ -46,6 +50,20 @@ public abstract class BaseRoutingHandler implements HttpHandler {
 
 		return paramVal;
 	}
+	
+	protected AuthToken getAuthToken(final HttpServerExchange ex) {
+		
+		String fauth = getHeaderValue(ex, Headers.AUTHORIZATION, "none");
+		
+		String coded = fauth.substring(fauth.indexOf(" ") + 1);
+		String decAuth = new String(Base64.decodeBase64(coded));		
+		String token = decAuth.substring(decAuth.indexOf(":") + 1);
+		
+		return HTTPServer.server().getAuthToken(token);		
+		
+	}
+	
+	
 
 	protected ServerException throwBadRequest(final String theMsg) throws ServerException {
 		throw new ServerException(StatusCodes.BAD_REQUEST, theMsg);
