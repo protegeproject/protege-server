@@ -1,10 +1,7 @@
 package org.protege.editor.owl.server.policy;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import edu.stanford.protege.metaproject.api.*;
+import edu.stanford.protege.metaproject.impl.Operations;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.PerOperationCommitBundle;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
@@ -16,30 +13,12 @@ import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.Commit;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
-import org.semanticweb.owlapi.model.AddAxiom;
-import org.semanticweb.owlapi.model.AddImport;
-import org.semanticweb.owlapi.model.AddOntologyAnnotation;
-import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.RemoveAxiom;
-import org.semanticweb.owlapi.model.RemoveImport;
-import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
-import org.semanticweb.owlapi.model.SetOntologyID;
+import org.semanticweb.owlapi.model.*;
 
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.Description;
-import edu.stanford.protege.metaproject.api.MetaprojectAgent;
-import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.Operation;
-import edu.stanford.protege.metaproject.api.OperationId;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.Role;
-import edu.stanford.protege.metaproject.api.RoleId;
-import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
-import edu.stanford.protege.metaproject.impl.Operations;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Represents the access control gate that will check each user request to their given permission.
@@ -167,35 +146,35 @@ public class AccessControlFilter extends ServerFilterAdapter {
 
     @Override
     public void setHostAddress(AuthToken token, URI hostAddress) throws AuthorizationException, ServerServiceException {
-        checkPermission(token.getUser(), Operations.MODIFY_SERVER_CONFIG);
+        checkPermission(token.getUser(), Operations.MODIFY_SERVER_SETTINGS);
         super.setHostAddress(token, hostAddress);
     }
 
     @Override
     public void setSecondaryPort(AuthToken token, int portNumber)
             throws AuthorizationException, ServerServiceException {
-        checkPermission(token.getUser(), Operations.MODIFY_SERVER_CONFIG);
+        checkPermission(token.getUser(), Operations.MODIFY_SERVER_SETTINGS);
         super.setSecondaryPort(token, portNumber);
     }
 
     @Override
     public void setRootDirectory(AuthToken token, String rootDirectory)
             throws AuthorizationException, ServerServiceException {
-        checkPermission(token.getUser(), Operations.MODIFY_SERVER_CONFIG);
+        checkPermission(token.getUser(), Operations.MODIFY_SERVER_SETTINGS);
         super.setRootDirectory(token, rootDirectory);
     }
 
     @Override
     public void setServerProperty(AuthToken token, String property, String value)
             throws AuthorizationException, ServerServiceException {
-        checkPermission(token.getUser(), Operations.MODIFY_SERVER_CONFIG);
+        checkPermission(token.getUser(), Operations.MODIFY_SERVER_SETTINGS);
         super.setServerProperty(token, property, value);
     }
 
     @Override
     public void unsetServerProperty(AuthToken token, String property)
             throws AuthorizationException, ServerServiceException {
-        checkPermission(token.getUser(), Operations.MODIFY_SERVER_CONFIG);
+        checkPermission(token.getUser(), Operations.MODIFY_SERVER_SETTINGS);
         super.unsetServerProperty(token, property);
     }
 
