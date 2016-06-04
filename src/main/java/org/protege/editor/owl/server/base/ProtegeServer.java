@@ -259,7 +259,9 @@ public class ProtegeServer extends ServerLayer {
     // sketch of code generation
     public String genCode(ProjectId projectId) 
     		throws AuthorizationException, ServerServiceException {
-    	synchronized (projectRegistry) {
+    	/**
+    	   synchronized (projectRegistry) {
+    	 
     		try {
     			Project proj = projectRegistry.get(projectId);
     			ProjectOptions opts = proj.getOptions().get();
@@ -278,7 +280,9 @@ public class ProtegeServer extends ServerLayer {
     			e.printStackTrace();
     			return "NOCODE";
     		}
-    	}
+    		**/
+    	return "NOCODE";
+    	
     	
     }
 

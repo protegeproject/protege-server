@@ -95,4 +95,5 @@ public class AuthenticationTest {
         Salt salt = loginService.getSalt(invalidUserId);
         assertNull(salt);
     }
+    
 }

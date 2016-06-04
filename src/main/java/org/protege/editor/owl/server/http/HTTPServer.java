@@ -167,13 +167,10 @@ public final class HTTPServer {
 		router.add("POST", CREATE_PROJECT,  mp);
 		router.add("GET", PROJECT,  mp);
 		router.add("GET", PROJECTS, mp);
-		      
-
-
+		
 		final ExceptionHandler aExceptionHandler = Handlers.exceptionHandler(router);
 
 		final GracefulShutdownHandler aShutdownHandler = Handlers.gracefulShutdown(aExceptionHandler);
-
 
 		router.add("GET", ROOT_PATH + "/admin/shutdown", new HttpHandler() {
 			@Override

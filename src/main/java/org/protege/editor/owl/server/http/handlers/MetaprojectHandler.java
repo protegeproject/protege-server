@@ -122,6 +122,8 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			
 		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.METAPROJECT) &&
 				exchange.getRequestMethod().equals(Methods.POST)) {
+			// TODO: After posting the new metaproject, we need to decide what to do with
+			//       the config that's loaded in RAM
 			Serializer<Gson> serl = new DefaultJsonSerializer();
 			
 			ServerConfiguration cfg = serl.parse(new InputStreamReader(exchange.getInputStream()), ServerConfiguration.class);

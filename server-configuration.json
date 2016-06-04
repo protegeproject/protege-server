@@ -13,7 +13,7 @@
       },
       "guest": {
         "top-project": [
-          "mp-guest"
+          "mp-admin"
         ]
       }
     },
