@@ -1,14 +1,8 @@
 package org.protege.editor.owl.server.base;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import edu.stanford.protege.metaproject.Manager;
+import edu.stanford.protege.metaproject.api.*;
+import edu.stanford.protege.metaproject.api.exception.*;
 import org.apache.commons.io.FileUtils;
 import org.protege.editor.owl.server.ServerActivator;
 import org.protege.editor.owl.server.api.CommitBundle;
@@ -25,37 +19,10 @@ import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
-import edu.stanford.protege.metaproject.Manager;
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
-import edu.stanford.protege.metaproject.api.Description;
-import edu.stanford.protege.metaproject.api.Host;
-import edu.stanford.protege.metaproject.api.MetaprojectAgent;
-import edu.stanford.protege.metaproject.api.MetaprojectFactory;
-import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.Operation;
-import edu.stanford.protege.metaproject.api.OperationId;
-import edu.stanford.protege.metaproject.api.OperationRegistry;
-import edu.stanford.protege.metaproject.api.Policy;
-import edu.stanford.protege.metaproject.api.Port;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.ProjectRegistry;
-import edu.stanford.protege.metaproject.api.Role;
-import edu.stanford.protege.metaproject.api.RoleId;
-import edu.stanford.protege.metaproject.api.RoleRegistry;
-import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
-import edu.stanford.protege.metaproject.api.ServerConfiguration;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
-import edu.stanford.protege.metaproject.api.UserRegistry;
-import edu.stanford.protege.metaproject.api.exception.IdAlreadyInUseException;
-import edu.stanford.protege.metaproject.api.exception.ProjectNotInPolicyException;
-import edu.stanford.protege.metaproject.api.exception.ServerConfigurationNotLoadedException;
-import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
-import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
-import edu.stanford.protege.metaproject.impl.MetaprojectUtils;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.*;
 
 /**
  * The main server that acts as the end-point server where user requests to the
@@ -163,7 +130,6 @@ public class ProtegeServer extends ServerLayer {
                 Project newProject = metaprojectFactory.getProject(projectId, projectName, description, historyFile, owner, options);
                 try {
                     metaprojectAgent.add(newProject);
-                    policy.add(owner, projectId, MetaprojectUtils.getProjectManagerRole().getId());
                     saveChanges();
                 }
                 catch (IdAlreadyInUseException e) {

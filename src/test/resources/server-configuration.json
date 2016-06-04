@@ -42,14 +42,12 @@
           "add-axiom",
           "remove-import",
           "add-ontology-annotation",
-          "restart-server",
           "remove-user",
           "add-role",
           "reject-change",
           "modify-project",
           "remove-operation",
           "stop-server",
-          "modify-config",
           "remove-ontology-annotation",
           "modify-user",
           "modify-ontology-iri",
@@ -58,6 +56,7 @@
           "add-import",
           "modify-operation",
           "retract-role",
+          "modify-settings",
           "add-project",
           "assign-role",
           "add-operation",
@@ -193,9 +192,9 @@
       },
       {
         "default": true,
-        "id": "modify-config",
-        "name": "Modify server configuration",
-        "description": "Make changes to the configuration of the server",
+        "id": "modify-settings",
+        "name": "Modify server settings",
+        "description": "Make changes to the settings of the server, such as host or custom properties",
         "type": "WRITE",
         "scope": "SERVER"
       },
@@ -289,14 +288,6 @@
       },
       {
         "default": true,
-        "id": "restart-server",
-        "name": "Restart the server",
-        "description": "Restart the execution of the server",
-        "type": "EXECUTE",
-        "scope": "SERVER"
-      },
-      {
-        "default": true,
         "id": "retract-role",
         "name": "Retract role",
         "description": "Retract a role from a user",
@@ -316,13 +307,13 @@
   "authentication": [
     {
       "userId": "guest",
-      "password": "2deacc8a5703cc7174da2461004bdeb256053fc27dca0a69",
-      "salt": "c0c8211e29c30c4dee0882463809987658864abe66889880"
+      "password": "4e39216f3fe3bba1716b0b6a88f71d49fa4454835e09d3a9",
+      "salt": "75f8597a1b9df86d45e48de4b253b0d2fb26d71e7f45ea34"
     },
     {
       "userId": "root",
-      "password": "cb53f94491d7959379224ed922cdb7a33bfb192cc73860df",
-      "salt": "0c6eb41d48a7ee328a07dec21ea6707542876ab267b03a16"
+      "password": "73507c4a26f38e2ac9365860f65687bbee91c4e58363f020",
+      "salt": "ff693dff6d089ec722af600fa9abd9e4d6cf2aed985b18a1"
     }
   ],
   "properties": {}
