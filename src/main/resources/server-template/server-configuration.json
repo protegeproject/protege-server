@@ -29,7 +29,9 @@
         "emailAddress": ""
       }
     ],
-    "projects": [],
+    "projects": [
+      
+    ],
     "roles": [
       {
         "id": "mp-admin",
@@ -305,6 +307,7 @@
     ]
   },
   "authentication": [
+    
     {
       "userId": "guest",
       "password": "4e39216f3fe3bba1716b0b6a88f71d49fa4454835e09d3a9",
@@ -316,5 +319,10 @@
       "salt": "ff693dff6d089ec722af600fa9abd9e4d6cf2aed985b18a1"
     }
   ],
-  "properties": {}
+  "properties": {
+    "codegen_prefix": "C",
+    "codegen_suffix": "S",
+    "codegen_file": "gencode",
+    "codegen_delimeter": "-"
+  }
 }
