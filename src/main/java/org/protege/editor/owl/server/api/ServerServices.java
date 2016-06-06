@@ -1,5 +1,20 @@
 package org.protege.editor.owl.server.api;
 
+import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Description;
+import edu.stanford.protege.metaproject.api.Host;
+import edu.stanford.protege.metaproject.api.Name;
+import edu.stanford.protege.metaproject.api.Operation;
+import edu.stanford.protege.metaproject.api.OperationId;
+import edu.stanford.protege.metaproject.api.Password;
+import edu.stanford.protege.metaproject.api.Project;
+import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.ProjectOptions;
+import edu.stanford.protege.metaproject.api.Role;
+import edu.stanford.protege.metaproject.api.RoleId;
+import edu.stanford.protege.metaproject.api.User;
+import edu.stanford.protege.metaproject.api.UserId;
+
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
@@ -10,21 +25,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.Description;
-import edu.stanford.protege.metaproject.api.Host;
-import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.Operation;
-import edu.stanford.protege.metaproject.api.OperationId;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.Role;
-import edu.stanford.protege.metaproject.api.RoleId;
-import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
 
 /**
  * Represents all operations that the server can serve to the clients. All
@@ -65,7 +65,7 @@ public interface ServerServices {
      * @throws ServerServiceException
      *             If the server failed to fulfill the user request.
      */
-    void createUser(AuthToken token, User newUser, Optional<SaltedPasswordDigest> password)
+    void createUser(AuthToken token, User newUser, Optional<? extends Password> password)
             throws AuthorizationException, ServerServiceException;
 
     /**
@@ -90,15 +90,17 @@ public interface ServerServices {
      *            An authentication token to verify the request source.
      * @param userId
      *            The target user to modify identified by the ID
-     * @param newUser
+     * @param updatedUser
      *            The new updated user to replace with
+     * @param updatedPassword
+     *            An optional new updated password
      * @throws AuthorizationException
      *             If the user doesn't have the permission to request this
      *             service.
      * @throws ServerServiceException
      *             If the server failed to fulfill the user request.
      */
-    void updateUser(AuthToken token, UserId userId, User updatedUser)
+    void updateUser(AuthToken token, UserId userId, User updatedUser, Optional<? extends Password> updatedPassword)
             throws AuthorizationException, ServerServiceException;
 
     /**

@@ -1,7 +1,21 @@
 package org.protege.editor.owl.server.policy;
 
-import edu.stanford.protege.metaproject.api.*;
+import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Description;
+import edu.stanford.protege.metaproject.api.MetaprojectAgent;
+import edu.stanford.protege.metaproject.api.Name;
+import edu.stanford.protege.metaproject.api.Operation;
+import edu.stanford.protege.metaproject.api.OperationId;
+import edu.stanford.protege.metaproject.api.Password;
+import edu.stanford.protege.metaproject.api.Project;
+import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.ProjectOptions;
+import edu.stanford.protege.metaproject.api.Role;
+import edu.stanford.protege.metaproject.api.RoleId;
+import edu.stanford.protege.metaproject.api.User;
+import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.impl.Operations;
+
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.PerOperationCommitBundle;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
@@ -13,7 +27,14 @@ import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.Commit;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
-import org.semanticweb.owlapi.model.*;
+import org.semanticweb.owlapi.model.AddAxiom;
+import org.semanticweb.owlapi.model.AddImport;
+import org.semanticweb.owlapi.model.AddOntologyAnnotation;
+import org.semanticweb.owlapi.model.OWLOntologyChange;
+import org.semanticweb.owlapi.model.RemoveAxiom;
+import org.semanticweb.owlapi.model.RemoveImport;
+import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
+import org.semanticweb.owlapi.model.SetOntologyID;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -43,7 +64,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public void createUser(AuthToken token, User newUser, Optional<SaltedPasswordDigest> password)
+    public void createUser(AuthToken token, User newUser, Optional<? extends Password> password)
             throws AuthorizationException, ServerServiceException {
         checkPermission(token.getUser(), Operations.ADD_USER);
         super.createUser(token, newUser, password);
@@ -56,10 +77,10 @@ public class AccessControlFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public void updateUser(AuthToken token, UserId userId, User user)
+    public void updateUser(AuthToken token, UserId userId, User user, Optional<? extends Password> password)
             throws AuthorizationException, ServerServiceException {
         checkPermission(token.getUser(), Operations.MODIFY_USER);
-        super.updateUser(token, userId, user);
+        super.updateUser(token, userId, user, password);
     }
 
     @Override

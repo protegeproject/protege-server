@@ -1,5 +1,20 @@
 package org.protege.editor.owl.server.transport.rmi;
 
+import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Description;
+import edu.stanford.protege.metaproject.api.Host;
+import edu.stanford.protege.metaproject.api.Name;
+import edu.stanford.protege.metaproject.api.Operation;
+import edu.stanford.protege.metaproject.api.OperationId;
+import edu.stanford.protege.metaproject.api.Password;
+import edu.stanford.protege.metaproject.api.Project;
+import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.ProjectOptions;
+import edu.stanford.protege.metaproject.api.Role;
+import edu.stanford.protege.metaproject.api.RoleId;
+import edu.stanford.protege.metaproject.api.User;
+import edu.stanford.protege.metaproject.api.UserId;
+
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.Server;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
@@ -13,21 +28,6 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.Description;
-import edu.stanford.protege.metaproject.api.Host;
-import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.Operation;
-import edu.stanford.protege.metaproject.api.OperationId;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.Role;
-import edu.stanford.protege.metaproject.api.RoleId;
-import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
 
 /**
  * @author Josef Hardi <johardi@stanford.edu> <br>
@@ -44,7 +44,7 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
-    public void createUser(AuthToken token, User newUser, SaltedPasswordDigest password)
+    public void createUser(AuthToken token, User newUser, Password password)
             throws AuthorizationException, ServerServiceException, RemoteException {
         server.createUser(token, newUser, Optional.ofNullable(password));
     }
@@ -56,9 +56,9 @@ public class RmiServer implements RemoteServer {
     }
 
     @Override
-    public void updateUser(AuthToken token, UserId userId, User user)
+    public void updateUser(AuthToken token, UserId userId, User user, Password updatedPassword)
             throws AuthorizationException, ServerServiceException, RemoteException {
-        server.updateUser(token, userId, user);
+        server.updateUser(token, userId, user, Optional.ofNullable(updatedPassword));
     }
 
     @Override

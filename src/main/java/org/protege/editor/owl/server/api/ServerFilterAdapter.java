@@ -1,5 +1,20 @@
 package org.protege.editor.owl.server.api;
 
+import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Description;
+import edu.stanford.protege.metaproject.api.Host;
+import edu.stanford.protege.metaproject.api.Name;
+import edu.stanford.protege.metaproject.api.Operation;
+import edu.stanford.protege.metaproject.api.OperationId;
+import edu.stanford.protege.metaproject.api.Password;
+import edu.stanford.protege.metaproject.api.Project;
+import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.ProjectOptions;
+import edu.stanford.protege.metaproject.api.Role;
+import edu.stanford.protege.metaproject.api.RoleId;
+import edu.stanford.protege.metaproject.api.User;
+import edu.stanford.protege.metaproject.api.UserId;
+
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
@@ -12,21 +27,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.Description;
-import edu.stanford.protege.metaproject.api.Host;
-import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.Operation;
-import edu.stanford.protege.metaproject.api.OperationId;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.Role;
-import edu.stanford.protege.metaproject.api.RoleId;
-import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
 
 /**
  * @author Josef Hardi <johardi@stanford.edu> <br>
@@ -45,7 +45,7 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void createUser(AuthToken token, User newUser, Optional<SaltedPasswordDigest> password)
+    public void createUser(AuthToken token, User newUser, Optional<? extends Password> password)
             throws AuthorizationException, ServerServiceException {
         getDelegate().createUser(token, newUser, password);
     }
@@ -56,9 +56,9 @@ public class ServerFilterAdapter extends AbstractServerFilter {
     }
 
     @Override
-    public void updateUser(AuthToken token, UserId userId, User user)
+    public void updateUser(AuthToken token, UserId userId, User user, Optional<? extends Password> password)
             throws AuthorizationException, ServerServiceException {
-        getDelegate().updateUser(token, userId, user);
+        getDelegate().updateUser(token, userId, user, password);
     }
 
     @Override

@@ -1,5 +1,22 @@
 package org.protege.editor.owl.server.security;
 
+import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
+import edu.stanford.protege.metaproject.api.Description;
+import edu.stanford.protege.metaproject.api.Host;
+import edu.stanford.protege.metaproject.api.Name;
+import edu.stanford.protege.metaproject.api.Operation;
+import edu.stanford.protege.metaproject.api.OperationId;
+import edu.stanford.protege.metaproject.api.Password;
+import edu.stanford.protege.metaproject.api.Project;
+import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.ProjectOptions;
+import edu.stanford.protege.metaproject.api.Role;
+import edu.stanford.protege.metaproject.api.RoleId;
+import edu.stanford.protege.metaproject.api.User;
+import edu.stanford.protege.metaproject.api.UserId;
+import edu.stanford.protege.metaproject.api.UserRegistry;
+
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.LoginService;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
@@ -16,23 +33,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
-import edu.stanford.protege.metaproject.api.Description;
-import edu.stanford.protege.metaproject.api.Host;
-import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.Operation;
-import edu.stanford.protege.metaproject.api.OperationId;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.Role;
-import edu.stanford.protege.metaproject.api.RoleId;
-import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
-import edu.stanford.protege.metaproject.api.UserRegistry;
 
 /**
  * Represents the authentication gate that will validate the user session in the server.
@@ -66,7 +66,7 @@ public class AuthenticationFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public void createUser(AuthToken token, User newUser, Optional<SaltedPasswordDigest> password)
+    public void createUser(AuthToken token, User newUser, Optional<? extends Password> password)
             throws AuthorizationException, ServerServiceException {
         verifyRequest(token);
         super.createUser(token, newUser, password);
@@ -79,10 +79,10 @@ public class AuthenticationFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public void updateUser(AuthToken token, UserId userId, User user)
+    public void updateUser(AuthToken token, UserId userId, User user, Optional<? extends Password> password)
             throws AuthorizationException, ServerServiceException {
         verifyRequest(token);
-        super.updateUser(token, userId, user);
+        super.updateUser(token, userId, user, password);
     }
 
     @Override

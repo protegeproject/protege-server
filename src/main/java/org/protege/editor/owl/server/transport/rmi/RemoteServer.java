@@ -1,10 +1,19 @@
 package org.protege.editor.owl.server.transport.rmi;
 
-import java.net.URI;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.util.List;
-import java.util.Map;
+import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Description;
+import edu.stanford.protege.metaproject.api.Host;
+import edu.stanford.protege.metaproject.api.Name;
+import edu.stanford.protege.metaproject.api.Operation;
+import edu.stanford.protege.metaproject.api.OperationId;
+import edu.stanford.protege.metaproject.api.Password;
+import edu.stanford.protege.metaproject.api.Project;
+import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.ProjectOptions;
+import edu.stanford.protege.metaproject.api.Role;
+import edu.stanford.protege.metaproject.api.RoleId;
+import edu.stanford.protege.metaproject.api.User;
+import edu.stanford.protege.metaproject.api.UserId;
 
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
@@ -13,20 +22,11 @@ import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.Description;
-import edu.stanford.protege.metaproject.api.Host;
-import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.Operation;
-import edu.stanford.protege.metaproject.api.OperationId;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.Role;
-import edu.stanford.protege.metaproject.api.RoleId;
-import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
+import java.net.URI;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Josef Hardi <johardi@stanford.edu> <br>
@@ -72,7 +72,7 @@ public interface RemoteServer extends Remote {
      *             communication problems, failure during parameter or return
      *             value marshalling or unmarshalling, protocol errors.
      */
-    void createUser(AuthToken token, User newUser, SaltedPasswordDigest password)
+    void createUser(AuthToken token, User newUser, Password password)
             throws AuthorizationException, ServerServiceException, RemoteException;
 
     /**
@@ -104,6 +104,9 @@ public interface RemoteServer extends Remote {
      *            The target user to modify identified by the ID
      * @param newUser
      *            The new updated user to replace with
+     * @param updatedPassword
+     *            The new updated password. Use <code>null</code>
+     *            if the password is not updated.
      * @throws AuthorizationException
      *             If the user doesn't have the permission to request this
      *             service.
@@ -114,7 +117,7 @@ public interface RemoteServer extends Remote {
      *             communication problems, failure during parameter or return
      *             value marshalling or unmarshalling, protocol errors.
      */
-    void updateUser(AuthToken token, UserId userId, User updatedUser)
+    void updateUser(AuthToken token, UserId userId, User updatedUser, Password updatedPassword)
             throws AuthorizationException, ServerServiceException, RemoteException;
 
     /**
