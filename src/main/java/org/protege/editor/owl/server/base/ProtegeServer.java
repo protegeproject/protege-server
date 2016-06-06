@@ -343,7 +343,9 @@ public class ProtegeServer extends ServerLayer {
                 throw new ServerServiceException(e.getMessage(), e);
             }
         }
+
     }
+
 
     @Override
     public void deleteRole(AuthToken token, RoleId roleId) throws AuthorizationException, ServerServiceException {
