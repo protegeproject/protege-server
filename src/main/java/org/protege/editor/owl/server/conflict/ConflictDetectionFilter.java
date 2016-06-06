@@ -1,5 +1,10 @@
 package org.protege.editor.owl.server.conflict;
 
+import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Project;
+import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
+
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
 import org.protege.editor.owl.server.api.ServerLayer;
@@ -10,13 +15,10 @@ import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
 
 /**
  * Represents the conflict detection layer that will check if user changes .
@@ -25,6 +27,8 @@ import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectId
  * Stanford Center for Biomedical Informatics Research
  */
 public class ConflictDetectionFilter extends ServerFilterAdapter {
+
+    private Logger logger = LoggerFactory.getLogger(ConflictDetectionFilter.class);
 
     public ConflictDetectionFilter(ServerLayer delegate) {
         super(delegate);
@@ -44,10 +48,13 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
             return super.commit(token, projectId, commitBundle);
         }
         catch (UnknownMetaprojectObjectIdException e) {
-            throw new ServerServiceException("Unknown project ID: " + projectId.get(), e);
+            logger.error(printLog(token.getUser(), "Commit changes", e.getMessage()));
+            throw new ServerServiceException(e.getMessage(), e);
         }
         catch (InvalidHistoryFileException | IOException e) {
-            throw new ServerServiceException(e.getMessage());
+            String message = "Unable to access history file in remote server";
+            logger.error(printLog(token.getUser(), "Commit changes", message), e);
+            throw new ServerServiceException(message, e);
         }
     }
 

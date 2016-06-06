@@ -1,5 +1,14 @@
 package org.protege.editor.owl.server.change;
 
+import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.Description;
+import edu.stanford.protege.metaproject.api.Name;
+import edu.stanford.protege.metaproject.api.Project;
+import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.ProjectOptions;
+import edu.stanford.protege.metaproject.api.UserId;
+import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
+
 import org.protege.editor.owl.server.api.ChangeService;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
@@ -14,19 +23,14 @@ import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.Description;
-import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.UserId;
-import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
-
 public class ChangeManagementFilter extends ServerFilterAdapter {
+
+    private Logger logger = LoggerFactory.getLogger(ChangeManagementFilter.class);
 
     private ChangeService changeService;
 
@@ -54,9 +58,11 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
             return changeHistory;
         }
         catch (UnknownMetaprojectObjectIdException e) {
+            logger.error(printLog(token.getUser(), "Commit changes", e.getMessage()));
             throw new ServerServiceException(e.getMessage(), e);
         }
         catch (InvalidHistoryFileException e) {
+            logger.error(printLog(token.getUser(), "Commit changes", e.getMessage()), e);
             throw new ServerServiceException(e.getMessage(), e);
         }
     }
@@ -67,7 +73,8 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
             transport.bind(changeService);
         }
         catch (Exception e) {
-            throw new OWLServerException(e);
+            logger.error(printLog(null, "Bind transport", e.getMessage()), e);
+            throw new OWLServerException(e.getMessage(), e);
         }
         super.setTransport(transport);
     }

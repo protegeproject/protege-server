@@ -32,7 +32,6 @@ import edu.stanford.protege.metaproject.api.exception.ServerConfigurationNotLoad
 import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
 import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
 import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
-import edu.stanford.protege.metaproject.impl.MetaprojectUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.protege.editor.owl.server.ServerActivator;
@@ -49,6 +48,8 @@ import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,6 +68,8 @@ import java.util.Optional;
  *         Stanford Center for Biomedical Informatics Research
  */
 public class ProtegeServer extends ServerLayer {
+
+    private Logger logger = LoggerFactory.getLogger(ProtegeServer.class);
 
     private final ServerConfiguration configuration;
 
@@ -112,6 +115,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (IdAlreadyInUseException e) {
+                logger.error(printLog(token.getUser(), "Add user", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
         }
@@ -124,6 +128,7 @@ public class ProtegeServer extends ServerLayer {
                     }
                 }
                 catch (IdAlreadyInUseException e) {
+                    logger.error(printLog(token.getUser(), "Add password", e.getMessage()));
                     throw new ServerServiceException(e.getMessage(), e);
                 }
                 saveChanges();
@@ -139,6 +144,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
+                logger.error(printLog(token.getUser(), "Remove user", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
         }
@@ -159,9 +165,11 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
+                logger.error(printLog(token.getUser(), "Modify user", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
             catch (UserNotRegisteredException e) {
+                logger.error(printLog(token.getUser(), "Modify user", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
         }
@@ -180,13 +188,16 @@ public class ProtegeServer extends ServerLayer {
                     saveChanges();
                 }
                 catch (IdAlreadyInUseException e) {
+                    logger.error(printLog(token.getUser(), "Add project", e.getMessage()));
                     throw new ServerServiceException(e.getMessage(), e);
                 }
             }
             serverDocument = createServerDocument(historyFile);
         }
         catch (IOException e) {
-            throw new ServerServiceException("Failed to create history file in remote server", e);
+            String message = "Failed to create history file in remote server";
+            logger.error(printLog(token.getUser(), "Add project", message));
+            throw new ServerServiceException(message, e);
         }
         return serverDocument;
     }
@@ -224,12 +235,15 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
+                logger.error(printLog(token.getUser(), "Remove project", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
             catch (InvalidHistoryFileException e) {
+                logger.error(printLog(token.getUser(), "Remove project", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
             catch (IOException e) {
+                logger.error(printLog(token.getUser(), "Remove project", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
         }
@@ -244,6 +258,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
+                logger.error(printLog(token.getUser(), "Modify project", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
         }
@@ -266,10 +281,13 @@ public class ProtegeServer extends ServerLayer {
             }
         }
         catch (UnknownMetaprojectObjectIdException e) {
+            logger.error(printLog(token.getUser(), "Open project", e.getMessage()));
             throw new ServerServiceException(e);
         }
         catch (InvalidHistoryFileException e) {
-            throw new ServerServiceException("Unable to access history file in remote server", e);
+            String message = "Unable to access history file in remote server";
+            logger.error(printLog(token.getUser(), "Open project", message), e);
+            throw new ServerServiceException(message, e);
         }
     }
 
@@ -281,6 +299,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (IdAlreadyInUseException e) {
+                logger.error(printLog(token.getUser(), "Add role", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
         }
@@ -294,6 +313,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
+                logger.error(printLog(token.getUser(), "Remove role", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
         }
@@ -308,6 +328,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
+                logger.error(printLog(token.getUser(), "Modify role", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
         }
@@ -322,6 +343,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (IdAlreadyInUseException e) {
+                logger.error(printLog(token.getUser(), "Add operation", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
         }
@@ -336,6 +358,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
+                logger.error(printLog(token.getUser(), "Remove operation", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
         }
@@ -350,6 +373,7 @@ public class ProtegeServer extends ServerLayer {
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
+                logger.error(printLog(token.getUser(), "Modify operation", e.getMessage()));
                 throw new ServerServiceException(e.getMessage(), e);
             }
         }
@@ -469,6 +493,7 @@ public class ProtegeServer extends ServerLayer {
             return new ArrayList<>(metaprojectAgent.getProjects(userId));
         }
         catch (UserNotInPolicyException e) {
+            logger.error(printLog(token.getUser(), "List projects", e.getMessage()));
             throw new ServerServiceException(e.getMessage(), e.getCause());
         }
     }
@@ -494,7 +519,12 @@ public class ProtegeServer extends ServerLayer {
         try {
             return new ArrayList<>(metaprojectAgent.getRoles(userId, projectId));
         }
-        catch (UserNotInPolicyException | ProjectNotInPolicyException e) {
+        catch (UserNotInPolicyException e) {
+            logger.error(printLog(token.getUser(), "List roles", e.getMessage()));
+            throw new ServerServiceException(e.getMessage(), e);
+        }
+        catch (ProjectNotInPolicyException e) {
+            logger.error(printLog(token.getUser(), "List roles", e.getMessage()));
             throw new ServerServiceException(e.getMessage(), e);
         }
     }
@@ -520,7 +550,12 @@ public class ProtegeServer extends ServerLayer {
         try {
             return new ArrayList<>(metaprojectAgent.getOperations(userId, projectId));
         }
-        catch (UserNotInPolicyException | ProjectNotInPolicyException e) {
+        catch (UserNotInPolicyException e) {
+            logger.error(printLog(token.getUser(), "List operations", e.getMessage()));
+            throw new ServerServiceException(e.getMessage(), e);
+        }
+        catch (ProjectNotInPolicyException e) {
+            logger.error(printLog(token.getUser(), "List operations", e.getMessage()));
             throw new ServerServiceException(e.getMessage(), e);
         }
     }
@@ -532,6 +567,7 @@ public class ProtegeServer extends ServerLayer {
             return new ArrayList<>(metaprojectAgent.getOperations(roleRegistry.get(roleId)));
         }
         catch (UnknownMetaprojectObjectIdException e) {
+            logger.error(printLog(token.getUser(), "List operations", e.getMessage()));
             throw new ServerServiceException(e.getMessage(), e);
         }
     }
@@ -552,8 +588,14 @@ public class ProtegeServer extends ServerLayer {
             try {
                 Manager.getConfigurationManager().saveServerConfiguration(configurationFile);
             }
-            catch (ServerConfigurationNotLoadedException | IOException e) {
+            catch (ServerConfigurationNotLoadedException e) {
+                logger.error(printLog(null, "Save configuration", e.getMessage()), e);
                 throw new ServerServiceException(e.getMessage(), e);
+            }
+            catch (IOException e) {
+                String message = "Unable to save server configuration";
+                logger.error(printLog(null, "Save configuration", message), e);
+                throw new ServerServiceException(message, e);
             }
         }
     }

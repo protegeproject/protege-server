@@ -28,6 +28,8 @@ import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.List;
@@ -41,6 +43,8 @@ import java.util.Optional;
  * Stanford Center for Biomedical Informatics Research
  */
 public class AuthenticationFilter extends ServerFilterAdapter {
+
+    private Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
 
     private final AuthenticationRegistry authRegistry;
 
@@ -61,7 +65,9 @@ public class AuthenticationFilter extends ServerFilterAdapter {
 
     protected void verifyRequest(AuthToken token) throws AuthorizationException {
         if (!sessionManager.check(token)) {
-            throw new AuthorizationException("Access denied");
+            String message = "Access denied";
+            logger.error(printLog(token.getUser(), "User authentication", message));
+            throw new AuthorizationException(message);
         }
     }
 
@@ -299,7 +305,8 @@ public class AuthenticationFilter extends ServerFilterAdapter {
             transport.bind(loginService);
         }
         catch (Exception e) {
-            throw new OWLServerException(e);
+            logger.error(printLog(null, "Bind transport", e.getMessage()), e);
+            throw new OWLServerException(e.getMessage(), e);
         }
         super.setTransport(transport);
     }

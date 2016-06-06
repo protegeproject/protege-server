@@ -35,6 +35,8 @@ import org.semanticweb.owlapi.model.RemoveAxiom;
 import org.semanticweb.owlapi.model.RemoveImport;
 import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
 import org.semanticweb.owlapi.model.SetOntologyID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -49,6 +51,8 @@ import java.util.Optional;
  */
 public class AccessControlFilter extends ServerFilterAdapter {
 
+    private Logger logger = LoggerFactory.getLogger(AccessControlFilter.class);
+
     private final MetaprojectAgent metaprojectAgent;
 
     public AccessControlFilter(ServerLayer delegate) {
@@ -59,6 +63,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
     protected void checkPermission(User user, Operation operation) throws ServerServiceException {
         if (!metaprojectAgent.isOperationAllowed(operation.getId(), user.getId())) {
             OperationNotAllowedException e = new OperationNotAllowedException(operation);
+            logger.error(printLog(user, operation.getName().get(), "Request rejected. Operation is not allowed"));
             throw new ServerServiceException(e.getMessage(), e);
         }
     }
@@ -219,6 +224,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
         }
         else {
             OperationNotAllowedException e = new OperationNotAllowedException(operation);
+            logger.error(printLog(user, operation.getName().get(), "Request rejected. Operation is not allowed"));
             throw new ServerServiceException(e.getMessage(), e);
         }
     }
@@ -234,6 +240,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
         }
         else {
             OperationNotAllowedException e = OperationNotAllowedException.create(violations);
+            logger.error(printLog(user, printList(operations), "Request rejected. Operations are not allowed"));
             throw new ServerServiceException(e.getMessage(), e);
         }
     }
@@ -282,7 +289,21 @@ public class AccessControlFilter extends ServerFilterAdapter {
         else if (change instanceof SetOntologyID) {
             return Operations.MODIFY_ONTOLOGY_IRI;
         }
-        String template = "No suitable operation for ontology change %s";
-        throw new OperationForChangeNotFoundException(String.format(template, change.toString()));
+        String message = String.format("No suitable operation for ontology change %s", change.toString());
+        logger.error(printLog(null, "Commit changes", message));
+        throw new OperationForChangeNotFoundException(message);
+    }
+
+    private static String printList(List<Operation> operations) {
+        StringBuilder sb = new StringBuilder();
+        boolean needComma = false;
+        for (Operation op : operations) {
+            if (needComma) {
+                sb.append(", ");
+            }
+            sb.append(op.getName());
+            needComma = true;
+        }
+        return sb.toString();
     }
 }
