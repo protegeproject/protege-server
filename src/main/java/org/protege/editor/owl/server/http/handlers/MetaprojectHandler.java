@@ -32,9 +32,11 @@ import edu.stanford.protege.metaproject.api.Serializer;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.UserRegistry;
+import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
 import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Methods;
+import io.undertow.util.StatusCodes;
 
 public class MetaprojectHandler extends BaseRoutingHandler {
 	
@@ -76,13 +78,22 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			MetaprojectFactory f = Manager.getFactory();
 
 			UserId userId = f.getUserId(uid);
+			
+			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 
-			List<Project> projects = new ArrayList<>(metaprojectAgent.getProjects(userId));
-			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());        
-			os.writeObject(projects);
+			try {
+				List<Project> projects = new ArrayList<>(metaprojectAgent.getProjects(userId));
+				        
+				os.writeObject(projects);
+				
+			} catch (UserNotInPolicyException ex) {
+				exchange.setStatusCode(StatusCodes.UNAUTHORIZED);
+				
+			}
 			exchange.endExchange();
 			
-		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.CREATE_PROJECT) &&
+			
+		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT) &&
 				exchange.getRequestMethod().equals(Methods.POST)) {
 			
 			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
@@ -100,7 +111,8 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	        os.writeObject(doc);
 			exchange.endExchange();
 			
-		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT)) {
+		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT)
+				&& exchange.getRequestMethod().equals(Methods.GET)) {
 			String pid = super.getQueryParameter(exchange, "projectid");
 
 			MetaprojectFactory f = Manager.getFactory();
@@ -110,6 +122,18 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 	        
 	        os.writeObject(sdoc);
+			exchange.endExchange();
+			
+			
+		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT)
+				&& exchange.getRequestMethod().equals(Methods.DELETE)) {
+			String pid = super.getQueryParameter(exchange, "projectid");
+
+			MetaprojectFactory f = Manager.getFactory();
+
+			ProjectId projId  = f.getProjectId(pid);
+			cf.deleteProject(this.getAuthToken(exchange), projId, true);
+			
 			exchange.endExchange();
 			
 		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.METAPROJECT) &&

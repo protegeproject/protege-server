@@ -32,6 +32,7 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.server.handlers.ExceptionHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
+import io.undertow.util.StatusCodes;
 
 public final class HTTPServer {
 
@@ -46,8 +47,7 @@ public final class HTTPServer {
 	
 	public static final String LOGIN = ROOT_PATH + "/login";
 	
-	public static final String CREATE_PROJECT = ROOT_PATH + "/meta/project";
-	public static final String PROJECT = ROOT_PATH + "/meta/open_project";
+	public static final String PROJECT = ROOT_PATH + "/meta/project";
 	public static final String PROJECTS = ROOT_PATH + "/meta/projects";
 	public static final String METAPROJECT = ROOT_PATH + "/meta/metaproject";
 	
@@ -103,32 +103,38 @@ public final class HTTPServer {
 		HTTPServer s = new HTTPServer();	
 		try {
 			s.start();
-		} catch (OWLOntologyCreationException | ServerException e) {
+		} catch (ServerException e) {
 			e.printStackTrace();
 		}
 
 	}
-
-	public void start() throws ServerException, OWLOntologyCreationException {
-
-
-		String config_fname = System.getProperty(SERVER_CONFIGURATION_PROPERTY);
-
+	
+	private void initConfig() throws ServerException {
 		try {
+			String config_fname = System.getProperty(SERVER_CONFIGURATION_PROPERTY);
+			
 			config = Manager.getConfigurationManager().loadServerConfiguration(new File(config_fname));
 
 			pserver = new ProtegeServer(config);           
 
 			uri = config.getHost().getUri();
-			router = Handlers.routing();
+			
 
 		}
-		catch (FileNotFoundException e) {
-			throw new OWLOntologyCreationException(e);
+		catch (FileNotFoundException | ObjectConversionException  e) {
+			e.printStackTrace();
+			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR);
 		}
-		catch (ObjectConversionException e) {
-			throw new OWLOntologyCreationException(e);
-		}
+		
+	}
+
+	public void start() throws ServerException {
+
+
+		initConfig();
+
+		
+		router = Handlers.routing();
 
 		// create login handler
 		AuthenticationRegistry authRegistry = config.getAuthenticationRegistry();
@@ -164,8 +170,9 @@ public final class HTTPServer {
 						new MetaprojectHandler(pserver)));
 		router.add("GET", METAPROJECT, mp);
 		router.add("POST", METAPROJECT, mp);
-		router.add("POST", CREATE_PROJECT,  mp);
 		router.add("GET", PROJECT,  mp);
+		router.add("POST", PROJECT,  mp);
+		router.add("DELETE", PROJECT,  mp);
 		router.add("GET", PROJECTS, mp);
 		
 		final ExceptionHandler aExceptionHandler = Handlers.exceptionHandler(router);
@@ -199,6 +206,7 @@ public final class HTTPServer {
 
 		isRunning = true;
 		web_server.start();
+		System.out.println("System has started...");
 
 	}
 
@@ -212,5 +220,16 @@ public final class HTTPServer {
 			web_server = null;
 			isRunning = false;
 		}
-	}		
+	}
+	
+	public void restart() {
+		server.stop();
+		HTTPServer s = new HTTPServer();
+		try {
+			s.start();
+		} catch (ServerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
