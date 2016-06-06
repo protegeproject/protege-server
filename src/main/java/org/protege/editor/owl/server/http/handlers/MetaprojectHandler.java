@@ -44,12 +44,6 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	private ProtegeServer server;
 	private ChangeManagementFilter cf;
 
-    private AuthenticationRegistry authenticationRegistry;
-    private UserRegistry userRegistry;
-    private ProjectRegistry projectRegistry;
-    private RoleRegistry roleRegistry;
-    private OperationRegistry operationRegistry;
-    private Policy policy;
     private MetaprojectAgent metaprojectAgent;
     
     private File cfgFile;
@@ -57,12 +51,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
     public MetaprojectHandler(ProtegeServer pserver) {
     	server = pserver;
     	cf = new ChangeManagementFilter(server);
-    	configuration = server.getConfiguration();
-        authenticationRegistry = configuration.getAuthenticationRegistry();
-        userRegistry = configuration.getMetaproject().getUserRegistry();
-        projectRegistry = configuration.getMetaproject().getProjectRegistry();
-        roleRegistry = configuration.getMetaproject().getRoleRegistry();
-        policy = configuration.getMetaproject().getPolicy();
+    	configuration = server.getConfiguration();        
         metaprojectAgent = configuration.getMetaproject().getMetaprojectAgent();
         
         String configLocation = System.getProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY);
@@ -154,6 +143,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			
 			Manager.getConfigurationManager().setServerConfiguration(cfg);
 			Manager.getConfigurationManager().saveServerConfiguration(cfgFile);
+			exchange.getResponseSender().close();
 			
 			exchange.endExchange();
 			
