@@ -33,6 +33,8 @@ public class ChangeDocumentPoolEntry {
 
     private Logger logger = LoggerFactory.getLogger(ChangeDocumentPoolEntry.class);
 
+    private static int counter = 0;
+
     private HistoryFile historyFile;
 
     private Future<ChangeHistory> readTask;
@@ -44,7 +46,7 @@ public class ChangeDocumentPoolEntry {
     private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
         @Override
         public Thread newThread(Runnable r) {
-            Thread thread = new Thread(r, "Change History I/O Thread <" + historyFile.getName() + ">");
+            Thread thread = new Thread(r, "Change History I/O Thread " + counter++);
             return thread;
         }
     });
@@ -151,7 +153,7 @@ public class ChangeDocumentPoolEntry {
         @Override
         public Boolean call() {
             if (!incomingChanges.isEmpty()) {
-                logger.info("Writing change history\n" + incomingChanges.toString());
+                logger.info("Writing change history into " + historyFile + "\n" + incomingChanges.toString());
                 try {
                     long startTime = System.currentTimeMillis();
                     ChangeHistoryUtils.appendChanges(incomingChanges, historyFile);
