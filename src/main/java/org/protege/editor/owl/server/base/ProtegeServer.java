@@ -111,6 +111,7 @@ public class ProtegeServer extends ServerLayer {
             throws AuthorizationException, ServerServiceException {
         synchronized (userRegistry) {
             try {
+                logger.info(printLog(token.getUser(), "Add user", newUser.toString()));
                 metaprojectAgent.add(newUser);
                 saveChanges();
             }
@@ -140,7 +141,9 @@ public class ProtegeServer extends ServerLayer {
     public void deleteUser(AuthToken token, UserId userId) throws AuthorizationException, ServerServiceException {
         synchronized (userRegistry) {
             try {
-                metaprojectAgent.remove(userRegistry.get(userId));
+                User user = userRegistry.get(userId);
+                logger.info(printLog(token.getUser(), "Remove user", user.toString()));
+                metaprojectAgent.remove(user);
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
@@ -155,6 +158,7 @@ public class ProtegeServer extends ServerLayer {
             throws AuthorizationException, ServerServiceException {
         synchronized (userRegistry) {
             try {
+                logger.info(printLog(token.getUser(), "Modify user", updatedUser.toString()));
                 userRegistry.update(userId, updatedUser);
                 if (updatedPassword.isPresent()) {
                     Password password = updatedPassword.get();
@@ -183,6 +187,7 @@ public class ProtegeServer extends ServerLayer {
             HistoryFile historyFile = createHistoryFile(projectId.get(), projectName.get());
             synchronized (projectRegistry) {
                 Project newProject = metaprojectFactory.getProject(projectId, projectName, description, historyFile, owner, options);
+                logger.info(printLog(token.getUser(), "Add project", newProject.toString()));
                 try {
                     metaprojectAgent.add(newProject);
                     saveChanges();
@@ -226,6 +231,7 @@ public class ProtegeServer extends ServerLayer {
         synchronized (projectRegistry) {
             try {
                 Project project = projectRegistry.get(projectId);
+                logger.info(printLog(token.getUser(), "Remove project", project.toString()));
                 metaprojectAgent.remove(project);
                 if (includeFile) {
                     HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getAbsolutePath());
@@ -254,6 +260,7 @@ public class ProtegeServer extends ServerLayer {
             throws AuthorizationException, ServerServiceException {
         synchronized (projectRegistry) {
             try {
+                logger.info(printLog(token.getUser(), "Modify project", updatedProject.toString()));
                 projectRegistry.update(projectId, updatedProject);
                 saveChanges();
             }
@@ -269,6 +276,7 @@ public class ProtegeServer extends ServerLayer {
             throws AuthorizationException, ServerServiceException {
         try {
             Project project = projectRegistry.get(projectId);
+            logger.info(printLog(token.getUser(), "Open project", project.toString()));
             final URI serverAddress = configuration.getHost().getUri();
             final Optional<Port> registryPort = configuration.getHost().getSecondaryPort();
             final String path = project.getFile().getAbsolutePath();
@@ -295,6 +303,7 @@ public class ProtegeServer extends ServerLayer {
     public void createRole(AuthToken token, Role newRole) throws AuthorizationException, ServerServiceException {
         synchronized (roleRegistry) {
             try {
+                logger.info(printLog(token.getUser(), "Add role", newRole.toString()));
                 metaprojectAgent.add(newRole);
                 saveChanges();
             }
@@ -309,7 +318,9 @@ public class ProtegeServer extends ServerLayer {
     public void deleteRole(AuthToken token, RoleId roleId) throws AuthorizationException, ServerServiceException {
         synchronized (roleRegistry) {
             try {
-                metaprojectAgent.remove(roleRegistry.get(roleId));
+                Role role = roleRegistry.get(roleId);
+                logger.info(printLog(token.getUser(), "Remove role", role.toString()));
+                metaprojectAgent.remove(role);
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
@@ -324,6 +335,7 @@ public class ProtegeServer extends ServerLayer {
             throws AuthorizationException, ServerServiceException {
         synchronized (roleRegistry) {
             try {
+                logger.info(printLog(token.getUser(), "Modify role", updatedRole.toString()));
                 roleRegistry.update(roleId, updatedRole);
                 saveChanges();
             }
@@ -339,6 +351,7 @@ public class ProtegeServer extends ServerLayer {
             throws AuthorizationException, ServerServiceException {
         synchronized (operationRegistry) {
             try {
+                logger.info(printLog(token.getUser(), "Add operation", newOperation.toString()));
                 metaprojectAgent.add(newOperation);
                 saveChanges();
             }
@@ -354,7 +367,9 @@ public class ProtegeServer extends ServerLayer {
             throws AuthorizationException, ServerServiceException {
         synchronized (operationRegistry) {
             try {
-                metaprojectAgent.remove(operationRegistry.get(operationId));
+                Operation operation = operationRegistry.get(operationId);
+                logger.info(printLog(token.getUser(), "Remove operation", operation.toString()));
+                metaprojectAgent.remove(operation);
                 saveChanges();
             }
             catch (UnknownMetaprojectObjectIdException e) {
@@ -369,6 +384,7 @@ public class ProtegeServer extends ServerLayer {
             throws AuthorizationException, ServerServiceException {
         synchronized (operationRegistry) {
             try {
+                logger.info(printLog(token.getUser(), "Modify operation", updatedOperation.toString()));
                 operationRegistry.update(operationId, updatedOperation);
                 saveChanges();
             }
@@ -472,6 +488,9 @@ public class ProtegeServer extends ServerLayer {
         ChangeHistory changeHistory = ChangeHistoryImpl.createEmptyChangeHistory(baseRevision);
         for (Commit commit : commitBundle.getCommits()) {
             changeHistory.addRevision(commit.getMetadata(), commit.getChanges());
+            String message = String.format("Receive revision %s: %s",
+                    changeHistory.getHeadRevision(), commit.getMetadata().getComment());
+            logger.error(printLog(token.getUser(), "Commit changes", message));
         }
         return changeHistory;
     }

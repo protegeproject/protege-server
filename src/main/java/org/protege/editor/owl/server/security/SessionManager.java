@@ -1,15 +1,20 @@
 package org.protege.editor.owl.server.security;
 
+import edu.stanford.protege.metaproject.api.AuthToken;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import edu.stanford.protege.metaproject.api.AuthToken;
 
 /**
  * @author Josef Hardi <johardi@stanford.edu> <br>
  * Stanford Center for Biomedical Informatics Research
  */
-public class SessionManager { // TODO Put it in the Metaproject API
+public class SessionManager {
+
+    private Logger logger = LoggerFactory.getLogger(SessionManager.class);
 
     public List<AuthToken> tokenList = new ArrayList<>();
 
@@ -23,10 +28,16 @@ public class SessionManager { // TODO Put it in the Metaproject API
     }
 
     public void add(AuthToken token) {
+        String userId = token.getUser().getId().get();
+        String userName = token.getUser().getName().get();
+        logger.info(String.format("Register %s (%s) to gain server access", userId, userName));
         tokenList.add(token);
     }
 
     public void remove(AuthToken token) {
+        String userId = token.getUser().getId().get();
+        String userName = token.getUser().getName().get();
+        logger.info(String.format("Unregister %s (%s) from the server", userId, userName));
         tokenList.remove(token);
     }
 
@@ -40,6 +51,7 @@ public class SessionManager { // TODO Put it in the Metaproject API
     }
 
     public void removeAll() {
+        logger.info(String.format("Unregister all users from the server"));
         tokenList.clear();
     }
 
