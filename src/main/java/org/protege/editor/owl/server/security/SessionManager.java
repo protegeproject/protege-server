@@ -30,14 +30,14 @@ public class SessionManager {
     public void add(AuthToken token) {
         String userId = token.getUser().getId().get();
         String userName = token.getUser().getName().get();
-        logger.info(String.format("Register %s (%s) to gain server access", userId, userName));
+        logger.info(String.format("REGISTER USER/%s", userId));
         tokenList.add(token);
     }
 
     public void remove(AuthToken token) {
         String userId = token.getUser().getId().get();
         String userName = token.getUser().getName().get();
-        logger.info(String.format("Unregister %s (%s) from the server", userId, userName));
+        logger.info(String.format("UNREGISTER USER/%s", userId));
         tokenList.remove(token);
     }
 
@@ -51,7 +51,7 @@ public class SessionManager {
     }
 
     public void removeAll() {
-        logger.info(String.format("Unregister all users from the server"));
+        logger.info(String.format("UNREGISTER USER/**"));
         tokenList.clear();
     }
 
