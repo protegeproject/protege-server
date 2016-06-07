@@ -488,8 +488,7 @@ public class ProtegeServer extends ServerLayer {
         ChangeHistory changeHistory = ChangeHistoryImpl.createEmptyChangeHistory(baseRevision);
         for (Commit commit : commitBundle.getCommits()) {
             changeHistory.addRevision(commit.getMetadata(), commit.getChanges());
-            String message = String.format("Receive revision %s: %s",
-                    changeHistory.getHeadRevision(), commit.getMetadata().getComment());
+            String message = String.format("Commit %s: %s", changeHistory.getHeadRevision(), commit.getMetadata().getComment());
             logger.info(printLog(token.getUser(), "Commit changes", message));
         }
         return changeHistory;
