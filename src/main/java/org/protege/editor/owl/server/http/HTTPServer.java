@@ -56,11 +56,13 @@ public final class HTTPServer {
 	public static final String COMMIT = ROOT_PATH + "/commit";
 
 	private ServerConfiguration config;
-
 	private ProtegeServer pserver;
 
 	private SessionManager session_manager = new SessionManager();
 	private Map<String, AuthToken> token_map = new HashMap<String, AuthToken>();
+	
+	private AuthenticationHandler change_handler, codegen_handler, meta_handler;
+	private BlockingHandler login_handler;
 
 	private Undertow web_server;
 	private boolean isRunning = false;
@@ -141,44 +143,48 @@ public final class HTTPServer {
 		UserRegistry userRegistry = config.getMetaproject().getUserRegistry();
 		DefaultLoginService loginService = new DefaultLoginService(authRegistry, userRegistry, session_manager);
 
-		BlockingHandler ls = new BlockingHandler(new HTTPLoginService(loginService));
+		login_handler = new BlockingHandler(new HTTPLoginService(loginService));
 
-		router.add("POST", LOGIN, ls);
+		router.add("POST", LOGIN, login_handler);
 
 		// create change service handler
-		AuthenticationHandler cs = new AuthenticationHandler(
+		change_handler = new AuthenticationHandler(
 				new BlockingHandler(
 						new HTTPChangeService(
 								pserver)));
 
-		router.add("POST", COMMIT,  cs);
-		router.add("GET", ROOT_PATH + "/changes",  cs);
-		router.add("POST", LATEST_CHANGES,  cs);
-		router.add("POST", ALL_CHANGES,  cs);
+		router.add("POST", COMMIT,  change_handler);
+		router.add("GET", ROOT_PATH + "/changes",  change_handler);
+		router.add("POST", LATEST_CHANGES,  change_handler);
+		router.add("POST", ALL_CHANGES,  change_handler);
+		
+		
 
 		// create code generator handler
-		AuthenticationHandler cg = new AuthenticationHandler(
+		codegen_handler = new AuthenticationHandler(
 				new BlockingHandler(
 						new CodeGenHandler(pserver)));
 
-		router.add("GET", ROOT_PATH + "/gen_code", cg);
-		router.add("GET", ROOT_PATH + "/gen_codes", cg);
+		router.add("GET", ROOT_PATH + "/gen_code", codegen_handler);
+		router.add("GET", ROOT_PATH + "/gen_codes", codegen_handler);
 
 		// create mataproject handler        
-		AuthenticationHandler mp = new AuthenticationHandler(
+		meta_handler = new AuthenticationHandler(
 				new BlockingHandler(
 						new MetaprojectHandler(pserver)));
-		router.add("GET", METAPROJECT, mp);
-		router.add("POST", METAPROJECT, mp);
-		router.add("GET", PROJECT,  mp);
-		router.add("POST", PROJECT,  mp);
-		router.add("DELETE", PROJECT,  mp);
-		router.add("GET", PROJECTS, mp);
+		router.add("GET", METAPROJECT, meta_handler);
+		router.add("POST", METAPROJECT, meta_handler);
+		router.add("GET", PROJECT,  meta_handler);
+		router.add("POST", PROJECT,  meta_handler);
+		router.add("DELETE", PROJECT,  meta_handler);
+		router.add("GET", PROJECTS, meta_handler);
+		
+		
 		
 		final ExceptionHandler aExceptionHandler = Handlers.exceptionHandler(router);
 
-		final GracefulShutdownHandler aShutdownHandler = Handlers.gracefulShutdown(aExceptionHandler);
-
+		//final GracefulShutdownHandler aShutdownHandler = Handlers.gracefulShutdown(aExceptionHandler);
+		/**
 		router.add("GET", ROOT_PATH + "/admin/shutdown", new HttpHandler() {
 			@Override
 			public void handleRequest(final HttpServerExchange exchange) throws Exception {
@@ -194,13 +200,14 @@ public final class HTTPServer {
 				exchange.endExchange();
 			}
 		});
+		**/
 
 
 
 		web_server = Undertow.builder()
 				.addHttpListener(uri.getPort(), uri.getHost())
 				.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
-				.setHandler(aShutdownHandler)
+				.setHandler(aExceptionHandler)
 				.build();
 
 
@@ -223,7 +230,7 @@ public final class HTTPServer {
 	}
 	
 	public void restart() {
-		server.stop();
+		stop();
 		HTTPServer s = new HTTPServer();
 		try {
 			s.start();

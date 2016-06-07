@@ -93,7 +93,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			ProjectOptions opts = (ProjectOptions) ois.readObject();
 			Optional<ProjectOptions> oopts = Optional.ofNullable(opts);		
 			
-			ServerDocument doc = cf.createProject(null, pid, pname, desc, uid, oopts);			
+			ServerDocument doc = cf.createProject(getAuthToken(exchange), pid, pname, desc, uid, oopts);			
 			
 	        ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 	        
@@ -107,7 +107,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			MetaprojectFactory f = Manager.getFactory();
 
 			ProjectId projId  = f.getProjectId(pid);
-			ServerDocument sdoc = server.openProject(null, projId);
+			ServerDocument sdoc = server.openProject(getAuthToken(exchange), projId);
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 	        
 	        os.writeObject(sdoc);
@@ -121,7 +121,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			MetaprojectFactory f = Manager.getFactory();
 
 			ProjectId projId  = f.getProjectId(pid);
-			cf.deleteProject(this.getAuthToken(exchange), projId, true);
+			cf.deleteProject(getAuthToken(exchange), projId, true);
 			
 			exchange.endExchange();
 			
@@ -146,6 +146,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			exchange.getResponseSender().close();
 			
 			exchange.endExchange();
+			//HTTPServer.server().restart();
 			
 		}
 		

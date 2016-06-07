@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.protege.editor.owl.server.base.ProtegeServer;
+import org.protege.editor.owl.server.http.HTTPServer;
 
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import io.undertow.server.HttpServerExchange;
@@ -50,7 +51,8 @@ public class CodeGenHandler extends BaseRoutingHandler {
 		} catch (IOException e) {
 			
 		}		
-		exchange.endExchange();		
+		exchange.endExchange();
+		HTTPServer.server().restart();
 	}
 	
 
