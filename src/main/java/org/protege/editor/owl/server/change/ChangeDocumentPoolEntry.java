@@ -122,7 +122,7 @@ public class ChangeDocumentPoolEntry {
                 long startTime = System.currentTimeMillis();
                 ChangeHistory result = ChangeHistoryUtils.readChanges(historyFile);
                 long interval = System.currentTimeMillis() - startTime;
-                logger.info("... success in " + (interval/1000) + " seconds");
+                logger.debug("... success in " + (interval/1000) + " seconds");
                 return result;
             }
             catch (RuntimeException e) {
@@ -158,7 +158,7 @@ public class ChangeDocumentPoolEntry {
                     long startTime = System.currentTimeMillis();
                     ChangeHistoryUtils.appendChanges(incomingChanges, historyFile);
                     long interval = System.currentTimeMillis() - startTime;
-                    logger.info("... success in " + (interval / 1000) + " seconds.");
+                    logger.debug("... success in " + (interval / 1000) + " seconds.");
                     createBackup(historyFile);
                     updateCache();
                 }
