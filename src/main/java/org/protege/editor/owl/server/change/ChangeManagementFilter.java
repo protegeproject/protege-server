@@ -28,6 +28,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
+/**
+ * Represents the change history manager that stores new changes from users.
+ *
+ * @author Josef Hardi <johardi@stanford.edu> <br>
+ * Stanford Center for Biomedical Informatics Research
+ */
 public class ChangeManagementFilter extends ServerFilterAdapter {
 
     private Logger logger = LoggerFactory.getLogger(ChangeManagementFilter.class);
