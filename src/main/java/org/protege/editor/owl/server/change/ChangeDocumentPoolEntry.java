@@ -3,14 +3,17 @@ package org.protege.editor.owl.server.change;
 import org.protege.editor.owl.server.versioning.ChangeHistoryUtils;
 import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
+import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
-
+import org.protege.editor.owl.server.versioning.api.RevisionMetadata;
+import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -33,6 +36,8 @@ public class ChangeDocumentPoolEntry {
     private HistoryFile historyFile;
 
     private Future<ChangeHistory> readTask;
+
+    private ChangeHistory cacheHistory;
 
     private long lastTouch;
 
@@ -60,8 +65,11 @@ public class ChangeDocumentPoolEntry {
 
     public ChangeHistory readChangeHistory() throws IOException {
         try {
-            doRead();
-            return readTask.get();
+            if (cacheHistory == null) {
+                doRead();
+                cacheHistory = readTask.get();
+            }
+            return cacheHistory;
         }
         catch (InterruptedException ie) {
             throw new RuntimeException(ie);
@@ -85,13 +93,14 @@ public class ChangeDocumentPoolEntry {
     }
 
     public void dispose() {
+        cacheHistory = null;
         executor.shutdown();
         sync();
     }
 
     public void sync() {
         try {
-            executor.awaitTermination(60, TimeUnit.MINUTES);
+            executor.awaitTermination(10, TimeUnit.MINUTES);
         }
         catch (InterruptedException ie) {
             throw new RuntimeException(ie);
@@ -133,22 +142,23 @@ public class ChangeDocumentPoolEntry {
 
     private class AppendChanges implements Callable<Boolean> {
 
-        private ChangeHistory changeHistory;
+        private ChangeHistory incomingChanges;
 
         public AppendChanges(ChangeHistory changeHistory) {
-            this.changeHistory = changeHistory;
+            this.incomingChanges = changeHistory;
         }
 
         @Override
         public Boolean call() {
-            if (!changeHistory.isEmpty()) {
-                logger.info("Writing change history\n" + changeHistory.toString());
+            if (!incomingChanges.isEmpty()) {
+                logger.info("Writing change history\n" + incomingChanges.toString());
                 try {
                     long startTime = System.currentTimeMillis();
-                    ChangeHistoryUtils.appendChanges(changeHistory, historyFile);
+                    ChangeHistoryUtils.appendChanges(incomingChanges, historyFile);
                     long interval = System.currentTimeMillis() - startTime;
                     logger.info("... success in " + (interval / 1000) + " seconds.");
                     createBackup(historyFile);
+                    updateCache();
                 }
                 catch (Throwable t) {
                     logger.error("Exception caught while writing history file", t);
@@ -164,6 +174,18 @@ public class ChangeDocumentPoolEntry {
             }
             HistoryFile backup = getBackupHistoryFile(historyFile);
             FileUtils.copyFile(historyFile, backup);
+        }
+
+        private void updateCache() {
+            if (cacheHistory != null) {
+                final DocumentRevision base = incomingChanges.getBaseRevision();
+                final DocumentRevision end = incomingChanges.getHeadRevision();
+                for (DocumentRevision current = base.next(); current.behindOrSameAs(end); current = current.next()) {
+                    RevisionMetadata metadata = incomingChanges.getMetadataForRevision(current);
+                    List<OWLOntologyChange> changes = incomingChanges.getChangesForRevision(current);
+                    cacheHistory.addRevision(metadata, changes);
+                }
+            }
         }
     }
 

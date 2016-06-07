@@ -23,7 +23,7 @@ public class ChangeDocumentPool {
 
     private static final Logger logger = LoggerFactory.getLogger(ChangeDocumentPool.class);
 
-    public static final int DEFAULT_POOL_TIMEOUT = 60 * 1000;
+    public static final int DEFAULT_POOL_TIMEOUT = 900 * 1000; // 15 minutes
 
     private ScheduledExecutorService executorService;
 
@@ -46,7 +46,7 @@ public class ChangeDocumentPool {
         executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
             @Override
             public Thread newThread(Runnable r) {
-                Thread th = new Thread(r, "Change Document Cleanup Detail");
+                Thread th = new Thread(r, "Cache History Cleanup Thread");
                 th.setDaemon(false);
                 return th;
             }
@@ -63,18 +63,18 @@ public class ChangeDocumentPool {
                             if (poolEntry.getLastTouch() + timeout < now) {
                                 poolEntry.dispose();
                                 pool.remove(f);
-                                logger.info("Disposed in-memory change history for " + f.getName());
+                                logger.info("Dispose in-memory cache history for " + f.getName());
                             }
                         }
                     }
                     consecutiveCleanupFailures = 0;
                 }
                 catch (Error t) {
-                    logger.error("Exception caught cleaning open ontology pool.", t);
+                    logger.error("Exception caught cleaning change history pool.", t);
                     consecutiveCleanupFailures++;
                 }
                 catch (RuntimeException re) {
-                    logger.error("Exception caught cleaning open ontology pool.", re);
+                    logger.error("Exception caught cleaning change history pool.", re);
                     consecutiveCleanupFailures++;
                 }
                 finally {
@@ -94,7 +94,7 @@ public class ChangeDocumentPool {
             if (entry == null) {
                 entry = new ChangeDocumentPoolEntry(historyFile);
                 pool.put(historyFile, entry);
-                logger.info("Checked out in-memory change history for " + historyFile.getName());
+                logger.info("Create in-memory cache history for " + historyFile.getName());
             }
         }
         return entry.readChangeHistory();
