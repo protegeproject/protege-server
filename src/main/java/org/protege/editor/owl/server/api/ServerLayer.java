@@ -34,11 +34,11 @@ public abstract class ServerLayer implements Server {
 
     protected static String printLog(User requester, String operation, String message) {
         if (requester != null) {
-            String template = "Receive [%s] request from %s (%s) - %s";
-            return String.format(template, operation, requester.getName().get(), requester.getId().get(), message);
+            String template = "REQUEST [%s] USER/%s - %s";
+            return String.format(template, operation, requester.getId().get(), message);
         }
         else {
-            String template = "Receive [%s] request - %s";
+            String template = "REQUEST [%s] - %s";
             return String.format(template, operation, message);
         }
     }

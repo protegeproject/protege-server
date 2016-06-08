@@ -117,7 +117,7 @@ public class ChangeDocumentPoolEntry {
 
         @Override
         public ChangeHistory call() throws Exception {
-            logger.info("Reading change history");
+            logger.info("READ " + historyFile);
             try {
                 long startTime = System.currentTimeMillis();
                 ChangeHistory result = ChangeHistoryUtils.readChanges(historyFile);
@@ -153,7 +153,8 @@ public class ChangeDocumentPoolEntry {
         @Override
         public Boolean call() {
             if (!incomingChanges.isEmpty()) {
-                logger.info("Writing change history into " + historyFile + "\n" + incomingChanges.toString());
+                logger.info("APPEND " + historyFile);
+                logger.debug("\n" + incomingChanges.toString());
                 try {
                     long startTime = System.currentTimeMillis();
                     ChangeHistoryUtils.appendChanges(incomingChanges, historyFile);

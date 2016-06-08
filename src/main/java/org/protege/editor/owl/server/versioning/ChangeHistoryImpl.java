@@ -231,15 +231,11 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     @Override
     public String toString() {
-        final int SHOW_LIMIT = 5;
+        final int SHOW_LIMIT = 10;
         StringBuffer sb = new StringBuffer();
-        sb.append("(BASE: ");
-        sb.append(baseRevision);
-        sb.append(", HEAD: ");
-        sb.append(getHeadRevision());
-        sb.append(")");
-        sb.append("\n");
         if (isEmpty()) {
+            sb.append(baseRevision);
+            sb.append(" : ");
             sb.append("(empty)");
         }
         else {
