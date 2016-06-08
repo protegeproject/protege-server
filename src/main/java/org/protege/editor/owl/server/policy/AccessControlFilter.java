@@ -40,8 +40,10 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Represents the access control gate that will check each user request to their given permission.
@@ -232,7 +234,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
     private ChangeHistory evaluateCommitBundle(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, OutOfSyncException, ServerServiceException {
         User user = token.getUser();
-        List<Operation> operations = evaluateCommitChanges(commitBundle);
+        Set<Operation> operations = evaluateCommitChanges(commitBundle);
         List<Exception> violations = new ArrayList<>();
         batchCheckPermission(user.getId(), projectId, operations, violations);
         if (violations.isEmpty()) {
@@ -240,12 +242,12 @@ public class AccessControlFilter extends ServerFilterAdapter {
         }
         else {
             OperationNotAllowedException e = OperationNotAllowedException.create(violations);
-            logger.error(printLog(user, printList(operations), "Request rejected. Operations are not allowed"));
+            logger.error(printLog(user, printSet(operations), "Request rejected. Operation is not allowed"));
             throw new ServerServiceException(e.getMessage(), e);
         }
     }
 
-    private void batchCheckPermission(UserId userId, ProjectId projectId, List<Operation> operations, List<Exception> violations) {
+    private void batchCheckPermission(UserId userId, ProjectId projectId, Set<Operation> operations, List<Exception> violations) {
         for (Operation operation : operations) {
             if (!metaprojectAgent.isOperationAllowed(operation.getId(), projectId, userId)) {
                 Exception e = new OperationNotAllowedException(operation);
@@ -254,12 +256,12 @@ public class AccessControlFilter extends ServerFilterAdapter {
         }
     }
 
-    private List<Operation> evaluateCommitChanges(CommitBundle commitBundle) throws ServerServiceException {
+    private Set<Operation> evaluateCommitChanges(CommitBundle commitBundle) throws ServerServiceException {
         final List<OWLOntologyChange> changes = new ArrayList<OWLOntologyChange>();
         for (Commit commit : commitBundle.getCommits()) {
             changes.addAll(commit.getChanges());
         }
-        final List<Operation> operations = new ArrayList<>();
+        final Set<Operation> operations = new HashSet<>();
         for (OWLOntologyChange change : changes) {
             Operation op = getOperationForChange(change);
             operations.add(op);
@@ -294,14 +296,14 @@ public class AccessControlFilter extends ServerFilterAdapter {
         throw new OperationForChangeNotFoundException(message);
     }
 
-    private static String printList(List<Operation> operations) {
+    private static String printSet(Set<Operation> operations) {
         StringBuilder sb = new StringBuilder();
         boolean needComma = false;
         for (Operation op : operations) {
             if (needComma) {
                 sb.append(", ");
             }
-            sb.append(op.getName());
+            sb.append(op.getName().get());
             needComma = true;
         }
         return sb.toString();
