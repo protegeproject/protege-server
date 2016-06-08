@@ -25,7 +25,8 @@
             <includes>
                 <include>edu.stanford.protege:metaproject:jar</include>
                 <include>io.undertow:undertow-core:jar</include>
-                <include>org.jbos.xnio:xnio-api:jar</include>
+                <include>com.squareup.retrofit2:retrofit:jar</include>
+                <include>org.jboss.xnio:xnio-api:jar</include>
                 <include>net.sourceforge.owlapi:owlapi-osgidistribution:jar</include>
                 <include>net.sourceforge.owlapi:binaryowl:jar</include>
                 <include>commons-cli:commons-cli:jar</include>
