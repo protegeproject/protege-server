@@ -183,9 +183,9 @@ public final class HTTPServer {
 		
 		final ExceptionHandler aExceptionHandler = Handlers.exceptionHandler(router);
 
-		//final GracefulShutdownHandler aShutdownHandler = Handlers.gracefulShutdown(aExceptionHandler);
-		/**
-		router.add("GET", ROOT_PATH + "/admin/shutdown", new HttpHandler() {
+		final GracefulShutdownHandler aShutdownHandler = Handlers.gracefulShutdown(aExceptionHandler);
+		
+		router.add("GET", ROOT_PATH + "/admin/restart", new HttpHandler() {
 			@Override
 			public void handleRequest(final HttpServerExchange exchange) throws Exception {
 				aShutdownHandler.shutdown();
@@ -193,21 +193,21 @@ public final class HTTPServer {
 					@Override
 					public void shutdown(final boolean isDown) {
 						if (isDown) {
-							stop();
+							restart();
 						}
 					}
 				});
 				exchange.endExchange();
 			}
 		});
-		**/
+		
 
 
 
 		web_server = Undertow.builder()
 				.addHttpListener(uri.getPort(), uri.getHost())
 				.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
-				.setHandler(aExceptionHandler)
+				.setHandler(aShutdownHandler)
 				.build();
 
 
@@ -231,9 +231,8 @@ public final class HTTPServer {
 	
 	public void restart() {
 		stop();
-		HTTPServer s = new HTTPServer();
 		try {
-			s.start();
+			start();
 		} catch (ServerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

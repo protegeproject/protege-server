@@ -146,7 +146,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			exchange.getResponseSender().close();
 			
 			exchange.endExchange();
-			//HTTPServer.server().restart();
+			HTTPServer.server().restart();
 			
 		}
 		
