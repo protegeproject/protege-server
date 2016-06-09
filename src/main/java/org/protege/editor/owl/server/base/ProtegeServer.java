@@ -601,6 +601,12 @@ public class ProtegeServer extends ServerLayer {
         return metaprojectAgent.isOperationAllowed(operationId, projectId, userId);
     }
 
+    @Override
+    public boolean isOperationAllowed(AuthToken token, OperationId operationId, UserId userId)
+            throws AuthorizationException, ServerServiceException {
+        return metaprojectAgent.isOperationAllowed(operationId, userId);
+    }
+
     private void saveChanges() throws ServerServiceException {
         synchronized (configurationFile) {
             try {

@@ -767,7 +767,7 @@ public interface RemoteServer extends Remote {
 
     /**
      * Checking if an operation is allowed for the given user id and the project
-     * id.
+     * id. The operation is usually a project-related action.
      *
      * @param token
      *            An authentication token to verify the request source.
@@ -791,5 +791,26 @@ public interface RemoteServer extends Remote {
      *             value marshalling or unmarshalling, protocol errors.
      */
     boolean isOperationAllowed(AuthToken token, OperationId operationId, ProjectId projectId, UserId userId)
+            throws AuthorizationException, ServerServiceException, RemoteException;
+
+    /**
+     * Checking if an operation is allowed for the given user id. The operation
+     * is usually an admin-related action.
+     *
+     * @param token
+     *            An authentication token to verify the request source.
+     * @param operationId
+     *            The target operation
+     * @param userId
+     *            The target user
+     * @return Returns <code>true</code> if a user has the permission to perform
+     *         the operation, or <code>false</code> otherwise.
+     * @throws AuthorizationException
+     *             If the user doesn't have the permission to request this
+     *             service.
+     * @throws ServerServiceException
+     *             If the server failed to fulfill the user request.
+     */
+    boolean isOperationAllowed(AuthToken token, OperationId operationId, UserId userId)
             throws AuthorizationException, ServerServiceException, RemoteException;
 }
