@@ -48,13 +48,15 @@ public class HTTPChangeService extends BaseRoutingHandler {
 			
 			exchange.endExchange();
 		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.ALL_CHANGES)) {
+			long beg = System.currentTimeMillis();
 			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 			HistoryFile file = (HistoryFile) ois.readObject();
-			DocumentRevision headRevision = changeService.getHeadRevision(file);
-			ChangeHistory history = changeService.getChanges(file, DocumentRevision.START_REVISION, headRevision);
+			DocumentRevision headRevision = changeService.getHeadRevision(file);			
+			ChangeHistory history = changeService.getChanges(file, DocumentRevision.START_REVISION, headRevision);			
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 			os.writeObject(history);
 			exchange.endExchange();
+			System.out.println("Time execute all changes " + (System.currentTimeMillis() - beg)/1000);
 
 		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.LATEST_CHANGES)) {
 			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
