@@ -252,4 +252,10 @@ public class RmiServer implements RemoteServer {
             throws AuthorizationException, ServerServiceException, RemoteException {
         return server.isOperationAllowed(token, operationId, projectId, userId);
     }
+
+    @Override
+    public boolean isOperationAllowed(AuthToken token, OperationId operationId, UserId userId)
+            throws AuthorizationException, ServerServiceException, RemoteException {
+        return server.isOperationAllowed(token, operationId, userId);
+    }
 }

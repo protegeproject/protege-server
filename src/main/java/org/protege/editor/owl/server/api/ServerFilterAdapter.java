@@ -258,4 +258,10 @@ public class ServerFilterAdapter extends AbstractServerFilter {
             throws AuthorizationException, ServerServiceException {
         return getDelegate().isOperationAllowed(token, operationId, projectId, userId);
     }
+
+    @Override
+    public boolean isOperationAllowed(AuthToken token, OperationId operationId, UserId userId)
+            throws AuthorizationException, ServerServiceException {
+        return getDelegate().isOperationAllowed(token, operationId, userId);
+    }
 }
