@@ -1,14 +1,15 @@
 package org.protege.editor.owl.server.transport.rmi;
 
-import org.protege.editor.owl.server.api.LoginService;
-import org.protege.editor.owl.server.security.SaltedChallengeLoginService;
-
 import java.rmi.RemoteException;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Salt;
 import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
 import edu.stanford.protege.metaproject.api.UserId;
+
+import org.protege.editor.owl.server.api.LoginService;
+import org.protege.editor.owl.server.api.exception.ServerServiceException;
+import org.protege.editor.owl.server.security.SaltedChallengeLoginService;
 
 public class RmiLoginService implements RemoteLoginService {
 
@@ -30,8 +31,8 @@ public class RmiLoginService implements RemoteLoginService {
         try {
             return loginService.login(username, password);
         }
-        catch (Exception e) {
-            throw new RemoteException(e.getMessage(), e);
+        catch (ServerServiceException e) {
+            throw new RemoteException(e.getMessage(), e.getCause());
         }
     }
 
@@ -40,8 +41,8 @@ public class RmiLoginService implements RemoteLoginService {
         try {
             return loginService.getSalt(userId);
         }
-        catch (Exception e) {
-            throw new RemoteException(e.getMessage(), e);
+        catch (ServerServiceException e) {
+            throw new RemoteException(e.getMessage(), e.getCause());
         }
     }
 }
