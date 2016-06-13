@@ -78,6 +78,36 @@
          	<version>1.3.4.Final</version>
          </dependency>
          <dependency>
+         	<groupId>org.jboss.xnio</groupId>
+         	<artifactId>xnio-nio</artifactId>
+         	<version>3.3.2.Final</version>
+         </dependency>
+         <dependency>
+         	<groupId>org.openrdf.sesame</groupId>
+         	<artifactId>sesame-model</artifactId>
+         	<version>2.7.12</version>
+         </dependency>
+         <dependency>
+         	<groupId>org.openrdf.sesame</groupId>
+         	<artifactId>sesame-rio-api</artifactId>
+         	<version>2.7.12</version>
+         </dependency>
+         <dependency>
+         	<groupId>org.openrdf.sesame</groupId>
+         	<artifactId>sesame-util</artifactId>
+         	<version>2.7.12</version>
+         </dependency>
+         <dependency>
+         	<groupId>net.sf.trove4j</groupId>
+         	<artifactId>trove4j</artifactId>
+         	<version>3.0.3</version>
+         </dependency>
+         <dependency>
+         	<groupId>org.tukaani</groupId>
+         	<artifactId>xz</artifactId>
+         	<version>1.5</version>
+         </dependency>
+         <dependency>
 			<groupId>com.squareup.retrofit2</groupId>
 			<artifactId>retrofit</artifactId>
 			<version>2.0.0-beta3</version>
@@ -238,12 +268,12 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-Activator>org.protege.editor.owl.server.ServerActivator</Bundle-Activator>
-                        <Bundle-SymbolicName>org.protege.editor.owl.server</Bundle-SymbolicName>
+                    	<Bundle-SymbolicName>org.protege.editor.owl.server</Bundle-SymbolicName>
                         <Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
                         <Export-Package>
                             org.protege.editor.owl.server.*;version=${project.version},
                             edu.stanford.protege.metaproject.*,
+                            android.util,
                             io.undertow.*,
                             org.eclipse.jetty.alpn,
                             org.xnio.*,
@@ -260,7 +290,6 @@
                             org.apache.commons.io.*,
                             com.fasterxml.jackson.core.*
                          </Export-Package>
-                        <Service-Component>OSGI-INF/*.xml</Service-Component>
                     </instructions>
                 </configuration>
             </plugin>

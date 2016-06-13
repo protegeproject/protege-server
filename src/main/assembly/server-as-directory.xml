@@ -15,18 +15,16 @@
     <dependencySets>
         <dependencySet>
             <includes>
-                <include>org.apache.felix:org.apache.felix.main:jar</include>
-                <include>edu.stanford.protege:protege-launcher:jar</include>
-            </includes>
-            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
-            <outputDirectory>bin</outputDirectory>
-        </dependencySet>
-        <dependencySet>
-            <includes>
                 <include>edu.stanford.protege:metaproject:jar</include>
                 <include>io.undertow:undertow-core:jar</include>
+                <include>org.jboss.xnio:xnio-nio:jar</include>
                 <include>com.squareup.retrofit2:retrofit:jar</include>
                 <include>org.jboss.xnio:xnio-api:jar</include>
+                <include>org.openrdf.sesame:sesame-model:jar</include>
+                <include>org.openrdf.sesame:sesame-rio-api:jar</include>
+                <include>org.openrdf.sesame:sesame-util:jar</include>
+                <include>net.sf.trove4j:trove4j:jar</include>
+                <include>org.tukaani:xz:jar</include>
                 <include>net.sourceforge.owlapi:owlapi-osgidistribution:jar</include>
                 <include>net.sourceforge.owlapi:binaryowl:jar</include>
                 <include>commons-cli:commons-cli:jar</include>
