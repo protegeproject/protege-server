@@ -324,6 +324,55 @@
       },
       {
         "default": true,
+        "id": "pre-merge",
+        "name": "Pre-merge",
+        "description": "Propose a merge of two classes",
+        "type": "WRITE",
+        "scope": "METAPROJECT"
+      },
+      {
+        "default": true,
+        "id": "merge",
+        "name": "Merge",
+        "description": "Accept a proposed merge of two classes",
+        "type": "WRITE",
+        "scope": "METAPROJECT"
+      },
+      {
+        "default": true,
+        "id": "Split",
+        "name": "split",
+        "description": "Split a class into two classes",
+        "type": "WRITE",
+        "scope": "METAPROJECT"
+      },
+      {
+        "default": true,
+        "id": "clone",
+        "name": "Clone",
+        "description": "Clone a class",
+        "type": "WRITE",
+        "scope": "METAPROJECT"
+      },
+      {
+        "default": true,
+        "id": "pre-retire",
+        "name": "Pre-retire",
+        "description": "Propose a class for retirement",
+        "type": "WRITE",
+        "scope": "METAPROJECT"
+      },
+      {
+        "default": true,
+        "id": "retire",
+        "name": "Retire",
+        "description": "Accept proposed retirement",
+        "type": "WRITE",
+        "scope": "METAPROJECT"
+      },
+      
+      {
+        "default": true,
         "id": "stop-server",
         "name": "Stop the server",
         "description": "Stop the execution of the server",
