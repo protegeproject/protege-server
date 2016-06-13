@@ -15,9 +15,19 @@
         "all-projects": [
           "mp-guest"
         ]
+      },
+      "Ben": {
+        "1387e2ff-9355-48f3-a0ad-4442a76c25ac": [
+          "mp-project-manager"
+        ]
       }
     },
     "users": [
+      {
+        "id": "Ben",
+        "name": "Ben",
+        "emailAddress": "ben@parts.unknown"
+      },
       {
         "id": "guest",
         "name": "Guest User",
@@ -36,26 +46,26 @@
         "description": "small test of annotation",
         "file": "/Users/thor/protege/protege-server/target/server-distribution/server/root/data/1387e2ff-9355-48f3-a0ad-4442a76c25ac/test-def-ann.history",
         "owner": "root",
-          "options": {
-              "complex_properties": [
-                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#full_syn",
-                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#definition",
-                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#alt_definition"
-              ],
-              "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#definition": [
-                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#provenance",
-                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_group"
-              ],
-              "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#alt_definition": [
-                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#provenance",
-                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_group"
-              ],
-              "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#full_syn": [
-                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_group",
-                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_type",
-                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term"
-                  ]
-              }
+        "options": {
+          "complex_properties": [
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#full_syn",
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#definition",
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#alt_definition"
+          ],
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#definition": [
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#provenance",
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_group"
+          ],
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#alt_definition": [
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#provenance",
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_group"
+          ],
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#full_syn": [
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_group",
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_type",
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term"
+          ]
+        }
       }
     ],
     "roles": [
@@ -108,16 +118,22 @@
           "remove-axiom",
           "remove-ontology-annotation",
           "add-axiom",
+          "pre-merge",
           "modify-ontology-iri",
           "add-import",
+          "open-project",
           "remove-import",
           "remove-project",
-          "open-project",
           "add-ontology-annotation",
-          "reject-change",
           "add-project",
           "modify-project",
-          "accept-change"
+          "reject-change",
+          "retire",
+          "merge",
+          "clone",
+          "pre-retire",
+          "accept-change",
+          "Split"
         ]
       }
     ],
@@ -196,6 +212,22 @@
       },
       {
         "default": true,
+        "id": "clone",
+        "name": "Clone",
+        "description": "Clone a class",
+        "type": "WRITE",
+        "scope": "METAPROJECT"
+      },
+      {
+        "default": true,
+        "id": "merge",
+        "name": "Merge",
+        "description": "Accept a proposed merge of two classes",
+        "type": "WRITE",
+        "scope": "METAPROJECT"
+      },
+      {
+        "default": true,
         "id": "modify-operation",
         "name": "Modify operation",
         "description": "Modify operation details",
@@ -248,6 +280,22 @@
         "name": "Open project",
         "description": "Open a project in the project registry",
         "type": "READ",
+        "scope": "METAPROJECT"
+      },
+      {
+        "default": true,
+        "id": "pre-merge",
+        "name": "Pre-merge",
+        "description": "Propose a merge of two classes",
+        "type": "WRITE",
+        "scope": "METAPROJECT"
+      },
+      {
+        "default": true,
+        "id": "pre-retire",
+        "name": "Pre-retire",
+        "description": "Propose a class for retirement",
+        "type": "WRITE",
         "scope": "METAPROJECT"
       },
       {
@@ -316,6 +364,14 @@
       },
       {
         "default": true,
+        "id": "retire",
+        "name": "Retire",
+        "description": "Accept proposed retirement",
+        "type": "WRITE",
+        "scope": "METAPROJECT"
+      },
+      {
+        "default": true,
         "id": "retract-role",
         "name": "Retract role",
         "description": "Retract a role from a user",
@@ -324,19 +380,11 @@
       },
       {
         "default": true,
-        "id": "pre-merge",
-        "name": "Pre-merge",
-        "description": "Propose a merge of two classes",
-        "type": "WRITE",
-        "scope": "METAPROJECT"
-      },
-      {
-        "default": true,
-        "id": "merge",
-        "name": "Merge",
-        "description": "Accept a proposed merge of two classes",
-        "type": "WRITE",
-        "scope": "METAPROJECT"
+        "id": "stop-server",
+        "name": "Stop the server",
+        "description": "Stop the execution of the server",
+        "type": "EXECUTE",
+        "scope": "SERVER"
       },
       {
         "default": true,
@@ -345,43 +393,15 @@
         "description": "Split a class into two classes",
         "type": "WRITE",
         "scope": "METAPROJECT"
-      },
-      {
-        "default": true,
-        "id": "clone",
-        "name": "Clone",
-        "description": "Clone a class",
-        "type": "WRITE",
-        "scope": "METAPROJECT"
-      },
-      {
-        "default": true,
-        "id": "pre-retire",
-        "name": "Pre-retire",
-        "description": "Propose a class for retirement",
-        "type": "WRITE",
-        "scope": "METAPROJECT"
-      },
-      {
-        "default": true,
-        "id": "retire",
-        "name": "Retire",
-        "description": "Accept proposed retirement",
-        "type": "WRITE",
-        "scope": "METAPROJECT"
-      },
-      
-      {
-        "default": true,
-        "id": "stop-server",
-        "name": "Stop the server",
-        "description": "Stop the execution of the server",
-        "type": "EXECUTE",
-        "scope": "SERVER"
       }
     ]
   },
   "authentication": [
+    {
+      "userId": "Ben",
+      "password": "ba8bd8a25c6f5cc39ca6284a3243c29650c9ee39230cca8c",
+      "salt": "32313a42af842da0d2861e351559462b56da4677bcb3a05f"
+    },
     {
       "userId": "guest",
       "password": "4e39216f3fe3bba1716b0b6a88f71d49fa4454835e09d3a9",
