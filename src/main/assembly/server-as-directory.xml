@@ -11,6 +11,14 @@
             <directory>src/main/resources/server-template</directory>
             <outputDirectory>.</outputDirectory>
         </fileSet>
+        <fileSet>
+            <directory>scripts</directory>
+            <outputDirectory>.</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>samples</directory>
+            <outputDirectory>samples</outputDirectory>
+        </fileSet>
     </fileSets>
     <dependencySets>
         <dependencySet>
