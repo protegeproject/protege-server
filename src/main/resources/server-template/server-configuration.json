@@ -30,7 +30,33 @@
       }
     ],
     "projects": [
-     
+      {
+        "id": "1387e2ff-9355-48f3-a0ad-4442a76c25ac",
+        "name": "test-def-ann",
+        "description": "small test of annotation",
+        "file": "/Users/thor/protege/protege-server/target/server-distribution/server/root/data/1387e2ff-9355-48f3-a0ad-4442a76c25ac/test-def-ann.history",
+        "owner": "root",
+          "options": {
+              "complex_properties": [
+                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#full_syn",
+                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#definition",
+                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#alt_definition"
+              ],
+              "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#definition": [
+                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#provenance",
+                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_group"
+              ],
+              "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#alt_definition": [
+                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#provenance",
+                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_group"
+              ],
+              "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#full_syn": [
+                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_group",
+                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_type",
+                  "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term"
+                  ]
+              }
+      }
     ],
     "roles": [
       {
@@ -307,8 +333,6 @@
     ]
   },
   "authentication": [
-    
-   
     {
       "userId": "guest",
       "password": "4e39216f3fe3bba1716b0b6a88f71d49fa4454835e09d3a9",
