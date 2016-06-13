@@ -17,6 +17,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Commit implements Serializable {
@@ -41,42 +42,54 @@ public class Commit implements Serializable {
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         try {
-            out.writeObject(getMetadata());
             BinaryOWLOntologyChangeLog log = new BinaryOWLOntologyChangeLog();
-            log.appendChanges(getChanges(), System.currentTimeMillis(), BinaryOWLMetadata.emptyMetadata(), out);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            throw e;
+            BinaryOWLMetadata metadataRecord = new BinaryOWLMetadata();
+            metadataRecord.setStringAttribute(RevisionMetadata.AUTHOR_USERNAME, metadata.getAuthorId());
+            metadataRecord.setStringAttribute(RevisionMetadata.AUTHOR_NAME, metadata.getAuthorName());
+            metadataRecord.setStringAttribute(RevisionMetadata.AUTHOR_EMAIL, metadata.getAuthorEmail());
+            metadataRecord.setLongAttribute(RevisionMetadata.CHANGE_DATE, metadata.getDate().getTime());
+            metadataRecord.setStringAttribute(RevisionMetadata.CHANGE_COMMENT, metadata.getComment());
+            
+            /*
+             * This commit object doesn't have a revision number assigned yet thus
+             * -1 is used. In this method call we use the parameter (timestamp:long)
+             * as the revision number. TODO: Fix this
+             */
+            log.appendChanges(changes, -1, metadataRecord, out);
         }
         finally {
             out.flush();
-//            out.close(); // Do not close the stream! The other end point might not get the whole data stream.
         }
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
         try {
-            metadata = (RevisionMetadata) in.readObject();
             BinaryOWLOntologyChangeLog log = new BinaryOWLOntologyChangeLog();
+            OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
             OWLOntology placeholder = owlManager.createOntology();
-            final List<OWLOntologyChange> readChanges = new ArrayList<>();
+            final List<OWLOntologyChange> changeRead = new ArrayList<>();
             log.readChanges(in, owlManager.getOWLDataFactory(), (list, skipSetting, filePosition) -> {
+                // Get the metadata
+                BinaryOWLMetadata metadataRecord = list.getMetadata();
+                String authorId = metadataRecord.getStringAttribute(RevisionMetadata.AUTHOR_USERNAME, "");
+                String authorName = metadataRecord.getStringAttribute(RevisionMetadata.AUTHOR_NAME, "");
+                String authorEmail = metadataRecord.getStringAttribute(RevisionMetadata.AUTHOR_EMAIL, "");
+                Date changeDate = new Date(metadataRecord.getLongAttribute(RevisionMetadata.CHANGE_DATE, 0L));
+                String comment = metadataRecord.getStringAttribute(RevisionMetadata.CHANGE_COMMENT, "");
+                metadata = new RevisionMetadata(authorId, authorName, authorEmail, changeDate, comment);
+                
+                // Get the changes
                 List<OWLOntologyChangeRecord> changeRecords = list.getChangeRecords();
                 for (OWLOntologyChangeRecord cr : changeRecords) {
                     OWLOntologyChangeData changeData = cr.getData();
                     OWLOntologyChange change = changeData.createOntologyChange(placeholder);
-                    readChanges.add(change);
+                    changeRead.add(change);
                 }
             });
-            changes = readChanges;
+            changes = changeRead;
         }
         catch (OWLOntologyCreationException e) {
             throw new IOException("Internal error while reading commit object", e);
-        }
-        finally {
-//            in.close();
         }
     }
 }
