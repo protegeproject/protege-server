@@ -525,7 +525,7 @@ public class ProtegeServer extends ServerLayer {
     public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId)
             throws AuthorizationException, ServerServiceException {
         Map<ProjectId, List<Role>> roleMap = new HashMap<>();
-        for (Project project : getAllProjects(token)) {
+        for (Project project : getProjects(token, userId)) {
             roleMap.put(project.getId(), getRoles(token, userId, project.getId()));
         }
         return roleMap;
@@ -556,7 +556,7 @@ public class ProtegeServer extends ServerLayer {
     public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId)
             throws AuthorizationException, ServerServiceException {
         Map<ProjectId, List<Operation>> operationMap = new HashMap<>();
-        for (Project project : getAllProjects(token)) {
+        for (Project project : getProjects(token, userId)) {
             operationMap.put(project.getId(), getOperations(token, userId, project.getId()));
         }
         return operationMap;
