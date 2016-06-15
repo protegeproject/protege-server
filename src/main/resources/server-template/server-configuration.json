@@ -15,19 +15,9 @@
         "all-projects": [
           "mp-guest"
         ]
-      },
-      "Ben": {
-        "1387e2ff-9355-48f3-a0ad-4442a76c25ac": [
-          "mp-project-manager"
-        ]
       }
     },
     "users": [
-      {
-        "id": "Ben",
-        "name": "Ben",
-        "emailAddress": "ben@parts.unknown"
-      },
       {
         "id": "guest",
         "name": "Guest User",
@@ -41,10 +31,10 @@
     ],
     "projects": [
       {
-        "id": "1387e2ff-9355-48f3-a0ad-4442a76c25ac",
+        "id": "d3d4bd72-2bc1-4f40-9256-3c55ec7480ed",
         "name": "test-def-ann",
-        "description": "small test of annotation",
-        "file": "/Users/thor/protege/protege-server/target/server-distribution/server/root/data/1387e2ff-9355-48f3-a0ad-4442a76c25ac/test-def-ann.history",
+        "description": "A small test of complex properties",
+        "file": "/Users/thor/protege/protege-server/target/server-distribution/server/root/data/d3d4bd72-2bc1-4f40-9256-3c55ec7480ed/test-def-ann.history",
         "owner": "root",
         "options": {
           "complex_properties": [
@@ -64,8 +54,20 @@
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_group",
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_type",
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term"
+          ],
+          "immutable_properties": [
+          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_CHILD",
+          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_PARENT",
+          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_ROLE",
+          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_SOURCE_ROLE",
+          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_ASSOCIATION",
+          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_SOURCE_ASSOCIATION",
+          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Concept_Status",
+          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Merge_Source",
+          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Merge_Target",
+          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Split_From"
           ]
-        }
+          	}
       }
     ],
     "roles": [
@@ -397,11 +399,6 @@
     ]
   },
   "authentication": [
-    {
-      "userId": "Ben",
-      "password": "ba8bd8a25c6f5cc39ca6284a3243c29650c9ee39230cca8c",
-      "salt": "32313a42af842da0d2861e351559462b56da4677bcb3a05f"
-    },
     {
       "userId": "guest",
       "password": "4e39216f3fe3bba1716b0b6a88f71d49fa4454835e09d3a9",

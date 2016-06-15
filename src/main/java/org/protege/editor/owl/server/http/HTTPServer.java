@@ -54,6 +54,8 @@ public final class HTTPServer {
 	public static final String ALL_CHANGES = ROOT_PATH + "/all_changes"; 
 	public static final String LATEST_CHANGES = ROOT_PATH + "/latest_changes"; 
 	public static final String COMMIT = ROOT_PATH + "/commit";
+	
+	public static final String GEN_CODE = ROOT_PATH + "/gen_code";
 
 	private ServerConfiguration config;
 	private ProtegeServer pserver;
@@ -165,7 +167,7 @@ public final class HTTPServer {
 				new BlockingHandler(
 						new CodeGenHandler(pserver)));
 
-		router.add("GET", ROOT_PATH + "/gen_code", codegen_handler);
+		router.add("GET", GEN_CODE, codegen_handler);
 		router.add("GET", ROOT_PATH + "/gen_codes", codegen_handler);
 
 		// create mataproject handler        

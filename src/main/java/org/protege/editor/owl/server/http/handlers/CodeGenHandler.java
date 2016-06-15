@@ -52,7 +52,7 @@ public class CodeGenHandler extends BaseRoutingHandler {
 			
 		}		
 		exchange.endExchange();
-		HTTPServer.server().restart();
+		//HTTPServer.server().restart();
 	}
 	
 
