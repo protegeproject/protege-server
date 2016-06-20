@@ -6,7 +6,6 @@
             <classes>
                 <class name="org.protege.editor.owl.server.http.HTTPLoginTest"/>
                 <class name="org.protege.editor.owl.server.http.HTTPCommitTest"/>
-                <class name="org.protege.editor.owl.server.ServerRunTest"/>
                 <class name="org.protege.editor.owl.server.AuthenticationTest"/>                
                 <class name="org.protege.editor.owl.server.AccessControlFilterTest"/>
             </classes>
