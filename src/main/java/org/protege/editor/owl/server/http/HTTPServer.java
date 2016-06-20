@@ -56,7 +56,8 @@ public final class HTTPServer {
 	public static final String COMMIT = ROOT_PATH + "/commit";
 	
 	public static final String GEN_CODE = ROOT_PATH + "/gen_code";
-
+	
+	private String config_fname = null;
 	private ServerConfiguration config;
 	private ProtegeServer pserver;
 
@@ -100,6 +101,10 @@ public final class HTTPServer {
 	}
 
 	public HTTPServer() {server = this;}
+	
+	public HTTPServer(String cfn) {
+		this.config_fname = cfn;
+		server = this;}
 
 
 	public static void main(final String[] args) {
@@ -115,8 +120,10 @@ public final class HTTPServer {
 	
 	private void initConfig() throws ServerException {
 		try {
-			String config_fname = System.getProperty(SERVER_CONFIGURATION_PROPERTY);
-			
+			if (config_fname == null) {
+				config_fname = System.getProperty(SERVER_CONFIGURATION_PROPERTY);
+			}
+
 			config = Manager.getConfigurationManager().loadServerConfiguration(new File(config_fname));
 
 			pserver = new ProtegeServer(config);           
