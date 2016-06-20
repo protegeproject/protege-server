@@ -48,6 +48,7 @@ public final class HTTPServer {
 	public static final String LOGIN = ROOT_PATH + "/login";
 	
 	public static final String PROJECT = ROOT_PATH + "/meta/project";
+	public static final String PROJECT_SNAPSHOT = ROOT_PATH + "/meta/project/snapshot";
 	public static final String PROJECTS = ROOT_PATH + "/meta/projects";
 	public static final String METAPROJECT = ROOT_PATH + "/meta/metaproject";
 	
@@ -83,7 +84,6 @@ public final class HTTPServer {
 	public void addSession(String key, AuthToken tok) {
 		session_manager.add(tok);
 		token_map.put(key, tok);
-
 	}
 
 	public boolean validateToken(String user, String tok) {
@@ -185,6 +185,8 @@ public final class HTTPServer {
 		router.add("POST", METAPROJECT, meta_handler);
 		router.add("GET", PROJECT,  meta_handler);
 		router.add("POST", PROJECT,  meta_handler);
+		router.add("POST", PROJECT_SNAPSHOT,  meta_handler);
+		router.add("GET", PROJECT_SNAPSHOT,  meta_handler);
 		router.add("DELETE", PROJECT,  meta_handler);
 		router.add("GET", PROJECTS, meta_handler);
 		
