@@ -5,12 +5,14 @@ import java.io.ObjectOutputStream;
 
 import org.protege.editor.owl.server.api.ChangeService;
 import org.protege.editor.owl.server.api.CommitBundle;
+import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.change.ChangeDocumentPool;
 import org.protege.editor.owl.server.change.ChangeManagementFilter;
 import org.protege.editor.owl.server.change.DefaultChangeService;
 import org.protege.editor.owl.server.conflict.ConflictDetectionFilter;
 import org.protege.editor.owl.server.http.HTTPServer;
+import org.protege.editor.owl.server.http.exception.ServerException;
 import org.protege.editor.owl.server.policy.AccessControlFilter;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
@@ -40,11 +42,18 @@ public class HTTPChangeService extends BaseRoutingHandler {
 			ProjectId pid = (ProjectId) ois.readObject();
 			CommitBundle bundle = (CommitBundle) ois.readObject();
 			
-			ChangeHistory hist = acf.commit(getAuthToken(exchange), pid, bundle);		
-
+			ChangeHistory hist = null;
+			
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
+			
+			try {
+				hist = acf.commit(getAuthToken(exchange), pid, bundle);
+				os.writeObject(hist);
+			} catch (OutOfSyncException e) {
+				os.writeObject(new ServerException(500, "Out of sync error", e));
+				exchange.setStatusCode(500);
 
-			os.writeObject(hist);
+			}		
 			
 			exchange.endExchange();
 		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.ALL_CHANGES)) {
