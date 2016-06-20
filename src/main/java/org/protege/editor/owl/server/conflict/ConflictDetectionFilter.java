@@ -35,14 +35,16 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public ChangeHistory commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
+    public synchronized ChangeHistory commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, OutOfSyncException, ServerServiceException {
         try {
             Project project = getConfiguration().getMetaproject().getProjectRegistry().get(projectId);
+            // TODO: head revision is checked here, but another thread may already be proceeding to do a commit
             HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getAbsolutePath());
             DocumentRevision serverHeadRevision = getHeadRevision(historyFile);
             DocumentRevision commitBaseRevision = commitBundle.getBaseRevision();
             if (isOutdated(commitBaseRevision, serverHeadRevision)) {
+            	logger.error("Out of sync");
                 throw new OutOfSyncException("The local copy is outdated. Please do update.");
             }
             return super.commit(token, projectId, commitBundle);
