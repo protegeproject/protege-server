@@ -29,7 +29,7 @@ public class HTTPChangeService extends BaseRoutingHandler {
     	super();
     	cf = new ConflictDetectionFilter(new ChangeManagementFilter(s));
     	acf = new AccessControlFilter(cf);
-    	changeService = new DefaultChangeService(new ChangeDocumentPool());    	
+    	changeService = new DefaultChangeService(acf.getChangePool());    	
     }
 
 	@Override
