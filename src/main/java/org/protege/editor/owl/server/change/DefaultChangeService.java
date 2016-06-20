@@ -20,16 +20,20 @@ public class DefaultChangeService implements ChangeService {
     @Override
     public ChangeHistory getChanges(HistoryFile historyFile, DocumentRevision startRevision,
             DocumentRevision endRevision) throws ServerServiceException {
-        ChangeHistory changeHistory = getCachedChangeHistory(historyFile);
+        ChangeHistory changeHistory = getChangeHistory(historyFile);
         return ChangeHistoryUtils.crop(changeHistory, startRevision, endRevision);
     }
 
     @Override
     public DocumentRevision getHeadRevision(HistoryFile historyFile) throws ServerServiceException {
-        return getCachedChangeHistory(historyFile).getHeadRevision();
+        try {
+			return changePool.lookupHead(historyFile);
+		} catch (IOException e) {
+			throw new ServerServiceException("Error while getting head revision at the server", e);
+		}
     }
 
-    private ChangeHistory getCachedChangeHistory(HistoryFile historyFile) throws ServerServiceException {
+    private ChangeHistory getChangeHistory(HistoryFile historyFile) throws ServerServiceException {
         try {
             return changePool.lookup(historyFile);
         }

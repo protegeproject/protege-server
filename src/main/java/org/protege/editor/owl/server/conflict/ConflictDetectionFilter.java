@@ -61,7 +61,7 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
     }
 
     private DocumentRevision getHeadRevision(HistoryFile historyFile) throws IOException {
-        return getChangePool().lookup(historyFile).getHeadRevision();
+        return getChangePool().lookupHead(historyFile);
     }
 
     private boolean isOutdated(DocumentRevision clientHeadRevision, DocumentRevision serverHeadRevision) {

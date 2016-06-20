@@ -3,6 +3,7 @@ package org.protege.editor.owl.server.change;
 import org.protege.editor.owl.server.versioning.ChangeHistoryUtils;
 import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
+import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
 
 import org.apache.commons.io.FileUtils;
@@ -31,6 +32,8 @@ public class ChangeDocumentPoolEntry {
     private Logger logger = LoggerFactory.getLogger(ChangeDocumentPoolEntry.class);
 
     private HistoryFile historyFile;
+    
+    private DocumentRevision cached_head = null;
 
     private Future<ChangeHistory> readTask;
 
@@ -55,9 +58,18 @@ public class ChangeDocumentPoolEntry {
 
     protected void doAppend(ChangeHistory changes) {
         touch();
-        executor.submit(new AppendChanges(changes));
+        try {
+			Boolean result = executor.submit(new AppendChanges(changes)).get();
+			if (result) {
+				cached_head = changes.getHeadRevision();
+			}
+		} catch (InterruptedException | ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
-
+    
+    
     public ChangeHistory readChangeHistory() throws IOException {
         try {
             doRead();
@@ -74,6 +86,15 @@ public class ChangeDocumentPoolEntry {
                 throw new RuntimeException(ee);
             }
         }
+    }
+    
+    public DocumentRevision getHead() throws IOException {
+    	if (cached_head != null) {
+    		
+    	} else {
+    		cached_head = readChangeHistory().getHeadRevision();
+    	}
+    	return cached_head;
     }
 
     public void appendChangeHistory(final ChangeHistory changeHistory) {

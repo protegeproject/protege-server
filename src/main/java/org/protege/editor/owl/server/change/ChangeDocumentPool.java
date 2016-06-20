@@ -1,6 +1,7 @@
 package org.protege.editor.owl.server.change;
 
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
+import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
 
 import org.slf4j.Logger;
@@ -92,6 +93,7 @@ public class ChangeDocumentPool {
         synchronized (pool) {
             entry = pool.get(historyFile);
             if (entry == null) {
+            	
                 entry = new ChangeDocumentPoolEntry(historyFile);
                 pool.put(historyFile, entry);
                 logger.info("Checked out in-memory change history for " + historyFile.getName());
@@ -99,11 +101,27 @@ public class ChangeDocumentPool {
         }
         return entry.readChangeHistory();
     }
+    
+    public DocumentRevision lookupHead(HistoryFile historyFile) throws IOException {
+    	ChangeDocumentPoolEntry entry;
+        synchronized (pool) {
+            entry = pool.get(historyFile);
+            if (entry == null) {
+            	//logger.info("Create new pool entry head " + historyFile.getName());
+                entry = new ChangeDocumentPoolEntry(historyFile);
+                pool.put(historyFile, entry);
+                logger.info("Checked out in-memory change history for " + historyFile.getName());
+            }
+        }
+        return entry.getHead();
+    	
+    }
 
     public void update(HistoryFile historyFile, ChangeHistory changeHistory) {
         synchronized (pool) {
             ChangeDocumentPoolEntry entry = pool.get(historyFile);
             if (entry == null) {
+            	//logger.info("Create new pool entry update " + historyFile.getName());
                 entry = new ChangeDocumentPoolEntry(historyFile);
                 entry.appendChangeHistory(changeHistory);
                 pool.put(historyFile, entry);
