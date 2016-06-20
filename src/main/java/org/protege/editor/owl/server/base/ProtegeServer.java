@@ -256,35 +256,7 @@ public class ProtegeServer extends ServerLayer {
     
     }
     
-    // sketch of code generation
-    public String genCode(ProjectId projectId) 
-    		throws AuthorizationException, ServerServiceException {
-    	/**
-    	   synchronized (projectRegistry) {
-    	 
-    		try {
-    			Project proj = projectRegistry.get(projectId);
-    			ProjectOptions opts = proj.getOptions().get();
-    			String p = opts.getPrefix();
-    			String s = opts.getSuffix();
-    			String d = opts.getDelimiter();
-    			Integer c = opts.getCode();
-    			
-    			String result = p + d + Integer.toString(c + 1) + d + s;
-    			
-    			// how to update project options
-    			saveChanges();
-    			
-    			return result;
-    		} catch (Exception e) {
-    			e.printStackTrace();
-    			return "NOCODE";
-    		}
-    		**/
-    	return "NOCODE";
-    	
-    	
-    }
+    
 
     @Override
     public void updateProject(AuthToken token, ProjectId projectId, Project updatedProject)
