@@ -171,8 +171,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			
 			exchange.endExchange();
 			
-		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT_SNAPSHOT)
-				&& exchange.getRequestMethod().equals(Methods.GET)) {
+		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT_SNAPSHOT_GET)) {
 			OWLOntology ontIn = null;
 			
 			try {

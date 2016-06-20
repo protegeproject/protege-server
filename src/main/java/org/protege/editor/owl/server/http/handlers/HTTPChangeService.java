@@ -77,6 +77,15 @@ public class HTTPChangeService extends BaseRoutingHandler {
 			os.writeObject(history);
 			exchange.endExchange();
 
+		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.HEAD)) {
+			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
+			HistoryFile file = (HistoryFile) ois.readObject();
+			DocumentRevision start = (DocumentRevision) ois.readObject();			
+			DocumentRevision headRevision = changeService.getHeadRevision(file);
+			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
+			os.writeObject(headRevision);
+			exchange.endExchange();
+
 		}
 	}	
 }

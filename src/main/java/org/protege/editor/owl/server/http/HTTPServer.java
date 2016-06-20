@@ -49,11 +49,13 @@ public final class HTTPServer {
 	
 	public static final String PROJECT = ROOT_PATH + "/meta/project";
 	public static final String PROJECT_SNAPSHOT = ROOT_PATH + "/meta/project/snapshot";
+	public static final String PROJECT_SNAPSHOT_GET = ROOT_PATH + "/meta/project/snapshot/get";
 	public static final String PROJECTS = ROOT_PATH + "/meta/projects";
 	public static final String METAPROJECT = ROOT_PATH + "/meta/metaproject";
 	
 	public static final String ALL_CHANGES = ROOT_PATH + "/all_changes"; 
 	public static final String LATEST_CHANGES = ROOT_PATH + "/latest_changes"; 
+	public static final String HEAD = ROOT_PATH + "/head";
 	public static final String COMMIT = ROOT_PATH + "/commit";
 	
 	public static final String GEN_CODE = ROOT_PATH + "/gen_code";
@@ -163,7 +165,7 @@ public final class HTTPServer {
 								pserver)));
 
 		router.add("POST", COMMIT,  change_handler);
-		router.add("GET", ROOT_PATH + "/changes",  change_handler);
+		router.add("POST", HEAD,  change_handler);
 		router.add("POST", LATEST_CHANGES,  change_handler);
 		router.add("POST", ALL_CHANGES,  change_handler);
 		
@@ -186,7 +188,7 @@ public final class HTTPServer {
 		router.add("GET", PROJECT,  meta_handler);
 		router.add("POST", PROJECT,  meta_handler);
 		router.add("POST", PROJECT_SNAPSHOT,  meta_handler);
-		router.add("GET", PROJECT_SNAPSHOT,  meta_handler);
+		router.add("POST", PROJECT_SNAPSHOT_GET,  meta_handler);
 		router.add("DELETE", PROJECT,  meta_handler);
 		router.add("GET", PROJECTS, meta_handler);
 		
