@@ -66,6 +66,14 @@
     
 
 
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-00000029 -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-00000029">
+        <rdfs:label>code</rdfs:label>
+    </owl:AnnotationProperty>
+    
+
+
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION -->
 
     <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION">
@@ -88,6 +96,18 @@
     <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Definition_Review_Name">
         <rdfs:label>Definition_Review_Name</rdfs:label>
     </owl:AnnotationProperty>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Design_Note -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Design_Note"/>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Editor_Note -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Editor_Note"/>
     
 
 
@@ -976,6 +996,28 @@
 
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NeoplasticDisease">
         <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Disease"/>
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OncogeneTim"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
+                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_related_to_disease"/>
+                <owl:someValuesFrom>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
+                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    </owl:Restriction>
+                </owl:someValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
         <semanticType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Disease</semanticType>
     </owl:Class>
     
@@ -1330,9 +1372,7 @@
 
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorMalignant -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorMalignant">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NeoplasticDisease"/>
-    </owl:Class>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorMalignant"/>
     
 
 
@@ -1620,8 +1660,8 @@
     <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround">
         <AssociationURI rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
         <AssociationV1 rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
-        <AssociationSTR rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://purl.obolibrary.org/obo/CL_0000148</AssociationSTR>
         <AssociationURI rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://purl.obolibrary.org/obo/CL_0000148</AssociationURI>
+        <AssociationSTR rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://purl.obolibrary.org/obo/CL_0000148</AssociationSTR>
         <AssociationLIT>http://purl.obolibrary.org/obo/cl_0000148</AssociationLIT>
     </rdf:Description>
     <owl:Axiom>
@@ -1632,15 +1672,15 @@
     </owl:Axiom>
     <owl:Axiom>
         <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationSTR"/>
-        <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://purl.obolibrary.org/obo/CL_0000148</owl:annotatedTarget>
-        <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">annotation on an AssociationSTR of external.</note>
-    </owl:Axiom>
-    <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround"/>
         <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationURI"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://purl.obolibrary.org/obo/CL_0000148</owl:annotatedTarget>
         <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">annotation on an AssociationURI of external.</note>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationSTR"/>
+        <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://purl.obolibrary.org/obo/CL_0000148</owl:annotatedTarget>
+        <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">annotation on an AssociationSTR of external.</note>
     </owl:Axiom>
     <owl:Axiom>
         <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround"/>
