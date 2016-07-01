@@ -1,7 +1,6 @@
 {
   "host": {
-    "uri": "http://localhost:8080",
-    "secondaryPort": "5200"
+    "uri": "http://localhost:8080"
   },
   "root": "root/data",
   "metaproject": {
@@ -9,11 +8,24 @@
       "root": {
         "all-projects": [
           "mp-admin"
+        ],
+        "foo": [
+          "mp-project-manager"
         ]
       },
       "guest": {
         "all-projects": [
           "mp-guest"
+        ]
+      },
+      "bob": {
+        "foo": [
+          "mp-project-manager"
+        ]
+      },
+      "alice": {
+        "foo": [
+          "0d4073aa-3790-4a6a-9941-76d02c765859"
         ]
       }
     },
@@ -27,15 +39,24 @@
         "id": "root",
         "name": "Root User",
         "emailAddress": ""
+      },
+      {
+        "id": "alice",
+        "name": "alice",
+        "emailAddress": "alice@parts.unknown"
+      },
+      {
+        "id": "bob",
+        "name": "bob",
+        "emailAddress": "bob"
       }
-      
     ],
     "projects": [
       {
         "id": "foo",
         "name": "foo",
         "description": "foo",
-        "file": "/Users/thor/protege/protege-server/target/server-distribution/server/root/data/foo/foo.history",
+        "file": "root/data/foo/foo.history",
         "owner": "root",
         "options": {
           "complex_properties": [
@@ -69,6 +90,12 @@
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Merge_Target",
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Split_From"
           ],
+          "design_note": [
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Design_Note"
+          ],
+          "editor_note": [
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Editor_Note"
+          ],
           "deprecated_child": [
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_CHILD"
           ],
@@ -97,7 +124,6 @@
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concept_Current_Year"
           ]
         }
-        
       }
     ],
     "roles": [
@@ -150,7 +176,6 @@
           "remove-axiom",
           "remove-ontology-annotation",
           "add-axiom",
-          "pre-merge",
           "modify-ontology-iri",
           "add-import",
           "open-project",
@@ -163,7 +188,6 @@
           "retire",
           "merge",
           "clone",
-          "pre-retire",
           "accept-change",
           "Split"
         ]
@@ -173,11 +197,11 @@
         "name": "workflow_modeler",
         "description": "a typical modeler",
         "operations": [
+          "retire",
+          "remove-axiom",
           "add-axiom",
-          "pre-merge",
+          "merge",
           "clone",
-          "pre-retire",
-          "add-ontology-annotation",
           "Split"
         ]
       }
@@ -329,22 +353,6 @@
       },
       {
         "default": true,
-        "id": "pre-merge",
-        "name": "Pre-merge",
-        "description": "Propose a merge of two classes",
-        "type": "WRITE",
-        "scope": "METAPROJECT"
-      },
-      {
-        "default": true,
-        "id": "pre-retire",
-        "name": "Pre-retire",
-        "description": "Propose a class for retirement",
-        "type": "WRITE",
-        "scope": "METAPROJECT"
-      },
-      {
-        "default": true,
         "id": "reject-change",
         "name": "Reject change",
         "description": "Reject a change in the change history",
@@ -441,7 +449,17 @@
       }
     ]
   },
-  "authentication": [    
+  "authentication": [
+    {
+      "userId": "alice",
+      "password": "d4f635f2ae61b6c3fd9b7334602124a2ac9898a6200b5665",
+      "salt": "b7ba31cb2c9cafbcc960e96118e4c92fca9af8b3c808987a"
+    },
+    {
+      "userId": "bob",
+      "password": "27839988860207d5549cba53cc9d4a359deac78d2a802ffa",
+      "salt": "79d3d0100d2073258eafdf085bcf2a2e2e8034de5a077f79"
+    },
     {
       "userId": "guest",
       "password": "4e39216f3fe3bba1716b0b6a88f71d49fa4454835e09d3a9",

@@ -56,7 +56,7 @@
         "id": "foo",
         "name": "foo",
         "description": "foo",
-        "file": "/Users/thor/protege/protege-server/target/server-distribution/server/root/data/foo/foo.history",
+        "file": "root/data/foo/foo.history",
         "owner": "root",
         "options": {
           "complex_properties": [
