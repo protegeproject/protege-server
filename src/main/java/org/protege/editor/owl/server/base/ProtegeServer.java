@@ -208,7 +208,7 @@ public class ProtegeServer extends ServerLayer {
     }
 
     private HistoryFile createHistoryFile(String projectDir, String filename) throws IOException {
-        String rootDir = configuration.getServerRoot().getAbsolutePath() + File.separator + projectDir;
+        String rootDir = configuration.getServerRoot() + File.separator + projectDir;
         filename = filename.replaceAll("\\s+","_"); // to snake-case
         return HistoryFile.createNew(rootDir, filename);
     }
@@ -234,7 +234,7 @@ public class ProtegeServer extends ServerLayer {
                 logger.info(printLog(token.getUser(), "Remove project", project.toString()));
                 metaprojectAgent.remove(project);
                 if (includeFile) {
-                    HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getAbsolutePath());
+                    HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getPath());
                     File projectDir = historyFile.getParentFile();
                     FileUtils.deleteDirectory(projectDir);
                 }
@@ -282,7 +282,7 @@ public class ProtegeServer extends ServerLayer {
             logger.info(printLog(token.getUser(), "Open project", project.toString()));
             final URI serverAddress = configuration.getHost().getUri();
             final Optional<Port> registryPort = configuration.getHost().getSecondaryPort();
-            final String path = project.getFile().getAbsolutePath();
+            final String path = project.getFile().getPath();
             if (registryPort.isPresent()) {
                 Port port = registryPort.get();
                 return new ServerDocument(serverAddress, port.get(), HistoryFile.openExisting(path));

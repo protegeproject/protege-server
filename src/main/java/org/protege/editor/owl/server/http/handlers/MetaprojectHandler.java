@@ -152,7 +152,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 					BinaryOWLOntologyDocumentSerializer serializer = new BinaryOWLOntologyDocumentSerializer();
 					BufferedOutputStream outputStream = null;
 					
-					String fileName = sdoc.getHistoryFile().getAbsolutePath() + "-snapshot";
+					String fileName = sdoc.getHistoryFile().getPath() + "-snapshot";
 
 					outputStream = new BufferedOutputStream(new FileOutputStream(new File(fileName)));
 					serializer.write(new OWLOntologyWrapper(shot.getOntology()), new DataOutputStream(outputStream));
@@ -177,7 +177,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 				ServerDocument sdoc = (ServerDocument) ois.readObject();
-				String fileName = sdoc.getHistoryFile().getAbsolutePath() + "-snapshot";
+				String fileName = sdoc.getHistoryFile().getPath() + "-snapshot";
 				
 				OWLOntologyManager manIn = OWLManager.createOWLOntologyManager();
 				long beg = System.currentTimeMillis();
