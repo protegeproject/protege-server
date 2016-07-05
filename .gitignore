@@ -11,4 +11,6 @@ release.properties
 /bin/
 # OS X
 .DS_Store
+# artifacts
+usertok
 

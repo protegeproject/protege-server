@@ -2,7 +2,6 @@ package org.protege.editor.owl.server.http.handlers;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,22 +28,16 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import com.google.gson.Gson;
 
 import edu.stanford.protege.metaproject.Manager;
-import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
 import edu.stanford.protege.metaproject.api.Description;
 import edu.stanford.protege.metaproject.api.MetaprojectAgent;
 import edu.stanford.protege.metaproject.api.MetaprojectFactory;
 import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.OperationRegistry;
-import edu.stanford.protege.metaproject.api.Policy;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.ProjectRegistry;
-import edu.stanford.protege.metaproject.api.RoleRegistry;
 import edu.stanford.protege.metaproject.api.Serializer;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import edu.stanford.protege.metaproject.api.UserId;
-import edu.stanford.protege.metaproject.api.UserRegistry;
 import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
 import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
 import io.undertow.server.HttpServerExchange;
@@ -142,35 +135,35 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				&& exchange.getRequestMethod().equals(Methods.POST)) {
 			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 			ServerDocument sdoc = (ServerDocument) ois.readObject();
-			
+
 			SnapShot shot = (SnapShot) ois.readObject();
-			
-			
-				try {
-					
-					long beg = System.currentTimeMillis();
-					BinaryOWLOntologyDocumentSerializer serializer = new BinaryOWLOntologyDocumentSerializer();
-					BufferedOutputStream outputStream = null;
-					
-					String fileName = sdoc.getHistoryFile().getPath() + "-snapshot";
 
-					outputStream = new BufferedOutputStream(new FileOutputStream(new File(fileName)));
-					serializer.write(new OWLOntologyWrapper(shot.getOntology()), new DataOutputStream(outputStream));
-					outputStream.close();
-					System.out.println("Time to serialize out snapshot " + (System.currentTimeMillis() - beg)/1000);
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}     
 
-			
-			
+			try {
+
+				long beg = System.currentTimeMillis();
+				BinaryOWLOntologyDocumentSerializer serializer = new BinaryOWLOntologyDocumentSerializer();
+				BufferedOutputStream outputStream = null;
+
+				String fileName = sdoc.getHistoryFile().getPath() + "-snapshot";
+
+				outputStream = new BufferedOutputStream(new FileOutputStream(new File(fileName)));
+				serializer.write(new OWLOntologyWrapper(shot.getOntology()), new DataOutputStream(outputStream));
+				outputStream.close();
+				System.out.println("Time to serialize out snapshot " + (System.currentTimeMillis() - beg)/1000);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}     
+
+
+
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-	        
-	        os.writeObject(sdoc);		
-			
+
+			os.writeObject(sdoc);		
+
 			exchange.endExchange();
-			
+
 		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT_SNAPSHOT_GET)) {
 			OWLOntology ontIn = null;
 			

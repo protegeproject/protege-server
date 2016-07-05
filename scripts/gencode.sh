@@ -8,6 +8,7 @@ do
     res="${res}${i}"
     res="${res}:"
 done
+
 AUTH=`echo -n ${res%?} | openssl enc -base64 | tr -d "\n"`
 echo $AUTH
 
