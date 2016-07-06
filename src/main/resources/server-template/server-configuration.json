@@ -115,6 +115,12 @@
           "deprecated_in_assoc": [
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_SOURCE_ASSOCIATION"
           ],
+          "merge_source": [
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Merge_Source"
+          ],
+          "merge_target": [
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Merge_Target"
+          ],
           "preretired_root": [
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Preretired_Concepts"
           ],
