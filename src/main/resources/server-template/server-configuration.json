@@ -91,6 +91,15 @@
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Merge_Target",
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Split_From"
           ],
+          "code_prop": [
+          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-00000029"
+          	],
+          "label_prop": [
+          	"http://www.w3.org/2000/01/rdf-schema#label"
+          	],
+          "pref_name": [
+          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Preferred_Name"
+          	],          	
           "design_note": [
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Design_Note"
           ],
