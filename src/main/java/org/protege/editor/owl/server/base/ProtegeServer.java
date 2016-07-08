@@ -1,5 +1,30 @@
 package org.protege.editor.owl.server.base;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.apache.commons.io.FileUtils;
+import org.protege.editor.owl.server.api.CommitBundle;
+import org.protege.editor.owl.server.api.ServerLayer;
+import org.protege.editor.owl.server.api.exception.AuthorizationException;
+import org.protege.editor.owl.server.api.exception.ServerServiceException;
+import org.protege.editor.owl.server.http.HTTPServer;
+import org.protege.editor.owl.server.versioning.ChangeHistoryImpl;
+import org.protege.editor.owl.server.versioning.Commit;
+import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
+import org.protege.editor.owl.server.versioning.api.ChangeHistory;
+import org.protege.editor.owl.server.versioning.api.DocumentRevision;
+import org.protege.editor.owl.server.versioning.api.HistoryFile;
+import org.protege.editor.owl.server.versioning.api.ServerDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.stanford.protege.metaproject.Manager;
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
@@ -33,33 +58,6 @@ import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectId
 import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
 import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
 
-import org.apache.commons.io.FileUtils;
-import org.protege.editor.owl.server.ServerActivator;
-import org.protege.editor.owl.server.api.CommitBundle;
-import org.protege.editor.owl.server.api.ServerLayer;
-import org.protege.editor.owl.server.api.TransportHandler;
-import org.protege.editor.owl.server.api.exception.AuthorizationException;
-import org.protege.editor.owl.server.api.exception.OWLServerException;
-import org.protege.editor.owl.server.api.exception.ServerServiceException;
-import org.protege.editor.owl.server.versioning.ChangeHistoryImpl;
-import org.protege.editor.owl.server.versioning.Commit;
-import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
-import org.protege.editor.owl.server.versioning.api.ChangeHistory;
-import org.protege.editor.owl.server.versioning.api.DocumentRevision;
-import org.protege.editor.owl.server.versioning.api.HistoryFile;
-import org.protege.editor.owl.server.versioning.api.ServerDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 /**
  * The main server that acts as the end-point server where user requests to the
  * server get implemented.
@@ -83,8 +81,6 @@ public class ProtegeServer extends ServerLayer {
 
     private File configurationFile;
 
-    private TransportHandler transport;
-
     private static final MetaprojectFactory metaprojectFactory = Manager.getFactory();
 
     public ProtegeServer(ServerConfiguration configuration) {
@@ -97,7 +93,7 @@ public class ProtegeServer extends ServerLayer {
         policy = configuration.getMetaproject().getPolicy();
         metaprojectAgent = configuration.getMetaproject().getMetaprojectAgent();
         
-        String configLocation = System.getProperty(ServerActivator.SERVER_CONFIGURATION_PROPERTY);
+        String configLocation = System.getProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY);
         configurationFile = new File(configLocation);
     }
 
@@ -500,11 +496,7 @@ public class ProtegeServer extends ServerLayer {
         return changeHistory;
     }
 
-    @Override
-    public void setTransport(TransportHandler transport) throws OWLServerException {
-        this.transport = transport;
-    }
-
+    
     @Override
     public List<User> getAllUsers(AuthToken token) throws AuthorizationException, ServerServiceException {
         return new ArrayList<>(userRegistry.getEntries());

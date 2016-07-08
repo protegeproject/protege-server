@@ -182,10 +182,7 @@ public class ServerFilterAdapter extends AbstractServerFilter {
         return getDelegate().commit(token, projectId, commitBundle);
     }
 
-    @Override
-    public void setTransport(TransportHandler transport) throws OWLServerException {
-        getDelegate().setTransport(transport);
-    }
+    
 
     @Override
     public void addServerListener(ServerListener listener) {

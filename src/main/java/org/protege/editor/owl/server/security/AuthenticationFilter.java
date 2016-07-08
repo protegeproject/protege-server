@@ -21,7 +21,6 @@ import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.LoginService;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
 import org.protege.editor.owl.server.api.ServerLayer;
-import org.protege.editor.owl.server.api.TransportHandler;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
@@ -298,16 +297,5 @@ public class AuthenticationFilter extends ServerFilterAdapter {
         verifyRequest(token);
         return super.isOperationAllowed(token, operationId, projectId, userId);
     }
-
-    @Override
-    public void setTransport(TransportHandler transport) throws OWLServerException {
-        try {
-            transport.bind(loginService);
-        }
-        catch (Exception e) {
-            logger.error(printLog(null, "Bind transport", e.getMessage()), e);
-            throw new OWLServerException(e.getMessage(), e);
-        }
-        super.setTransport(transport);
-    }
+   
 }

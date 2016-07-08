@@ -16,6 +16,7 @@ import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.exception.OperationNotAllowedException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.base.ProtegeServer;
+import org.protege.editor.owl.server.http.HTTPServer;
 import org.protege.editor.owl.server.policy.AccessControlFilter;
 import org.protege.editor.owl.server.policy.CommitBundleImpl;
 import org.protege.editor.owl.server.versioning.Commit;
@@ -124,7 +125,7 @@ public class AccessControlFilterTest {
         when(metaprojectAgent.isOperationAllowed(Operations.MODIFY_ONTOLOGY_IRI.getId(), projectId, userIdA)).thenReturn(true);
         when(metaprojectAgent.isOperationAllowed(Operations.MODIFY_ONTOLOGY_IRI.getId(), projectId, userIdB)).thenReturn(false);
         
-        System.setProperty(ServerActivator.SERVER_CONFIGURATION_PROPERTY, "server-configuration.json");
+        System.setProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY, "server-configuration.json");
         
         baseServer = new ProtegeServer(configuration);
         policyFilter = new AccessControlFilter(baseServer);

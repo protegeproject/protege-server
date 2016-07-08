@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
     <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
-        <uri id="Automatically generated entry, Timestamp=1466672170099" name="duplicate:http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl" uri="owl2-test-cases-Defined-Annotated.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1466672170099" name="duplicate:http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl" uri="owl2-test-def-modified.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1466672170099" name="duplicate:http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl" uri="stable-test.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1466672170099" name="duplicate:http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl" uri="test-def-ann.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1466672170099" name="duplicate:http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl" uri="test-def-ann2.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1467759261098" name="duplicate:http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl" uri="foo.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1467759261098" name="duplicate:http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl" uri="owl2-test-cases-Defined-Annotated.owl"/>
     </group>
 </catalog>

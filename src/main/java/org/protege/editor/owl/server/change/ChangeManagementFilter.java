@@ -13,7 +13,6 @@ import org.protege.editor.owl.server.api.ChangeService;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
 import org.protege.editor.owl.server.api.ServerLayer;
-import org.protege.editor.owl.server.api.TransportHandler;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
@@ -73,15 +72,5 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
         }
     }
 
-    @Override
-    public void setTransport(TransportHandler transport) throws OWLServerException {
-        try {
-            transport.bind(changeService);
-        }
-        catch (Exception e) {
-            logger.error(printLog(null, "Bind transport", e.getMessage()), e);
-            throw new OWLServerException(e.getMessage(), e);
-        }
-        super.setTransport(transport);
-    }
+    
 }

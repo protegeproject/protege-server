@@ -1,12 +1,10 @@
 package org.protege.editor.owl.server.api;
 
-import edu.stanford.protege.metaproject.api.ServerConfiguration;
-import edu.stanford.protege.metaproject.api.User;
-
-import org.protege.editor.owl.server.api.exception.OWLServerException;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.stanford.protege.metaproject.api.ServerConfiguration;
+import edu.stanford.protege.metaproject.api.User;
 
 public abstract class ServerLayer implements Server {
 
@@ -18,8 +16,6 @@ public abstract class ServerLayer implements Server {
      * @return Server configuration
      */
     protected abstract ServerConfiguration getConfiguration();
-
-    public abstract void setTransport(TransportHandler transport) throws OWLServerException;
 
     public void addServerListener(ServerListener listener) {
         listeners.add(listener);
