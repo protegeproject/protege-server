@@ -13,4 +13,5 @@ release.properties
 .DS_Store
 # artifacts
 usertok
+~*
 
