@@ -219,9 +219,9 @@ public final class HTTPServer {
 			}
 		});
 		
-		SSLContext ctx;
+		//SSLContext ctx;
 		try {
-			ctx = new SSLContextFactory().createSslContext();
+			//ctx = new SSLContextFactory().createSslContext();
 			
 			web_server = Undertow.builder()
 					.addHttpListener(uri.getPort(), uri.getHost())
@@ -230,15 +230,10 @@ public final class HTTPServer {
 					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
 					.setHandler(aShutdownHandler)
 					.build();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-
-
-
-		
+		}		
 
 
 		isRunning = true;
