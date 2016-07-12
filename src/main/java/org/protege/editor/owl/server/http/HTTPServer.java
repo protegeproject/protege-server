@@ -64,6 +64,8 @@ public final class HTTPServer {
 	public static final String COMMIT = ROOT_PATH + "/commit";
 	
 	public static final String GEN_CODE = ROOT_PATH + "/gen_code";
+	public static final String GEN_CODES = ROOT_PATH + "/gen_codes";
+	public static final String EVS_REC = ROOT_PATH + "/evs_record";
 	
 	private String config_fname = null;
 	private ServerConfiguration config;
@@ -182,7 +184,8 @@ public final class HTTPServer {
 						new CodeGenHandler(pserver)));
 
 		router.add("GET", GEN_CODE, codegen_handler);
-		router.add("GET", ROOT_PATH + "/gen_codes", codegen_handler);
+		router.add("GET", GEN_CODES, codegen_handler);
+		router.add("POST", EVS_REC, codegen_handler);
 
 		// create mataproject handler        
 		meta_handler = new AuthenticationHandler(
