@@ -1,6 +1,12 @@
 package org.protege.editor.owl.server.http.messages;
 
-public class EVSHistory {
+import java.io.Serializable;
+
+public class EVSHistory implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4521102352676041770L;
 	private String code;
 	private String name;
 	private String operation;

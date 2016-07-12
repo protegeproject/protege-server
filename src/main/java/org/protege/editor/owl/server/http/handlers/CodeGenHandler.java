@@ -62,9 +62,10 @@ public class CodeGenHandler extends BaseRoutingHandler {
 			EVSHistory hist = (EVSHistory) ois.readObject();
 			
 			String hisfile = config.getProperty("evshistory_file");
-			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(hisfile)));
+			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(hisfile, true)));
 			pw.println(hist.toRecord());
 			pw.close();
+			exchange.getResponseSender().send("ok");
 			
 		}
 		exchange.endExchange();
