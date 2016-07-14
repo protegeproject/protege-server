@@ -1,6 +1,6 @@
 {
   "host": {
-    "uri": "http://localhost:8080"
+    "uri": "https://localhost:8080"
   },
   "root": "root/data",
   "metaproject": {
@@ -129,6 +129,9 @@
           ],
           "merge_target": [
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Merge_Target"
+          ],
+          "split_from": [
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Split_From"
           ],
           "preretired_root": [
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Preretired_Concepts"
@@ -492,6 +495,7 @@
     "codegen_prefix": "C",
     "codegen_suffix": "S",
     "codegen_file": "gencode",
-    "codegen_delimeter": "-"
+    "codegen_delimeter": "-",
+    "evshistory_file": "evs_history"
   }
 }
