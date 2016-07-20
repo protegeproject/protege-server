@@ -2,14 +2,10 @@ package org.protege.editor.owl.server.http;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.net.ssl.SSLContext;
-
+import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.http.exception.ServerException;
 import org.protege.editor.owl.server.http.handlers.AuthenticationHandler;
@@ -18,9 +14,7 @@ import org.protege.editor.owl.server.http.handlers.HTTPChangeService;
 import org.protege.editor.owl.server.http.handlers.HTTPLoginService;
 import org.protege.editor.owl.server.http.handlers.MetaprojectHandler;
 import org.protege.editor.owl.server.security.DefaultLoginService;
-import org.protege.editor.owl.server.security.SSLContextFactory;
 import org.protege.editor.owl.server.security.SessionManager;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
 import edu.stanford.protege.metaproject.Manager;
 import edu.stanford.protege.metaproject.api.AuthToken;
@@ -31,7 +25,6 @@ import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.UndertowOptions;
-import io.undertow.security.api.SecurityContextFactory;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.BlockingHandler;
@@ -72,7 +65,7 @@ public final class HTTPServer {
 	private ProtegeServer pserver;
 
 	private SessionManager session_manager = new SessionManager();
-	private Map<String, AuthToken> token_map = new HashMap<String, AuthToken>();
+	private TokenTable token_table = new TokenTable();
 	
 	private AuthenticationHandler change_handler, codegen_handler, meta_handler;
 	private BlockingHandler login_handler;
@@ -92,21 +85,11 @@ public final class HTTPServer {
 
 	public void addSession(String key, AuthToken tok) {
 		session_manager.add(tok);
-		token_map.put(key, tok);
+		token_table.put(key, tok);
 	}
 
-	public boolean validateToken(String user, String tok) {
-		AuthToken ltok = token_map.get(tok);
-		if (ltok != null) {
-			return user.equalsIgnoreCase(ltok.getUser().getId().get());
-
-		} else {
-			return false;
-		}
-	}
-	
-	public AuthToken getAuthToken(String tok) {
-		return token_map.get(tok);		
+	public AuthToken getAuthToken(String tok) throws AuthorizationException {
+		return token_table.get(tok);		
 	}
 
 	public HTTPServer() {server = this;}
