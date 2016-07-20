@@ -65,7 +65,7 @@ public class CodeGenHandler extends BaseRoutingHandler {
 			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(hisfile, true)));
 			pw.println(hist.toRecord());
 			pw.close();
-			exchange.getResponseSender().send("ok");
+			exchange.getResponseSender().close();
 			
 		}
 		exchange.endExchange();

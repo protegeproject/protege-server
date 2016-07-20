@@ -67,7 +67,9 @@ public class HTTPLoginService extends BaseRoutingHandler {
 
 			theExchange.getResponseSender().send(serl.write(new HttpAuthResponse(key, authToken.getUser()), HttpAuthResponse.class));
 		} catch (ServerServiceException e) {
-			theExchange.setStatusCode(StatusCodes.UNAUTHORIZED);			
+			theExchange.setStatusCode(StatusCodes.UNAUTHORIZED);
+			theExchange.getResponseSender().send(serl.write(e.getMessage(), String.class));
+			
 		} catch (Exception e) {
 			theExchange.setStatusCode(StatusCodes.INTERNAL_SERVER_ERROR);
 
