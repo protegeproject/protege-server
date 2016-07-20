@@ -1,11 +1,15 @@
 package org.protege.editor.owl.server.http.handlers;
 
 import org.apache.commons.codec.binary.Base64;
+import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.http.HTTPServer;
 
+import edu.stanford.protege.metaproject.api.AuthToken;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
+import io.undertow.util.HttpString;
+import io.undertow.util.StatusCodes;
 
 
 public final class AuthenticationHandler extends BaseRoutingHandler {
@@ -27,12 +31,25 @@ public final class AuthenticationHandler extends BaseRoutingHandler {
 		
 		String userid = decAuth.substring(0,decAuth.indexOf(":"));
 		String token = decAuth.substring(decAuth.indexOf(":") + 1);
-				
-		if (HTTPServer.server().validateToken(userid, token)) {
-			handler.handleRequest(exchange);			
-        } else {
-        	exchange.endExchange();          	
-        }
+		
+		try {
+			AuthToken authToken = HTTPServer.server().getAuthToken(token);
+			if (authToken != null) {
+				if (userid.equalsIgnoreCase(authToken.getUser().getId().get())) {
+					handler.handleRequest(exchange);
+				}
+				else {
+					exchange.setStatusCode(StatusCodes.UNAUTHORIZED);
+					 exchange.getResponseHeaders().add(new HttpString("Error-Message"), "Access denied"); 
+					exchange.endExchange();
+				}
+			}
+		}
+		catch (AuthorizationException e) {
+			exchange.setStatusCode(StatusCodes.UNAUTHORIZED);
+			 exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage()); 
+			exchange.endExchange();
+		}
     }
 
     public HttpHandler getHandler() {

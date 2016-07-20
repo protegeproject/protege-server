@@ -4,6 +4,7 @@ import java.util.Deque;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
+import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.http.HTTPServer;
 import org.protege.editor.owl.server.http.exception.ServerException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -51,7 +52,7 @@ public abstract class BaseRoutingHandler implements HttpHandler {
 		return paramVal;
 	}
 	
-	protected AuthToken getAuthToken(final HttpServerExchange ex) {
+	protected AuthToken getAuthToken(final HttpServerExchange ex) throws AuthorizationException {
 		
 		String fauth = getHeaderValue(ex, Headers.AUTHORIZATION, "none");
 		
