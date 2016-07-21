@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.logging.Logger;
 
+import javax.net.ssl.SSLContext;
+
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.http.exception.ServerException;
@@ -14,6 +16,7 @@ import org.protege.editor.owl.server.http.handlers.HTTPChangeService;
 import org.protege.editor.owl.server.http.handlers.HTTPLoginService;
 import org.protege.editor.owl.server.http.handlers.MetaprojectHandler;
 import org.protege.editor.owl.server.security.DefaultLoginService;
+import org.protege.editor.owl.server.security.SSLContextFactory;
 import org.protege.editor.owl.server.security.SessionManager;
 
 import edu.stanford.protege.metaproject.Manager;
@@ -118,7 +121,7 @@ public final class HTTPServer {
 
 			config = Manager.getConfigurationManager().loadServerConfiguration(new File(config_fname));
 
-			pserver = new ProtegeServer(config);           
+			pserver = new ProtegeServer(config); 			
 
 			uri = config.getHost().getUri();
 			
@@ -204,20 +207,27 @@ public final class HTTPServer {
 				exchange.endExchange();
 			}
 		});
-		
-		//SSLContext ctx;
+
 		try {
-			//ctx = new SSLContextFactory().createSslContext();
-			
-			web_server = Undertow.builder()
-					.addHttpListener(uri.getPort(), uri.getHost())
-					// TODO: work out cert convention with systems folks
-					//.addHttpsListener(uri.getPort() + 1, uri.getHost(), ctx)
-					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
-					.setHandler(aShutdownHandler)
-					.build();
+
+			if (uri.getScheme().equalsIgnoreCase("https")) {
+				SSLContext ctx = new SSLContextFactory().createSslContext();
+				web_server = Undertow.builder()
+						.addHttpsListener(uri.getPort(), uri.getHost(), ctx)
+						.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
+						.setHandler(aShutdownHandler)
+						.build();
+
+			} else {
+				web_server = Undertow.builder()
+						.addHttpListener(uri.getPort(), uri.getHost())
+						.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
+						.setHandler(aShutdownHandler)
+						.build();
+			}
+
+
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 
