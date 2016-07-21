@@ -5,7 +5,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import org.protege.editor.owl.server.api.exception.AuthorizationException;
+import org.protege.editor.owl.server.http.exception.ServerException;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -20,7 +20,7 @@ public class TokenTable {
 
 	private static final Logger logger = Logger.getLogger(TokenTable.class.getName());
 
-	public static final int DEFAULT_TABLE_TIMEOUT = 10*60*1000;
+	public static final int DEFAULT_TABLE_TIMEOUT = 30*60*1000;
 
 	private ScheduledExecutorService executorService;
 
@@ -48,7 +48,7 @@ public class TokenTable {
 							return getAuthToken();
 						}
 					});
-		createTimeoutThread(20000);
+		createTokenCleanupThread(10*60*1000); // every 10 minutes do cleanup
 	}
 
 	public void put(String key, AuthToken token) {
@@ -57,12 +57,15 @@ public class TokenTable {
 		tokenToCache = null;
 	}
 
-	public AuthToken get(String key) throws AuthorizationException {
+	public AuthToken get(String key) throws ServerException {
 		try {
 			return tokenCache.getUnchecked(key);
 		}
 		catch (InvalidCacheLoadException e) {
-			throw new AuthorizationException("User session has expired. Please relogin");
+			/*
+			 * 440 Login Timeout. Reference: https://support.microsoft.com/en-us/kb/941201
+			 */
+			throw new ServerException(440, "User session has expired. Please relogin");
 		}
 	}
 
@@ -70,7 +73,7 @@ public class TokenTable {
 		return tokenToCache;
 	}
 
-	private void createTimeoutThread(long timeout) {
+	private void createTokenCleanupThread(long timeout) {
 		executorService = Executors.newSingleThreadScheduledExecutor(r -> {
 				Thread th = new Thread(r, "Token Cache Cleanup Detail");
 				th.setDaemon(false);

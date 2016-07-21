@@ -1,8 +1,8 @@
 package org.protege.editor.owl.server.http.handlers;
 
 import org.apache.commons.codec.binary.Base64;
-import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.http.HTTPServer;
+import org.protege.editor.owl.server.http.exception.ServerException;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import io.undertow.server.HttpHandler;
@@ -40,14 +40,14 @@ public final class AuthenticationHandler extends BaseRoutingHandler {
 				}
 				else {
 					exchange.setStatusCode(StatusCodes.UNAUTHORIZED);
-					 exchange.getResponseHeaders().add(new HttpString("Error-Message"), "Access denied"); 
+					exchange.getResponseHeaders().add(new HttpString("Error-Message"), "Access denied");
 					exchange.endExchange();
 				}
 			}
 		}
-		catch (AuthorizationException e) {
-			exchange.setStatusCode(StatusCodes.UNAUTHORIZED);
-			 exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage()); 
+		catch (ServerException e) {
+			exchange.setStatusCode(e.getErrorCode());
+			exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage()); 
 			exchange.endExchange();
 		}
     }

@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import javax.net.ssl.SSLContext;
 
-import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.http.exception.ServerException;
 import org.protege.editor.owl.server.http.handlers.AuthenticationHandler;
@@ -91,7 +90,7 @@ public final class HTTPServer {
 		token_table.put(key, tok);
 	}
 
-	public AuthToken getAuthToken(String tok) throws AuthorizationException {
+	public AuthToken getAuthToken(String tok) throws ServerException {
 		return token_table.get(tok);		
 	}
 
