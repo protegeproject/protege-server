@@ -49,8 +49,8 @@ public class HTTPChangeService extends BaseRoutingHandler {
 			try {
 				hist = acf.commit(getAuthToken(exchange), pid, bundle);
 				os.writeObject(hist);
-			} catch (OutOfSyncException e) {
-				os.writeObject(new ServerException(500, "Out of sync error", e));
+			} catch (Exception e) {
+				os.writeObject(new ServerException(500, "Server processing error", e));
 				exchange.setStatusCode(500);
 
 			}		
