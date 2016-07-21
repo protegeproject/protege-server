@@ -284,7 +284,6 @@
                             org.apache.logging.log4j.message,
                             org.apache.logging.log4j.spi,
                             sun.misc,
-                            com.google.gson.*,
                             org.semanticweb.binaryowl.*,
                             org.apache.commons.io.*,
                             com.fasterxml.jackson.core.*
