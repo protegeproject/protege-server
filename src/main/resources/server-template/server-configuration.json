@@ -1,6 +1,6 @@
 {
   "host": {
-    "uri": "https://localhost:8080"
+    "uri": "http://localhost:8080"
   },
   "root": "root/data",
   "metaproject": {
