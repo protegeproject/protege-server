@@ -285,6 +285,7 @@
                             org.apache.logging.log4j.spi,
                             sun.misc,
                             org.semanticweb.binaryowl.*,
+                            org.apache.commons.codec.*,
                             org.apache.commons.io.*,
                             com.fasterxml.jackson.core.*
                          </Export-Package>
