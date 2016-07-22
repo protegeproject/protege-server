@@ -51,7 +51,7 @@ public class TokenTable {
 		createTokenCleanupThread(10*60*1000); // every 10 minutes do cleanup
 	}
 
-	public void put(String key, AuthToken token) {
+	public synchronized void put(String key, AuthToken token) {
 		tokenToCache = token;
 		tokenCache.refresh(key); // load it to the cache storage
 		tokenToCache = null;
