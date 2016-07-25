@@ -9,7 +9,7 @@ public class AuthorizationException extends OWLServerException {
     private static final long serialVersionUID = 101662876369152470L;
 
     public AuthorizationException() {
-        // NO-OP
+        super();
     }
 
     public AuthorizationException(String message) {
