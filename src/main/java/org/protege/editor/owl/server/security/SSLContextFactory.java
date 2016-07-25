@@ -17,11 +17,16 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 
 public class SSLContextFactory {
 	// generate a self signed cert for testing
 	// keytool -genkey -alias my_foo_cert -keyalg RSA -sigalg MD5withRSA -keystore my_foo.jks -storepass maotoing  -keypass maotoing -validity 9999
+
+	private static Logger logger = LoggerFactory.getLogger(SSLContextFactory.class);
 
     public final static TrustManager[] TRUST_ALL_CERTS = new X509TrustManager[] { new DummyTrustManager() };   
     
@@ -34,7 +39,7 @@ public class SSLContextFactory {
     public SSLContextFactory() {
     }
 
-    public SSLContext createSslContext() throws IOException {
+    public SSLContext createSslContext() throws SSLContextInitializationException {
     	
         String keyStoreName = System.getProperty(PROPERTY_SSL_KEYSTORE);
         String keyStoreType = System.getProperty(PROPERTY_SSL_KEYSTORE_TYPE);
@@ -50,35 +55,52 @@ public class SSLContextFactory {
             sslContext = SSLContext.getInstance("SSL");
             sslContext.init(keyManagers, trustManagers, null);
         }
-        catch (NoSuchAlgorithmException | KeyManagementException exc) {
-            throw new IOException("Unable to create and initialise the SSLContext", exc);
+        catch (NoSuchAlgorithmException | KeyManagementException e) {
+            throw new SSLContextInitializationException("Unable to create and initialise the SSLContext", e);
         }
 
         return sslContext;
     }
 
     private KeyStore loadKeyStore(final String location, String type, String storePassword)
-        throws IOException {
+            throws SSLContextInitializationException {
         String url = location;
         if (url.indexOf(':') == -1) {
             url = "file:" + location;
         }
-
-        final InputStream stream = new URL(url).openStream();
+        InputStream stream = null;
         try {
+            stream = new URL(url).openStream();
             KeyStore loadedKeystore = KeyStore.getInstance(type);
             loadedKeystore.load(stream, storePassword.toCharArray());
             return loadedKeystore;
         }
-        catch (KeyStoreException | NoSuchAlgorithmException | CertificateException exc) {
-            throw new IOException(String.format("Unable to load KeyStore %s", location), exc);
+        catch (IOException e) {
+            logger.error("Failed to read KeyStore from file at: " + location, e);
+            throw new SSLContextInitializationException("Unable to load KeyStore at the server", e);
+        }
+        catch (KeyStoreException | NoSuchAlgorithmException e) {
+            logger.error("Failed to create KeyStore instance using file at: " + location, e);
+            throw new SSLContextInitializationException("Unable to load KeyStore at the server", e);
+        }
+        catch (CertificateException e) {
+           logger.error("Failed to load KeyStore certificate from file at: " + location, e);
+           throw new SSLContextInitializationException("Unable to load KeyStore at the server", e);
         }
         finally {
-            stream.close();
+            if (stream != null) {
+               try {
+                  stream.close();
+               }
+               catch (IOException e) {
+                  throw new RuntimeException(e.getMessage(), e);
+               }
+            }
         }
     }
 
-    private static TrustManager[] buildTrustManagers(final KeyStore trustStore) throws IOException {
+    private static TrustManager[] buildTrustManagers(final KeyStore trustStore)
+            throws SSLContextInitializationException {
         TrustManager[] trustManagers = null;
         if (trustStore == null) {
             try {
@@ -87,8 +109,9 @@ public class SSLContextFactory {
                 trustManagerFactory.init(trustStore);
                 trustManagers = trustManagerFactory.getTrustManagers();
             }
-            catch (NoSuchAlgorithmException | KeyStoreException exc) {
-                throw new IOException("Unable to initialise TrustManager[]", exc);
+            catch (NoSuchAlgorithmException | KeyStoreException e) {
+                logger.error("Failed to create TrustManager instance", e);
+                throw new SSLContextInitializationException("Unable to build TrustManager", e);
             }
         }
         else {
@@ -98,7 +121,7 @@ public class SSLContextFactory {
     }
 
     private static KeyManager[] buildKeyManagers(final KeyStore keyStore, char[] storePassword)
-        throws IOException {
+            throws SSLContextInitializationException {
         KeyManager[] keyManagers;
         try {
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory
@@ -106,8 +129,9 @@ public class SSLContextFactory {
             keyManagerFactory.init(keyStore, storePassword);
             keyManagers = keyManagerFactory.getKeyManagers();
         }
-        catch (NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException exc) {
-            throw new IOException("Unable to initialise KeyManager[]", exc);
+        catch (NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException e) {
+            logger.error("Failed to create KeyManager instance", e);
+            throw new SSLContextInitializationException("Unable to build KeyManager at the server", e);
         }
         return keyManagers;
     }

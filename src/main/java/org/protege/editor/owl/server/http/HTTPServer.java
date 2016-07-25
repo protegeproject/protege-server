@@ -3,11 +3,11 @@ package org.protege.editor.owl.server.http;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.util.logging.Logger;
 
 import javax.net.ssl.SSLContext;
 
 import org.protege.editor.owl.server.base.ProtegeServer;
+import org.protege.editor.owl.server.http.exception.ServerConfigurationInitializationException;
 import org.protege.editor.owl.server.http.exception.ServerException;
 import org.protege.editor.owl.server.http.handlers.AuthenticationHandler;
 import org.protege.editor.owl.server.http.handlers.CodeGenHandler;
@@ -16,7 +16,10 @@ import org.protege.editor.owl.server.http.handlers.HTTPLoginService;
 import org.protege.editor.owl.server.http.handlers.MetaprojectHandler;
 import org.protege.editor.owl.server.security.DefaultLoginService;
 import org.protege.editor.owl.server.security.SSLContextFactory;
+import org.protege.editor.owl.server.security.SSLContextInitializationException;
 import org.protege.editor.owl.server.security.SessionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.stanford.protege.metaproject.Manager;
 import edu.stanford.protege.metaproject.api.AuthToken;
@@ -32,11 +35,10 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.server.handlers.ExceptionHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
+import io.undertow.util.HttpString;
 import io.undertow.util.StatusCodes;
 
 public final class HTTPServer {
-
-	private static final Logger LOGGER = Logger.getLogger(HTTPServer.class.getName());
 
 	public static final String SERVER_CONFIGURATION_PROPERTY = "org.protege.owl.server.configuration";
 
@@ -61,6 +63,8 @@ public final class HTTPServer {
 	public static final String GEN_CODE = ROOT_PATH + "/gen_code";
 	public static final String GEN_CODES = ROOT_PATH + "/gen_codes";
 	public static final String EVS_REC = ROOT_PATH + "/evs_record";
+	
+	private static Logger logger = LoggerFactory.getLogger(HTTPServer.class);
 	
 	private String config_fname = null;
 	private ServerConfiguration config;
@@ -106,38 +110,30 @@ public final class HTTPServer {
 		HTTPServer s = new HTTPServer();	
 		try {
 			s.start();
-		} catch (ServerException e) {
-			e.printStackTrace();
 		}
-
+		catch (ServerConfigurationInitializationException | SSLContextInitializationException e) {
+			// NO-OP: The exceptions are already logged by the module that generates the exception
+		}
 	}
 	
-	private void initConfig() throws ServerException {
+	private void initConfig() throws ServerConfigurationInitializationException {
 		try {
 			if (config_fname == null) {
 				config_fname = System.getProperty(SERVER_CONFIGURATION_PROPERTY);
 			}
-
 			config = Manager.getConfigurationManager().loadServerConfiguration(new File(config_fname));
-
-			pserver = new ProtegeServer(config); 			
-
+			pserver = new ProtegeServer(config);
 			uri = config.getHost().getUri();
-			
-
 		}
-		catch (FileNotFoundException | ObjectConversionException  e) {
-			e.printStackTrace();
-			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR);
+		catch (FileNotFoundException | ObjectConversionException e) {
+			logger.error("Unable to load server configuration at location: " + config_fname, e);
+			throw new ServerConfigurationInitializationException("Unable to load server configuration", e);
 		}
-		
 	}
 
-	public void start() throws ServerException {
-
+	public void start() throws ServerConfigurationInitializationException, SSLContextInitializationException {
 
 		initConfig();
-
 		
 		router = Handlers.routing();
 
@@ -199,7 +195,14 @@ public final class HTTPServer {
 					@Override
 					public void shutdown(final boolean isDown) {
 						if (isDown) {
-							restart();
+							try {
+								restart();
+							}
+							catch (ServerException e) {
+								exchange.setStatusCode(e.getErrorCode());
+								exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage());
+								exchange.endExchange();
+							}
 						}
 					}
 				});
@@ -207,29 +210,21 @@ public final class HTTPServer {
 			}
 		});
 
-		try {
+		if (uri.getScheme().equalsIgnoreCase("https")) {
+			SSLContext ctx = new SSLContextFactory().createSslContext();
+			web_server = Undertow.builder()
+					.addHttpsListener(uri.getPort(), uri.getHost(), ctx)
+					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
+					.setHandler(aShutdownHandler)
+					.build();
 
-			if (uri.getScheme().equalsIgnoreCase("https")) {
-				SSLContext ctx = new SSLContextFactory().createSslContext();
-				web_server = Undertow.builder()
-						.addHttpsListener(uri.getPort(), uri.getHost(), ctx)
-						.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
-						.setHandler(aShutdownHandler)
-						.build();
-
-			} else {
-				web_server = Undertow.builder()
-						.addHttpListener(uri.getPort(), uri.getHost())
-						.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
-						.setHandler(aShutdownHandler)
-						.build();
-			}
-
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
-
+		} else {
+			web_server = Undertow.builder()
+					.addHttpListener(uri.getPort(), uri.getHost())
+					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
+					.setHandler(aShutdownHandler)
+					.build();
+		}
 
 		isRunning = true;
 		web_server.start();
@@ -249,13 +244,13 @@ public final class HTTPServer {
 		}
 	}
 	
-	public void restart() {
-		stop();
+	public void restart() throws ServerException {
 		try {
+			stop();
 			start();
-		} catch (ServerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		}
+		catch (Exception e) {
+			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, e.getMessage());
 		}
 	}
 }
