@@ -1,14 +1,8 @@
 package org.protege.editor.owl.server.base;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import edu.stanford.protege.metaproject.Manager;
+import edu.stanford.protege.metaproject.api.*;
+import edu.stanford.protege.metaproject.api.exception.*;
 import org.apache.commons.io.FileUtils;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.ServerLayer;
@@ -25,38 +19,10 @@ import org.protege.editor.owl.server.versioning.api.ServerDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.stanford.protege.metaproject.Manager;
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
-import edu.stanford.protege.metaproject.api.Description;
-import edu.stanford.protege.metaproject.api.Host;
-import edu.stanford.protege.metaproject.api.MetaprojectAgent;
-import edu.stanford.protege.metaproject.api.MetaprojectFactory;
-import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.Operation;
-import edu.stanford.protege.metaproject.api.OperationId;
-import edu.stanford.protege.metaproject.api.OperationRegistry;
-import edu.stanford.protege.metaproject.api.Password;
-import edu.stanford.protege.metaproject.api.Policy;
-import edu.stanford.protege.metaproject.api.Port;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.ProjectRegistry;
-import edu.stanford.protege.metaproject.api.Role;
-import edu.stanford.protege.metaproject.api.RoleId;
-import edu.stanford.protege.metaproject.api.RoleRegistry;
-import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
-import edu.stanford.protege.metaproject.api.ServerConfiguration;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
-import edu.stanford.protege.metaproject.api.UserRegistry;
-import edu.stanford.protege.metaproject.api.exception.IdAlreadyInUseException;
-import edu.stanford.protege.metaproject.api.exception.ProjectNotInPolicyException;
-import edu.stanford.protege.metaproject.api.exception.ServerConfigurationNotLoadedException;
-import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
-import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
-import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.*;
 
 /**
  * The main server that acts as the end-point server where user requests to the
@@ -520,20 +486,20 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId)
+    public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId, GlobalPermissions globalPermissions)
             throws AuthorizationException, ServerServiceException {
         Map<ProjectId, List<Role>> roleMap = new HashMap<>();
         for (Project project : getAllProjects(token)) {
-            roleMap.put(project.getId(), getRoles(token, userId, project.getId()));
+            roleMap.put(project.getId(), getRoles(token, userId, project.getId(), globalPermissions));
         }
         return roleMap;
     }
 
     @Override
-    public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId)
+    public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId, GlobalPermissions globalPermissions)
             throws AuthorizationException, ServerServiceException {
         try {
-            return new ArrayList<>(metaprojectAgent.getRoles(userId, projectId));
+            return new ArrayList<>(metaprojectAgent.getRoles(userId, projectId, globalPermissions));
         }
         catch (UserNotInPolicyException e) {
             logger.error(printLog(token.getUser(), "List roles", e.getMessage()));
@@ -551,20 +517,20 @@ public class ProtegeServer extends ServerLayer {
     }
 
     @Override
-    public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId)
+    public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId, GlobalPermissions globalPermissions)
             throws AuthorizationException, ServerServiceException {
         Map<ProjectId, List<Operation>> operationMap = new HashMap<>();
         for (Project project : getAllProjects(token)) {
-            operationMap.put(project.getId(), getOperations(token, userId, project.getId()));
+            operationMap.put(project.getId(), getOperations(token, userId, project.getId(), globalPermissions));
         }
         return operationMap;
     }
 
     @Override
-    public List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId)
+    public List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId, GlobalPermissions globalPermissions)
             throws AuthorizationException, ServerServiceException {
         try {
-            return new ArrayList<>(metaprojectAgent.getOperations(userId, projectId));
+            return new ArrayList<>(metaprojectAgent.getOperations(userId, projectId, globalPermissions));
         }
         catch (UserNotInPolicyException e) {
             logger.error(printLog(token.getUser(), "List operations", e.getMessage()));

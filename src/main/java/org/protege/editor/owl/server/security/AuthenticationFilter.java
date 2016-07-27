@@ -1,28 +1,11 @@
 package org.protege.editor.owl.server.security;
 
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
-import edu.stanford.protege.metaproject.api.Description;
-import edu.stanford.protege.metaproject.api.Host;
-import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.Operation;
-import edu.stanford.protege.metaproject.api.OperationId;
-import edu.stanford.protege.metaproject.api.Password;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.Role;
-import edu.stanford.protege.metaproject.api.RoleId;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
-import edu.stanford.protege.metaproject.api.UserRegistry;
-
+import edu.stanford.protege.metaproject.api.*;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.LoginService;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
 import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
-import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
@@ -252,17 +235,17 @@ public class AuthenticationFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId)
+    public Map<ProjectId, List<Role>> getRoles(AuthToken token, UserId userId, GlobalPermissions globalPermissions)
             throws AuthorizationException, ServerServiceException {
         verifyRequest(token);
-        return super.getRoles(token, userId);
+        return super.getRoles(token, userId, globalPermissions);
     }
 
     @Override
-    public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId)
+    public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId, GlobalPermissions globalPermissions)
             throws AuthorizationException, ServerServiceException {
         verifyRequest(token);
-        return super.getRoles(token, userId, projectId);
+        return super.getRoles(token, userId, projectId, globalPermissions);
     }
 
     @Override
@@ -272,17 +255,17 @@ public class AuthenticationFilter extends ServerFilterAdapter {
     }
 
     @Override
-    public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId)
+    public Map<ProjectId, List<Operation>> getOperations(AuthToken token, UserId userId, GlobalPermissions globalPermissions)
             throws AuthorizationException, ServerServiceException {
         verifyRequest(token);
-        return super.getOperations(token, userId);
+        return super.getOperations(token, userId, globalPermissions);
     }
 
     @Override
-    public List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId)
+    public List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId, GlobalPermissions globalPermissions)
             throws AuthorizationException, ServerServiceException {
         verifyRequest(token);
-        return super.getOperations(token, userId, projectId);
+        return super.getOperations(token, userId, projectId, globalPermissions);
     }
 
     @Override
