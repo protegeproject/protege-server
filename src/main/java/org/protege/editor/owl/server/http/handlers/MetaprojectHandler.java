@@ -100,7 +100,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT) &&
 				exchange.getRequestMethod().equals(Methods.POST)) {
 			/*
-			 * Receive input parameters
+			 * Read client input
 			 */
 			ProjectId pid = null;
 			Name pname = null;
@@ -187,7 +187,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT_SNAPSHOT)
 				&& exchange.getRequestMethod().equals(Methods.POST)) {
 			/*
-			 * Receive input parameters
+			 * Read client input
 			 */
 			ServerDocument sdoc = null;
 			SnapShot shot = null;
@@ -230,7 +230,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 
 		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT_SNAPSHOT_GET)) {
 			/*
-			 * Receive input parameters
+			 * Read client input
 			 */
 			ServerDocument sdoc = null;
 			try {
