@@ -7,7 +7,8 @@
     "policy": {
       "root": {
         "all-projects": [
-          "mp-admin"
+          "mp-admin",
+          "mp-project-manager"
         ],
         "foo": [
           "mp-project-manager"
@@ -49,10 +50,14 @@
         "id": "bob",
         "name": "bob",
         "emailAddress": "bob"
+      },
+      {
+        "id": "joe",
+        "name": "joey",
+        "emailAddress": "joe"
       }
     ],
-    "projects": [
-     
+    "projects": [      
       {
         "id": "foo",
         "name": "foo",
@@ -92,14 +97,14 @@
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Split_From"
           ],
           "code_prop": [
-          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-00000029"
-          	],
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-00000029"
+          ],
           "label_prop": [
-          	"http://www.w3.org/2000/01/rdf-schema#label"
-          	],
+            "http://www.w3.org/2000/01/rdf-schema#label"
+          ],
           "pref_name": [
-          	"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Preferred_Name"
-          	],          	
+            "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Preferred_Name"
+          ],
           "design_note": [
             "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Design_Note"
           ],
@@ -144,7 +149,6 @@
           ]
         }
       }
-      
     ],
     "roles": [
       {
@@ -209,6 +213,25 @@
           "merge",
           "clone",
           "accept-change",
+          "Split"
+        ]
+      },
+      {
+        "id": "fd461d3a-8f94-49f3-af4b-b4cec1d309cf",
+        "name": "test-scroll-ops-display",
+        "description": "A user with this role should be able to do many things, but it\u0027s difficult to see the operations in the display panel",
+        "operations": [
+          "add-user",
+          "add-project",
+          "add-role",
+          "retire",
+          "remove-ontology-annotation",
+          "add-axiom",
+          "merge",
+          "modify-user",
+          "add-operation",
+          "add-import",
+          "open-project",
           "Split"
         ]
       },
@@ -484,6 +507,11 @@
       "userId": "guest",
       "password": "4e39216f3fe3bba1716b0b6a88f71d49fa4454835e09d3a9",
       "salt": "75f8597a1b9df86d45e48de4b253b0d2fb26d71e7f45ea34"
+    },
+    {
+      "userId": "joe",
+      "password": "1a99b8180f29463f35370afef404dfb31f132741b85080b9",
+      "salt": "d42a81f5945d99f1737618449aac8f6f6fd69680d0860571"
     },
     {
       "userId": "root",
