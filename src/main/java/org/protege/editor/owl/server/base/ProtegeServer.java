@@ -491,7 +491,7 @@ public class ProtegeServer extends ServerLayer {
             changeHistory.addRevision(commit.getMetadata(), commit.getChanges());
             String message = String.format("Receive revision %s: %s",
                     changeHistory.getHeadRevision(), commit.getMetadata().getComment());
-            logger.error(printLog(token.getUser(), "Commit changes", message));
+            logger.info(printLog(token.getUser(), "Commit changes", message));
         }
         return changeHistory;
     }
