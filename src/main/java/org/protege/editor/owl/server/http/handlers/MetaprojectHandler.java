@@ -47,6 +47,7 @@ import edu.stanford.protege.metaproject.api.Serializer;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
+import edu.stanford.protege.metaproject.api.exception.PolicyException;
 import edu.stanford.protege.metaproject.api.exception.ServerConfigurationNotLoadedException;
 import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
 import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
@@ -82,13 +83,13 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				String uid = super.getQueryParameter(exchange, "userid");
 				MetaprojectFactory f = Manager.getFactory();
 				UserId userId = f.getUserId(uid);
-				ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 				List<Project> projects = new ArrayList<>(metaprojectAgent.getProjects(userId));
+				ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 				os.writeObject(projects);
 				exchange.endExchange(); // end the request
 			}
 			catch (UserNotInPolicyException e) {
-				unauthorizedStatusCode(exchange, "Access denied", e);
+				unauthorizedStatusCode(exchange, "Failed to get project list due to insufficient access right", e);
 			}
 			catch (IOException e) {
 				internalServerErrorStatusCode(exchange, "Failed to transmit the returned data", e);
@@ -97,7 +98,8 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				handleServerException(exchange, e);
 			}
 			
-		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT) &&
+		}
+		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT) &&
 				exchange.getRequestMethod().equals(Methods.POST)) {
 			/*
 			 * Read client input
@@ -132,7 +134,12 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				unauthorizedStatusCode(exchange, "Access denied", e);
 			}
 			catch (ServerServiceException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to create the project", e);
+				if (e.getCause() instanceof PolicyException) {
+					unauthorizedStatusCode(exchange, "Failed to create project due to insufficient access right", e);
+				}
+				else {
+					internalServerErrorStatusCode(exchange, "Server failed to create the project", e);
+				}
 			}
 			catch (IOException e) {
 				internalServerErrorStatusCode(exchange, "Failed to transmit the returned data", e);
@@ -141,7 +148,8 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				handleServerException(exchange, e);
 			}
 			
-		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT)
+		}
+		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT)
 				&& exchange.getRequestMethod().equals(Methods.GET)) {
 			try {
 				String pid = super.getQueryParameter(exchange, "projectid");
@@ -156,7 +164,12 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				unauthorizedStatusCode(exchange, "Access denied", e);
 			}
 			catch (ServerServiceException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to open the project", e);
+				if (e.getCause() instanceof PolicyException) {
+					unauthorizedStatusCode(exchange, "Failed to open the project due to insufficient access right", e);
+				}
+				else {
+					internalServerErrorStatusCode(exchange, "Server failed to open the project", e);
+				}
 			}
 			catch (IOException e) {
 				internalServerErrorStatusCode(exchange, "Failed to transmit the returned data", e);
@@ -165,7 +178,8 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				handleServerException(exchange, e);
 			}
 			
-		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT)
+		}
+		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT)
 				&& exchange.getRequestMethod().equals(Methods.DELETE)) {
 			try {
 				String pid = super.getQueryParameter(exchange, "projectid");
@@ -178,13 +192,19 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				unauthorizedStatusCode(exchange, "Access denied", e);
 			}
 			catch (ServerServiceException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to delete the project", e);
+				if (e.getCause() instanceof PolicyException) {
+					unauthorizedStatusCode(exchange, "Failed to delete the project due to insufficient access right", e);
+				}
+				else {
+					internalServerErrorStatusCode(exchange, "Server failed to delete the project", e);
+				}
 			}
 			catch (ServerException e) {
 				handleServerException(exchange, e);
 			}
 			
-		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT_SNAPSHOT)
+		}
+		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT_SNAPSHOT)
 				&& exchange.getRequestMethod().equals(Methods.POST)) {
 			/*
 			 * Read client input
@@ -227,8 +247,9 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			catch (IOException e) {
 				internalServerErrorStatusCode(exchange, "Failed to transmit the returned data", e);
 			}
-
-		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT_SNAPSHOT_GET)) {
+			
+		}
+		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT_SNAPSHOT_GET)) {
 			/*
 			 * Read client input
 			 */
@@ -272,14 +293,19 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				internalServerErrorStatusCode(exchange, "Failed to transmit the returned data", e);
 			}
 			
-		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.METAPROJECT) &&
+		}
+		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.METAPROJECT) &&
 				exchange.getRequestMethod().equals(Methods.GET)) {
 			Serializer<Gson> serl = new DefaultJsonSerializer();
 			exchange.getResponseSender().send(serl.write(configuration, ServerConfiguration.class));
 			exchange.endExchange();
 			
-		} else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.METAPROJECT) &&
+		}
+		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.METAPROJECT) &&
 				exchange.getRequestMethod().equals(Methods.POST)) {
+			/*
+			 * Read client input
+			 */
 			// TODO: After posting the new metaproject, we need to decide what to do with
 			//       the config that's loaded in RAM
 			ServerConfiguration cfg = null;
@@ -294,6 +320,9 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				internalServerErrorStatusCode(exchange, "Server failed to load the server configuration", e);
 			}
 			
+			/*
+			 * Processing the request
+			 */
 			try {
 				Manager.getConfigurationManager().setServerConfiguration(cfg);
 				Manager.getConfigurationManager().saveServerConfiguration(new File(configLocation));
@@ -303,6 +332,9 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				internalServerErrorStatusCode(exchange, "Server failed to save changes", e);
 			}
 			
+			/*
+			 * Restart the server
+			 */
 			try {
 				HTTPServer.server().restart();
 			}
