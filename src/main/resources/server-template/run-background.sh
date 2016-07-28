@@ -9,3 +9,4 @@ nohup java -Xmx4000M -Xms1500M \
      -Dorg.protege.editor.owl.server.security.ssl.password=<password-to-keystore> \
      -cp "bundles/*" \
      org.protege.editor.owl.server.http.HTTPServer </dev/null >console.txt 2>&1 &
+     
