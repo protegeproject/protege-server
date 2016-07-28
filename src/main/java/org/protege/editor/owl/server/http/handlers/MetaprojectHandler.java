@@ -47,7 +47,6 @@ import edu.stanford.protege.metaproject.api.Serializer;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
-import edu.stanford.protege.metaproject.api.exception.PolicyException;
 import edu.stanford.protege.metaproject.api.exception.ServerConfigurationNotLoadedException;
 import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
 import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
@@ -89,7 +88,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				exchange.endExchange(); // end the request
 			}
 			catch (UserNotInPolicyException e) {
-				unauthorizedStatusCode(exchange, "Failed to get project list due to insufficient access right", e);
+				internalServerErrorStatusCode(exchange, "Server failed to get project list", e);
 			}
 			catch (IOException e) {
 				internalServerErrorStatusCode(exchange, "Failed to transmit the returned data", e);
@@ -134,12 +133,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				unauthorizedStatusCode(exchange, "Access denied", e);
 			}
 			catch (ServerServiceException e) {
-				if (e.getCause() instanceof PolicyException) {
-					unauthorizedStatusCode(exchange, "Failed to create project due to insufficient access right", e);
-				}
-				else {
-					internalServerErrorStatusCode(exchange, "Server failed to create the project", e);
-				}
+				internalServerErrorStatusCode(exchange, "Server failed to create the project", e);
 			}
 			catch (IOException e) {
 				internalServerErrorStatusCode(exchange, "Failed to transmit the returned data", e);
@@ -164,12 +158,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				unauthorizedStatusCode(exchange, "Access denied", e);
 			}
 			catch (ServerServiceException e) {
-				if (e.getCause() instanceof PolicyException) {
-					unauthorizedStatusCode(exchange, "Failed to open the project due to insufficient access right", e);
-				}
-				else {
-					internalServerErrorStatusCode(exchange, "Server failed to open the project", e);
-				}
+				internalServerErrorStatusCode(exchange, "Server failed to open the project", e);
 			}
 			catch (IOException e) {
 				internalServerErrorStatusCode(exchange, "Failed to transmit the returned data", e);
@@ -192,12 +181,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				unauthorizedStatusCode(exchange, "Access denied", e);
 			}
 			catch (ServerServiceException e) {
-				if (e.getCause() instanceof PolicyException) {
-					unauthorizedStatusCode(exchange, "Failed to delete the project due to insufficient access right", e);
-				}
-				else {
-					internalServerErrorStatusCode(exchange, "Server failed to delete the project", e);
-				}
+				internalServerErrorStatusCode(exchange, "Server failed to delete the project", e);
 			}
 			catch (ServerException e) {
 				handleServerException(exchange, e);

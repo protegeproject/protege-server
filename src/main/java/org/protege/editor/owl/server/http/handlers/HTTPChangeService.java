@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.exception.PolicyException;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
 import io.undertow.util.StatusCodes;
@@ -73,12 +72,7 @@ public class HTTPChangeService extends BaseRoutingHandler {
 				conflictStatusCode(exchange, "Commit failed, please update your local copy first", e);
 			}
 			catch (ServerServiceException e) {
-				if (e.getCause() instanceof PolicyException) {
-					unauthorizedStatusCode(exchange, "Failed to get all changes due to insufficient access right", e);
-				}
-				else {
-					internalServerErrorStatusCode(exchange, "Server failed to accept the commit", e);
-				}
+				internalServerErrorStatusCode(exchange, "Server failed to accept the commit", e);
 			}
 			catch (ServerException e) {
 				handleServerException(exchange, e);
@@ -119,12 +113,7 @@ public class HTTPChangeService extends BaseRoutingHandler {
 				history = changeService.getChanges(file, DocumentRevision.START_REVISION, headRevision);
 			}
 			catch (ServerServiceException e) {
-				if (e.getCause() instanceof PolicyException) {
-					unauthorizedStatusCode(exchange, "Failed to get all changes due to insufficient access right", e);
-				}
-				else {
-					internalServerErrorStatusCode(exchange, "Server failed to get all changes", e);
-				}
+				internalServerErrorStatusCode(exchange, "Server failed to get all changes", e);
 			}
 			
 			/*
@@ -164,12 +153,7 @@ public class HTTPChangeService extends BaseRoutingHandler {
 				history = changeService.getChanges(file, start, headRevision);
 			}
 			catch (ServerServiceException e) {
-				if (e.getCause() instanceof PolicyException) {
-					unauthorizedStatusCode(exchange, "Failed to get the latest changes due to insufficient access right", e);
-				}
-				else {
-					internalServerErrorStatusCode(exchange, "Server failed to get the latest changes", e);
-				}
+				internalServerErrorStatusCode(exchange, "Server failed to get the latest changes", e);
 			}
 			
 			/*
@@ -207,12 +191,7 @@ public class HTTPChangeService extends BaseRoutingHandler {
 				headRevision = changeService.getHeadRevision(file);
 			}
 			catch (ServerServiceException e) {
-				if (e.getCause() instanceof PolicyException) {
-					unauthorizedStatusCode(exchange, "Failed to get the head revision due to insufficient access right", e);
-				}
-				else {
-					internalServerErrorStatusCode(exchange, "Server failed to get the head revision", e);
-				}
+				internalServerErrorStatusCode(exchange, "Server failed to get the head revision", e);
 			}
 			
 			/*
