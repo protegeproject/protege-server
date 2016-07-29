@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
-<rdf:RDF xmlns="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#"
-     xml:base="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl"
-     xmlns:owl2lexevs="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#"
+<rdf:RDF xmlns="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#"
+     xml:base="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl"
+     xmlns:owl2lexevs="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
      xmlns:owl="http://www.w3.org/2002/07/owl#"
      xmlns:xml="http://www.w3.org/XML/1998/namespace"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      xmlns:dc="http://purl.org/dc/elements/1.1/">
-    <owl:Ontology rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl">
-        <owl:versionIRI rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl/0.1.2"/>
+    <owl:Ontology rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl">
+        <owl:versionIRI rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl/0.1.2"/>
         <owl:versionInfo>0.1.2</owl:versionInfo>
         <source>nci evs</source>
         <note xml:lang="en">Test of OWL2 constructions for import into LexEVS.  This file contains defines with annotations.</note>
@@ -29,212 +29,212 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#ALT_DEFINITION -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#ALT_DEFINITION -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#ALT_DEFINITION">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#ALT_DEFINITION">
         <rdfs:label>ALT_DEFINITION</rdfs:label>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#textarea"/>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationLIT -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationLIT -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationLIT"/>
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationLIT"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationSTR -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationSTR -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationSTR">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationSTR">
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationURI -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationURI -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationURI">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationURI">
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#anyURI"/>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationV1 -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationV1 -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationV1"/>
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationV1"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-00000029 -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-00000029 -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-00000029">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-00000029">
         <rdfs:label>code</rdfs:label>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION">
         <rdfs:label>DEFINITION</rdfs:label>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#textarea"/>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Definition_Review_Date -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Definition_Review_Date -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Definition_Review_Date">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Definition_Review_Date">
         <rdfs:label>Definition_Review_Date</rdfs:label>
-        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#date-time-system"/>
+        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#date-time-system"/>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Definition_Review_Name -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Definition_Review_Name -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Definition_Review_Name">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Definition_Review_Name">
         <rdfs:label>Definition_Review_Name</rdfs:label>
-        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#user-system"/>
+        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#user-system"/>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Design_Note -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Design_Note -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Design_Note"/>
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Design_Note"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Editor_Note -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Editor_Note -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Editor_Note"/>
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Editor_Note"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN">
         <rdfs:label>FULL_SYN</rdfs:label>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#textarea"/>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Merge_Source -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Merge_Source -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Merge_Source">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Merge_Source">
         <rdfs:label>Merge_Source</rdfs:label>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Merge_Target -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Merge_Target -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Merge_Target">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Merge_Target">
         <rdfs:label>Merge_Target</rdfs:label>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_ASSOCIATION -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_ASSOCIATION -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_ASSOCIATION">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_ASSOCIATION">
         <rdfs:label>OLD_ASSOCIATION</rdfs:label>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_CHILD -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_CHILD -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_CHILD">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_CHILD">
         <rdfs:label>OLD_CHILD</rdfs:label>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_PARENT -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_PARENT -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_PARENT">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_PARENT">
         <rdfs:label>OLD_PARENT</rdfs:label>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_ROLE -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_ROLE -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_ROLE">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_ROLE">
         <rdfs:label>OLD_ROLE</rdfs:label>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_SOURCE_ASSOCIATION -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_SOURCE_ASSOCIATION -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_SOURCE_ASSOCIATION">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_SOURCE_ASSOCIATION">
         <rdfs:label>OLD_SOURCE_ASSOCIATION</rdfs:label>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_SOURCE_ROLE -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_SOURCE_ROLE -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OLD_SOURCE_ROLE">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_SOURCE_ROLE">
         <rdfs:label>OLD_SOURCE_ROLE</rdfs:label>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Preferred_Name -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Preferred_Name -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Preferred_Name"/>
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Preferred_Name"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Split_From -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Split_From -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Split_From">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Split_From">
         <rdfs:label>Split_From</rdfs:label>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#def-source -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#def-source -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#def-source">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#def-source">
         <rdfs:label>def-source</rdfs:label>
-        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#def-source_enum"/>
+        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#def-source_enum"/>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#note -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#note -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#note"/>
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#note"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#semanticType -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#semanticType -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#semanticType"/>
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#semanticType"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-group -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#term-group -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-group">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#term-group">
         <rdfs:label>term-group</rdfs:label>
-        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-group-enum"/>
+        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#term-group-enum"/>
     </owl:AnnotationProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-source -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#term-source -->
 
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-source">
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#term-source">
         <rdfs:label>term-source</rdfs:label>
-        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-source-enum"/>
+        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#term-source-enum"/>
     </owl:AnnotationProperty>
     
 
@@ -256,15 +256,15 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#date-time-system -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#date-time-system -->
 
-    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#date-time-system"/>
+    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#date-time-system"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#def-source_enum -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#def-source_enum -->
 
-    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#def-source_enum">
+    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#def-source_enum">
         <rdfs:label>def-source-enum</rdfs:label>
         <owl:equivalentClass>
             <rdfs:Datatype>
@@ -293,9 +293,9 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#lang_enum -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#lang_enum -->
 
-    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#lang_enum">
+    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#lang_enum">
         <owl:equivalentClass>
             <rdfs:Datatype>
                 <owl:oneOf>
@@ -323,9 +323,9 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-group-enum -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#term-group-enum -->
 
-    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-group-enum">
+    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#term-group-enum">
         <rdfs:label>term-group-enum</rdfs:label>
         <owl:equivalentClass>
             <rdfs:Datatype>
@@ -354,9 +354,9 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-source-enum -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#term-source-enum -->
 
-    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term-source-enum">
+    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#term-source-enum">
         <rdfs:label>term-source-enum</rdfs:label>
         <owl:equivalentClass>
             <rdfs:Datatype>
@@ -385,9 +385,9 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#type_enum -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#type_enum -->
 
-    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#type_enum">
+    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#type_enum">
         <owl:equivalentClass>
             <rdfs:Datatype>
                 <owl:oneOf>
@@ -415,9 +415,9 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#user-system -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#user-system -->
 
-    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#user-system"/>
+    <rdfs:Datatype rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#user-system"/>
     
 
 
@@ -438,41 +438,41 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationV1 -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationV1 -->
 
-    <owl:ObjectProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationV1"/>
+    <owl:ObjectProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationV1"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in -->
 
-    <owl:ObjectProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
+    <owl:ObjectProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_related_to_disease -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_related_to_disease -->
 
-    <owl:ObjectProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_related_to_disease">
-        <rdfs:domain rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
-        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings"/>
+    <owl:ObjectProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_related_to_disease">
+        <rdfs:domain rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
+        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings"/>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_finding -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_finding -->
 
-    <owl:ObjectProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_finding">
-        <rdfs:domain rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient"/>
-        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Finding"/>
+    <owl:ObjectProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_finding">
+        <rdfs:domain rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Patient"/>
+        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Finding"/>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_prognosis -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_prognosis -->
 
-    <owl:ObjectProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_prognosis">
-        <rdfs:domain rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient"/>
-        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Prognosis"/>
+    <owl:ObjectProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_prognosis">
+        <rdfs:domain rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Patient"/>
+        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Prognosis"/>
     </owl:ObjectProperty>
     
 
@@ -488,23 +488,23 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#has_physical_location -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#has_physical_location -->
 
-    <owl:DatatypeProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#has_physical_location"/>
+    <owl:DatatypeProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#has_physical_location"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#in_organism -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#in_organism -->
 
-    <owl:DatatypeProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#in_organism">
+    <owl:DatatypeProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#in_organism">
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
     </owl:DatatypeProperty>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#semanticType -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#semanticType -->
 
-    <owl:DatatypeProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#semanticType">
+    <owl:DatatypeProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#semanticType">
         <rdfs:range>
             <rdfs:Datatype>
                 <owl:oneOf>
@@ -555,15 +555,15 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#BRaf -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#BRaf -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#BRaf">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#BRaf">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
                         <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
@@ -571,14 +571,14 @@
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#BRaf"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#BRaf"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
                         <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
@@ -589,21 +589,21 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Brca1 -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Brca1 -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Brca1">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Brca1">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Class>
                         <owl:intersectionOf rdf:parseType="Collection">
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell"/>
                             </owl:Restriction>
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#in_organism"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#in_organism"/>
                                 <owl:hasValue>homo sapiens</owl:hasValue>
                             </owl:Restriction>
                         </owl:intersectionOf>
@@ -613,20 +613,20 @@
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Brca1"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Brca1"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Class>
                         <owl:intersectionOf rdf:parseType="Collection">
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell"/>
                             </owl:Restriction>
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#in_organism"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#in_organism"/>
                                 <owl:hasValue>homo sapiens</owl:hasValue>
                             </owl:Restriction>
                         </owl:intersectionOf>
@@ -639,10 +639,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-12-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-12-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-12-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concept_Current_Year"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-12-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-12-S</C-00000029>
         <Design_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">premerge_annotation|Mon Jul 11 19:08:08 EDT 2016 - See &apos;M2(C-13-S)&apos;</Design_Note>
         <Editor_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">premerge_annotation|Mon Jul 11 19:08:08 EDT 2016 - Merge into M2(C-13-S), alice</Editor_Note>
@@ -654,10 +654,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-13-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-13-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-13-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concept_Current_Year"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-13-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-13-S</C-00000029>
         <Design_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">premerge_annotation|Wed Jul 13 12:30:27 EDT 2016 - See &apos;M3(C-16-S)&apos;</Design_Note>
         <Editor_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">premerge_annotation|Wed Jul 13 12:30:27 EDT 2016 - Merge into M3(C-16-S), bob</Editor_Note>
@@ -669,10 +669,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-14-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-14-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-14-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concept_Current_Year"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-14-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-14-S</C-00000029>
         <Design_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">preretire_annotation|Thu Jul 21 05:31:34 EDT 2016 - foo</Design_Note>
         <Editor_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">preretire_annotation|Thu Jul 21 05:31:34 EDT 2016 - foo</Editor_Note>
@@ -682,20 +682,20 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-15-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-15-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-15-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Disease"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-15-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Disease"/>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationV1"/>
-                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NeoplasticDisease"/>
+                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationV1"/>
+                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#NeoplasticDisease"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
-                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NeoplasticDisease"/>
+                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
+                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#NeoplasticDisease"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-15-S</C-00000029>
@@ -705,10 +705,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-16-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-16-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-16-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concept_Current_Year"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-16-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-16-S</C-00000029>
         <Design_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">preretire_annotation|Mon Jul 18 16:44:32 EDT 2016 - bar</Design_Note>
         <Editor_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">preretire_annotation|Mon Jul 18 16:44:32 EDT 2016 - bar</Editor_Note>
@@ -722,10 +722,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-17-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-17-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-17-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concept_Current_Year"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-17-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-17-S</C-00000029>
         <Design_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">preretire_annotation|Mon Jul 18 16:47:45 EDT 2016 - lll</Design_Note>
         <Editor_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">preretire_annotation|Mon Jul 18 16:47:45 EDT 2016 - ll</Editor_Note>
@@ -738,10 +738,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-18-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-18-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-18-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concept_Current_Year"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-18-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-18-S</C-00000029>
         <Design_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">premerge_annotation|Thu Jul 14 07:05:38 EDT 2016 - See &apos;F2(C-19-S)&apos;</Design_Note>
         <Editor_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">premerge_annotation|Thu Jul 14 07:05:38 EDT 2016 - Merge into F2(C-19-S), alice</Editor_Note>
@@ -753,10 +753,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-19-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-19-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-19-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-19-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Patient"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-19-S</C-00000029>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">F2</Preferred_Name>
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">F2</rdfs:label>
@@ -764,21 +764,21 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-21-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-21-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-21-S">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-21-S">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Class>
                         <owl:unionOf rdf:parseType="Collection">
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell"/>
                             </owl:Restriction>
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#in_organism"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#in_organism"/>
                                 <owl:hasValue>all organisms</owl:hasValue>
                             </owl:Restriction>
                         </owl:unionOf>
@@ -786,7 +786,7 @@
                 </owl:intersectionOf>
             </owl:Class>
         </owl:equivalentClass>
-        <AssociationURI rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-36-S"/>
+        <AssociationURI rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-36-S"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-21-S</C-00000029>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">actin-2</Preferred_Name>
         <Split_From rdf:datatype="http://www.w3.org/2001/XMLSchema#string">actin</Split_From>
@@ -794,20 +794,20 @@
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">actin-2</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-21-S"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-21-S"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Class>
                         <owl:unionOf rdf:parseType="Collection">
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell"/>
                             </owl:Restriction>
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#in_organism"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#in_organism"/>
                                 <owl:hasValue>all organisms</owl:hasValue>
                             </owl:Restriction>
                         </owl:unionOf>
@@ -820,9 +820,9 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-22-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-22-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-22-S">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-22-S">
         <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-22-S</C-00000029>
         <DEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A new Defwell well</DEFINITION>
@@ -835,39 +835,39 @@
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">melanocyte-2</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-22-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-22-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A new Defwell well</owl:annotatedTarget>
         <Definition_Review_Date rdf:datatype="http://www.w3.org/2001/XMLSchema#string">now</Definition_Review_Date>
         <Definition_Review_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sally</Definition_Review_Name>
         <def-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ICC</def-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-22-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-22-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION"/>
         <owl:annotatedTarget>now it is</owl:annotatedTarget>
         <Definition_Review_Date>today</Definition_Review_Date>
         <Definition_Review_Name>Bit</Definition_Review_Name>
         <def-source>NCI</def-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-22-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-22-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">third</owl:annotatedTarget>
         <Definition_Review_Date rdf:datatype="http://www.w3.org/2001/XMLSchema#string">now</Definition_Review_Date>
         <Definition_Review_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">billybob</Definition_Review_Name>
         <def-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CIA</def-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-22-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-22-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A second full stn</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SY</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GS</term-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-22-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-22-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synny</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G2</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOD</term-source>
@@ -875,10 +875,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-23-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-23-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-23-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Finding"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-23-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Finding"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-23-S</C-00000029>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Finding-sub</Preferred_Name>
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Finding-sub</rdfs:label>
@@ -886,10 +886,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-25-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-25-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-25-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Finding"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-25-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Finding"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-25-S</C-00000029>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Finding-sub-2</Preferred_Name>
         <Split_From rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-23-S</Split_From>
@@ -898,10 +898,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-26-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-26-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-26-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisBad"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-26-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisBad"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-26-S</C-00000029>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YourGone</Preferred_Name>
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">YourGone</rdfs:label>
@@ -909,10 +909,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-27-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-27-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-27-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concept_Current_Year"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-27-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-27-S</C-00000029>
         <DEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ok</DEFINITION>
         <Design_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">premerge_annotation|Fri Jul 15 15:31:54 EDT 2016 - See &apos;Really-clone(C-31-S)&apos;</Design_Note>
@@ -925,30 +925,30 @@
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Really</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-27-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-27-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ok</owl:annotatedTarget>
         <Definition_Review_Date rdf:datatype="http://www.w3.org/2001/XMLSchema#string">lllll</Definition_Review_Date>
         <Definition_Review_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">lllll</Definition_Review_Name>
         <def-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FDA</def-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-27-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-27-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">really</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G1</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FDA</term-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-27-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-27-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">second</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G1</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOD</term-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-27-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-27-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">wow</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G1</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOD</term-source>
@@ -956,10 +956,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-28-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-28-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-28-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concept_Current_Year"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-28-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-28-S</C-00000029>
         <Design_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">premerge_annotation|Fri Jul 15 12:52:24 EDT 2016 - See &apos;Ref1-2-2(C-29-S)&apos;</Design_Note>
         <Editor_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">premerge_annotation|Fri Jul 15 12:52:24 EDT 2016 - Merge into Ref1-2-2(C-29-S), bob</Editor_Note>
@@ -969,8 +969,8 @@
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ref1-2</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-28-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-28-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ref1-2</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-source>
@@ -978,10 +978,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-29-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-29-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-29-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-15-S"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-29-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-15-S"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-29-S</C-00000029>
         <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ref1-2-2</FULL_SYN>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ref1-2-2</Preferred_Name>
@@ -989,8 +989,8 @@
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ref1-2-2</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-29-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-29-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ref1-2-2</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-source>
@@ -998,10 +998,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-31-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-31-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-31-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-26-S"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-31-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-26-S"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-31-S</C-00000029>
         <DEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ok</DEFINITION>
         <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Really-clone</FULL_SYN>
@@ -1012,37 +1012,37 @@
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Really-clone</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-31-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-31-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ok</owl:annotatedTarget>
         <Definition_Review_Date rdf:datatype="http://www.w3.org/2001/XMLSchema#string">lllll</Definition_Review_Date>
         <Definition_Review_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">lllll</Definition_Review_Name>
         <def-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FDA</def-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-31-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-31-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Really-clone</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-31-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-31-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">really</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G1</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FDA</term-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-31-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-31-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">second</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G1</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOD</term-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-31-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-31-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">wow</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G1</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOD</term-source>
@@ -1050,10 +1050,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-32-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-32-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-32-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-32-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Patient"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-32-S</C-00000029>
         <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Another</FULL_SYN>
         <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">F2-2</FULL_SYN>
@@ -1063,22 +1063,22 @@
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">F2-2</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-32-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-32-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Another</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G2</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FDA</term-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-32-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-32-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">F2-2</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-32-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-32-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">third</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G1</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOD</term-source>
@@ -1086,18 +1086,18 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-36-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-36-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-36-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#actin"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-36-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#actin"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-36-S</C-00000029>
         <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">foo99</FULL_SYN>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">foo99</Preferred_Name>
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">foo99</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-36-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-36-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">foo99</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-source>
@@ -1105,18 +1105,18 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-37-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-37-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-37-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-37-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-37-S</C-00000029>
         <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-1</FULL_SYN>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-1</Preferred_Name>
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-1</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-37-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-37-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-1</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-source>
@@ -1124,18 +1124,18 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-38-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-38-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-38-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-38-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-38-S</C-00000029>
         <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-2</FULL_SYN>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-2</Preferred_Name>
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-2</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-38-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-38-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-2</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-source>
@@ -1143,18 +1143,18 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-39-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-39-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-39-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-39-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-39-S</C-00000029>
         <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-3</FULL_SYN>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-3</Preferred_Name>
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-3</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-39-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-39-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-3</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-source>
@@ -1162,18 +1162,18 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-41-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-41-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-41-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-41-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-41-S</C-00000029>
         <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-4</FULL_SYN>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-4</Preferred_Name>
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-4</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-41-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-41-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-4</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-source>
@@ -1181,18 +1181,18 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-42-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-42-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-42-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-42-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-42-S</C-00000029>
         <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-5</FULL_SYN>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-5</Preferred_Name>
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-5</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-42-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-42-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-5</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-source>
@@ -1200,18 +1200,18 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-43-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-43-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-43-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-43-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-43-S</C-00000029>
         <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-6</FULL_SYN>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-6</Preferred_Name>
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-6</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-43-S"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-43-S"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">child-6</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DF</term-source>
@@ -1219,10 +1219,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-5-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-5-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-5-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concept_Current_Year"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-5-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-5-S</C-00000029>
         <Design_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">premerge_annotation|Sat Jul 09 06:16:36 EDT 2016 - See &apos;S2(C-6-S)&apos;</Design_Note>
         <Editor_Note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">premerge_annotation|Sat Jul 09 06:16:36 EDT 2016 - Merge into S2(C-6-S), alice</Editor_Note>
@@ -1234,10 +1234,10 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-6-S -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-6-S -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-6-S">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Person"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-6-S">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Person"/>
         <C-00000029 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C-6-S</C-00000029>
         <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">S2</Preferred_Name>
         <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">S2</rdfs:label>
@@ -1245,69 +1245,69 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123 -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123 -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123">
         <owl:disjointUnionOf rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#BRaf"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Erbb2"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Mefv"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Ras"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SHH"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SOS"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#actin"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#k-Ras"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#BRaf"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Erbb2"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Mefv"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Ras"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SHH"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SOS"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#actin"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#k-Ras"/>
         </owl:disjointUnionOf>
         <rdfs:label>Gene</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#disjointUnionOf"/>
         <owl:annotatedTarget rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#BRaf"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Erbb2"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Mefv"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Ras"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SHH"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SOS"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#actin"/>
-            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#k-Ras"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#BRaf"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Erbb2"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Mefv"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Ras"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SHH"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SOS"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#actin"/>
+            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#k-Ras"/>
         </owl:annotatedTarget>
         <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">all genes are disjoint.  splicing variants are not considered individual genes.</note>
     </owl:Axiom>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#CancerPatient -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#CancerPatient -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#CancerPatient">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#CancerPatient">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SickPatient"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SickPatient"/>
                     <owl:Class>
                         <owl:unionOf rdf:parseType="Collection">
                             <owl:Class>
                                 <owl:intersectionOf rdf:parseType="Collection">
                                     <owl:Restriction>
-                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_finding"/>
-                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorBenign"/>
+                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_finding"/>
+                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TumorBenign"/>
                                     </owl:Restriction>
                                     <owl:Restriction>
-                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_prognosis"/>
-                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_prognosis"/>
+                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood"/>
                                     </owl:Restriction>
                                 </owl:intersectionOf>
                             </owl:Class>
                             <owl:Class>
                                 <owl:intersectionOf rdf:parseType="Collection">
                                     <owl:Restriction>
-                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_finding"/>
-                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorMalignant"/>
+                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_finding"/>
+                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TumorMalignant"/>
                                     </owl:Restriction>
                                     <owl:Restriction>
-                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_prognosis"/>
-                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisBad"/>
+                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_prognosis"/>
+                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisBad"/>
                                     </owl:Restriction>
                                 </owl:intersectionOf>
                             </owl:Class>
@@ -1318,35 +1318,35 @@
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#CancerPatient"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#CancerPatient"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SickPatient"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SickPatient"/>
                     <owl:Class>
                         <owl:unionOf rdf:parseType="Collection">
                             <owl:Class>
                                 <owl:intersectionOf rdf:parseType="Collection">
                                     <owl:Restriction>
-                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_finding"/>
-                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorBenign"/>
+                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_finding"/>
+                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TumorBenign"/>
                                     </owl:Restriction>
                                     <owl:Restriction>
-                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_prognosis"/>
-                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_prognosis"/>
+                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood"/>
                                     </owl:Restriction>
                                 </owl:intersectionOf>
                             </owl:Class>
                             <owl:Class>
                                 <owl:intersectionOf rdf:parseType="Collection">
                                     <owl:Restriction>
-                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_finding"/>
-                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorMalignant"/>
+                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_finding"/>
+                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TumorMalignant"/>
                                     </owl:Restriction>
                                     <owl:Restriction>
-                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_prognosis"/>
-                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisBad"/>
+                                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_prognosis"/>
+                                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisBad"/>
                                     </owl:Restriction>
                                 </owl:intersectionOf>
                             </owl:Class>
@@ -1360,24 +1360,24 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Disease -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Disease -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Disease">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Disease">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings"/>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Disease"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Disease"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
-        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings"/>
+        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings"/>
         <DEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string">One of the three entities in the parent covering partition.</DEFINITION>
     </owl:Axiom>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings">
-        <owl:disjointWith rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Person"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings">
+        <owl:disjointWith rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Person"/>
         <ALT_DEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ok one</ALT_DEFINITION>
         <ALT_DEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ok two					</ALT_DEFINITION>
         <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ok</FULL_SYN>
@@ -1385,37 +1385,37 @@
         <rdfs:label>DiseaseDisordersFindings</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#disjointWith"/>
-        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Person"/>
+        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Person"/>
         <note>treat disorders as always disjoint with people.</note>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#ALT_DEFINITION"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#ALT_DEFINITION"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ok one</owl:annotatedTarget>
         <Definition_Review_Date rdf:datatype="http://www.w3.org/2001/XMLSchema#string">more</Definition_Review_Date>
         <Definition_Review_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Bob</Definition_Review_Name>
         <def-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">FDA</def-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#ALT_DEFINITION"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#ALT_DEFINITION"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ok two					</owl:annotatedTarget>
         <Definition_Review_Date rdf:datatype="http://www.w3.org/2001/XMLSchema#string">mpre</Definition_Review_Date>
         <Definition_Review_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Mary</Definition_Review_Name>
         <def-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ICC</def-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ok</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G1</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOD</term-source>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">well</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G2</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOD</term-source>
@@ -1423,13 +1423,13 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell">
         <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
         <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
         <DEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string">an isa relation to an external entity.</DEFINITION>
@@ -1437,15 +1437,15 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Erbb2 -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Erbb2 -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Erbb2">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Erbb2">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
                         <owl:allValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
@@ -1453,14 +1453,14 @@
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Erbb2"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Erbb2"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
                         <owl:allValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
@@ -1471,18 +1471,18 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Finding -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Finding -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Finding">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Finding">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings"/>
                     <owl:Class>
                         <owl:oneOf rdf:parseType="Collection">
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Fever"/>
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PaleSkin"/>
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#ShallowBreathing"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Fever"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PaleSkin"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#ShallowBreathing"/>
                         </owl:oneOf>
                     </owl:Class>
                 </owl:intersectionOf>
@@ -1491,17 +1491,17 @@
         <semanticType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Disease</semanticType>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Finding"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Finding"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings"/>
                     <owl:Class>
                         <owl:oneOf rdf:parseType="Collection">
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Fever"/>
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PaleSkin"/>
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#ShallowBreathing"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Fever"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PaleSkin"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#ShallowBreathing"/>
                         </owl:oneOf>
                     </owl:Class>
                 </owl:intersectionOf>
@@ -1513,45 +1513,45 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientDrivingAround -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientDrivingAround -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientDrivingAround">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientDrivingAround">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Patient"/>
     </owl:Class>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientWalkingAround -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientWalkingAround">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Patient"/>
     </owl:Class>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HealthyPatient -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HealthyPatient -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HealthyPatient">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HealthyPatient">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Patient"/>
                     <owl:Class>
-                        <owl:complementOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SickPatient"/>
+                        <owl:complementOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SickPatient"/>
                     </owl:Class>
                 </owl:intersectionOf>
             </owl:Class>
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HealthyPatient"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HealthyPatient"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Patient"/>
                     <owl:Class>
-                        <owl:complementOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SickPatient"/>
+                        <owl:complementOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SickPatient"/>
                     </owl:Class>
                 </owl:intersectionOf>
             </owl:Class>
@@ -1561,31 +1561,31 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Mefv -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Mefv -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Mefv">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Mefv">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_related_to_disease"/>
-                        <owl:hasValue rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Fever"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_related_to_disease"/>
+                        <owl:hasValue rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Fever"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
             </owl:Class>
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Mefv"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Mefv"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_related_to_disease"/>
-                        <owl:hasValue rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Fever"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_related_to_disease"/>
+                        <owl:hasValue rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Fever"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
             </owl:Class>
@@ -1595,22 +1595,22 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickCancerPatient -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#MildlySickCancerPatient -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickCancerPatient">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#MildlySickCancerPatient">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickPatient"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#MildlySickPatient"/>
                     <owl:Class>
                         <owl:intersectionOf rdf:parseType="Collection">
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_finding"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorBenign"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_finding"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TumorBenign"/>
                             </owl:Restriction>
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_prognosis"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_prognosis"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood"/>
                             </owl:Restriction>
                         </owl:intersectionOf>
                     </owl:Class>
@@ -1619,21 +1619,21 @@
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickCancerPatient"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#MildlySickCancerPatient"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickPatient"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#MildlySickPatient"/>
                     <owl:Class>
                         <owl:intersectionOf rdf:parseType="Collection">
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_finding"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorBenign"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_finding"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TumorBenign"/>
                             </owl:Restriction>
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_prognosis"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_prognosis"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood"/>
                             </owl:Restriction>
                         </owl:intersectionOf>
                     </owl:Class>
@@ -1645,36 +1645,36 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickPatient -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#MildlySickPatient -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickPatient">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SickPatient"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#MildlySickPatient">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SickPatient"/>
     </owl:Class>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NeoplasticDisease -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#NeoplasticDisease -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NeoplasticDisease">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Disease"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#NeoplasticDisease">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Disease"/>
         <rdfs:subClassOf>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OncogeneTim"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OncogeneTim"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
-                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
+                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
             </owl:Class>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
             <owl:Restriction>
-                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_related_to_disease"/>
+                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_related_to_disease"/>
                 <owl:someValuesFrom>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
-                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
+                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     </owl:Restriction>
                 </owl:someValuesFrom>
             </owl:Restriction>
@@ -1684,15 +1684,15 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OncogeneTim -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OncogeneTim -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OncogeneTim">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OncogeneTim">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#has_physical_location"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#has_physical_location"/>
                         <owl:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12345</owl:hasValue>
                     </owl:Restriction>
                 </owl:intersectionOf>
@@ -1700,14 +1700,14 @@
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OncogeneTim"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OncogeneTim"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#has_physical_location"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#has_physical_location"/>
                         <owl:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12345</owl:hasValue>
                     </owl:Restriction>
                 </owl:intersectionOf>
@@ -1718,36 +1718,36 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Patient -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Person"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Patient">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Person"/>
         <semanticType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Organism</semanticType>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Patient"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
-        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Person"/>
+        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Person"/>
         <DEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string">a role taken by a person on a health care provider visit.</DEFINITION>
     </owl:Axiom>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Person -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Person -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Person">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Person">
         <DEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Any human being.</DEFINITION>
         <rdfs:label>Person</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#disjointWith"/>
-        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Person"/>
+        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Person"/>
         <note>treat disorders as always disjoint with people.</note>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Person"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Person"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Any human being.</owl:annotatedTarget>
         <Definition_Review_Date>today</Definition_Review_Date>
         <Definition_Review_Name>Bob</Definition_Review_Name>
@@ -1756,15 +1756,15 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PersonRole -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PersonRole -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PersonRole">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PersonRole">
         <ALT_DEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A foopo</ALT_DEFINITION>
         <rdfs:label>PersonRole</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PersonRole"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#ALT_DEFINITION"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PersonRole"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#ALT_DEFINITION"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A foopo</owl:annotatedTarget>
         <Definition_Review_Date rdf:datatype="http://www.w3.org/2001/XMLSchema#string">popop</Definition_Review_Date>
         <Definition_Review_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">popopo</Definition_Review_Name>
@@ -1773,29 +1773,29 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Premerged_Concepts -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Premerged_Concepts -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Premerged_Concepts"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Premerged_Concepts"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Preretired_Concepts -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Preretired_Concepts -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Preretired_Concepts"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Preretired_Concepts"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Prognosis -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Prognosis -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Prognosis">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Prognosis">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings"/>
                     <owl:Class>
                         <owl:unionOf rdf:parseType="Collection">
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisBad"/>
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisBad"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood"/>
                         </owl:unionOf>
                     </owl:Class>
                 </owl:intersectionOf>
@@ -1804,16 +1804,16 @@
         <semanticType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Disease</semanticType>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Prognosis"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Prognosis"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DiseasesDisordersFindings"/>
                     <owl:Class>
                         <owl:unionOf rdf:parseType="Collection">
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisBad"/>
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisBad"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood"/>
                         </owl:unionOf>
                     </owl:Class>
                 </owl:intersectionOf>
@@ -1825,43 +1825,43 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisBad -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisBad -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisBad">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Prognosis"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisBad">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Prognosis"/>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisBad"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisBad"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
-        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Prognosis"/>
+        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Prognosis"/>
         <DEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string">One of the two entities in the parent undeclared covering partition.</DEFINITION>
     </owl:Axiom>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Prognosis"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Prognosis"/>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
-        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Prognosis"/>
+        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Prognosis"/>
         <DEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string">One of the two entities in the parent undeclared covering partition.</DEFINITION>
     </owl:Axiom>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Ras -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Ras -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Ras">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Ras">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#has_physical_location"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#has_physical_location"/>
                         <owl:someValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#positiveInteger"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
@@ -1869,14 +1869,14 @@
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Ras"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Ras"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#has_physical_location"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#has_physical_location"/>
                         <owl:someValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#positiveInteger"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
@@ -1887,45 +1887,45 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concept_Current_Year -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concept_Current_Year">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concepts"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concepts"/>
     </owl:Class>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concepts -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concepts -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Retired_Concepts"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concepts"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SHH -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SHH -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SHH">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SHH">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_related_to_disease"/>
-                        <owl:allValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NeoplasticDisease"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_related_to_disease"/>
+                        <owl:allValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#NeoplasticDisease"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
             </owl:Class>
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SHH"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SHH"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_related_to_disease"/>
-                        <owl:allValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NeoplasticDisease"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_related_to_disease"/>
+                        <owl:allValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#NeoplasticDisease"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
             </owl:Class>
@@ -1935,31 +1935,31 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SOS -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SOS -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SOS">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SOS">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_related_to_disease"/>
-                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NeoplasticDisease"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_related_to_disease"/>
+                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#NeoplasticDisease"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
             </owl:Class>
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SOS"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SOS"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_related_to_disease"/>
-                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NeoplasticDisease"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_related_to_disease"/>
+                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#NeoplasticDisease"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
             </owl:Class>
@@ -1969,18 +1969,18 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SickPatient -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SickPatient -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SickPatient">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SickPatient">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Patient"/>
                     <owl:Class>
                         <owl:unionOf rdf:parseType="Collection">
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#CancerPatient"/>
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickPatient"/>
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickPatient"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#CancerPatient"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#MildlySickPatient"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#VerySickPatient"/>
                         </owl:unionOf>
                     </owl:Class>
                 </owl:intersectionOf>
@@ -1988,17 +1988,17 @@
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SickPatient"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SickPatient"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Patient"/>
                     <owl:Class>
                         <owl:unionOf rdf:parseType="Collection">
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#CancerPatient"/>
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickPatient"/>
-                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickPatient"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#CancerPatient"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#MildlySickPatient"/>
+                            <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#VerySickPatient"/>
                         </owl:unionOf>
                     </owl:Class>
                 </owl:intersectionOf>
@@ -2009,26 +2009,26 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TotalPerson -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TotalPerson -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TotalPerson">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TotalPerson">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Person"/>
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PersonRole"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Person"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PersonRole"/>
                 </owl:intersectionOf>
             </owl:Class>
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TotalPerson"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TotalPerson"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Person"/>
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PersonRole"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Person"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PersonRole"/>
                 </owl:intersectionOf>
             </owl:Class>
         </owl:annotatedTarget>
@@ -2037,36 +2037,36 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorBenign -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TumorBenign -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorBenign">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NeoplasticDisease"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TumorBenign">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#NeoplasticDisease"/>
     </owl:Class>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorMalignant -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TumorMalignant -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorMalignant"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TumorMalignant"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickCancerPatient -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#VerySickCancerPatient -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickCancerPatient">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#VerySickCancerPatient">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickPatient"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#VerySickPatient"/>
                     <owl:Class>
                         <owl:unionOf rdf:parseType="Collection">
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_finding"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorMalignant"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_finding"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TumorMalignant"/>
                             </owl:Restriction>
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_prognosis"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisBad"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_prognosis"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisBad"/>
                             </owl:Restriction>
                         </owl:unionOf>
                     </owl:Class>
@@ -2075,21 +2075,21 @@
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickCancerPatient"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#VerySickCancerPatient"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickPatient"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#VerySickPatient"/>
                     <owl:Class>
                         <owl:unionOf rdf:parseType="Collection">
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_finding"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorMalignant"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_finding"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#TumorMalignant"/>
                             </owl:Restriction>
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_prognosis"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisBad"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#patient_has_prognosis"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisBad"/>
                             </owl:Restriction>
                         </owl:unionOf>
                     </owl:Class>
@@ -2101,29 +2101,29 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickPatient -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#VerySickPatient -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickPatient">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SickPatient"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#VerySickPatient">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#SickPatient"/>
     </owl:Class>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#actin -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#actin -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#actin">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#actin">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Class>
                         <owl:unionOf rdf:parseType="Collection">
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell"/>
                             </owl:Restriction>
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#in_organism"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#in_organism"/>
                                 <owl:hasValue>all organisms</owl:hasValue>
                             </owl:Restriction>
                         </owl:unionOf>
@@ -2135,20 +2135,20 @@
         <rdfs:label>actin</rdfs:label>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#actin"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#actin"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Class>
                         <owl:unionOf rdf:parseType="Collection">
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in"/>
-                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#gene_expressed_in"/>
+                                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#EpithelialCell"/>
                             </owl:Restriction>
                             <owl:Restriction>
-                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#in_organism"/>
+                                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#in_organism"/>
                                 <owl:hasValue>all organisms</owl:hasValue>
                             </owl:Restriction>
                         </owl:unionOf>
@@ -2161,31 +2161,31 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#bar -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#bar -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#bar">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-29-S"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#bar">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-29-S"/>
     </owl:Class>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#foo -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#foo -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#foo">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C-29-S"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#foo">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-29-S"/>
     </owl:Class>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#k-Ras -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#k-Ras -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#k-Ras">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#k-Ras">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#has_physical_location"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#has_physical_location"/>
                         <owl:allValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#positiveInteger"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
@@ -2193,14 +2193,14 @@
         </owl:equivalentClass>
     </owl:Class>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#k-Ras"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#k-Ras"/>
         <owl:annotatedProperty rdf:resource="http://www.w3.org/2002/07/owl#equivalentClass"/>
         <owl:annotatedTarget>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#has_physical_location"/>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#has_physical_location"/>
                         <owl:allValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#positiveInteger"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
@@ -2211,18 +2211,18 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#okiedook -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#okiedook -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#okiedook">
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#okiedook">
         <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
     </owl:Class>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#what -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#what -->
 
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#what">
-        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123"/>
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#what">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C123"/>
     </owl:Class>
     
 
@@ -2237,7 +2237,7 @@
     </owl:Class>
     <owl:Axiom>
         <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION"/>
         <owl:annotatedTarget>A cell is the basic unit of life</owl:annotatedTarget>
         <Definition_Review_Date>today</Definition_Review_Date>
         <Definition_Review_Name>Bob</Definition_Review_Name>
@@ -2245,14 +2245,14 @@
     </owl:Axiom>
     <owl:Axiom>
         <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">again</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G1</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOD</term-source>
     </owl:Axiom>
     <owl:Axiom>
         <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ok</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G1</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOD</term-source>
@@ -2279,60 +2279,60 @@
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Fever -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Fever -->
 
-    <owl:NamedIndividual rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Fever">
-        <rdf:type rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Finding"/>
+    <owl:NamedIndividual rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Fever">
+        <rdf:type rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Finding"/>
     </owl:NamedIndividual>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientDrivingAround -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientDrivingAround -->
 
-    <owl:NamedIndividual rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientDrivingAround">
-        <AssociationV1 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+    <owl:NamedIndividual rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientDrivingAround">
+        <AssociationV1 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood"/>
     </owl:NamedIndividual>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientDrivingAround"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationV1"/>
-        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientDrivingAround"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationV1"/>
+        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood"/>
         <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">annotation on an AssociationV1 of a class.</note>
     </owl:Axiom>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientWalkingAround -->
 
-    <owl:NamedIndividual rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround">
+    <owl:NamedIndividual rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientWalkingAround">
         <AssociationV1 rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
     </owl:NamedIndividual>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationV1"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientWalkingAround"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationV1"/>
         <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
         <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">annotation on an AssociationV! of external.class (rdf:resource).</note>
     </owl:Axiom>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PaleSkin -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PaleSkin -->
 
-    <owl:NamedIndividual rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PaleSkin">
-        <rdf:type rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Finding"/>
+    <owl:NamedIndividual rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PaleSkin">
+        <rdf:type rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Finding"/>
     </owl:NamedIndividual>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood -->
 
-    <owl:NamedIndividual rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+    <owl:NamedIndividual rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood"/>
     
 
 
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#ShallowBreathing -->
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#ShallowBreathing -->
 
-    <owl:NamedIndividual rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#ShallowBreathing">
-        <rdf:type rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Finding"/>
+    <owl:NamedIndividual rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#ShallowBreathing">
+        <rdf:type rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Finding"/>
     </owl:NamedIndividual>
     
 
@@ -2351,38 +2351,38 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
-    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientDrivingAround">
-        <AssociationURI rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientDrivingAround">
+        <AssociationURI rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood"/>
         <AssociationLIT>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#prognosisgood</AssociationLIT>
-        <AssociationV1 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
-        <AssociationSTR rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</AssociationSTR>
-        <AssociationURI rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</AssociationURI>
+        <AssociationV1 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood"/>
+        <AssociationSTR rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood</AssociationSTR>
+        <AssociationURI rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood</AssociationURI>
     </rdf:Description>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientDrivingAround"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationURI"/>
-        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientDrivingAround"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationURI"/>
+        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood"/>
         <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">annotation on an AssociationURI of a class (rdf:resource).</note>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientDrivingAround"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationLIT"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientDrivingAround"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationLIT"/>
         <owl:annotatedTarget>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#prognosisgood</owl:annotatedTarget>
         <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">annotation on an AssociationLIT.</note>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientDrivingAround"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationSTR"/>
-        <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientDrivingAround"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationSTR"/>
+        <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood</owl:annotatedTarget>
         <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">annotation on an AssociationSTR.</note>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientDrivingAround"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationURI"/>
-        <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientDrivingAround"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationURI"/>
+        <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#PrognosisGood</owl:annotatedTarget>
         <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">annotation on an AssociationURI.</note>
     </owl:Axiom>
-    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround">
+    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientWalkingAround">
         <AssociationURI rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
         <AssociationV1 rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
         <AssociationSTR rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://purl.obolibrary.org/obo/CL_0000148</AssociationSTR>
@@ -2390,30 +2390,30 @@
         <AssociationLIT>http://purl.obolibrary.org/obo/cl_0000148</AssociationLIT>
     </rdf:Description>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationURI"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientWalkingAround"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationURI"/>
         <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
         <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">annotation on an AssociationURI of external class (rdf:resource)</note>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationSTR"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientWalkingAround"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationSTR"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://purl.obolibrary.org/obo/CL_0000148</owl:annotatedTarget>
         <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">annotation on an AssociationSTR of external.</note>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationURI"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientWalkingAround"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationURI"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://purl.obolibrary.org/obo/CL_0000148</owl:annotatedTarget>
         <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">annotation on an AssociationURI of external.</note>
     </owl:Axiom>
     <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationLIT"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#HappyPatientWalkingAround"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#AssociationLIT"/>
         <owl:annotatedTarget>http://purl.obolibrary.org/obo/cl_0000148</owl:annotatedTarget>
         <note rdf:datatype="http://www.w3.org/2001/XMLSchema#string">annotation on an AssociationLIT of external.</note>
     </owl:Axiom>
-    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#semanticType">
+    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#semanticType">
         <semanticType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Conceptual</semanticType>
     </rdf:Description>
     <rdf:Description rdf:about="http://purl.obolibrary.org/obo/CL_0000148">
@@ -2426,14 +2426,14 @@
     </rdf:Description>
     <owl:Axiom>
         <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A second full stn</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SY</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GS</term-source>
     </owl:Axiom>
     <owl:Axiom>
         <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A new Defwell well</owl:annotatedTarget>
         <Definition_Review_Date rdf:datatype="http://www.w3.org/2001/XMLSchema#string">now</Definition_Review_Date>
         <Definition_Review_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sally</Definition_Review_Name>
@@ -2441,7 +2441,7 @@
     </owl:Axiom>
     <owl:Axiom>
         <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">third</owl:annotatedTarget>
         <Definition_Review_Date rdf:datatype="http://www.w3.org/2001/XMLSchema#string">now</Definition_Review_Date>
         <Definition_Review_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">billybob</Definition_Review_Name>
@@ -2449,7 +2449,7 @@
     </owl:Axiom>
     <owl:Axiom>
         <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DEFINITION"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION"/>
         <owl:annotatedTarget>now it is</owl:annotatedTarget>
         <Definition_Review_Date>today</Definition_Review_Date>
         <Definition_Review_Name>Bit</Definition_Review_Name>
@@ -2457,7 +2457,7 @@
     </owl:Axiom>
     <owl:Axiom>
         <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#FULL_SYN"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">synny</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">G2</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DOD</term-source>
