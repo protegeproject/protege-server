@@ -31,7 +31,7 @@ public abstract class ServerLayer implements Server {
     protected static String printLog(User requester, String operation, String message) {
         if (requester != null) {
             String template = "[Request from %s (%s) - %s] %s";
-            return String.format(template, requester.getId(), requester.getName(), operation, message);
+            return String.format(template, requester.getId().get(), requester.getName().get(), operation, message);
         }
         else {
             String template = "[%s] %s";
