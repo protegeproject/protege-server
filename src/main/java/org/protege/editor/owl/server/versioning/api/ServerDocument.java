@@ -88,7 +88,7 @@ public class ServerDocument implements Serializable {
         sb.append("Server address: ").append(getServerAddress());
         sb.append("\n");
         if (hasRegistryPort()) {
-            sb.append("Registry port: ").append(getRegistryPort());
+            sb.append("Admin port: ").append(getRegistryPort());
             sb.append("\n");
         }
         sb.append("Remote resource :").append(historyFile.getPath());

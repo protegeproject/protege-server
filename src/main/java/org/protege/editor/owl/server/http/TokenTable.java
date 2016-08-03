@@ -20,7 +20,7 @@ public class TokenTable {
 
 	private static final Logger logger = Logger.getLogger(TokenTable.class.getName());
 
-	public static final int DEFAULT_TABLE_TIMEOUT = 30*60*1000;
+	public static final int DEFAULT_TABLE_TIMEOUT = 180*1000;
 
 	private ScheduledExecutorService executorService;
 

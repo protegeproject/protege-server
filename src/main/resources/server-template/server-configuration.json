@@ -1,6 +1,7 @@
 {
   "host": {
-    "uri": "http://localhost:8080"
+    "uri": "http://localhost:8080",
+    "secondaryPort": 8081
   },
   "root": "root/data",
   "metaproject": {
@@ -50,11 +51,6 @@
         "id": "bob",
         "name": "bob",
         "emailAddress": "bob"
-      },
-      {
-        "id": "joe",
-        "name": "joey",
-        "emailAddress": "joe"
       }
     ],
     "projects": [
@@ -148,7 +144,7 @@
             "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year"
           ]
         }
-      }      
+      }
     ],
     "roles": [
       {

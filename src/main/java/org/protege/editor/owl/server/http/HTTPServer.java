@@ -77,11 +77,16 @@ public final class HTTPServer {
 	private BlockingHandler login_handler;
 
 	private Undertow web_server;
+	
+	private Undertow admin_server;
 	private boolean isRunning = false;
 
 
 	private URI uri;
-	private io.undertow.server.RoutingHandler router;
+	private int admin_port;
+	
+	private io.undertow.server.RoutingHandler web_router;
+	private io.undertow.server.RoutingHandler admin_router;
 
 	private static HTTPServer server;
 
@@ -124,6 +129,7 @@ public final class HTTPServer {
 			config = Manager.getConfigurationManager().loadServerConfiguration(new File(config_fname));
 			pserver = new ProtegeServer(config);
 			uri = config.getHost().getUri();
+			admin_port = config.getHost().getSecondaryPort().get().get();
 		}
 		catch (FileNotFoundException | ObjectConversionException e) {
 			logger.error("Unable to load server configuration at location: " + config_fname, e);
@@ -135,16 +141,20 @@ public final class HTTPServer {
 
 		initConfig();
 		
-		router = Handlers.routing();
+		web_router = Handlers.routing();
+		admin_router = Handlers.routing();
 
 		// create login handler
 		AuthenticationRegistry authRegistry = config.getAuthenticationRegistry();
 		UserRegistry userRegistry = config.getMetaproject().getUserRegistry();
+		
 		DefaultLoginService loginService = new DefaultLoginService(authRegistry, userRegistry, session_manager);
 
 		login_handler = new BlockingHandler(new HTTPLoginService(loginService));
 
-		router.add("POST", LOGIN, login_handler);
+		
+		web_router.add("POST", LOGIN, login_handler);
+		admin_router.add("POST", LOGIN, login_handler);
 
 		// create change service handler
 		change_handler = new AuthenticationHandler(
@@ -152,10 +162,10 @@ public final class HTTPServer {
 						new HTTPChangeService(
 								pserver)));
 
-		router.add("POST", COMMIT,  change_handler);
-		router.add("POST", HEAD,  change_handler);
-		router.add("POST", LATEST_CHANGES,  change_handler);
-		router.add("POST", ALL_CHANGES,  change_handler);
+		web_router.add("POST", COMMIT,  change_handler);
+		web_router.add("POST", HEAD,  change_handler);
+		web_router.add("POST", LATEST_CHANGES,  change_handler);
+		web_router.add("POST", ALL_CHANGES,  change_handler);
 		
 		
 
@@ -164,30 +174,37 @@ public final class HTTPServer {
 				new BlockingHandler(
 						new CodeGenHandler(pserver)));
 
-		router.add("GET", GEN_CODE, codegen_handler);
-		router.add("GET", GEN_CODES, codegen_handler);
-		router.add("POST", EVS_REC, codegen_handler);
+		web_router.add("GET", GEN_CODE, codegen_handler);
+		web_router.add("GET", GEN_CODES, codegen_handler);
+		web_router.add("POST", EVS_REC, codegen_handler);
 
 		// create mataproject handler        
 		meta_handler = new AuthenticationHandler(
 				new BlockingHandler(
 						new MetaprojectHandler(pserver)));
-		router.add("GET", METAPROJECT, meta_handler);
-		router.add("POST", METAPROJECT, meta_handler);
-		router.add("GET", PROJECT,  meta_handler);
-		router.add("POST", PROJECT,  meta_handler);
-		router.add("POST", PROJECT_SNAPSHOT,  meta_handler);
-		router.add("POST", PROJECT_SNAPSHOT_GET,  meta_handler);
-		router.add("DELETE", PROJECT,  meta_handler);
-		router.add("GET", PROJECTS, meta_handler);
+		web_router.add("GET", METAPROJECT, meta_handler);
+		
+		admin_router.add("GET", METAPROJECT, meta_handler);		
+		admin_router.add("POST", METAPROJECT, meta_handler);
+		
+		
+		web_router.add("GET", PROJECT,  meta_handler);
+		web_router.add("POST", PROJECT,  meta_handler);
+		web_router.add("POST", PROJECT_SNAPSHOT,  meta_handler);
+		web_router.add("POST", PROJECT_SNAPSHOT_GET,  meta_handler);
+		web_router.add("DELETE", PROJECT,  meta_handler);
+		web_router.add("GET", PROJECTS, meta_handler);
 		
 		
 		
-		final ExceptionHandler aExceptionHandler = Handlers.exceptionHandler(router);
+		final ExceptionHandler aExceptionHandler = Handlers.exceptionHandler(web_router);
+		
+		final ExceptionHandler aExceptionHandler2 = Handlers.exceptionHandler(admin_router);
 
 		final GracefulShutdownHandler aShutdownHandler = Handlers.gracefulShutdown(aExceptionHandler);
+		final GracefulShutdownHandler aShutdownHandler2 = Handlers.gracefulShutdown(aExceptionHandler2);
 		
-		router.add("GET", ROOT_PATH + "/admin/restart", new HttpHandler() {
+		admin_router.add("GET", ROOT_PATH + "/admin/restart", new HttpHandler() {
 			@Override
 			public void handleRequest(final HttpServerExchange exchange) throws Exception {
 				aShutdownHandler.shutdown();
@@ -224,10 +241,17 @@ public final class HTTPServer {
 					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
 					.setHandler(aShutdownHandler)
 					.build();
+			
+			admin_server = Undertow.builder()
+					.addHttpListener(admin_port, uri.getHost())
+					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
+					.setHandler(aShutdownHandler2)
+					.build();
 		}
 
 		isRunning = true;
 		web_server.start();
+		admin_server.start();
 		System.out.println("System has started...");
 
 	}
@@ -240,6 +264,8 @@ public final class HTTPServer {
 
 			web_server.stop();
 			web_server = null;
+			admin_server.stop();
+			admin_server = null;
 			isRunning = false;
 		}
 	}
