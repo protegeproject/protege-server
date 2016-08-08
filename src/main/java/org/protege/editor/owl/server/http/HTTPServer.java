@@ -259,7 +259,7 @@ public final class HTTPServer {
 		isRunning = true;
 		web_server.start();
 		admin_server.start();
-		System.out.println("System has started...");
+		logger.info("System has started...");
 
 	}
 
@@ -267,8 +267,8 @@ public final class HTTPServer {
 	public void stop() throws ServerException {
 		if (web_server != null && isRunning) {
 			try {
-				System.out.println("Received request to shutdown");
-				System.out.println("System is shutting down...");
+				logger.info("Received request to shutdown");
+				logger.info("System is shutting down...");
 	
 				web_server.stop();
 				web_server = null;
