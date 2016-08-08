@@ -315,16 +315,6 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			catch (ServerConfigurationNotLoadedException | IOException e) {
 				internalServerErrorStatusCode(exchange, "Server failed to save changes", e);
 			}
-			
-			/*
-			 * Restart the server
-			 */
-			try {
-				HTTPServer.server().restart();
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
 		}
 	}
 
