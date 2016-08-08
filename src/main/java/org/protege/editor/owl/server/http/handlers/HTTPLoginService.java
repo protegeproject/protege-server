@@ -43,54 +43,44 @@ public class HTTPLoginService extends BaseRoutingHandler {
 	@Override
 	public void handleRequest(final HttpServerExchange exchange) {
 		Serializer<Gson> serl = new DefaultJsonSerializer();
-		/*
-		 * Read user's credential
-		 */
-		LoginCreds creds = null;
+		MetaprojectFactory f = Manager.getFactory();
 		try {
-			creds = (LoginCreds) serl.parse(new InputStreamReader(exchange.getInputStream()), LoginCreds.class);
+			LoginCreds creds = (LoginCreds) serl.parse(new InputStreamReader(exchange.getInputStream()), LoginCreds.class);
+			UserId userId = f.getUserId(creds.getUser());
+			
+			/*
+			 * Encrypt the plain password
+			 */
+			Salt userSalt = (Salt) loginService.getSalt(userId);
+			PlainPassword plainPassword = f.getPlainPassword(creds.getPassword());
+			SaltedPasswordDigest passwordDigest = f.getPasswordHasher().hash(plainPassword, userSalt);
+			
+			/*
+			 * Use the login service over the wire
+			 */
+			AuthToken authToken = loginService.login(userId, passwordDigest);
+			sendLoginResponse(exchange, authToken);
 		}
 		catch (FileNotFoundException | ObjectConversionException e) {
 			logger.error(e.getMessage(), e);
 			exchange.setStatusCode(StatusCodes.INTERNAL_SERVER_ERROR);
-			exchange.getResponseHeaders().add(new HttpString("Error-Message"), "Failed to read the login credential");
-			exchange.endExchange(); // end the request
-		}
-		
-		/*
-		 * Fetch the user's salt
-		 */
-		MetaprojectFactory f = Manager.getFactory();
-		UserId userId = f.getUserId(creds.getUser());
-		Salt userSalt = null;
-		try {
-			userSalt = (Salt) loginService.getSalt(userId);
+			exchange.getResponseHeaders().add(new HttpString("Error-Message"), "Server failed to read the login credential");
 		}
 		catch (ServerServiceException e) {
 			logger.error(e.getMessage(), e);
 			exchange.setStatusCode(StatusCodes.UNAUTHORIZED);
 			exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage());
+		}
+		finally {
 			exchange.endExchange(); // end the request
 		}
-		
-		/*
-		 * Call the login service and return the auth response
-		 */
-		PlainPassword plainPassword = f.getPlainPassword(creds.getPassword());
-		SaltedPasswordDigest passwordDigest = f.getPasswordHasher().hash(plainPassword, userSalt);
-		try {
-			AuthToken authToken = loginService.login(userId, passwordDigest);
-			String key = UUID.randomUUID().toString();
-			HTTPServer.server().addSession(key, authToken);
-			exchange.getResponseSender().send(serl.write(new HttpAuthResponse(key, authToken.getUser()), HttpAuthResponse.class));
-			exchange.endExchange();
-		}
-		catch (ServerServiceException e) {
-			logger.error(e.getMessage(), e);
-			exchange.setStatusCode(StatusCodes.UNAUTHORIZED);
-			exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage());
-			exchange.endExchange(); // end the request
-		}
+	}
+
+	private void sendLoginResponse(final HttpServerExchange exchange, AuthToken authToken) {
+		Serializer<Gson> serl = new DefaultJsonSerializer();
+		String key = UUID.randomUUID().toString();
+		HTTPServer.server().addSession(key, authToken);
+		exchange.getResponseSender().send(serl.write(new HttpAuthResponse(key, authToken.getUser()), HttpAuthResponse.class));
 	}
 }
 

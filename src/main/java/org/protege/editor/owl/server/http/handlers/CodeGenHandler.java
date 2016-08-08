@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 
 import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.http.HTTPServer;
+import org.protege.editor.owl.server.http.exception.ServerException;
 import org.protege.editor.owl.server.http.messages.EVSHistory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,17 +36,13 @@ public class CodeGenHandler extends BaseRoutingHandler {
 	@Override
 	public void handleRequest(HttpServerExchange exchange) {
 		if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.GEN_CODE)) {
-			/*
-			 * Read client input
-			 */
 			String p = config.getProperty("codegen_prefix");
 			String s = config.getProperty("codegen_suffix");
 			String d = config.getProperty("codegen_delimeter");
 			String cfn = config.getProperty("codegen_file");
-			File file = null;
 			int seq = 0;
 			try {
-				file = new File(cfn);
+				File file = new File(cfn);
 				FileReader fileReader = new FileReader(file);
 				BufferedReader bufferedReader = new BufferedReader(fileReader);
 				seq = Integer.parseInt(bufferedReader.readLine().trim());
@@ -55,57 +52,67 @@ public class CodeGenHandler extends BaseRoutingHandler {
 					resp = resp + d + s;
 				}
 				exchange.getResponseSender().send(resp);
-				fileReader.close();
+				try {
+					fileReader.close();
+				}
+				catch (IOException e) {
+					// Ignore the exception but report it into the log
+					logger.warn("Unable to close the file reader stream used to read the code generator configuration");
+				}
+				generateCode(exchange, file, seq);
 			}
 			catch (IOException e) {
-				internalServerErrorStatusCode(exchange, "Failed to read code generator configuration", e);
+				internalServerErrorStatusCode(exchange, "Server failed to read code generator configuration", e);
 			}
-			
-			/*
-			 * Processing the request
-			 */
-			try {
-				PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-				pw.println(seq + 1);
-				pw.close();
-				exchange.endExchange();
+			catch (ServerException e) {
+				handleServerException(exchange, e);
 			}
-			catch (IOException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to generate code", e);
+			finally {
+				exchange.endExchange(); // end the request
 			}
 		}
 		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.GEN_CODES)) { 
 			// NO-OP
 		}
 		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.EVS_REC)) {
-			/*
-			 * Read client input
-			 */
-			EVSHistory hist = null;
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				hist = (EVSHistory) ois.readObject();
+				EVSHistory hist = (EVSHistory) ois.readObject();
+				recordEvsHistory(exchange, hist);
 			}
 			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Failed to read incoming input paramters", e);
+				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
 			}
-			
-			/*
-			 * Processing the request
-			 */
-			try {
-				String hisfile = config.getProperty("evshistory_file");
-				PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(hisfile, true)));
-				pw.println(hist.toRecord());
-				pw.close();
-				exchange.getResponseSender().close();
-				exchange.endExchange();
+			catch (ServerException e) {
+				handleServerException(exchange, e);
 			}
-			catch (IOException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to record EVS history", e);
+			finally {
+				exchange.endExchange(); // end the request
 			}
 		}
-		//HTTPServer.server().restart();
+	}
+
+	private void generateCode(HttpServerExchange exchange, File file, int seq) throws ServerException {
+		try {
+			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+			pw.println(seq + 1);
+			pw.close();
+		}
+		catch (IOException e) {
+			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to generate code", e);
+		}
+	}
+
+	private void recordEvsHistory(HttpServerExchange exchange, EVSHistory hist) throws ServerException {
+		try {
+			String hisfile = config.getProperty("evshistory_file");
+			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(hisfile, true)));
+			pw.println(hist.toRecord());
+			pw.close();
+		}
+		catch (IOException e) {
+			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to record EVS history", e);
+		}
 	}
 
 	private void internalServerErrorStatusCode(HttpServerExchange exchange, String message, Exception cause) {
@@ -113,5 +120,11 @@ public class CodeGenHandler extends BaseRoutingHandler {
 		exchange.setStatusCode(StatusCodes.INTERNAL_SERVER_ERROR);
 		exchange.getResponseHeaders().add(new HttpString("Error-Message"), message);
 		exchange.endExchange(); // end the request
+	}
+
+	private void handleServerException(HttpServerExchange exchange, ServerException e) {
+		logger.error(e.getCause().getMessage(), e.getCause());
+		exchange.setStatusCode(e.getErrorCode());
+		exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage());
 	}
 }

@@ -44,194 +44,148 @@ public class HTTPChangeService extends BaseRoutingHandler {
 	@Override
 	public void handleRequest(HttpServerExchange exchange) {
 		if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.COMMIT)) {
-			/*
-			 * Read client input
-			 */
-			ProjectId pid = null;
-			CommitBundle bundle = null;
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				pid = (ProjectId) ois.readObject();
-				bundle = (CommitBundle) ois.readObject();
+				ProjectId pid = (ProjectId) ois.readObject();
+				CommitBundle bundle = (CommitBundle) ois.readObject();
+				submitCommitBundle(exchange, pid, bundle);
 			}
 			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Failed to read incoming input paramters", e);
-			}
-			
-			/*
-			 * Processing the request
-			 */
-			ChangeHistory hist = null;
-			try {
-				hist = acf.commit(getAuthToken(exchange), pid, bundle);
-			}
-			catch (AuthorizationException e) {
-				unauthorizedStatusCode(exchange, "Access denied", e);
-			}
-			catch (OutOfSyncException e) {
-				conflictStatusCode(exchange, "Commit failed, please update your local copy first", e);
-			}
-			catch (ServerServiceException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to accept the commit", e);
+				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
 			}
 			catch (ServerException e) {
 				handleServerException(exchange, e);
 			}
-			
-			/*
-			 * Send the return value
-			 */
-			try {
-				ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-				os.writeObject(hist);
-				exchange.endExchange();
+			finally {
+				exchange.endExchange(); // end the request
 			}
-			catch (IOException e) {
-				internalServerErrorStatusCode(exchange, "Failed to transmit the returned data", e);
-			}
-			
 		}
 		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.ALL_CHANGES)) {
-			/*
-			 * Read client input
-			 */
-			HistoryFile file = null;
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				file = (HistoryFile) ois.readObject();
+				HistoryFile file = (HistoryFile) ois.readObject();
+				retrieveAllChanges(exchange, file);
 			}
 			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Failed to read incoming input paramters", e);
+				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
 			}
-			
-			/*
-			 * Processing the request
-			 */
-			ChangeHistory history = null;
-			try {
-				DocumentRevision headRevision = changeService.getHeadRevision(file);
-				history = changeService.getChanges(file, DocumentRevision.START_REVISION, headRevision);
+			catch (ServerException e) {
+				handleServerException(exchange, e);
 			}
-			catch (ServerServiceException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to get all changes", e);
+			finally {
+				exchange.endExchange(); // end the request
 			}
-			
-			/*
-			 * Send the return value
-			 */
-			try {
-				ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-				os.writeObject(history);
-				exchange.endExchange();
-			}
-			catch (IOException e) {
-				internalServerErrorStatusCode(exchange, "Failed to transmit the returned data", e);
-			}
-			
 		}
 		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.LATEST_CHANGES)) {
-			/*
-			 * Read client input
-			 */
-			HistoryFile file = null;
-			DocumentRevision start = null;
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				file = (HistoryFile) ois.readObject();
-				start = (DocumentRevision) ois.readObject();
+				HistoryFile file = (HistoryFile) ois.readObject();
+				DocumentRevision start = (DocumentRevision) ois.readObject();
+				retrieveLatestChanges(exchange, file, start);
 			}
 			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Failed to read incoming input paramters", e);
+				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
 			}
-			
-			/*
-			 * Processing the request
-			 */
-			ChangeHistory history = null;
-			try {
-				DocumentRevision headRevision = changeService.getHeadRevision(file);
-				history = changeService.getChanges(file, start, headRevision);
+			catch (ServerException e) {
+				handleServerException(exchange, e);
 			}
-			catch (ServerServiceException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to get the latest changes", e);
+			finally {
+				exchange.endExchange(); // end the request
 			}
-			
-			/*
-			 * Send the return value
-			 */
-			try {
-				ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-				os.writeObject(history);
-				exchange.endExchange();
-			}
-			catch (IOException e) {
-				internalServerErrorStatusCode(exchange, "Failed to transmit the returned data", e);
-			}
-			
 		}
 		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.HEAD)) {
-			/*
-			 * Read client input
-			 */
-			HistoryFile file = null;
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				file = (HistoryFile) ois.readObject();
+				HistoryFile file = (HistoryFile) ois.readObject();
+				retrieveHeadRevision(exchange, file);
 			}
 			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Failed to read incoming input paramters", e);
+				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
 			}
-			
-			/*
-			 * Processing the request
-			 */
-			DocumentRevision headRevision = null;
-			try {
-				//DocumentRevision start = (DocumentRevision) ois.readObject();
-				headRevision = changeService.getHeadRevision(file);
+			catch (ServerException e) {
+				handleServerException(exchange, e);
 			}
-			catch (ServerServiceException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to get the head revision", e);
-			}
-			
-			/*
-			 * Send the return value
-			 */
-			try {
-				ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-				os.writeObject(headRevision);
-				exchange.endExchange();
-			}
-			catch (IOException e) {
-				internalServerErrorStatusCode(exchange, "Failed to transmit the returned data", e);
+			finally {
+				exchange.endExchange(); // end the request
 			}
 		}
 	}
 
-	private void conflictStatusCode(HttpServerExchange exchange, String message, Exception cause) {
-		logger.error(cause.getMessage(), cause);
-		exchange.setStatusCode(StatusCodes.CONFLICT);
-		exchange.getResponseHeaders().add(new HttpString("Error-Message"), message);
-		exchange.endExchange(); // end the request
+	private void submitCommitBundle(HttpServerExchange exchange, ProjectId pid,
+			CommitBundle bundle) throws ServerException {
+		try {
+			ChangeHistory hist = acf.commit(getAuthToken(exchange), pid, bundle);
+			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
+			os.writeObject(hist);
+		}
+		catch (AuthorizationException e) {
+			throw new ServerException(StatusCodes.UNAUTHORIZED, "Access denied", e);
+		}
+		catch (OutOfSyncException e) {
+			throw new ServerException(StatusCodes.CONFLICT, "Commit failed, please update your local copy first", e);
+		}
+		catch (ServerServiceException e) {
+			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to receive the commit data", e);
+		}
+		catch (IOException e) {
+			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to transmit the returned data", e);
+		}
+	}
+
+	private void retrieveAllChanges(HttpServerExchange exchange, HistoryFile file) throws ServerException {
+		try {
+			DocumentRevision headRevision = changeService.getHeadRevision(file);
+			ChangeHistory history = changeService.getChanges(file, DocumentRevision.START_REVISION, headRevision);
+			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
+			os.writeObject(history);
+		}
+		catch (ServerServiceException e) {
+			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to get all changes", e);
+		}
+		catch (IOException e) {
+			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to transmit the returned data", e);
+		}
+	}
+
+	private void retrieveLatestChanges(HttpServerExchange exchange, HistoryFile file,
+			DocumentRevision start) throws ServerException {
+		try {
+			DocumentRevision headRevision = changeService.getHeadRevision(file);
+			ChangeHistory history = changeService.getChanges(file, start, headRevision);
+			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
+			os.writeObject(history);
+		}
+		catch (ServerServiceException e) {
+			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to get the latest changes", e);
+		}
+		catch (IOException e) {
+			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to transmit the returned data", e);
+		}
+	}
+
+	private void retrieveHeadRevision(HttpServerExchange exchange, HistoryFile file) throws ServerException {
+		try {
+			DocumentRevision headRevision = changeService.getHeadRevision(file);
+			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
+			os.writeObject(headRevision);
+		}
+		catch (ServerServiceException e) {
+			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to get the head revision", e);
+		}
+		catch (IOException e) {
+			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to transmit the returned data", e);
+		}
 	}
 
 	private void internalServerErrorStatusCode(HttpServerExchange exchange, String message, Exception cause) {
 		logger.error(cause.getMessage(), cause);
 		exchange.setStatusCode(StatusCodes.INTERNAL_SERVER_ERROR);
 		exchange.getResponseHeaders().add(new HttpString("Error-Message"), message);
-		exchange.endExchange(); // end the request
-	}
-
-	private void unauthorizedStatusCode(HttpServerExchange exchange, String message, Exception cause) {
-		logger.error(cause.getMessage(), cause);
-		exchange.setStatusCode(StatusCodes.UNAUTHORIZED);
-		exchange.getResponseHeaders().add(new HttpString("Error-Message"), message);
-		exchange.endExchange(); // end the request
 	}
 
 	private void handleServerException(HttpServerExchange exchange, ServerException e) {
+		logger.error(e.getCause().getMessage(), e.getCause());
 		exchange.setStatusCode(e.getErrorCode());
 		exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage());
-		exchange.endExchange(); // end the request
 	}
 }

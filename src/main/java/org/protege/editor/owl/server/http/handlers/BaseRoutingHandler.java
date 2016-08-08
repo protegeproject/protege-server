@@ -20,55 +20,41 @@ import io.undertow.util.HttpString;
 import io.undertow.util.StatusCodes;
 
 public abstract class BaseRoutingHandler implements HttpHandler {
-	
 
 	protected final OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 
-	public BaseRoutingHandler() {}
-
-	protected String getHeaderValue(final HttpServerExchange theExchange,
-	                              final HttpString theAttr,
-	                              final String theDefault) {
-		HeaderValues aVals = theExchange.getRequestHeaders().get(theAttr);
-
-		return !aVals.isEmpty() ? aVals.getFirst()
-		                        : theDefault;
+	public BaseRoutingHandler() {
+		// NO-OP
 	}
-	
-	protected String getQueryParameter(final HttpServerExchange theExchange,
-			final String paramName) throws ServerException {
+
+	protected String getHeaderValue(final HttpServerExchange theExchange, final HttpString theAttr,
+			final String theDefault) {
+		HeaderValues aVals = theExchange.getRequestHeaders().get(theAttr);
+		return !aVals.isEmpty() ? aVals.getFirst() : theDefault;
+	}
+
+	protected String getQueryParameter(final HttpServerExchange theExchange, final String paramName)
+			throws ServerException {
 		final Map<String, Deque<String>> queryParams = theExchange.getQueryParameters();
-
 		if (!queryParams.containsKey(paramName) || queryParams.get(paramName).isEmpty()) {
-			throwBadRequest("Missing required parameter: "+ paramName);
+			throwBadRequest("Missing required parameter: " + paramName);
 		}
-
 		final String paramVal = queryParams.get(paramName).getFirst();
 		if (Strings.isNullOrEmpty(paramVal)) {
 			throwBadRequest("Missing required parameter: " + paramName);
 		}
-
 		return paramVal;
 	}
-	
+
 	protected AuthToken getAuthToken(final HttpServerExchange ex) throws ServerException {
-		
 		String fauth = getHeaderValue(ex, Headers.AUTHORIZATION, "none");
-		
 		String coded = fauth.substring(fauth.indexOf(" ") + 1);
-		String decAuth = new String(Base64.decodeBase64(coded));		
+		String decAuth = new String(Base64.decodeBase64(coded));
 		String token = decAuth.substring(decAuth.indexOf(":") + 1);
-		
-		return HTTPServer.server().getAuthToken(token);		
-		
+		return HTTPServer.server().getAuthToken(token);
 	}
-	
-	
 
 	protected ServerException throwBadRequest(final String theMsg) throws ServerException {
 		throw new ServerException(StatusCodes.BAD_REQUEST, theMsg);
 	}
-
-	
-
 }
