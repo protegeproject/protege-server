@@ -13,6 +13,7 @@ import org.protege.editor.owl.server.http.handlers.AuthenticationHandler;
 import org.protege.editor.owl.server.http.handlers.CodeGenHandler;
 import org.protege.editor.owl.server.http.handlers.HTTPChangeService;
 import org.protege.editor.owl.server.http.handlers.HTTPLoginService;
+import org.protege.editor.owl.server.http.handlers.HTTPServerHandler;
 import org.protege.editor.owl.server.http.handlers.MetaprojectHandler;
 import org.protege.editor.owl.server.security.DefaultLoginService;
 import org.protege.editor.owl.server.security.SSLContextFactory;
@@ -64,6 +65,9 @@ public final class HTTPServer {
 	public static final String GEN_CODES = ROOT_PATH + "/gen_codes";
 	public static final String EVS_REC = ROOT_PATH + "/evs_record";
 	
+	public static final String SERVER_RESTART = ROOT_PATH + "/server/restart";
+	public static final String SERVER_STOP = ROOT_PATH + "/server/stop";
+	
 	private static Logger logger = LoggerFactory.getLogger(HTTPServer.class);
 	
 	private String config_fname = null;
@@ -73,7 +77,7 @@ public final class HTTPServer {
 	private SessionManager session_manager = new SessionManager();
 	private TokenTable token_table = new TokenTable();
 	
-	private AuthenticationHandler change_handler, codegen_handler, meta_handler;
+	private AuthenticationHandler change_handler, codegen_handler, meta_handler, server_handler;
 	private BlockingHandler login_handler;
 
 	private Undertow web_server;
@@ -195,7 +199,10 @@ public final class HTTPServer {
 		web_router.add("DELETE", PROJECT,  meta_handler);
 		web_router.add("GET", PROJECTS, meta_handler);
 		
-		
+		// create server handler
+		server_handler = new AuthenticationHandler(new BlockingHandler(new HTTPServerHandler()));
+		admin_router.add("POST", SERVER_RESTART, server_handler);
+		admin_router.add("POST", SERVER_STOP, server_handler);
 		
 		final ExceptionHandler aExceptionHandler = Handlers.exceptionHandler(web_router);
 		
@@ -257,16 +264,21 @@ public final class HTTPServer {
 	}
 
 
-	public void stop() {
+	public void stop() throws ServerException {
 		if (web_server != null && isRunning) {
-			System.out.println("Received request to shutdown");
-			System.out.println("System is shutting down...");
-
-			web_server.stop();
-			web_server = null;
-			admin_server.stop();
-			admin_server = null;
-			isRunning = false;
+			try {
+				System.out.println("Received request to shutdown");
+				System.out.println("System is shutting down...");
+	
+				web_server.stop();
+				web_server = null;
+				admin_server.stop();
+				admin_server = null;
+				isRunning = false;
+			}
+			catch (Exception e) {
+				throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, e.getMessage());
+			}
 		}
 	}
 	
@@ -275,7 +287,7 @@ public final class HTTPServer {
 			stop();
 			start();
 		}
-		catch (Exception e) {
+		catch (ServerConfigurationInitializationException | SSLContextInitializationException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, e.getMessage());
 		}
 	}
