@@ -43,7 +43,7 @@ public class ProtegeServer extends ServerLayer {
 
     private File configurationFile;
 
-    private static final PolicyFactory PolicyFactory = Manager.getFactory();
+    private static final PolicyFactory factory = Manager.getFactory();
 
     public ProtegeServer(ServerConfiguration configuration) {
         this.configuration = checkNotNull(configuration);
@@ -138,7 +138,7 @@ public class ProtegeServer extends ServerLayer {
         try {
             HistoryFile historyFile = createHistoryFile(projectId.get(), projectName.get());
             synchronized (configuration) {
-                Project newProject = PolicyFactory.getProject(projectId, projectName, description, historyFile, owner, options);
+                Project newProject = factory.getProject(projectId, projectName, description, historyFile, owner, options);
                 logger.info(printLog(token.getUser(), "Add project", newProject.toString()));
                 try {
                     manager.addProject(newProject);
@@ -379,7 +379,7 @@ public class ProtegeServer extends ServerLayer {
     public void setHostAddress(AuthToken token, URI hostAddress) throws AuthorizationException, ServerServiceException {
         synchronized (configuration) {
             Optional<Port> secondaryPort = getHost(token).getSecondaryPort();
-            Host updatedHost = PolicyFactory.getHost(hostAddress, secondaryPort);
+            Host updatedHost = factory.getHost(hostAddress, secondaryPort);
             manager.setHost(updatedHost);
             saveChanges();
         }
@@ -392,9 +392,9 @@ public class ProtegeServer extends ServerLayer {
             URI hostAddress = getHost(token).getUri();
             Optional<Port> secondaryPort = Optional.empty();
             if (portNumber > 0) {
-                secondaryPort = Optional.of(PolicyFactory.getPort(portNumber));
+                secondaryPort = Optional.of(factory.getPort(portNumber));
             }
-            Host updatedHost = PolicyFactory.getHost(hostAddress, secondaryPort);
+            Host updatedHost = factory.getHost(hostAddress, secondaryPort);
             manager.setHost(updatedHost);
             saveChanges();
         }
