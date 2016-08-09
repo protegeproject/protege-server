@@ -31,12 +31,8 @@ import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.UndertowOptions;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.BlockingHandler;
-import io.undertow.server.handlers.ExceptionHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
-import io.undertow.util.HttpString;
 import io.undertow.util.StatusCodes;
 
 public final class HTTPServer {
@@ -184,71 +180,55 @@ public final class HTTPServer {
 		admin_router.add("POST", SERVER_RESTART, server_handler);
 		admin_router.add("POST", SERVER_STOP, server_handler);
 		
-		final ExceptionHandler aExceptionHandler = Handlers.exceptionHandler(web_router);
-		final ExceptionHandler aExceptionHandler2 = Handlers.exceptionHandler(admin_router);
+		// Build the servers
+		final GracefulShutdownHandler webRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(web_router));
+		final GracefulShutdownHandler adminRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(admin_router));
 		
-		final GracefulShutdownHandler aShutdownHandler = Handlers.gracefulShutdown(aExceptionHandler);
-		final GracefulShutdownHandler aShutdownHandler2 = Handlers.gracefulShutdown(aExceptionHandler2);
-		
-		admin_router.add("GET", ROOT_PATH + "/admin/restart", new HttpHandler() {
-			@Override
-			public void handleRequest(final HttpServerExchange exchange) throws Exception {
-				aShutdownHandler.shutdown();
-				aShutdownHandler.addShutdownListener(new GracefulShutdownHandler.ShutdownListener() {
-					@Override
-					public void shutdown(final boolean isDown) {
-						if (isDown) {
-							try {
-								restart();
-							}
-							catch (ServerException e) {
-								exchange.setStatusCode(e.getErrorCode());
-								exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage());
-								exchange.endExchange();
-							}
-						}
-					}
-				});
-				exchange.endExchange();
-			}
-		});
-		
+		logger.info("Starting server instances");
 		if (uri.getScheme().equalsIgnoreCase("https")) {
 			SSLContext ctx = new SSLContextFactory().createSslContext();
 			web_server = Undertow.builder()
 					.addHttpsListener(uri.getPort(), uri.getHost(), ctx)
 					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
-					.setHandler(aShutdownHandler)
+					.setHandler(webRouterHandler)
 					.build();
+			web_server.start();
+			logger.info("... Project server has started");
 		}
 		else {
 			web_server = Undertow.builder()
 					.addHttpListener(uri.getPort(), uri.getHost())
 					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
-					.setHandler(aShutdownHandler)
+					.setHandler(webRouterHandler)
 					.build();
+			web_server.start();
+			logger.info("... Project server has started");
+			
 			admin_server = Undertow.builder()
 					.addHttpListener(admin_port, uri.getHost())
 					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
-					.setHandler(aShutdownHandler2)
+					.setHandler(adminRouterHandler)
 					.build();
+			admin_server.start();
+			logger.info("... Admin server has started");
 		}
-		
 		isRunning = true;
-		web_server.start();
-		admin_server.start();
-		logger.info("System has started...");
 	}
 
 	public void stop() throws ServerException {
-		if (web_server != null && isRunning) {
+		if (isRunning) {
+			logger.info("Stopping server instances");
 			try {
-				logger.info("Received request to shutdown");
-				logger.info("System is shutting down...");
-				web_server.stop();
-				web_server = null;
-				admin_server.stop();
-				admin_server = null;
+				if (web_server != null) {
+					web_server.stop();
+					web_server = null;
+					logger.info("... Project server has stopped");
+				}
+				if (admin_server != null) {
+					admin_server.stop();
+					admin_server = null;
+					logger.info("... Admin server has stopped");
+				}
 				isRunning = false;
 			}
 			catch (Exception e) {
@@ -259,6 +239,7 @@ public final class HTTPServer {
 
 	public void restart() throws ServerException {
 		try {
+			logger.info("Received request to restart");
 			stop();
 			start();
 		}
