@@ -55,7 +55,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	public void handleRequest(HttpServerExchange exchange) {
 		if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECTS)) {
 			try {
-				retriveProjectList(exchange);
+				retrieveProjectList(exchange);
 			}
 			catch (ServerException e) {
 				handleServerException(exchange, e);
@@ -176,7 +176,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		}
 	}
 
-	private void retriveProjectList(HttpServerExchange exchange) throws ServerException {
+	private void retrieveProjectList(HttpServerExchange exchange) throws ServerException {
 		try {
 			String uid = super.getQueryParameter(exchange, "userid");
 			PolicyFactory f = Manager.getFactory();
