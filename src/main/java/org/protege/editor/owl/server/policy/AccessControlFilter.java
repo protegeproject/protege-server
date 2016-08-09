@@ -1,21 +1,7 @@
 package org.protege.editor.owl.server.policy;
 
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.Description;
-import edu.stanford.protege.metaproject.api.MetaprojectAgent;
-import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.Operation;
-import edu.stanford.protege.metaproject.api.OperationId;
-import edu.stanford.protege.metaproject.api.Password;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.Role;
-import edu.stanford.protege.metaproject.api.RoleId;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
+import edu.stanford.protege.metaproject.api.*;
 import edu.stanford.protege.metaproject.impl.Operations;
-
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.PerOperationCommitBundle;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
@@ -27,14 +13,7 @@ import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.Commit;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
-import org.semanticweb.owlapi.model.AddAxiom;
-import org.semanticweb.owlapi.model.AddImport;
-import org.semanticweb.owlapi.model.AddOntologyAnnotation;
-import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.RemoveAxiom;
-import org.semanticweb.owlapi.model.RemoveImport;
-import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
-import org.semanticweb.owlapi.model.SetOntologyID;
+import org.semanticweb.owlapi.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,15 +32,15 @@ public class AccessControlFilter extends ServerFilterAdapter {
 
     private Logger logger = LoggerFactory.getLogger(AccessControlFilter.class);
 
-    private final MetaprojectAgent metaprojectAgent;
+    private final ServerConfiguration config;
 
     public AccessControlFilter(ServerLayer delegate) {
         super(delegate);
-        metaprojectAgent = getConfiguration().getMetaproject().getMetaprojectAgent();
+        config = getConfiguration();
     }
 
     protected void checkPermission(User user, Operation operation) throws ServerServiceException {
-        if (!metaprojectAgent.isOperationAllowed(operation.getId(), user.getId())) {
+        if (!config.isOperationAllowed(operation.getId(), user.getId())) {
             OperationNotAllowedException e = new OperationNotAllowedException(operation);
             logger.error(printLog(user, operation.getName().get(), "Request rejected. Operation is not allowed"));
             throw new ServerServiceException(e.getMessage(), e);
@@ -219,7 +198,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
             throws AuthorizationException, OutOfSyncException, ServerServiceException {
         User user = token.getUser();
         Operation operation = commitBundle.getOperation();
-        if (metaprojectAgent.isOperationAllowed(operation.getId(), projectId, user.getId())) {
+        if (config.isOperationAllowed(operation.getId(), projectId, user.getId())) {
             return getDelegate().commit(token, projectId, commitBundle);
         }
         else {
@@ -247,7 +226,7 @@ public class AccessControlFilter extends ServerFilterAdapter {
 
     private void batchCheckPermission(UserId userId, ProjectId projectId, List<Operation> operations, List<Exception> violations) {
         for (Operation operation : operations) {
-            if (!metaprojectAgent.isOperationAllowed(operation.getId(), projectId, userId)) {
+            if (!config.isOperationAllowed(operation.getId(), projectId, userId)) {
                 Exception e = new OperationNotAllowedException(operation);
                 violations.add(e);
             }

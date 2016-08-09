@@ -1,25 +1,6 @@
 package org.protege.editor.owl.server.http;
 
-import static org.mockito.Mockito.when;
-
-import java.io.InputStreamReader;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.protege.editor.owl.server.api.exception.ServerServiceException;
-import org.protege.editor.owl.server.http.HTTPServer;
-import org.protege.editor.owl.server.http.messages.HttpAuthResponse;
-import org.protege.editor.owl.server.http.messages.LoginCreds;
-import org.testng.annotations.AfterClass;
-
 import com.google.gson.Gson;
-
-import edu.stanford.protege.metaproject.api.Metaproject;
-import edu.stanford.protege.metaproject.api.MetaprojectAgent;
 import edu.stanford.protege.metaproject.api.Serializer;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
@@ -27,6 +8,18 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.protege.editor.owl.server.api.exception.ServerServiceException;
+import org.protege.editor.owl.server.http.messages.HttpAuthResponse;
+import org.protege.editor.owl.server.http.messages.LoginCreds;
+import org.testng.annotations.AfterClass;
+
+import java.io.InputStreamReader;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HTTPLoginTest {
@@ -34,10 +27,8 @@ public class HTTPLoginTest {
     private static HTTPServer httpServer;
     
     private OkHttpClient client;
-   
-    @Mock private Metaproject metaproject;
+
     @Mock private ServerConfiguration configuration;
-    @Mock private MetaprojectAgent metaprojectAgent;
     
     @BeforeClass
     public static void startServer() throws Exception {
@@ -48,10 +39,6 @@ public class HTTPLoginTest {
 
     @Before
     public void setUp() throws Exception {
-               
-        when(configuration.getMetaproject()).thenReturn(metaproject);
-        when(metaproject.getMetaprojectAgent()).thenReturn(metaprojectAgent);
-        
         client = new OkHttpClient();
     }
     

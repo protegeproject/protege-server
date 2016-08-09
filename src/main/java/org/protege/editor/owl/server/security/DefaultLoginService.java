@@ -1,28 +1,20 @@
 package org.protege.editor.owl.server.security;
 
-import org.protege.editor.owl.server.api.exception.ServerServiceException;
-
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
-import edu.stanford.protege.metaproject.api.Password;
-import edu.stanford.protege.metaproject.api.Salt;
-import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
-import edu.stanford.protege.metaproject.api.UserRegistry;
-import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
+import edu.stanford.protege.metaproject.api.*;
+import edu.stanford.protege.metaproject.api.exception.UnknownUserIdException;
 import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
 import edu.stanford.protege.metaproject.impl.AuthorizedUserToken;
+import org.protege.editor.owl.server.api.exception.ServerServiceException;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class DefaultLoginService implements SaltedChallengeLoginService {
+    private final ServerConfiguration config;
 
-    private AuthenticationRegistry authRegistry;
-    private UserRegistry userRegistry;
     private SessionManager sessionManager;
 
-    public DefaultLoginService(AuthenticationRegistry authRegistry, UserRegistry userRegistry, SessionManager sessionManager) {
-        this.authRegistry = authRegistry;
-        this.userRegistry = userRegistry;
+    public DefaultLoginService(ServerConfiguration config, SessionManager sessionManager) {
+        this.config = checkNotNull(config);
         this.sessionManager = sessionManager;
     }
 
@@ -40,8 +32,8 @@ public class DefaultLoginService implements SaltedChallengeLoginService {
     @Override
     public AuthToken login(UserId userId, SaltedPasswordDigest password) throws ServerServiceException {
         try {
-            if (authRegistry.hasValidCredentials(userId, password)) {
-                User user = userRegistry.get(userId);
+            if (config.hasValidCredentials(userId, password)) {
+                User user = config.getUser(userId);
                 AuthToken authToken = new AuthorizedUserToken(user);
                 sessionManager.add(authToken);
                 return authToken;
@@ -51,7 +43,7 @@ public class DefaultLoginService implements SaltedChallengeLoginService {
         catch (UserNotRegisteredException e) {
             throw new ServerServiceException("Invalid combination of username and password");
         }
-        catch (UnknownMetaprojectObjectIdException e) {
+        catch (UnknownUserIdException e) {
             throw new ServerServiceException("Bad error. User has the credential but not registered", e);
         }
 
@@ -60,7 +52,7 @@ public class DefaultLoginService implements SaltedChallengeLoginService {
     @Override
     public Salt getSalt(UserId userId) throws ServerServiceException {
         try {
-            return authRegistry.getSalt(userId);
+            return config.getSalt(userId);
         }
         catch (UserNotRegisteredException e) {
             throw new ServerServiceException("Unknown user id: " + userId.get(), e);

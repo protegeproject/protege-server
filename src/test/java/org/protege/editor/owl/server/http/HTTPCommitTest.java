@@ -1,15 +1,13 @@
 package org.protege.editor.owl.server.http;
 
-import static org.mockito.Mockito.when;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.URISyntaxException;
-import java.util.List;
-
+import com.google.gson.Gson;
+import edu.stanford.protege.metaproject.api.Serializer;
+import edu.stanford.protege.metaproject.api.ServerConfiguration;
+import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -31,19 +29,9 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLRuntimeException;
 
-import com.google.gson.Gson;
-
-import edu.stanford.protege.metaproject.Manager;
-import edu.stanford.protege.metaproject.api.Metaproject;
-import edu.stanford.protege.metaproject.api.MetaprojectAgent;
-import edu.stanford.protege.metaproject.api.MetaprojectFactory;
-import edu.stanford.protege.metaproject.api.Serializer;
-import edu.stanford.protege.metaproject.api.ServerConfiguration;
-import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HTTPCommitTest {
@@ -52,11 +40,7 @@ public class HTTPCommitTest {
 
 	private OkHttpClient client;
 
-	@Mock private Metaproject metaproject;
 	@Mock private ServerConfiguration configuration;
-	@Mock private MetaprojectAgent metaprojectAgent;
-
-	private static MetaprojectFactory f = Manager.getFactory();
 
 	protected static final File pizzaOntology() {
 		try {
@@ -76,10 +60,6 @@ public class HTTPCommitTest {
 
 	@Before
 	public void setUp() throws Exception {
-
-		when(configuration.getMetaproject()).thenReturn(metaproject);
-		when(metaproject.getMetaprojectAgent()).thenReturn(metaprojectAgent);
-
 		client = new OkHttpClient();
 	}
 

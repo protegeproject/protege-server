@@ -1,10 +1,7 @@
 package org.protege.editor.owl.server;
 
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import edu.stanford.protege.metaproject.api.*;
+import edu.stanford.protege.metaproject.impl.Operations;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,30 +19,12 @@ import org.protege.editor.owl.server.policy.CommitBundleImpl;
 import org.protege.editor.owl.server.versioning.Commit;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.RevisionMetadata;
-import org.semanticweb.owlapi.model.AddAxiom;
-import org.semanticweb.owlapi.model.AddImport;
-import org.semanticweb.owlapi.model.AddOntologyAnnotation;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAnnotation;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLImportsDeclaration;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyID;
-import org.semanticweb.owlapi.model.RemoveAxiom;
-import org.semanticweb.owlapi.model.RemoveImport;
-import org.semanticweb.owlapi.model.RemoveOntologyAnnotation;
-import org.semanticweb.owlapi.model.SetOntologyID;
+import org.semanticweb.owlapi.model.*;
 
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.Metaproject;
-import edu.stanford.protege.metaproject.api.MetaprojectAgent;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ServerConfiguration;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
-import edu.stanford.protege.metaproject.impl.Operations;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.when;
 
 /**
  * @author Josef Hardi <johardi@stanford.edu> <br>
@@ -81,10 +60,8 @@ public class AccessControlFilterTest {
     @Mock private ProjectId projectId;
 
     private DocumentRevision headRevision = DocumentRevision.START_REVISION;
-
-    @Mock private Metaproject metaproject;
+    
     @Mock private ServerConfiguration configuration;
-    @Mock private MetaprojectAgent metaprojectAgent;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -101,29 +78,26 @@ public class AccessControlFilterTest {
         
         when(ontology.getOntologyID()).thenReturn(new OWLOntologyID());
         
-        when(configuration.getMetaproject()).thenReturn(metaproject);
-        when(metaproject.getMetaprojectAgent()).thenReturn(metaprojectAgent);
+        when(configuration.isOperationAllowed(Operations.ADD_AXIOM.getId(), projectId, userIdA)).thenReturn(true);
+        when(configuration.isOperationAllowed(Operations.ADD_AXIOM.getId(), projectId, userIdB)).thenReturn(true);
         
-        when(metaprojectAgent.isOperationAllowed(Operations.ADD_AXIOM.getId(), projectId, userIdA)).thenReturn(true);
-        when(metaprojectAgent.isOperationAllowed(Operations.ADD_AXIOM.getId(), projectId, userIdB)).thenReturn(true);
+        when(configuration.isOperationAllowed(Operations.REMOVE_AXIOM.getId(), projectId, userIdA)).thenReturn(true);
+        when(configuration.isOperationAllowed(Operations.REMOVE_AXIOM.getId(), projectId, userIdB)).thenReturn(false);
         
-        when(metaprojectAgent.isOperationAllowed(Operations.REMOVE_AXIOM.getId(), projectId, userIdA)).thenReturn(true);
-        when(metaprojectAgent.isOperationAllowed(Operations.REMOVE_AXIOM.getId(), projectId, userIdB)).thenReturn(false);
+        when(configuration.isOperationAllowed(Operations.ADD_ONTOLOGY_ANNOTATION.getId(), projectId, userIdA)).thenReturn(true);
+        when(configuration.isOperationAllowed(Operations.ADD_ONTOLOGY_ANNOTATION.getId(), projectId, userIdB)).thenReturn(true);
         
-        when(metaprojectAgent.isOperationAllowed(Operations.ADD_ONTOLOGY_ANNOTATION.getId(), projectId, userIdA)).thenReturn(true);
-        when(metaprojectAgent.isOperationAllowed(Operations.ADD_ONTOLOGY_ANNOTATION.getId(), projectId, userIdB)).thenReturn(true);
+        when(configuration.isOperationAllowed(Operations.REMOVE_ONTOLOGY_ANNOTATION.getId(), projectId, userIdA)).thenReturn(true);
+        when(configuration.isOperationAllowed(Operations.REMOVE_ONTOLOGY_ANNOTATION.getId(), projectId, userIdB)).thenReturn(false);
         
-        when(metaprojectAgent.isOperationAllowed(Operations.REMOVE_ONTOLOGY_ANNOTATION.getId(), projectId, userIdA)).thenReturn(true);
-        when(metaprojectAgent.isOperationAllowed(Operations.REMOVE_ONTOLOGY_ANNOTATION.getId(), projectId, userIdB)).thenReturn(false);
+        when(configuration.isOperationAllowed(Operations.ADD_IMPORT.getId(), projectId, userIdA)).thenReturn(false);
+        when(configuration.isOperationAllowed(Operations.ADD_IMPORT.getId(), projectId, userIdB)).thenReturn(true);
         
-        when(metaprojectAgent.isOperationAllowed(Operations.ADD_IMPORT.getId(), projectId, userIdA)).thenReturn(false);
-        when(metaprojectAgent.isOperationAllowed(Operations.ADD_IMPORT.getId(), projectId, userIdB)).thenReturn(true);
+        when(configuration.isOperationAllowed(Operations.REMOVE_IMPORT.getId(), projectId, userIdA)).thenReturn(false);
+        when(configuration.isOperationAllowed(Operations.REMOVE_IMPORT.getId(), projectId, userIdB)).thenReturn(true);
         
-        when(metaprojectAgent.isOperationAllowed(Operations.REMOVE_IMPORT.getId(), projectId, userIdA)).thenReturn(false);
-        when(metaprojectAgent.isOperationAllowed(Operations.REMOVE_IMPORT.getId(), projectId, userIdB)).thenReturn(true);
-        
-        when(metaprojectAgent.isOperationAllowed(Operations.MODIFY_ONTOLOGY_IRI.getId(), projectId, userIdA)).thenReturn(true);
-        when(metaprojectAgent.isOperationAllowed(Operations.MODIFY_ONTOLOGY_IRI.getId(), projectId, userIdB)).thenReturn(false);
+        when(configuration.isOperationAllowed(Operations.MODIFY_ONTOLOGY_IRI.getId(), projectId, userIdA)).thenReturn(true);
+        when(configuration.isOperationAllowed(Operations.MODIFY_ONTOLOGY_IRI.getId(), projectId, userIdB)).thenReturn(false);
         
         System.setProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY, "server-configuration.json");
         

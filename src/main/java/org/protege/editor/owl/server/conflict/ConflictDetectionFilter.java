@@ -3,8 +3,7 @@ package org.protege.editor.owl.server.conflict;
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
-
+import edu.stanford.protege.metaproject.api.exception.UnknownProjectIdException;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
 import org.protege.editor.owl.server.api.ServerLayer;
@@ -38,7 +37,7 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
     public synchronized ChangeHistory commit(AuthToken token, ProjectId projectId, CommitBundle commitBundle)
             throws AuthorizationException, OutOfSyncException, ServerServiceException {
         try {
-            Project project = getConfiguration().getMetaproject().getProjectRegistry().get(projectId);
+            Project project = getConfiguration().getProject(projectId);
             // TODO: head revision is checked here, but another thread may already be proceeding to do a commit
             HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getPath());
             DocumentRevision serverHeadRevision = getHeadRevision(historyFile);
@@ -49,7 +48,7 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
             }
             return super.commit(token, projectId, commitBundle);
         }
-        catch (UnknownMetaprojectObjectIdException e) {
+        catch (UnknownProjectIdException e) {
             logger.error(printLog(token.getUser(), "Commit changes", e.getMessage()));
             throw new ServerServiceException(e.getMessage(), e);
         }

@@ -1,20 +1,12 @@
 package org.protege.editor.owl.server.change;
 
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.Description;
-import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.UserId;
-import edu.stanford.protege.metaproject.api.exception.UnknownMetaprojectObjectIdException;
-
+import edu.stanford.protege.metaproject.api.*;
+import edu.stanford.protege.metaproject.api.exception.UnknownProjectIdException;
 import org.protege.editor.owl.server.api.ChangeService;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
 import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
-import org.protege.editor.owl.server.api.exception.OWLServerException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.versioning.ChangeHistoryImpl;
@@ -57,12 +49,12 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
             throws AuthorizationException, OutOfSyncException, ServerServiceException {
         try {
             ChangeHistory changeHistory = super.commit(token, projectId, commitBundle);
-            Project project = getConfiguration().getMetaproject().getProjectRegistry().get(projectId);
+            Project project = getConfiguration().getProject(projectId);
             HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getPath());
             getChangePool().update(historyFile, changeHistory);
             return changeHistory;
         }
-        catch (UnknownMetaprojectObjectIdException e) {
+        catch (UnknownProjectIdException e) {
             logger.error(printLog(token.getUser(), "Commit changes", e.getMessage()));
             throw new ServerServiceException(e.getMessage(), e);
         }

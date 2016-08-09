@@ -1,9 +1,7 @@
 package org.protege.editor.owl.server;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.when;
-
+import edu.stanford.protege.metaproject.api.*;
+import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,14 +11,9 @@ import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.security.DefaultLoginService;
 import org.protege.editor.owl.server.security.SessionManager;
 
-import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
-import edu.stanford.protege.metaproject.api.Salt;
-import edu.stanford.protege.metaproject.api.SaltedPasswordDigest;
-import edu.stanford.protege.metaproject.api.User;
-import edu.stanford.protege.metaproject.api.UserId;
-import edu.stanford.protege.metaproject.api.UserRegistry;
-import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Josef Hardi <johardi@stanford.edu> <br>
@@ -39,25 +32,25 @@ public class AuthenticationTest {
 
     @Mock private Salt userSalt;
 
-    @Mock private AuthenticationRegistry authRegistry;
-    @Mock private UserRegistry userRegistry;
     @Mock private SessionManager sessionManager;
+
+    @Mock private ServerConfiguration configuration;
 
     private DefaultLoginService loginService;
 
     @Before
     public void setUp() throws Exception {
-        loginService = new DefaultLoginService(authRegistry, userRegistry, sessionManager);
+        loginService = new DefaultLoginService(configuration, sessionManager);
         
-        when(authRegistry.hasValidCredentials(validUserId, validSaltedPassword)).thenReturn(true);
-        when(userRegistry.get(validUserId)).thenReturn(validUser);
+        when(configuration.hasValidCredentials(validUserId, validSaltedPassword)).thenReturn(true);
+        when(configuration.getUser(validUserId)).thenReturn(validUser);
         
-        when(authRegistry.hasValidCredentials(invalidUserId, invalidSaltedPassword)).thenReturn(false);
-        when(authRegistry.hasValidCredentials(invalidUserId, validSaltedPassword)).thenReturn(false);
-        when(authRegistry.hasValidCredentials(validUserId, invalidSaltedPassword)).thenReturn(false);
+        when(configuration.hasValidCredentials(invalidUserId, invalidSaltedPassword)).thenReturn(false);
+        when(configuration.hasValidCredentials(invalidUserId, validSaltedPassword)).thenReturn(false);
+        when(configuration.hasValidCredentials(validUserId, invalidSaltedPassword)).thenReturn(false);
         
-        when(authRegistry.getSalt(validUserId)).thenReturn(userSalt);
-        when(authRegistry.getSalt(invalidUserId)).thenThrow(new UserNotRegisteredException());
+        when(configuration.getSalt(validUserId)).thenReturn(userSalt);
+        when(configuration.getSalt(invalidUserId)).thenThrow(new UserNotRegisteredException());
     }
 
     @Test

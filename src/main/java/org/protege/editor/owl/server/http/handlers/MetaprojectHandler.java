@@ -1,19 +1,14 @@
 package org.protege.editor.owl.server.http.handlers;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import com.google.gson.Gson;
+import edu.stanford.protege.metaproject.Manager;
+import edu.stanford.protege.metaproject.api.*;
+import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
+import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HttpString;
+import io.undertow.util.Methods;
+import io.undertow.util.StatusCodes;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.base.ProtegeServer;
@@ -32,37 +27,19 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
-
-import edu.stanford.protege.metaproject.Manager;
-import edu.stanford.protege.metaproject.api.Description;
-import edu.stanford.protege.metaproject.api.MetaprojectAgent;
-import edu.stanford.protege.metaproject.api.MetaprojectFactory;
-import edu.stanford.protege.metaproject.api.Name;
-import edu.stanford.protege.metaproject.api.Project;
-import edu.stanford.protege.metaproject.api.ProjectId;
-import edu.stanford.protege.metaproject.api.ProjectOptions;
-import edu.stanford.protege.metaproject.api.Serializer;
-import edu.stanford.protege.metaproject.api.ServerConfiguration;
-import edu.stanford.protege.metaproject.api.UserId;
-import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
-import edu.stanford.protege.metaproject.api.exception.ServerConfigurationNotLoadedException;
-import edu.stanford.protege.metaproject.api.exception.UserNotInPolicyException;
-import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HttpString;
-import io.undertow.util.Methods;
-import io.undertow.util.StatusCodes;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class MetaprojectHandler extends BaseRoutingHandler {
 	
 	private static Logger logger = LoggerFactory.getLogger(MetaprojectHandler.class);
 
+	private ConfigurationManager manager;
 	private ServerConfiguration configuration;
 	private ProtegeServer server;
 	private ChangeManagementFilter cf;
-
-	private MetaprojectAgent metaprojectAgent;
 
 	private String configLocation;
 
@@ -70,7 +47,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		server = pserver;
 		cf = new ChangeManagementFilter(server);
 		configuration = server.getConfiguration();
-		metaprojectAgent = configuration.getMetaproject().getMetaprojectAgent();
+		manager = configuration.getConfigurationManager();
 		configLocation = System.getProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY);
 	}
 
@@ -187,7 +164,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				ServerConfiguration cfg = serl.parse(new InputStreamReader(exchange.getInputStream()), ServerConfiguration.class);
 				updateMetaproject(exchange, cfg);
 			}
-			catch (IOException | ObjectConversionException e) {
+			catch (ObjectConversionException e) {
 				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
 			}
 			catch (ServerException e) {
@@ -202,14 +179,11 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	private void retriveProjectList(HttpServerExchange exchange) throws ServerException {
 		try {
 			String uid = super.getQueryParameter(exchange, "userid");
-			MetaprojectFactory f = Manager.getFactory();
+			PolicyFactory f = Manager.getFactory();
 			UserId userId = f.getUserId(uid);
-			List<Project> projects = new ArrayList<>(metaprojectAgent.getProjects(userId));
+			List<Project> projects = new ArrayList<>(configuration.getProjects(userId));
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 			os.writeObject(projects);
-		}
-		catch (UserNotInPolicyException e) {
-			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to get project list", e);
 		}
 		catch (IOException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to transmit the returned data", e);
@@ -237,7 +211,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	private void openExistingProject(HttpServerExchange exchange) throws ServerException {
 		try {
 			String pid = super.getQueryParameter(exchange, "projectid");
-			MetaprojectFactory f = Manager.getFactory();
+			PolicyFactory f = Manager.getFactory();
 			ProjectId projId  = f.getProjectId(pid);
 			ServerDocument sdoc = server.openProject(getAuthToken(exchange), projId);
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
@@ -257,7 +231,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	private void deleteExistingProject(HttpServerExchange exchange) throws ServerException {
 		try {
 			String pid = super.getQueryParameter(exchange, "projectid");
-			MetaprojectFactory f = Manager.getFactory();
+			PolicyFactory f = Manager.getFactory();
 			ProjectId projId  = f.getProjectId(pid);
 			cf.deleteProject(getAuthToken(exchange), projId, true);
 		}
@@ -333,10 +307,10 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 
 	private void updateMetaproject(HttpServerExchange exchange, ServerConfiguration cfg) throws ServerException {
 		try {
-			Manager.getConfigurationManager().setServerConfiguration(cfg);
-			Manager.getConfigurationManager().saveServerConfiguration(new File(configLocation));
+			manager.setActiveConfiguration(cfg);
+			manager.saveConfiguration(new File(configLocation));
 		}
-		catch (ServerConfigurationNotLoadedException | IOException e) {
+		catch (IOException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to save changes of the metaproject", e);
 		}
 	}

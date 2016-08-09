@@ -28,7 +28,7 @@ public class AuthenticationFilter extends ServerFilterAdapter {
 
     private Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
 
-    private final AuthenticationRegistry authRegistry;
+    private final ServerConfiguration configuration;
 
     private SessionManager sessionManager = new SessionManager();
 
@@ -36,9 +36,8 @@ public class AuthenticationFilter extends ServerFilterAdapter {
 
     public AuthenticationFilter(ServerLayer delegate) {
         super(delegate);
-        authRegistry = getConfiguration().getAuthenticationRegistry();
-        UserRegistry userRegistry = getConfiguration().getMetaproject().getUserRegistry();
-        loginService = new DefaultLoginService(authRegistry, userRegistry, sessionManager);
+        configuration = getConfiguration();
+        loginService = new DefaultLoginService(configuration, sessionManager);
     }
 
     public void setLoginService(LoginService loginService) {

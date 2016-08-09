@@ -1,32 +1,8 @@
 package org.protege.editor.owl.server.http;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URI;
-
-import javax.net.ssl.SSLContext;
-
-import org.protege.editor.owl.server.base.ProtegeServer;
-import org.protege.editor.owl.server.http.exception.ServerConfigurationInitializationException;
-import org.protege.editor.owl.server.http.exception.ServerException;
-import org.protege.editor.owl.server.http.handlers.AuthenticationHandler;
-import org.protege.editor.owl.server.http.handlers.CodeGenHandler;
-import org.protege.editor.owl.server.http.handlers.HTTPChangeService;
-import org.protege.editor.owl.server.http.handlers.HTTPLoginService;
-import org.protege.editor.owl.server.http.handlers.HTTPServerHandler;
-import org.protege.editor.owl.server.http.handlers.MetaprojectHandler;
-import org.protege.editor.owl.server.security.DefaultLoginService;
-import org.protege.editor.owl.server.security.SSLContextFactory;
-import org.protege.editor.owl.server.security.SSLContextInitializationException;
-import org.protege.editor.owl.server.security.SessionManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.stanford.protege.metaproject.Manager;
 import edu.stanford.protege.metaproject.api.AuthToken;
-import edu.stanford.protege.metaproject.api.AuthenticationRegistry;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
-import edu.stanford.protege.metaproject.api.UserRegistry;
 import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
@@ -34,6 +10,21 @@ import io.undertow.UndertowOptions;
 import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.util.StatusCodes;
+import org.protege.editor.owl.server.base.ProtegeServer;
+import org.protege.editor.owl.server.http.exception.ServerConfigurationInitializationException;
+import org.protege.editor.owl.server.http.exception.ServerException;
+import org.protege.editor.owl.server.http.handlers.*;
+import org.protege.editor.owl.server.security.DefaultLoginService;
+import org.protege.editor.owl.server.security.SSLContextFactory;
+import org.protege.editor.owl.server.security.SSLContextInitializationException;
+import org.protege.editor.owl.server.security.SessionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.SSLContext;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URI;
 
 public final class HTTPServer {
 
@@ -124,7 +115,7 @@ public final class HTTPServer {
 			if (config_fname == null) {
 				config_fname = System.getProperty(SERVER_CONFIGURATION_PROPERTY);
 			}
-			config = Manager.getConfigurationManager().loadServerConfiguration(new File(config_fname));
+			config = Manager.getConfigurationManager().loadConfiguration(new File(config_fname));
 			pserver = new ProtegeServer(config);
 			uri = config.getHost().getUri();
 			admin_port = config.getHost().getSecondaryPort().get().get();
@@ -142,9 +133,7 @@ public final class HTTPServer {
 		admin_router = Handlers.routing();
 		
 		// create login handler
-		AuthenticationRegistry authRegistry = config.getAuthenticationRegistry();
-		UserRegistry userRegistry = config.getMetaproject().getUserRegistry();
-		DefaultLoginService loginService = new DefaultLoginService(authRegistry, userRegistry, session_manager);
+		DefaultLoginService loginService = new DefaultLoginService(config, session_manager);
 		login_handler = new BlockingHandler(new HTTPLoginService(loginService));
 		
 		web_router.add("POST", LOGIN, login_handler);
