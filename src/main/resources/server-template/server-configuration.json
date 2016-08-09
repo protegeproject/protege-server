@@ -4,7 +4,6 @@
     "secondaryPort": 8081
   },
   "root": "root/data",
-  "metaproject": {
     "policy": {
       "root": {
         "all-projects": [
@@ -486,8 +485,7 @@
         "type": "WRITE",
         "scope": "METAPROJECT"
       }
-    ]
-  },
+    ],
   "authentication": [
     {
       "userId": "alice",
