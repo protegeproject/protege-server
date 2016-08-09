@@ -162,7 +162,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			try {
 				Serializer<Gson> serl = new DefaultJsonSerializer();
 				ServerConfiguration cfg = serl.parse(new InputStreamReader(exchange.getInputStream()), ServerConfiguration.class);
-				updateMetaproject(exchange, cfg);
+				updateMetaproject(cfg);
 			}
 			catch (ObjectConversionException e) {
 				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
@@ -305,7 +305,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		}
 	}
 
-	private void updateMetaproject(HttpServerExchange exchange, ServerConfiguration cfg) throws ServerException {
+	private void updateMetaproject(ServerConfiguration cfg) throws ServerException {
 		try {
 			manager.setActiveConfiguration(cfg);
 			manager.saveConfiguration(new File(configLocation));
