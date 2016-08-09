@@ -35,14 +35,13 @@ public final class AuthenticationHandler extends BaseRoutingHandler {
 				else {
 					exchange.setStatusCode(StatusCodes.UNAUTHORIZED);
 					exchange.getResponseHeaders().add(new HttpString("Error-Message"), "Access denied");
+					exchange.endExchange();
 				}
 			}
 		}
 		catch (ServerException e) {
 			exchange.setStatusCode(e.getErrorCode());
 			exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage());
-		}
-		finally {
 			exchange.endExchange();
 		}
 	}
