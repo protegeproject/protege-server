@@ -173,6 +173,13 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			finally {
 				exchange.endExchange(); // end the request
 			}
+			
+			try {
+				HTTPServer.server().restart();
+			} catch (ServerException e) {
+				logger.info("Server failed to restart, see sysadmin");
+				logger.info("Some details...",e);
+			}
 		}
 	}
 
