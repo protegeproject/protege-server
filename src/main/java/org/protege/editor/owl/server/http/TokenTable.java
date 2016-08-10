@@ -82,7 +82,9 @@ public class TokenTable {
 			}
 		);
 		executorService.scheduleAtFixedRate(() -> {
-			tokenCache.cleanUp();
+			if (tokenCache.size() > 0) {
+				tokenCache.cleanUp();
+			}
 		}, timeout, timeout, TimeUnit.MILLISECONDS);
 	}
 }
