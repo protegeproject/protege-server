@@ -158,10 +158,10 @@ public final class HTTPServer {
 		admin_router.add("GET", METAPROJECT, meta_handler);
 		admin_router.add("POST", METAPROJECT, meta_handler);
 		web_router.add("GET", PROJECT,  meta_handler);
-		web_router.add("POST", PROJECT,  meta_handler);
-		web_router.add("POST", PROJECT_SNAPSHOT,  meta_handler);
+		admin_router.add("POST", PROJECT,  meta_handler);
+		admin_router.add("POST", PROJECT_SNAPSHOT,  meta_handler);
 		web_router.add("POST", PROJECT_SNAPSHOT_GET,  meta_handler);
-		web_router.add("DELETE", PROJECT,  meta_handler);
+		admin_router.add("DELETE", PROJECT,  meta_handler);
 		web_router.add("GET", PROJECTS, meta_handler);
 		
 		// create server handler
