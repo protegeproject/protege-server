@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import edu.stanford.protege.metaproject.Manager;
 import edu.stanford.protege.metaproject.api.*;
 import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
+import edu.stanford.protege.metaproject.api.exception.ServerConfigurationNotLoadedException;
 import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
@@ -316,6 +317,11 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		try {
 			manager.setActiveConfiguration(cfg);
 			manager.saveConfiguration(new File(configLocation));
+			try {
+				configuration = manager.getConfiguration();
+			} catch (ServerConfigurationNotLoadedException e) {
+				// ignore TODO: don't ignore
+			}
 		}
 		catch (IOException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to save changes of the metaproject", e);
