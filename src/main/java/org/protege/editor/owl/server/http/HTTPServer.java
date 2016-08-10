@@ -183,6 +183,14 @@ public final class HTTPServer {
 					.build();
 			web_server.start();
 			logger.info("... Project server has started");
+			
+			admin_server = Undertow.builder()
+					.addHttpsListener(admin_port, uri.getHost(), ctx)
+					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
+					.setHandler(adminRouterHandler)
+					.build();
+			admin_server.start();
+			logger.info("... Admin server has started");
 		}
 		else {
 			web_server = Undertow.builder()
