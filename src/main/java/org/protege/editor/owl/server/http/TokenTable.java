@@ -3,9 +3,10 @@ package org.protege.editor.owl.server.http;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import org.protege.editor.owl.server.http.exception.ServerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -18,7 +19,7 @@ import edu.stanford.protege.metaproject.api.AuthToken;
 
 public class TokenTable {
 
-	private static final Logger logger = Logger.getLogger(TokenTable.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(TokenTable.class);
 
 	public static final int DEFAULT_TABLE_TIMEOUT = 180*1000;
 
