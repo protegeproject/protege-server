@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import edu.stanford.protege.metaproject.Manager;
 import edu.stanford.protege.metaproject.api.*;
 import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
-import edu.stanford.protege.metaproject.api.exception.ServerConfigurationNotLoadedException;
 import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
@@ -38,7 +37,6 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	private static Logger logger = LoggerFactory.getLogger(MetaprojectHandler.class);
 
 	private ConfigurationManager manager;
-	private ServerConfiguration configuration;
 	private ProtegeServer server;
 	private ChangeManagementFilter cf;
 
@@ -47,8 +45,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	public MetaprojectHandler(ProtegeServer pserver) {
 		server = pserver;
 		cf = new ChangeManagementFilter(server);
-		configuration = server.getConfiguration();
-		manager = configuration.getConfigurationManager();
+		manager = server.getConfiguration().getConfigurationManager();
 		configLocation = System.getProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY);
 	}
 
@@ -189,7 +186,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			String uid = super.getQueryParameter(exchange, "userid");
 			PolicyFactory f = Manager.getFactory();
 			UserId userId = f.getUserId(uid);
-			List<Project> projects = new ArrayList<>(configuration.getProjects(userId));
+			List<Project> projects = new ArrayList<>(manager.getConfiguration().getProjects(userId));
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 			os.writeObject(projects);
 		}
@@ -306,7 +303,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	private void retrieveMetaproject(HttpServerExchange exchange) throws ServerException {
 		try {
 			Serializer<Gson> serl = new DefaultJsonSerializer();
-			exchange.getResponseSender().send(serl.write(configuration, ServerConfiguration.class));
+			exchange.getResponseSender().send(serl.write(manager.getConfiguration(), ServerConfiguration.class));
 		}
 		catch (Exception e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to get server configuration", e);
@@ -317,11 +314,6 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		try {
 			manager.setActiveConfiguration(cfg);
 			manager.saveConfiguration(new File(configLocation));
-			try {
-				configuration = manager.getConfiguration();
-			} catch (ServerConfigurationNotLoadedException e) {
-				// ignore TODO: don't ignore
-			}
 		}
 		catch (IOException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to save changes of the metaproject", e);

@@ -37,7 +37,7 @@ public class ProtegeServer extends ServerLayer {
 
     private Logger logger = LoggerFactory.getLogger(ProtegeServer.class);
 
-    private final ServerConfiguration configuration;
+    private ServerConfiguration configuration;
 
     private final ConfigurationManager manager;
 
@@ -482,13 +482,7 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public List<Role> getRoles(AuthToken token, UserId userId, ProjectId projectId, GlobalPermissions globalPermissions)
             throws AuthorizationException, ServerServiceException {
-        try {
-            return new ArrayList<>(configuration.getRoles(userId, projectId, globalPermissions));
-        }
-        catch (ProjectNotInPolicyException e) {
-            logger.error(printLog(token.getUser(), "List roles", e.getMessage()));
-            throw new ServerServiceException(e.getMessage(), e);
-        }
+        return new ArrayList<>(configuration.getRoles(userId, projectId, globalPermissions));
     }
 
     @Override
@@ -509,13 +503,7 @@ public class ProtegeServer extends ServerLayer {
     @Override
     public List<Operation> getOperations(AuthToken token, UserId userId, ProjectId projectId, GlobalPermissions globalPermissions)
             throws AuthorizationException, ServerServiceException {
-        try {
-            return new ArrayList<>(configuration.getOperations(userId, projectId, globalPermissions));
-        }
-        catch (ProjectNotInPolicyException e) {
-            logger.error(printLog(token.getUser(), "List operations", e.getMessage()));
-            throw new ServerServiceException(e.getMessage(), e);
-        }
+        return new ArrayList<>(configuration.getOperations(userId, projectId, globalPermissions));
     }
 
     @Override
@@ -551,6 +539,7 @@ public class ProtegeServer extends ServerLayer {
         synchronized (configurationFile) {
             try {
                 manager.saveConfiguration(configurationFile);
+                configuration = manager.getConfiguration();
             }
             catch (IOException e) {
                 String message = "Unable to save server configuration";
