@@ -40,7 +40,8 @@ public class AuthenticationTest {
 
     @Before
     public void setUp() throws Exception {
-        loginService = new DefaultLoginService(configuration, sessionManager);
+        loginService = new DefaultLoginService();
+        loginService.setConfig(configuration);
         
         when(configuration.hasValidCredentials(validUserId, validSaltedPassword)).thenReturn(true);
         when(configuration.getUser(validUserId)).thenReturn(validUser);

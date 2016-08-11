@@ -10,6 +10,8 @@ import io.undertow.UndertowOptions;
 import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.util.StatusCodes;
+
+import org.protege.editor.owl.server.api.LoginService;
 import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.http.exception.ServerConfigurationInitializationException;
 import org.protege.editor.owl.server.http.exception.ServerException;
@@ -125,6 +127,24 @@ public final class HTTPServer {
 			throw new ServerConfigurationInitializationException("Unable to load server configuration", e);
 		}
 	}
+	
+	private BlockingHandler loadAndCreateLogin(ServerConfiguration config) {
+		
+		String authClassName = config.getProperty("authenticate");
+		LoginService service = null;
+		if (authClassName != null) {
+			try {
+				service = (LoginService) Class.forName(authClassName).newInstance();
+				service.setConfig(config);
+				
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return new BlockingHandler(new HTTPLoginService(service));
+	}
 
 	public void start() throws ServerConfigurationInitializationException, SSLContextInitializationException {
 		initConfig();
@@ -133,8 +153,8 @@ public final class HTTPServer {
 		admin_router = Handlers.routing();
 		
 		// create login handler
-		DefaultLoginService loginService = new DefaultLoginService(config, session_manager);
-		login_handler = new BlockingHandler(new HTTPLoginService(loginService));
+		login_handler = loadAndCreateLogin(config);
+		
 		
 		web_router.add("POST", LOGIN, login_handler);
 		admin_router.add("POST", LOGIN, login_handler);
