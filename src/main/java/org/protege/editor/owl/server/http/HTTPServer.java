@@ -182,7 +182,7 @@ public final class HTTPServer {
 					.setHandler(webRouterHandler)
 					.build();
 			web_server.start();
-			logger.info("... Project server has started");
+			logger.info("... Project server has started at port " + uri.getPort());
 			
 			admin_server = Undertow.builder()
 					.addHttpsListener(admin_port, uri.getHost(), ctx)
@@ -190,7 +190,7 @@ public final class HTTPServer {
 					.setHandler(adminRouterHandler)
 					.build();
 			admin_server.start();
-			logger.info("... Admin server has started");
+			logger.info("... Admin server has started at port " + admin_port);
 		}
 		else {
 			web_server = Undertow.builder()
@@ -199,7 +199,7 @@ public final class HTTPServer {
 					.setHandler(webRouterHandler)
 					.build();
 			web_server.start();
-			logger.info("... Project server has started");
+			logger.info("... Project server has started at port " + uri.getPort());
 			
 			admin_server = Undertow.builder()
 					.addHttpListener(admin_port, uri.getHost())
@@ -207,7 +207,7 @@ public final class HTTPServer {
 					.setHandler(adminRouterHandler)
 					.build();
 			admin_server.start();
-			logger.info("... Admin server has started");
+			logger.info("... Admin server has started at port " + admin_port);
 		}
 		isRunning = true;
 	}
