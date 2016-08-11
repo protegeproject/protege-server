@@ -23,7 +23,12 @@ public class TokenTable {
 
 	public static final int DEFAULT_TABLE_TIMEOUT = 180*1000;
 
-	private ScheduledExecutorService executorService;
+	private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(r -> {
+		Thread th = new Thread(r, "User Token Maintainer Thread");
+		th.setDaemon(false);
+		return th;
+	}
+);;
 
 	private AuthToken tokenToCache;
 
@@ -75,12 +80,6 @@ public class TokenTable {
 	}
 
 	private void createTokenCleanupThread(long timeout) {
-		executorService = Executors.newSingleThreadScheduledExecutor(r -> {
-				Thread th = new Thread(r, "Token Cache Cleanup Detail");
-				th.setDaemon(false);
-				return th;
-			}
-		);
 		executorService.scheduleAtFixedRate(() -> {
 			if (tokenCache.size() > 0) {
 				tokenCache.cleanUp();
