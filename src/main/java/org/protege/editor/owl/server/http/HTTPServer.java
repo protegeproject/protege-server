@@ -78,6 +78,9 @@ public final class HTTPServer {
 	private io.undertow.server.RoutingHandler web_router;
 	private io.undertow.server.RoutingHandler admin_router;
 
+	private GracefulShutdownHandler webRouterHandler;
+	private GracefulShutdownHandler adminRouterHandler;
+
 	private static HTTPServer server;
 
 	public static HTTPServer server() {
@@ -170,8 +173,8 @@ public final class HTTPServer {
 		admin_router.add("POST", SERVER_STOP, server_handler);
 		
 		// Build the servers
-		final GracefulShutdownHandler webRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(web_router));
-		final GracefulShutdownHandler adminRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(admin_router));
+		webRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(web_router));
+		adminRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(admin_router));
 		
 		logger.info("Starting server instances");
 		if (uri.getScheme().equalsIgnoreCase("https")) {
@@ -217,11 +220,17 @@ public final class HTTPServer {
 			logger.info("Stopping server instances");
 			try {
 				if (web_server != null) {
+					if (webRouterHandler != null) {
+						webRouterHandler.shutdown();
+					}
 					web_server.stop();
 					web_server = null;
 					logger.info("... Project server has stopped");
 				}
 				if (admin_server != null) {
+					if (adminRouterHandler != null) {
+						adminRouterHandler.shutdown();
+					}
 					admin_server.stop();
 					admin_server = null;
 					logger.info("... Admin server has stopped");
