@@ -1,5 +1,6 @@
 package org.protege.editor.owl.server.security;
 
+import edu.stanford.protege.metaproject.Manager;
 import edu.stanford.protege.metaproject.api.*;
 import edu.stanford.protege.metaproject.api.exception.UnknownUserIdException;
 import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
@@ -9,24 +10,27 @@ import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class DefaultLoginService implements SaltedChallengeLoginService {
-    private final ServerConfiguration config;
-
-    private SessionManager sessionManager;
-
-    public DefaultLoginService(ServerConfiguration config, SessionManager sessionManager) {
-        this.config = checkNotNull(config);
-        this.sessionManager = sessionManager;
-    }
+	
+    private ServerConfiguration config;
+   
+    public DefaultLoginService() {}   
 
     @Override
     public AuthToken login(UserId username, Password password) throws ServerServiceException {
+    	SaltedPasswordDigest saltedPassword;
+    	
         if (password instanceof SaltedPasswordDigest) {
-            SaltedPasswordDigest saltedPassword = (SaltedPasswordDigest) password;
-            return login(username, saltedPassword);
+            saltedPassword = (SaltedPasswordDigest) password;
         }
         else {
-            throw new ServerServiceException("Unsupported password object type: " + password.getClass());
+        	PolicyFactory f = Manager.getFactory();
+ 			Salt userSalt = (Salt) getSalt(username);
+ 			PlainPassword pwd = f.getPlainPassword(password.getPassword());
+ 			
+ 			saltedPassword = f.getPasswordHasher().hash(pwd, userSalt);
         }
+        
+        return login(username, saltedPassword);
     }
 
     @Override
@@ -35,7 +39,6 @@ public class DefaultLoginService implements SaltedChallengeLoginService {
             if (config.hasValidCredentials(userId, password)) {
                 User user = config.getUser(userId);
                 AuthToken authToken = new AuthorizedUserToken(user);
-                sessionManager.add(authToken);
                 return authToken;
             }
             throw new ServerServiceException("Invalid combination of username and password");
@@ -58,4 +61,11 @@ public class DefaultLoginService implements SaltedChallengeLoginService {
             throw new ServerServiceException("Unknown user id: " + userId.get(), e);
         }
     }
+
+
+	@Override
+	public void setConfig(ServerConfiguration config) {
+		this.config = checkNotNull(config);
+		
+	}
 }
