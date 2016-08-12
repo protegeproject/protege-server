@@ -9,6 +9,8 @@ import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
 import io.undertow.util.StatusCodes;
+
+import org.protege.editor.owl.server.api.LoginService;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.http.HTTPServer;
 import org.protege.editor.owl.server.http.messages.HttpAuthResponse;
@@ -24,32 +26,25 @@ public class HTTPLoginService extends BaseRoutingHandler {
 	
 	private static Logger logger = LoggerFactory.getLogger(MetaprojectHandler.class);
 	
-	private DefaultLoginService loginService;
+	private LoginService loginService;
 	
 	@Inject
-	public HTTPLoginService(DefaultLoginService s) {
+	public HTTPLoginService(LoginService s) {
 		loginService = s;
 	}
 
 	@Override
 	public void handleRequest(final HttpServerExchange exchange) {
 		Serializer<Gson> serl = new DefaultJsonSerializer();
-		PolicyFactory f = Manager.getFactory();
 		try {
+			PolicyFactory f = Manager.getFactory();
 			LoginCreds creds = (LoginCreds) serl.parse(new InputStreamReader(exchange.getInputStream()), LoginCreds.class);
-			UserId userId = f.getUserId(creds.getUser());
-			
-			/*
-			 * Encrypt the plain password
-			 */
-			Salt userSalt = (Salt) loginService.getSalt(userId);
-			PlainPassword plainPassword = f.getPlainPassword(creds.getPassword());
-			SaltedPasswordDigest passwordDigest = f.getPasswordHasher().hash(plainPassword, userSalt);
-			
+						
 			/*
 			 * Use the login service over the wire
 			 */
-			AuthToken authToken = loginService.login(userId, passwordDigest);
+			AuthToken authToken = loginService.login(f.getUserId(creds.getUser()),
+					f.getPlainPassword(creds.getPassword()));
 			sendLoginResponse(exchange, authToken);
 		}
 		catch (ObjectConversionException e) {
