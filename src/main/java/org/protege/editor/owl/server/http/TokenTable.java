@@ -21,7 +21,7 @@ public class TokenTable {
 
 	private static final Logger logger = LoggerFactory.getLogger(TokenTable.class);
 
-	public static final int DEFAULT_TABLE_TIMEOUT = 180*1000;
+	public static final int DEFAULT_TABLE_TIMEOUT = 30*60*1000;
 
 	private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(r -> {
 		Thread th = new Thread(r, "User Token Maintainer Thread");
