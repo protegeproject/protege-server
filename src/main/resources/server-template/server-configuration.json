@@ -518,6 +518,7 @@
     "codegen_suffix": "S",
     "codegen_file": "gencode",
     "codegen_delimeter": "-",
-    "evshistory_file": "evs_history"
+    "evshistory_file": "evs_history",
+    "authenticate": "org.protege.editor.owl.server.security.DefaultLoginService"
   }
 }
