@@ -106,7 +106,7 @@ public class ChangeDocumentPool {
 
     public ChangeHistory lookup(HistoryFile historyFile) throws IOException {
         ChangeDocumentPoolEntry entry;
-        synchronized (pool) {
+        synchronized (this) {
             entry = pool.get(historyFile);
             if (entry == null) {
                 entry = new ChangeDocumentPoolEntry(historyFile);
@@ -119,7 +119,7 @@ public class ChangeDocumentPool {
     
     public DocumentRevision lookupHead(HistoryFile historyFile) throws IOException {
         ChangeDocumentPoolEntry entry;
-        synchronized (pool) {
+        synchronized (this) {
             entry = pool.get(historyFile);
             if (entry == null) {
                 entry = new ChangeDocumentPoolEntry(historyFile);
@@ -131,7 +131,7 @@ public class ChangeDocumentPool {
     }
 
     public void update(HistoryFile historyFile, ChangeHistory changeHistory) {
-        synchronized (pool) {
+        synchronized (this) {
             ChangeDocumentPoolEntry entry = pool.get(historyFile);
             if (entry == null) {
                 entry = new ChangeDocumentPoolEntry(historyFile);
@@ -145,7 +145,7 @@ public class ChangeDocumentPool {
     }
 
     public void dispose() {
-        synchronized (pool) {
+        synchronized (this) {
             for (ChangeDocumentPoolEntry entry : pool.values()) {
                 entry.dispose();
             }
@@ -156,7 +156,7 @@ public class ChangeDocumentPool {
 
     public void sync() {
         List<ChangeDocumentPoolEntry> poolEntries;
-        synchronized (pool) {
+        synchronized (this) {
             poolEntries = new ArrayList<ChangeDocumentPoolEntry>(pool.values());
         }
         for (ChangeDocumentPoolEntry poolEntry : poolEntries) {
