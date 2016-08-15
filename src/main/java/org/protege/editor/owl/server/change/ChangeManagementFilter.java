@@ -50,7 +50,8 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
         try {
             ChangeHistory changeHistory = super.commit(token, projectId, commitBundle);
             Project project = getConfiguration().getProject(projectId);
-            HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getPath());
+            String projectFilePath = project.getFile().getAbsolutePath();
+            HistoryFile historyFile = HistoryFile.openExisting(projectFilePath);
             getChangePool().update(historyFile, changeHistory);
             return changeHistory;
         }

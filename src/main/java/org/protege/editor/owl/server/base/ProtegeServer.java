@@ -186,7 +186,8 @@ public class ProtegeServer extends ServerLayer {
                 logger.info(printLog(token.getUser(), "Remove project", project.toString()));
                 manager.removeProject(project);
                 if (includeFile) {
-                    HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getPath());
+                    String projectFilePath = project.getFile().getAbsolutePath();
+                    HistoryFile historyFile = HistoryFile.openExisting(projectFilePath);
                     File projectDir = historyFile.getParentFile();
                     FileUtils.deleteDirectory(projectDir);
                 }
