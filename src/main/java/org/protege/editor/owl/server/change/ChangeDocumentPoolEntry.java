@@ -29,10 +29,10 @@ import javax.annotation.Nonnull;
  */
 public class ChangeDocumentPoolEntry {
 
-    private Logger logger = LoggerFactory.getLogger(ChangeDocumentPoolEntry.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChangeDocumentPoolEntry.class);
 
-    private HistoryFile historyFile;
-    
+    private final HistoryFile historyFile;
+
     private DocumentRevision cached_head = null;
 
     private Future<ChangeHistory> readTask;
@@ -59,17 +59,16 @@ public class ChangeDocumentPoolEntry {
     protected void doAppend(ChangeHistory changes) {
         touch();
         try {
-			Boolean result = executor.submit(new AppendChanges(changes)).get();
-			if (result) {
-				cached_head = changes.getHeadRevision();
-			}
-		} catch (InterruptedException | ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            Boolean result = executor.submit(new AppendChanges(changes)).get();
+            if (result) {
+                cached_head = changes.getHeadRevision();
+            }
+        }
+        catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
-    
-    
+
     public ChangeHistory readChangeHistory() throws IOException {
         try {
             doRead();
@@ -89,12 +88,10 @@ public class ChangeDocumentPoolEntry {
     }
     
     public DocumentRevision getHead() throws IOException {
-    	if (cached_head != null) {
-    		
-    	} else {
-    		cached_head = readChangeHistory().getHeadRevision();
-    	}
-    	return cached_head;
+        if (cached_head == null) {
+            cached_head = readChangeHistory().getHeadRevision();
+        }
+        return cached_head;
     }
 
     public void appendChangeHistory(final ChangeHistory changeHistory) {
