@@ -39,7 +39,8 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
         try {
             Project project = getConfiguration().getProject(projectId);
             // TODO: head revision is checked here, but another thread may already be proceeding to do a commit
-            HistoryFile historyFile = HistoryFile.openExisting(project.getFile().getPath());
+            String projectFilePath = project.getFile().getAbsolutePath();
+            HistoryFile historyFile = HistoryFile.openExisting(projectFilePath);
             DocumentRevision serverHeadRevision = getHeadRevision(historyFile);
             DocumentRevision commitBaseRevision = commitBundle.getBaseRevision();
             if (isOutdated(commitBaseRevision, serverHeadRevision)) {
