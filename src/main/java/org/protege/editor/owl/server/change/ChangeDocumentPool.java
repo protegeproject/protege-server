@@ -20,15 +20,20 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.concurrent.GuardedBy;
+
 public class ChangeDocumentPool {
 
     private static final Logger logger = LoggerFactory.getLogger(ChangeDocumentPool.class);
 
     private static final int DEFAULT_POOL_TIMEOUT = 60 * 1000;
 
-    private final ScheduledExecutorService executorService;
+    private final long timeout;
 
+    @GuardedBy("this")
     private final Map<HistoryFile, ChangeDocumentPoolEntry> pool = new TreeMap<>();
+
+    private ScheduledExecutorService executorService;
 
     private int consecutiveCleanupFailures = 0;
 
@@ -37,10 +42,15 @@ public class ChangeDocumentPool {
     }
 
     public ChangeDocumentPool(long timeout) {
-        executorService = createExecutorService(timeout);
+        this.timeout = timeout;
+        setExecutorService(createExecutorService());
     }
 
-    private ScheduledExecutorService createExecutorService(long timeout) {
+    private void setExecutorService(ScheduledExecutorService executorService) {
+        this.executorService = executorService;
+    }
+
+    private ScheduledExecutorService createExecutorService() {
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(
                 new ThreadFactory() {
                     @Override
@@ -54,32 +64,39 @@ public class ChangeDocumentPool {
             @Override
             public void run() {
                 try {
-                    for (Entry<HistoryFile, ChangeDocumentPoolEntry> entry : new HashSet<>(pool.entrySet())) {
-                        File f = entry.getKey();
-                        ChangeDocumentPoolEntry poolEntry = entry.getValue();
-                        synchronized (pool) {
+                    synchronized (this) {
+                        for (Entry<HistoryFile, ChangeDocumentPoolEntry> entry : new HashSet<>(pool.entrySet())) {
+                            File historyFile = entry.getKey();
+                            ChangeDocumentPoolEntry poolEntry = entry.getValue();
                             long now = System.currentTimeMillis();
                             if (poolEntry.getLastTouch() + timeout < now) {
                                 poolEntry.dispose();
-                                pool.remove(f);
-                                logger.info("Disposed in-memory change history for " + f.getName());
+                                pool.remove(historyFile);
+                                logger.info("Disposed in-memory change history for " + historyFile.getName());
                             }
                         }
+                        consecutiveCleanupFailures = 0; // reset the counter
                     }
-                    consecutiveCleanupFailures = 0;
                 }
                 catch (Error e) {
-                    logger.error("Exception caught cleaning open ontology pool.", e);
+                    logger.error("Exception caught while cleaning change document pool.", e);
                     consecutiveCleanupFailures++;
                 }
                 catch (RuntimeException e) {
-                    logger.error("Exception caught cleaning open ontology pool.", e);
+                    logger.error("Exception caught while cleaning change document pool.", e);
                     consecutiveCleanupFailures++;
                 }
                 finally {
                     if (consecutiveCleanupFailures > 8) {
-                        logger.error("Shutting down clean up thread for change history management.");
-                        logger.error("Server could run out of memory");
+                        logger.warn("Restarting the maintainer thread. Server could run out of memory");
+                        if (!executorService.isShutdown()) {
+                            logger.warn("... terminating pending tasks");
+                            List<Runnable> pendingTasks = executorService.shutdownNow();
+                            for (Runnable task : pendingTasks) {
+                                logger.warn("... terminate " + task.toString() + " prematurely");
+                            }
+                        }
+                        setExecutorService(createExecutorService());
                     }
                 }
             }
