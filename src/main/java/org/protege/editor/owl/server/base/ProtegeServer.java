@@ -234,7 +234,7 @@ public class ProtegeServer extends ServerLayer {
             logger.info(printLog(token.getUser(), "Open project", project.toString()));
             final URI serverAddress = configuration.getHost().getUri();
             final Optional<Port> registryPort = configuration.getHost().getSecondaryPort();
-            final String path = project.getFile().getPath();
+            final String path = project.getFile().getAbsolutePath();
             if (registryPort.isPresent()) {
                 Port port = registryPort.get();
                 return new ServerDocument(serverAddress, port.get(), HistoryFile.openExisting(path));
