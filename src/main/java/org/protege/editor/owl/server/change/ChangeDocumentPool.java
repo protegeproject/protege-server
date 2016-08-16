@@ -50,6 +50,7 @@ public class ChangeDocumentPool {
     }
 
     private ScheduledExecutorService createExecutorService() {
+        consecutiveCleanupFailures = 0;
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(
                 new ThreadFactory() {
                     @Override
