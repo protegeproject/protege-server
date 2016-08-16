@@ -1,5 +1,27 @@
 package org.protege.editor.owl.server.http;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URI;
+
+import javax.net.ssl.SSLContext;
+
+import org.protege.editor.owl.server.api.LoginService;
+import org.protege.editor.owl.server.base.ProtegeServer;
+import org.protege.editor.owl.server.http.exception.ServerConfigurationInitializationException;
+import org.protege.editor.owl.server.http.exception.ServerException;
+import org.protege.editor.owl.server.http.handlers.AuthenticationHandler;
+import org.protege.editor.owl.server.http.handlers.CodeGenHandler;
+import org.protege.editor.owl.server.http.handlers.HTTPChangeService;
+import org.protege.editor.owl.server.http.handlers.HTTPLoginService;
+import org.protege.editor.owl.server.http.handlers.HTTPServerHandler;
+import org.protege.editor.owl.server.http.handlers.MetaprojectHandler;
+import org.protege.editor.owl.server.security.SSLContextFactory;
+import org.protege.editor.owl.server.security.SSLContextInitializationException;
+import org.protege.editor.owl.server.security.SessionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.stanford.protege.metaproject.Manager;
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
@@ -10,23 +32,6 @@ import io.undertow.UndertowOptions;
 import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.util.StatusCodes;
-
-import org.protege.editor.owl.server.api.LoginService;
-import org.protege.editor.owl.server.base.ProtegeServer;
-import org.protege.editor.owl.server.http.exception.ServerConfigurationInitializationException;
-import org.protege.editor.owl.server.http.exception.ServerException;
-import org.protege.editor.owl.server.http.handlers.*;
-import org.protege.editor.owl.server.security.DefaultLoginService;
-import org.protege.editor.owl.server.security.SSLContextFactory;
-import org.protege.editor.owl.server.security.SSLContextInitializationException;
-import org.protege.editor.owl.server.security.SessionManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.net.ssl.SSLContext;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URI;
 
 public final class HTTPServer {
 

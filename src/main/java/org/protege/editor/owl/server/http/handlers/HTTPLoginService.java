@@ -1,26 +1,28 @@
 package org.protege.editor.owl.server.http.handlers;
 
-import com.google.gson.Gson;
-import com.google.inject.Inject;
-import edu.stanford.protege.metaproject.Manager;
-import edu.stanford.protege.metaproject.api.*;
-import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
-import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HttpString;
-import io.undertow.util.StatusCodes;
+import java.io.InputStreamReader;
+import java.util.UUID;
 
 import org.protege.editor.owl.server.api.LoginService;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.http.HTTPServer;
 import org.protege.editor.owl.server.http.messages.HttpAuthResponse;
 import org.protege.editor.owl.server.http.messages.LoginCreds;
-import org.protege.editor.owl.server.security.DefaultLoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStreamReader;
-import java.util.UUID;
+import com.google.gson.Gson;
+import com.google.inject.Inject;
+
+import edu.stanford.protege.metaproject.Manager;
+import edu.stanford.protege.metaproject.api.AuthToken;
+import edu.stanford.protege.metaproject.api.PolicyFactory;
+import edu.stanford.protege.metaproject.api.Serializer;
+import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
+import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HttpString;
+import io.undertow.util.StatusCodes;
 
 public class HTTPLoginService extends BaseRoutingHandler {
 	
