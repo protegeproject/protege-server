@@ -24,7 +24,8 @@ public class ChangeDocumentPool {
 
     private static final Logger logger = LoggerFactory.getLogger(ChangeDocumentPool.class);
 
-    private static final int DEFAULT_POOL_TIMEOUT = 60 * 1000;
+    private static final int DEFAULT_MAINTAIN_INTERVAL = /*3 **/ 1 * 60 * 1000; // 3 mins
+    private static final int DEFAULT_POOL_TIMEOUT = /*15 **/ 2 * 60 * 1000; // 15 mins
 
     private final long timeout;
 
@@ -97,7 +98,7 @@ public class ChangeDocumentPool {
                     }
                 }
             }
-        }, timeout, timeout, TimeUnit.MILLISECONDS);
+        }, DEFAULT_MAINTAIN_INTERVAL, DEFAULT_MAINTAIN_INTERVAL, TimeUnit.MILLISECONDS);
         return executorService;
     }
 
