@@ -2,7 +2,6 @@ package org.protege.editor.owl.server.change;
 
 import edu.stanford.protege.metaproject.api.*;
 import edu.stanford.protege.metaproject.api.exception.UnknownProjectIdException;
-import org.protege.editor.owl.server.api.ChangeService;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
 import org.protege.editor.owl.server.api.ServerLayer;
@@ -29,11 +28,8 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
 
     private Logger logger = LoggerFactory.getLogger(ChangeManagementFilter.class);
 
-    private ChangeService changeService;
-
     public ChangeManagementFilter(ServerLayer delegate) {
         super(delegate);
-        changeService = new DefaultChangeService(getChangePool());
     }
 
     @Override
