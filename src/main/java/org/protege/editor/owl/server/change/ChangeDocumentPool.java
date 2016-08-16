@@ -123,14 +123,14 @@ public class ChangeDocumentPool {
         }
     }
 
-    public void update(HistoryFile historyFile, ChangeHistory changeHistory) {
+    public void appendChanges(HistoryFile historyFile, ChangeHistory changes) {
         synchronized (this) {
             ChangeDocumentPoolEntry entry = pool.get(historyFile);
             if (entry == null) {
                 entry = new ChangeDocumentPoolEntry(historyFile);
                 pool.put(historyFile, entry);
             }
-            entry.appendChangeHistory(changeHistory);
+            entry.appendChanges(changes);
         }
     }
 

@@ -40,7 +40,7 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
             UserId owner, Optional<ProjectOptions> options) throws AuthorizationException, ServerServiceException {
         ServerDocument serverDocument = super.createProject(token, projectId, projectName, description, owner, options);
-        getChangePool().update(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
+        getChangePool().appendChanges(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
         return serverDocument;
     }
 
@@ -52,7 +52,7 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
             Project project = getConfiguration().getProject(projectId);
             String projectFilePath = project.getFile().getAbsolutePath();
             HistoryFile historyFile = HistoryFile.openExisting(projectFilePath);
-            getChangePool().update(historyFile, changeHistory);
+            getChangePool().appendChanges(historyFile, changeHistory);
             return changeHistory;
         }
         catch (UnknownProjectIdException e) {

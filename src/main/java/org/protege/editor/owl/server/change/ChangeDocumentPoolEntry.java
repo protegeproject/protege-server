@@ -116,8 +116,8 @@ public class ChangeDocumentPoolEntry {
         return getChangeHistory().getHeadRevision();
     }
 
-    public void appendChangeHistory(final ChangeHistory changeHistory) {
-        doAppend(changeHistory);
+    public void appendChanges(final ChangeHistory changes) {
+        doAppend(changes);
     }
 
     public long getLastTouch() {
