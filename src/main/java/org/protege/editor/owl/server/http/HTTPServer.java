@@ -68,7 +68,6 @@ public final class HTTPServer {
 	private ServerConfiguration config;
 	private ProtegeServer pserver;
 
-	private SessionManager session_manager = new SessionManager();
 	private TokenTable token_table = new TokenTable();
 
 	private AuthenticationHandler change_handler, codegen_handler, meta_handler, server_handler;
@@ -95,7 +94,6 @@ public final class HTTPServer {
 	}
 
 	public void addSession(String key, AuthToken tok) {
-		session_manager.add(tok);
 		token_table.put(key, tok);
 	}
 
