@@ -1,26 +1,22 @@
 package org.protege.editor.owl.server.change;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.SimpleDateFormat;
+
+import javax.annotation.Nonnull;
+
+import org.apache.commons.io.FileUtils;
 import org.protege.editor.owl.server.versioning.ChangeHistoryUtils;
-import org.protege.editor.owl.server.versioning.InvalidHistoryFileException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
-
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Josef Hardi <johardi@stanford.edu> <br>
@@ -31,67 +27,93 @@ public class ChangeDocumentPoolEntry {
 
     private static final Logger logger = LoggerFactory.getLogger(ChangeDocumentPoolEntry.class);
 
+    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
     private final HistoryFile historyFile;
 
-    private DocumentRevision cached_head = null;
-
-    private Future<ChangeHistory> readTask;
+    private ChangeHistory cachedChangeHistory;
 
     private long lastTouch;
 
-    private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread thread = new Thread(r, "Change History I/O Thread <" + historyFile.getName() + ">");
-            return thread;
-        }
-    });
+    private boolean isCached = false;
 
     public ChangeDocumentPoolEntry(@Nonnull HistoryFile historyFile) {
         this.historyFile = historyFile;
     }
 
-    protected void doRead() {
+    private void doRead() throws IOException {
         touch();
-        readTask = executor.submit(new ReadChangeDocument());
+        logger.info("Reading change history from " + historyFile.getName());
+        try {
+            long startTime = System.currentTimeMillis();
+            ChangeHistory result = ChangeHistoryUtils.readChanges(historyFile);
+            long interval = System.currentTimeMillis() - startTime;
+            logger.info("... success in " + (interval/1000.0) + " seconds");
+            cachedChangeHistory = result;
+            isCached = true;
+        }
+        catch (RuntimeException e) {
+            logger.error("Exception caught while reading history file", e);
+            readBackupHistory();
+        }
+        catch (Exception e) {
+            logger.error("Exception caught while reading history file", e);
+            readBackupHistory();
+        }
     }
 
-    protected void doAppend(ChangeHistory changes) {
+    private void readBackupHistory() throws IOException {
+        final HistoryFile backup = getBackupHistoryFile(historyFile);
+        if (backup.exists()) {
+            Path backupPath = Paths.get(backup.getAbsolutePath());
+            BasicFileAttributes attr = Files.readAttributes(backupPath, BasicFileAttributes.class);
+            logger.info(String.format("Unable to fetch the change history from the original history"
+                    + "file. Use the backup instead: %s (last modified on %s)",
+                    backup.getName(), timeFormat.format(attr.lastModifiedTime())));
+            
+            // Trying to read the backup file
+            long startTime = System.currentTimeMillis();
+            cachedChangeHistory = ChangeHistoryUtils.readChanges(backup);
+            long interval = System.currentTimeMillis() - startTime;
+            logger.info("... success in " + (interval/1000.0) + " seconds");
+            
+            // Replace the original history file with the backup
+            logger.info("Restoring the change history using the backup");
+            restoreBackup(backup);
+            logger.info("... success");
+        }
+    }
+
+    private boolean doAppend(ChangeHistory changes) {
         touch();
-        try {
-            Boolean result = executor.submit(new AppendChanges(changes)).get();
-            if (result) {
-                cached_head = changes.getHeadRevision();
+        if (!changes.isEmpty()) {
+            logger.info("Writing changes to " + historyFile.getName());
+            logger.info("... " + changes.toString());
+            try {
+                long startTime = System.currentTimeMillis();
+                ChangeHistoryUtils.appendChanges(changes, historyFile);
+                long interval = System.currentTimeMillis() - startTime;
+                logger.info("... success in " + (interval / 1000.0) + " seconds.");
+                isCached = false;
+                createBackup(historyFile);
+            }
+            catch (IOException e) {
+                logger.error("Exception caught while writing history file", e);
+                return false;
             }
         }
-        catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+        return true;
     }
 
-    public ChangeHistory readChangeHistory() throws IOException {
-        try {
+    public ChangeHistory getChangeHistory() throws IOException {
+        if (!isCached) {
             doRead();
-            return readTask.get();
         }
-        catch (InterruptedException ie) {
-            throw new RuntimeException(ie);
-        }
-        catch (ExecutionException ee) {
-            if (ee.getCause() instanceof IOException) {
-                throw (IOException) ee.getCause();
-            }
-            else {
-                throw new RuntimeException(ee);
-            }
-        }
+        return cachedChangeHistory;
     }
     
     public DocumentRevision getHead() throws IOException {
-        if (cached_head == null) {
-            cached_head = readChangeHistory().getHeadRevision();
-        }
-        return cached_head;
+        return getChangeHistory().getHeadRevision();
     }
 
     public void appendChangeHistory(final ChangeHistory changeHistory) {
@@ -102,90 +124,20 @@ public class ChangeDocumentPoolEntry {
         return lastTouch;
     }
 
-    public void dispose() {
-        executor.shutdown();
-        sync();
-    }
-
-    public void sync() {
-        try {
-            executor.awaitTermination(60, TimeUnit.MINUTES);
-        }
-        catch (InterruptedException ie) {
-            throw new RuntimeException(ie);
-        }
-    }
-
     private void touch() {
         this.lastTouch = System.currentTimeMillis();
     }
 
-    private class ReadChangeDocument implements Callable<ChangeHistory> {
-
-        @Override
-        public ChangeHistory call() throws Exception {
-            logger.info("Reading change history");
-            try {
-                long startTime = System.currentTimeMillis();
-                ChangeHistory result = ChangeHistoryUtils.readChanges(historyFile);
-                long interval = System.currentTimeMillis() - startTime;
-                logger.info("... success in " + (interval/1000) + " seconds");
-                return result;
-            }
-            catch (RuntimeException e) {
-                HistoryFile backup = getBackupHistoryFile(historyFile);
-                if (backup.exists()) {
-                    return ChangeHistoryUtils.readChanges(backup);
-                }
-                throw e;
-            }
-            catch (Exception e) {
-                HistoryFile backup = getBackupHistoryFile(historyFile);
-                if (backup.exists()) {
-                    return ChangeHistoryUtils.readChanges(backup);
-                }
-                throw e;
-            }
-        }
+    private void createBackup(File historyFile) throws IOException {
+        HistoryFile backup = getBackupHistoryFile(historyFile);
+        FileUtils.copyFile(historyFile, backup);
     }
 
-    private class AppendChanges implements Callable<Boolean> {
-
-        private ChangeHistory changeHistory;
-
-        public AppendChanges(ChangeHistory changeHistory) {
-            this.changeHistory = changeHistory;
-        }
-
-        @Override
-        public Boolean call() {
-            if (!changeHistory.isEmpty()) {
-                logger.info("Writing change history\n" + changeHistory.toString());
-                try {
-                    long startTime = System.currentTimeMillis();
-                    ChangeHistoryUtils.appendChanges(changeHistory, historyFile);
-                    long interval = System.currentTimeMillis() - startTime;
-                    logger.info("... success in " + (interval / 1000) + " seconds.");
-                    createBackup(historyFile);
-                }
-                catch (Throwable t) {
-                    logger.error("Exception caught while writing history file", t);
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private void createBackup(File historyFile) throws InvalidHistoryFileException, IOException {
-            if (logger.isDebugEnabled()) {
-                logger.debug("... backup was created");
-            }
-            HistoryFile backup = getBackupHistoryFile(historyFile);
-            FileUtils.copyFile(historyFile, backup);
-        }
+    private void restoreBackup(File backupFile) throws IOException {
+        FileUtils.copyFile(backupFile, historyFile);
     }
 
-    private HistoryFile getBackupHistoryFile(File historyFile) throws InvalidHistoryFileException, IOException {
+    private HistoryFile getBackupHistoryFile(File historyFile) throws IOException {
         String path = historyFile.getAbsolutePath();
         String newPath = new StringBuilder(path).insert(path.lastIndexOf(File.separator) + 1, "~").toString();
         return HistoryFile.createNew(newPath);
