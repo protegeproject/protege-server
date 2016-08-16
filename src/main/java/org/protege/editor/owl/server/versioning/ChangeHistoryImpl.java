@@ -231,7 +231,7 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     @Override
     public String toString() {
-        final int SHOW_LIMIT = 8;
+        final int SHOW_LIMIT = Integer.MAX_VALUE;
         StringBuffer sb = new StringBuffer();
         if (isEmpty()) {
             sb.append("(empty)");
