@@ -18,7 +18,6 @@ import org.protege.editor.owl.server.http.handlers.HTTPServerHandler;
 import org.protege.editor.owl.server.http.handlers.MetaprojectHandler;
 import org.protege.editor.owl.server.security.SSLContextFactory;
 import org.protege.editor.owl.server.security.SSLContextInitializationException;
-import org.protege.editor.owl.server.security.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
