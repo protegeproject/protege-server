@@ -35,21 +35,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class ProtegeServer extends ServerLayer {
 
-    private Logger logger = LoggerFactory.getLogger(ProtegeServer.class);
-
-    private ServerConfiguration configuration;
-
-    private final ConfigurationManager manager;
-
-    private File configurationFile;
+    private static final Logger logger = LoggerFactory.getLogger(ProtegeServer.class);
 
     private static final PolicyFactory factory = Manager.getFactory();
 
+    private final ConfigurationManager manager;
+
+    private final File configurationFile;
+
+    private ServerConfiguration configuration;
+
     public ProtegeServer(ServerConfiguration configuration) {
         this.configuration = checkNotNull(configuration);
-        this.manager = configuration.getConfigurationManager();
+        manager = configuration.getConfigurationManager();
 
-        String configLocation = System.getProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY);
+        String configLocation = System.getProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY); // TODO: injected
         configurationFile = new File(configLocation);
     }
 

@@ -27,10 +27,11 @@ public class DefaultChangeService implements ChangeService {
     @Override
     public DocumentRevision getHeadRevision(HistoryFile historyFile) throws ServerServiceException {
         try {
-			return changePool.lookupHead(historyFile);
-		} catch (IOException e) {
-			throw new ServerServiceException("Error while getting head revision at the server", e);
-		}
+            return changePool.lookupHead(historyFile);
+        }
+        catch (IOException e) {
+            throw new ServerServiceException("Error while getting head revision at the server", e);
+        }
     }
 
     private ChangeHistory getChangeHistory(HistoryFile historyFile) throws ServerServiceException {

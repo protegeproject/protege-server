@@ -2,7 +2,6 @@ package org.protege.editor.owl.server.change;
 
 import edu.stanford.protege.metaproject.api.*;
 import edu.stanford.protege.metaproject.api.exception.UnknownProjectIdException;
-import org.protege.editor.owl.server.api.ChangeService;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
 import org.protege.editor.owl.server.api.ServerLayer;
@@ -29,18 +28,15 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
 
     private Logger logger = LoggerFactory.getLogger(ChangeManagementFilter.class);
 
-    private ChangeService changeService;
-
     public ChangeManagementFilter(ServerLayer delegate) {
         super(delegate);
-        changeService = new DefaultChangeService(getChangePool());
     }
 
     @Override
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
             UserId owner, Optional<ProjectOptions> options) throws AuthorizationException, ServerServiceException {
         ServerDocument serverDocument = super.createProject(token, projectId, projectName, description, owner, options);
-        getChangePool().update(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
+        getChangePool().appendChanges(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
         return serverDocument;
     }
 
@@ -52,7 +48,7 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
             Project project = getConfiguration().getProject(projectId);
             String projectFilePath = project.getFile().getAbsolutePath();
             HistoryFile historyFile = HistoryFile.openExisting(projectFilePath);
-            getChangePool().update(historyFile, changeHistory);
+            getChangePool().appendChanges(historyFile, changeHistory);
             return changeHistory;
         }
         catch (UnknownProjectIdException e) {

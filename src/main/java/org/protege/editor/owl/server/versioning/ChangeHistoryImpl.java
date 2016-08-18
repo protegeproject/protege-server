@@ -231,14 +231,8 @@ public class ChangeHistoryImpl implements ChangeHistory {
 
     @Override
     public String toString() {
-        final int SHOW_LIMIT = 5;
+        final int SHOW_LIMIT = Integer.MAX_VALUE;
         StringBuffer sb = new StringBuffer();
-        sb.append("(BASE: ");
-        sb.append(baseRevision);
-        sb.append(", HEAD: ");
-        sb.append(getHeadRevision());
-        sb.append(")");
-        sb.append("\n");
         if (isEmpty()) {
             sb.append("(empty)");
         }
@@ -248,8 +242,9 @@ public class ChangeHistoryImpl implements ChangeHistory {
                 if (needNewline) {
                     sb.append("\n");
                 }
+                sb.append("Revision ");
                 sb.append(revision);
-                sb.append(" : ");
+                sb.append(": ");
                 
                 List<OWLOntologyChange> changes = revisions.get(revision);
                 boolean needInnerSerparator = false;
