@@ -35,7 +35,7 @@ public class ChangeDocumentPoolEntry {
 
     private long lastTouch;
 
-    private boolean isCached = false;
+    private boolean isDirty = true;
 
     public ChangeDocumentPoolEntry(@Nonnull HistoryFile historyFile) {
         this.historyFile = historyFile;
@@ -50,7 +50,6 @@ public class ChangeDocumentPoolEntry {
             long interval = System.currentTimeMillis() - startTime;
             logger.info("... success in " + (interval/1000.0) + " seconds");
             cachedChangeHistory = result;
-            isCached = true;
         }
         catch (RuntimeException e) {
             logger.error("Exception caught while reading history file", e);
@@ -94,7 +93,6 @@ public class ChangeDocumentPoolEntry {
                 ChangeHistoryUtils.appendChanges(changes, historyFile);
                 long interval = System.currentTimeMillis() - startTime;
                 logger.info("... success in " + (interval / 1000.0) + " seconds.");
-                isCached = false;
                 createBackup(historyFile);
             }
             catch (IOException e) {
@@ -106,8 +104,9 @@ public class ChangeDocumentPoolEntry {
     }
 
     public ChangeHistory getChangeHistory() throws IOException {
-        if (!isCached) {
+        if (isDirty) {
             doRead();
+            isDirty = false;
         }
         return cachedChangeHistory;
     }
@@ -118,6 +117,7 @@ public class ChangeDocumentPoolEntry {
 
     public void appendChanges(final ChangeHistory changes) {
         doAppend(changes);
+        isDirty = true;
     }
 
     public long getLastTouch() {
