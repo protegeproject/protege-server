@@ -1,18 +1,13 @@
 package org.protege.editor.owl.server.change;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.Nonnull;
 
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
@@ -20,37 +15,38 @@ import org.protege.editor.owl.server.versioning.api.HistoryFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
+
 public class ChangeDocumentPool {
 
     private static final Logger logger = LoggerFactory.getLogger(ChangeDocumentPool.class);
 
-    private static final int DEFAULT_MAINTAIN_INTERVAL = /*3 **/ 1 * 60 * 1000; // 3 mins
-    private static final int DEFAULT_POOL_TIMEOUT = /*15 **/ 2 * 60 * 1000; // 15 mins
+    private static final int DEFAULT_MAINTAIN_INTERVAL = 3 * 60 * 1000; // 3 mins
+    private static final int DEFAULT_POOL_TIMEOUT = 15 * 2 * 60 * 1000; // 15 mins
 
-    private final long timeout;
+    private final Cache<String, ChangeDocumentPoolEntry> pool;
 
-    @GuardedBy("this")
-    private final Map<HistoryFile, ChangeDocumentPoolEntry> pool = new TreeMap<>();
-
-    private ScheduledExecutorService executorService;
-
-    private int consecutiveCleanupFailures = 0;
+    private final ScheduledExecutorService executorService;
 
     public ChangeDocumentPool() {
         this(DEFAULT_POOL_TIMEOUT);
     }
 
     public ChangeDocumentPool(long timeout) {
-        this.timeout = timeout;
-        setExecutorService(createExecutorService());
+        pool = CacheBuilder.newBuilder()
+                .expireAfterAccess(timeout, TimeUnit.MILLISECONDS)
+                .removalListener(new RemovalListener<String, ChangeDocumentPoolEntry>() {
+                    public void onRemoval(RemovalNotification<String, ChangeDocumentPoolEntry> notification) {
+                        logger.info(String.format("Dispose in-memory cache history for %s", notification.getKey()));
+                    }
+                }).build();
+        executorService = createPoolCleanupThread();
     }
 
-    private void setExecutorService(ScheduledExecutorService executorService) {
-        this.executorService = executorService;
-    }
-
-    private ScheduledExecutorService createExecutorService() {
-        consecutiveCleanupFailures = 0;
+    private ScheduledExecutorService createPoolCleanupThread() {
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(
                 new ThreadFactory() {
                     @Override
@@ -60,86 +56,43 @@ public class ChangeDocumentPool {
                         return th;
                     }
                 });
-        executorService.scheduleAtFixedRate(new Runnable() { // Setup a cleanup timer
-            @Override
-            public void run() {
-                try {
-                    synchronized (this) {
-                        for (Entry<HistoryFile, ChangeDocumentPoolEntry> entry : new HashSet<>(pool.entrySet())) {
-                            File historyFile = entry.getKey();
-                            ChangeDocumentPoolEntry poolEntry = entry.getValue();
-                            long now = System.currentTimeMillis();
-                            if ((poolEntry.getLastTouch() + timeout) < now) {
-                                pool.remove(historyFile);
-                                logger.info("Disposed in-memory change history for " + historyFile.getName());
-                            }
-                        }
-                        consecutiveCleanupFailures = 0; // reset the counter
-                    }
-                }
-                catch (Error e) {
-                    logger.error("Exception caught while cleaning change document pool.", e);
-                    consecutiveCleanupFailures++;
-                }
-                catch (RuntimeException e) {
-                    logger.error("Exception caught while cleaning change document pool.", e);
-                    consecutiveCleanupFailures++;
-                }
-                finally {
-                    if (consecutiveCleanupFailures > 8) {
-                        logger.warn("Restarting the maintainer thread. Server could run out of memory");
-                        if (!executorService.isShutdown()) {
-                            logger.warn("... terminating pending tasks");
-                            List<Runnable> pendingTasks = executorService.shutdownNow();
-                            for (Runnable task : pendingTasks) {
-                                logger.warn("... kill " + task.toString() + " prematurely");
-                            }
-                        }
-                        setExecutorService(createExecutorService());
-                    }
-                }
+        executorService.scheduleAtFixedRate(() -> {
+            if (pool.size() > 0) {
+                pool.cleanUp();
             }
         }, DEFAULT_MAINTAIN_INTERVAL, DEFAULT_MAINTAIN_INTERVAL, TimeUnit.MILLISECONDS);
         return executorService;
     }
 
     public ChangeHistory lookup(HistoryFile historyFile) throws IOException {
-        synchronized (this) {
-            ChangeDocumentPoolEntry entry = pool.get(historyFile);
-            if (entry == null) {
-                entry = new ChangeDocumentPoolEntry(historyFile);
-                pool.put(historyFile, entry);
-            }
-            return entry.getChangeHistory();
-        }
+        ChangeDocumentPoolEntry entry = getPoolEntry(historyFile);
+        return entry.getChangeHistory();
     }
     
     public DocumentRevision lookupHead(HistoryFile historyFile) throws IOException {
-        synchronized (this) {
-            ChangeDocumentPoolEntry entry = pool.get(historyFile);
-            if (entry == null) {
-                entry = new ChangeDocumentPoolEntry(historyFile);
-                pool.put(historyFile, entry);
-            }
-            return entry.getHead();
-        }
+        ChangeDocumentPoolEntry entry = getPoolEntry(historyFile);
+        return entry.getHead();
     }
 
     public void appendChanges(HistoryFile historyFile, ChangeHistory changes) {
-        synchronized (this) {
-            ChangeDocumentPoolEntry entry = pool.get(historyFile);
-            if (entry == null) {
-                entry = new ChangeDocumentPoolEntry(historyFile);
-                pool.put(historyFile, entry);
-            }
-            entry.appendChanges(changes);
+        ChangeDocumentPoolEntry entry = getPoolEntry(historyFile);
+        entry.appendChanges(changes);
+    }
+
+    @Nonnull
+    private ChangeDocumentPoolEntry getPoolEntry(HistoryFile historyFile) {
+        try {
+            String historyLocation = historyFile.getAbsolutePath();
+            ChangeDocumentPoolEntry entry = pool.get(historyLocation, () -> new ChangeDocumentPoolEntry(historyFile));
+            return entry;
+        }
+        catch (ExecutionException e) {
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
     public void dispose() {
-        synchronized (this) {
-            pool.clear();
-        }
-        executorService.shutdown();
+        pool.invalidateAll();
+        executorService.shutdownNow();
     }
 }
