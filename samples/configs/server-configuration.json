@@ -3,7 +3,6 @@
     "uri": "http://localhost:8080"
   },
   "root": "root/data",
-  "metaproject": {
     "policy": {
       "root": {
         "all-projects": [
@@ -245,7 +244,7 @@
         "name": "Add operation",
         "description": "Add an operation to the operation registry",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -253,7 +252,7 @@
         "name": "Add project",
         "description": "Add a project to the project registry",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -261,7 +260,7 @@
         "name": "Add role",
         "description": "Add a role to the role registry",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -269,7 +268,7 @@
         "name": "Add user",
         "description": "Add a user to the user registry",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -277,7 +276,7 @@
         "name": "Assign role",
         "description": "Assign a role to a user within a project",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -285,7 +284,7 @@
         "name": "Clone",
         "description": "Clone a class",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -293,7 +292,7 @@
         "name": "Merge",
         "description": "Accept a proposed merge of two classes",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -301,7 +300,7 @@
         "name": "Modify operation",
         "description": "Modify operation details",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -309,7 +308,7 @@
         "name": "Modify project",
         "description": "Modify project details and options",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -317,7 +316,7 @@
         "name": "Modify role",
         "description": "Modify role details and associated operations",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -341,7 +340,7 @@
         "name": "Modify user",
         "description": "Modify user details (name and email address)",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -349,7 +348,7 @@
         "name": "Open project",
         "description": "Open a project in the project registry",
         "type": "READ",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -389,7 +388,7 @@
         "name": "Remove operation",
         "description": "Remove an operation from the operation registry",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -397,7 +396,7 @@
         "name": "Remove project",
         "description": "Remove a project from the project registry",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -405,7 +404,7 @@
         "name": "Remove role",
         "description": "Remove a role from the role registry",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -413,7 +412,7 @@
         "name": "Remove user",
         "description": "Remove a user from the user registry",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -421,7 +420,7 @@
         "name": "Retire",
         "description": "Accept proposed retirement",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -429,7 +428,7 @@
         "name": "Retract role",
         "description": "Retract a role from a user",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       },
       {
         "default": true,
@@ -445,10 +444,9 @@
         "name": "split",
         "description": "Split a class into two classes",
         "type": "WRITE",
-        "scope": "METAPROJECT"
+        "scope": "POLICY"
       }
-    ]
-  },
+    ],
   "authentication": [
     {
       "userId": "alice",

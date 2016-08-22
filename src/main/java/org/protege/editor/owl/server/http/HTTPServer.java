@@ -1,27 +1,6 @@
 package org.protege.editor.owl.server.http;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URI;
-
-import javax.net.ssl.SSLContext;
-
-import org.protege.editor.owl.server.api.LoginService;
-import org.protege.editor.owl.server.base.ProtegeServer;
-import org.protege.editor.owl.server.http.exception.ServerConfigurationInitializationException;
-import org.protege.editor.owl.server.http.exception.ServerException;
-import org.protege.editor.owl.server.http.handlers.AuthenticationHandler;
-import org.protege.editor.owl.server.http.handlers.CodeGenHandler;
-import org.protege.editor.owl.server.http.handlers.HTTPChangeService;
-import org.protege.editor.owl.server.http.handlers.HTTPLoginService;
-import org.protege.editor.owl.server.http.handlers.HTTPServerHandler;
-import org.protege.editor.owl.server.http.handlers.MetaprojectHandler;
-import org.protege.editor.owl.server.security.SSLContextFactory;
-import org.protege.editor.owl.server.security.SSLContextInitializationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import edu.stanford.protege.metaproject.Manager;
+import edu.stanford.protege.metaproject.ConfigurationManager;
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
@@ -31,6 +10,20 @@ import io.undertow.UndertowOptions;
 import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.util.StatusCodes;
+import org.protege.editor.owl.server.api.LoginService;
+import org.protege.editor.owl.server.base.ProtegeServer;
+import org.protege.editor.owl.server.http.exception.ServerConfigurationInitializationException;
+import org.protege.editor.owl.server.http.exception.ServerException;
+import org.protege.editor.owl.server.http.handlers.*;
+import org.protege.editor.owl.server.security.SSLContextFactory;
+import org.protege.editor.owl.server.security.SSLContextInitializationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.SSLContext;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URI;
 
 public final class HTTPServer {
 
@@ -122,7 +115,7 @@ public final class HTTPServer {
 			if (config_fname == null) {
 				config_fname = System.getProperty(SERVER_CONFIGURATION_PROPERTY);
 			}
-			config = Manager.getConfigurationManager().loadConfiguration(new File(config_fname));
+			config = ConfigurationManager.getConfigurationLoader().loadConfiguration(new File(config_fname));
 			pserver = new ProtegeServer(config);
 			uri = config.getHost().getUri();
 			admin_port = config.getHost().getSecondaryPort().get().get();

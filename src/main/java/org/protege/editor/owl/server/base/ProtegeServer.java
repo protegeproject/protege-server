@@ -1,8 +1,9 @@
 package org.protege.editor.owl.server.base;
 
-import edu.stanford.protege.metaproject.Manager;
+import edu.stanford.protege.metaproject.ConfigurationManager;
 import edu.stanford.protege.metaproject.api.*;
 import edu.stanford.protege.metaproject.api.exception.*;
+import edu.stanford.protege.metaproject.impl.ConfigurationBuilder;
 import org.apache.commons.io.FileUtils;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.ServerLayer;
@@ -37,9 +38,7 @@ public class ProtegeServer extends ServerLayer {
 
     private static final Logger logger = LoggerFactory.getLogger(ProtegeServer.class);
 
-    private static final PolicyFactory factory = Manager.getFactory();
-
-    private final ConfigurationManager manager;
+    private static final PolicyFactory factory = ConfigurationManager.getFactory();
 
     private final File configurationFile;
 
@@ -47,7 +46,6 @@ public class ProtegeServer extends ServerLayer {
 
     public ProtegeServer(ServerConfiguration configuration) {
         this.configuration = checkNotNull(configuration);
-        manager = configuration.getConfigurationManager();
 
         String configLocation = System.getProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY); // TODO: injected
         configurationFile = new File(configLocation);
@@ -64,7 +62,7 @@ public class ProtegeServer extends ServerLayer {
         synchronized (configuration) {
             try {
                 logger.info(printLog(token.getUser(), "Add user", newUser.toString()));
-                manager.addUser(newUser);
+                configuration = new ConfigurationBuilder(configuration).addUser(newUser).createServerConfiguration();
                 saveChanges();
             }
             catch (IdAlreadyInUseException e) {
@@ -77,7 +75,7 @@ public class ProtegeServer extends ServerLayer {
                 try {
                     Password password = newPassword.get();
                     if (password instanceof SaltedPasswordDigest) {
-                        manager.registerUser(newUser.getId(), (SaltedPasswordDigest) password);
+                        configuration = new ConfigurationBuilder(configuration).registerUser(newUser.getId(), (SaltedPasswordDigest) password).createServerConfiguration();
                     }
                 }
                 catch (IdAlreadyInUseException e) {
@@ -95,7 +93,7 @@ public class ProtegeServer extends ServerLayer {
             try {
                 User user = configuration.getUser(userId);
                 logger.info(printLog(token.getUser(), "Remove user", user.toString()));
-                manager.removeUser(user);
+                configuration = new ConfigurationBuilder(configuration).removeUser(user).createServerConfiguration();
                 saveChanges();
             }
             catch (UnknownUserIdException e) {
@@ -109,25 +107,15 @@ public class ProtegeServer extends ServerLayer {
     public void updateUser(AuthToken token, UserId userId, User updatedUser, Optional<? extends Password> updatedPassword)
             throws AuthorizationException, ServerServiceException {
         synchronized (configuration) {
-            try {
-                logger.info(printLog(token.getUser(), "Modify user", updatedUser.toString()));
-                manager.setUser(userId, updatedUser);
-                if (updatedPassword.isPresent()) {
-                    Password password = updatedPassword.get();
-                    if (password instanceof SaltedPasswordDigest) {
-                        manager.changePassword(userId, (SaltedPasswordDigest) password);
-                    }
+            logger.info(printLog(token.getUser(), "Modify user", updatedUser.toString()));
+            configuration = new ConfigurationBuilder(configuration).setUser(userId, updatedUser).createServerConfiguration();
+            if (updatedPassword.isPresent()) {
+                Password password = updatedPassword.get();
+                if (password instanceof SaltedPasswordDigest) {
+                    configuration = new ConfigurationBuilder(configuration).changePassword(userId, (SaltedPasswordDigest) password).createServerConfiguration();
                 }
-                saveChanges();
             }
-            catch (UnknownUserIdException e) {
-                logger.error(printLog(token.getUser(), "Modify user", e.getMessage()));
-                throw new ServerServiceException(e.getMessage(), e);
-            }
-            catch (UserNotRegisteredException e) {
-                logger.error(printLog(token.getUser(), "Modify user", e.getMessage()));
-                throw new ServerServiceException(e.getMessage(), e);
-            }
+            saveChanges();
         }
     }
 
@@ -141,7 +129,7 @@ public class ProtegeServer extends ServerLayer {
                 Project newProject = factory.getProject(projectId, projectName, description, historyFile, owner, options);
                 logger.info(printLog(token.getUser(), "Add project", newProject.toString()));
                 try {
-                    manager.addProject(newProject);
+                    configuration = new ConfigurationBuilder(configuration).addProject(newProject).createServerConfiguration();
                     saveChanges();
                 }
                 catch (IdAlreadyInUseException e) {
@@ -184,7 +172,7 @@ public class ProtegeServer extends ServerLayer {
             try {
                 Project project = configuration.getProject(projectId);
                 logger.info(printLog(token.getUser(), "Remove project", project.toString()));
-                manager.removeProject(project);
+                configuration = new ConfigurationBuilder(configuration).removeProject(project).createServerConfiguration();
                 if (includeFile) {
                     String projectFilePath = project.getFile().getAbsolutePath();
                     HistoryFile historyFile = HistoryFile.openExisting(projectFilePath);
@@ -206,24 +194,18 @@ public class ProtegeServer extends ServerLayer {
                 throw new ServerServiceException(e.getMessage(), e);
             }
         }
-    
+
     }
-    
-    
+
+
 
     @Override
     public void updateProject(AuthToken token, ProjectId projectId, Project updatedProject)
             throws AuthorizationException, ServerServiceException {
         synchronized (configuration) {
-            try {
-                logger.info(printLog(token.getUser(), "Modify project", updatedProject.toString()));
-                manager.setProject(projectId, updatedProject);
-                saveChanges();
-            }
-            catch (UnknownProjectIdException e) {
-                logger.error(printLog(token.getUser(), "Modify project", e.getMessage()));
-                throw new ServerServiceException(e.getMessage(), e);
-            }
+            logger.info(printLog(token.getUser(), "Modify project", updatedProject.toString()));
+            configuration = new ConfigurationBuilder(configuration).setProject(projectId, updatedProject).createServerConfiguration();
+            saveChanges();
         }
     }
 
@@ -260,7 +242,7 @@ public class ProtegeServer extends ServerLayer {
         synchronized (configuration) {
             try {
                 logger.info(printLog(token.getUser(), "Add role", newRole.toString()));
-                manager.addRole(newRole);
+                configuration = new ConfigurationBuilder(configuration).addRole(newRole).createServerConfiguration();
                 saveChanges();
             }
             catch (IdAlreadyInUseException e) {
@@ -278,7 +260,7 @@ public class ProtegeServer extends ServerLayer {
             try {
                 Role role = configuration.getRole(roleId);
                 logger.info(printLog(token.getUser(), "Remove role", role.toString()));
-                manager.removeRole(role);
+                configuration = new ConfigurationBuilder(configuration).removeRole(role).createServerConfiguration();
                 saveChanges();
             }
             catch (UnknownRoleIdException e) {
@@ -292,15 +274,9 @@ public class ProtegeServer extends ServerLayer {
     public void updateRole(AuthToken token, RoleId roleId, Role updatedRole)
             throws AuthorizationException, ServerServiceException {
         synchronized (configuration) {
-            try {
-                logger.info(printLog(token.getUser(), "Modify role", updatedRole.toString()));
-                manager.setRole(roleId, updatedRole);
-                saveChanges();
-            }
-            catch (UnknownRoleIdException e) {
-                logger.error(printLog(token.getUser(), "Modify role", e.getMessage()));
-                throw new ServerServiceException(e.getMessage(), e);
-            }
+            logger.info(printLog(token.getUser(), "Modify role", updatedRole.toString()));
+            configuration = new ConfigurationBuilder(configuration).setRole(roleId, updatedRole).createServerConfiguration();
+            saveChanges();
         }
     }
 
@@ -310,7 +286,7 @@ public class ProtegeServer extends ServerLayer {
         synchronized (configuration) {
             try {
                 logger.info(printLog(token.getUser(), "Add operation", newOperation.toString()));
-                manager.addOperation(newOperation);
+                configuration = new ConfigurationBuilder(configuration).addOperation(newOperation).createServerConfiguration();
                 saveChanges();
             }
             catch (IdAlreadyInUseException e) {
@@ -327,7 +303,7 @@ public class ProtegeServer extends ServerLayer {
             try {
                 Operation operation = configuration.getOperation(operationId);
                 logger.info(printLog(token.getUser(), "Remove operation", operation.toString()));
-                manager.removeOperation(operation);
+                configuration = new ConfigurationBuilder(configuration).removeOperation(operation).createServerConfiguration();
                 saveChanges();
             }
             catch (UnknownOperationIdException e) {
@@ -341,15 +317,9 @@ public class ProtegeServer extends ServerLayer {
     public void updateOperation(AuthToken token, OperationId operationId, Operation updatedOperation)
             throws AuthorizationException, ServerServiceException {
         synchronized (configuration) {
-            try {
-                logger.info(printLog(token.getUser(), "Modify operation", updatedOperation.toString()));
-                manager.setOperation(operationId, updatedOperation);
-                saveChanges();
-            }
-            catch (UnknownOperationIdException e) {
-                logger.error(printLog(token.getUser(), "Modify operation", e.getMessage()));
-                throw new ServerServiceException(e.getMessage(), e);
-            }
+            logger.info(printLog(token.getUser(), "Modify operation", updatedOperation.toString()));
+            configuration = new ConfigurationBuilder(configuration).setOperation(operationId, updatedOperation).createServerConfiguration();
+            saveChanges();
         }
     }
 
@@ -357,7 +327,7 @@ public class ProtegeServer extends ServerLayer {
     public void assignRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
             throws AuthorizationException, ServerServiceException {
         synchronized (configuration) {
-            manager.addPolicy(roleId, projectId, userId);
+            configuration = new ConfigurationBuilder(configuration).addPolicy(userId, projectId, roleId).createServerConfiguration();
             saveChanges();
         }
     }
@@ -366,7 +336,7 @@ public class ProtegeServer extends ServerLayer {
     public void retractRole(AuthToken token, UserId userId, ProjectId projectId, RoleId roleId)
             throws AuthorizationException, ServerServiceException {
         synchronized (configuration) {
-            manager.addPolicy(userId, projectId, roleId);
+            configuration = new ConfigurationBuilder(configuration).addPolicy(userId, projectId, roleId).createServerConfiguration();
             saveChanges();
         }
     }
@@ -381,7 +351,7 @@ public class ProtegeServer extends ServerLayer {
         synchronized (configuration) {
             Optional<Port> secondaryPort = getHost(token).getSecondaryPort();
             Host updatedHost = factory.getHost(hostAddress, secondaryPort);
-            manager.setHost(updatedHost);
+            configuration = new ConfigurationBuilder(configuration).setHost(updatedHost).createServerConfiguration();
             saveChanges();
         }
     }
@@ -396,7 +366,7 @@ public class ProtegeServer extends ServerLayer {
                 secondaryPort = Optional.of(factory.getPort(portNumber));
             }
             Host updatedHost = factory.getHost(hostAddress, secondaryPort);
-            manager.setHost(updatedHost);
+            configuration = new ConfigurationBuilder(configuration).setHost(updatedHost).createServerConfiguration();
             saveChanges();
         }
     }
@@ -410,7 +380,7 @@ public class ProtegeServer extends ServerLayer {
     public void setRootDirectory(AuthToken token, String rootDirectory)
             throws AuthorizationException, ServerServiceException {
         synchronized (configuration) {
-            manager.setServerRoot(new File(rootDirectory));
+            configuration = new ConfigurationBuilder(configuration).setServerRoot(new File(rootDirectory)).createServerConfiguration();
             saveChanges();
         }
     }
@@ -425,7 +395,7 @@ public class ProtegeServer extends ServerLayer {
     public void setServerProperty(AuthToken token, String property, String value)
             throws AuthorizationException, ServerServiceException {
         synchronized (configuration) {
-            manager.addProperty(property, value);
+            configuration = new ConfigurationBuilder(configuration).addProperty(property, value).createServerConfiguration();
             saveChanges();
         }
     }
@@ -434,7 +404,7 @@ public class ProtegeServer extends ServerLayer {
     public void unsetServerProperty(AuthToken token, String property)
             throws AuthorizationException, ServerServiceException {
         synchronized (configuration) {
-            manager.removeProperty(property);
+            configuration = new ConfigurationBuilder(configuration).removeProperty(property).createServerConfiguration();
             saveChanges();
         }
     }
@@ -453,7 +423,7 @@ public class ProtegeServer extends ServerLayer {
         return changeHistory;
     }
 
-    
+
     @Override
     public List<User> getAllUsers(AuthToken token) throws AuthorizationException, ServerServiceException {
         return new ArrayList<>(configuration.getUsers());
@@ -539,8 +509,7 @@ public class ProtegeServer extends ServerLayer {
     private void saveChanges() throws ServerServiceException {
         synchronized (configurationFile) {
             try {
-                manager.saveConfiguration(configurationFile);
-                configuration = manager.getConfiguration();
+                ConfigurationManager.getConfigurationWriter().saveConfiguration(configuration, configurationFile);
             }
             catch (IOException e) {
                 String message = "Unable to save server configuration";
