@@ -33,16 +33,13 @@ public class ChangeDocumentPoolEntry {
 
     private ChangeHistory cachedChangeHistory;
 
-    private long lastTouch;
-
-    private boolean isDirty = true;
+    private DocumentRevision cachedHeadRevision;
 
     public ChangeDocumentPoolEntry(@Nonnull HistoryFile historyFile) {
         this.historyFile = historyFile;
     }
 
     private void doRead() throws IOException {
-        touch();
         logger.info("Reading change history from " + historyFile.getName());
         try {
             long startTime = System.currentTimeMillis();
@@ -84,7 +81,6 @@ public class ChangeDocumentPoolEntry {
     }
 
     private boolean doAppend(ChangeHistory changes) {
-        touch();
         if (!changes.isEmpty()) {
             logger.info("Writing changes to " + historyFile.getName());
             logger.info("... " + changes.toString());
@@ -94,6 +90,7 @@ public class ChangeDocumentPoolEntry {
                 long interval = System.currentTimeMillis() - startTime;
                 logger.info("... success in " + (interval / 1000.0) + " seconds.");
                 createBackup(historyFile);
+                updateCaches(changes);
             }
             catch (IOException e) {
                 logger.error("Exception caught while writing history file", e);
@@ -104,28 +101,36 @@ public class ChangeDocumentPoolEntry {
     }
 
     public ChangeHistory getChangeHistory() throws IOException {
-        if (isDirty) {
+        if (cachedChangeHistory == null) {
             doRead();
-            isDirty = false;
         }
         return cachedChangeHistory;
     }
     
     public DocumentRevision getHead() throws IOException {
-        return getChangeHistory().getHeadRevision();
+        if (cachedHeadRevision == null) {
+            cachedHeadRevision = getChangeHistory().getHeadRevision();
+        }
+        return cachedHeadRevision;
     }
 
     public void appendChanges(final ChangeHistory changes) {
         doAppend(changes);
-        isDirty = true;
     }
 
-    public long getLastTouch() {
-        return lastTouch;
-    }
-
-    private void touch() {
-        this.lastTouch = System.currentTimeMillis();
+    /*
+     * Update the caches by applying the incoming changes into themselves. This approach is much
+     * more efficient compared to reread the entire history file for producing the update.
+     */
+    private void updateCaches(ChangeHistory incomingChanges) {
+        final DocumentRevision base = incomingChanges.getBaseRevision();
+        final DocumentRevision end = incomingChanges.getHeadRevision();
+        for (DocumentRevision current = base.next(); current.behindOrSameAs(end); current = current.next()) {
+            cachedChangeHistory.addRevision(
+                    incomingChanges.getMetadataForRevision(current),
+                    incomingChanges.getChangesForRevision(current));
+        }
+        cachedHeadRevision = cachedChangeHistory.getHeadRevision();
     }
 
     private void createBackup(File historyFile) throws IOException {
@@ -135,6 +140,8 @@ public class ChangeDocumentPoolEntry {
 
     private void restoreBackup(File backupFile) throws IOException {
         FileUtils.copyFile(backupFile, historyFile);
+        cachedChangeHistory = null; // clear caches so that the pool will reread the file
+        cachedHeadRevision = null;
     }
 
     private HistoryFile getBackupHistoryFile(File historyFile) throws IOException {
