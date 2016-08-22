@@ -228,11 +228,6 @@
                     <execution>
                         <id>default-testCompile</id>
                         <phase>test-compile</phase>
-                        <configuration>
-                            <testExcludes>
-                                <exclude>**/org/protege/owl/server/**/*.java</exclude>
-                            </testExcludes>
-                        </configuration>
                         <goals>
                             <goal>testCompile</goal>
                         </goals>
