@@ -64,17 +64,17 @@ public class ChangeDocumentPool {
         return executorService;
     }
 
-    public ChangeHistory lookup(HistoryFile historyFile) throws IOException {
+    public synchronized ChangeHistory lookup(HistoryFile historyFile) throws IOException {
         ChangeDocumentPoolEntry entry = getPoolEntry(historyFile);
         return entry.getChangeHistory();
     }
     
-    public DocumentRevision lookupHead(HistoryFile historyFile) throws IOException {
+    public synchronized DocumentRevision lookupHead(HistoryFile historyFile) throws IOException {
         ChangeDocumentPoolEntry entry = getPoolEntry(historyFile);
         return entry.getHead();
     }
 
-    public void appendChanges(HistoryFile historyFile, ChangeHistory changes) {
+    public synchronized void appendChanges(HistoryFile historyFile, ChangeHistory changes) {
         ChangeDocumentPoolEntry entry = getPoolEntry(historyFile);
         entry.appendChanges(changes);
     }
