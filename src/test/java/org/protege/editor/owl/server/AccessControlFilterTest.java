@@ -57,6 +57,9 @@ public class AccessControlFilterTest {
     @Mock private UserId userIdA;
     @Mock private UserId userIdB;
 
+    @Mock private Name userNameA;
+    @Mock private Name userNameB;
+
     @Mock private ProjectId projectId;
 
     private DocumentRevision headRevision = DocumentRevision.START_REVISION;
@@ -73,6 +76,15 @@ public class AccessControlFilterTest {
         
         when(userA.getId()).thenReturn(userIdA);
         when(userB.getId()).thenReturn(userIdB);
+        
+        when(userIdA.get()).thenReturn("user_a");
+        when(userIdB.get()).thenReturn("user_b");
+        
+        when(userA.getName()).thenReturn(userNameA);
+        when(userB.getName()).thenReturn(userNameB);
+        
+        when(userNameA.get()).thenReturn("User A");
+        when(userNameB.get()).thenReturn("User B");
         
         when(projectX.getId()).thenReturn(projectId);
         
