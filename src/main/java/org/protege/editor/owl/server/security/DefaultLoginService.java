@@ -1,6 +1,6 @@
 package org.protege.editor.owl.server.security;
 
-import edu.stanford.protege.metaproject.Manager;
+import edu.stanford.protege.metaproject.ConfigurationManager;
 import edu.stanford.protege.metaproject.api.*;
 import edu.stanford.protege.metaproject.api.exception.UnknownUserIdException;
 import edu.stanford.protege.metaproject.api.exception.UserNotRegisteredException;
@@ -23,7 +23,7 @@ public class DefaultLoginService implements SaltedChallengeLoginService {
             saltedPassword = (SaltedPasswordDigest) password;
         }
         else {
-        	PolicyFactory f = Manager.getFactory();
+        	PolicyFactory f = ConfigurationManager.getFactory();
  			Salt userSalt = (Salt) getSalt(username);
  			PlainPassword pwd = f.getPlainPassword(password.getPassword());
  			
@@ -41,9 +41,6 @@ public class DefaultLoginService implements SaltedChallengeLoginService {
                 AuthToken authToken = new AuthorizedUserToken(user);
                 return authToken;
             }
-            throw new ServerServiceException("Invalid combination of username and password");
-        }
-        catch (UserNotRegisteredException e) {
             throw new ServerServiceException("Invalid combination of username and password");
         }
         catch (UnknownUserIdException e) {

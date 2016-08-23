@@ -1,7 +1,6 @@
 package org.protege.editor.owl.server.http.handlers;
 
-import com.google.gson.Gson;
-import edu.stanford.protege.metaproject.Manager;
+import edu.stanford.protege.metaproject.ConfigurationManager;
 import edu.stanford.protege.metaproject.api.*;
 import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
 import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
@@ -35,8 +34,7 @@ import java.util.Optional;
 public class MetaprojectHandler extends BaseRoutingHandler {
 	
 	private static Logger logger = LoggerFactory.getLogger(MetaprojectHandler.class);
-
-	private ConfigurationManager manager;
+	private static final PolicyFactory f = ConfigurationManager.getFactory();
 	private ProtegeServer server;
 	private ChangeManagementFilter cf;
 
@@ -45,7 +43,6 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	public MetaprojectHandler(ProtegeServer pserver) {
 		server = pserver;
 		cf = new ChangeManagementFilter(server);
-		manager = server.getConfiguration().getConfigurationManager();
 		configLocation = System.getProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY);
 	}
 
@@ -158,7 +155,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			// TODO: After posting the new metaproject, we need to decide what to do with
 			//       the config that's loaded in RAM
 			try {
-				Serializer<Gson> serl = new DefaultJsonSerializer();
+				Serializer serl = new DefaultJsonSerializer();
 				ServerConfiguration cfg = serl.parse(new InputStreamReader(exchange.getInputStream()), ServerConfiguration.class);
 				updateMetaproject(cfg);
 			}
@@ -184,9 +181,8 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	private void retrieveProjectList(HttpServerExchange exchange) throws ServerException {
 		try {
 			String uid = super.getQueryParameter(exchange, "userid");
-			PolicyFactory f = Manager.getFactory();
 			UserId userId = f.getUserId(uid);
-			List<Project> projects = new ArrayList<>(manager.getConfiguration().getProjects(userId));
+			List<Project> projects = new ArrayList<>(server.getConfiguration().getProjects(userId));
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 			os.writeObject(projects);
 		}
@@ -216,7 +212,6 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	private void openExistingProject(HttpServerExchange exchange) throws ServerException {
 		try {
 			String pid = super.getQueryParameter(exchange, "projectid");
-			PolicyFactory f = Manager.getFactory();
 			ProjectId projId  = f.getProjectId(pid);
 			ServerDocument sdoc = server.openProject(getAuthToken(exchange), projId);
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
@@ -236,7 +231,6 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	private void deleteExistingProject(HttpServerExchange exchange) throws ServerException {
 		try {
 			String pid = super.getQueryParameter(exchange, "projectid");
-			PolicyFactory f = Manager.getFactory();
 			ProjectId projId  = f.getProjectId(pid);
 			cf.deleteProject(getAuthToken(exchange), projId, true);
 		}
@@ -302,8 +296,8 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 
 	private void retrieveMetaproject(HttpServerExchange exchange) throws ServerException {
 		try {
-			Serializer<Gson> serl = new DefaultJsonSerializer();
-			exchange.getResponseSender().send(serl.write(manager.getConfiguration(), ServerConfiguration.class));
+			Serializer serl = new DefaultJsonSerializer();
+			exchange.getResponseSender().send(serl.write(server.getConfiguration(), ServerConfiguration.class));
 		}
 		catch (Exception e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to get server configuration", e);
@@ -312,8 +306,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 
 	private void updateMetaproject(ServerConfiguration cfg) throws ServerException {
 		try {
-			manager.setActiveConfiguration(cfg);
-			manager.saveConfiguration(new File(configLocation));
+			ConfigurationManager.getConfigurationWriter().saveConfiguration(cfg, new File(configLocation));
 		}
 		catch (IOException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to save changes of the metaproject", e);

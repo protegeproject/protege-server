@@ -1,6 +1,5 @@
 package org.protege.editor.owl.server.http;
 
-import com.google.gson.Gson;
 import edu.stanford.protege.metaproject.api.Serializer;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
@@ -50,7 +49,7 @@ public class HTTPLoginTest {
     	String url = "http://localhost:8080/nci_protege/login";
 
     	LoginCreds creds = new LoginCreds("guest","guestpwd");
-    	Serializer<Gson> serl = new DefaultJsonSerializer();
+    	Serializer serl = new DefaultJsonSerializer();
 
     	RequestBody body = RequestBody.create(JSON, serl.write(creds, LoginCreds.class));
 
