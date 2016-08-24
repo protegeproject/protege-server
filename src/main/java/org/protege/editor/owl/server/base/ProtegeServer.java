@@ -40,15 +40,10 @@ public class ProtegeServer extends ServerLayer {
 
     private static final PolicyFactory factory = ConfigurationManager.getFactory();
 
-    private final File configurationFile;
-
     private ServerConfiguration configuration;
 
     public ProtegeServer(ServerConfiguration configuration) {
         this.configuration = checkNotNull(configuration);
-
-        String configLocation = System.getProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY); // TODO: injected
-        configurationFile = new File(configLocation);
     }
 
     @Override
@@ -507,8 +502,10 @@ public class ProtegeServer extends ServerLayer {
     }
 
     private void saveChanges() throws ServerServiceException {
-        synchronized (configurationFile) {
+        synchronized (this) {
             try {
+                String configLocation = System.getProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY);
+                File configurationFile = new File(configLocation);
                 ConfigurationManager.getConfigurationWriter().saveConfiguration(configuration, configurationFile);
             }
             catch (IOException e) {
