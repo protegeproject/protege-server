@@ -19,23 +19,17 @@ import edu.stanford.protege.metaproject.api.AuthToken;
 
 public class TokenTable {
 
+	public static final long DEFAULT_TIMEOUT_PERIOD = 1800000; // 30 minutes
+	public static final long DEFAULT_CLEANUP_INTERVAL = 600000; // 10 minutes
+
 	private static final Logger logger = LoggerFactory.getLogger(TokenTable.class);
 
-	public static final int DEFAULT_TABLE_TIMEOUT = 30*60*1000;
-
-	private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(r -> {
-		Thread th = new Thread(r, "User Token Maintainer Thread");
-		th.setDaemon(false);
-		return th;
-	}
-);;
+	private final LoadingCache<String, AuthToken> tokenCache;
 
 	private AuthToken tokenToCache;
 
-	private LoadingCache<String, AuthToken> tokenCache;
-
 	public TokenTable() {
-		this(DEFAULT_TABLE_TIMEOUT);
+		this(DEFAULT_TIMEOUT_PERIOD);
 	}
 
 	public TokenTable(long timeout) {
@@ -54,7 +48,7 @@ public class TokenTable {
 							return getAuthToken();
 						}
 					});
-		createTokenCleanupThread(10*60*1000); // every 10 minutes do cleanup
+		createTokenCleanupThread(DEFAULT_CLEANUP_INTERVAL);
 	}
 
 	public synchronized void put(String key, AuthToken token) {
@@ -80,6 +74,13 @@ public class TokenTable {
 	}
 
 	private void createTokenCleanupThread(long timeout) {
+		final ScheduledExecutorService executorService = 
+				Executors.newSingleThreadScheduledExecutor(r -> {
+					Thread th = new Thread(r, "User Token Maintainer Thread");
+					th.setDaemon(false);
+					return th;
+				}
+			);
 		executorService.scheduleAtFixedRate(() -> {
 			if (tokenCache.size() > 0) {
 				tokenCache.cleanUp();
