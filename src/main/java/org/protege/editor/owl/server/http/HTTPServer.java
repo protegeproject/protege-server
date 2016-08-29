@@ -60,7 +60,7 @@ public final class HTTPServer {
 	private ServerConfiguration config;
 	private ProtegeServer pserver;
 
-	private TokenTable token_table = new TokenTable();
+	private TokenTable token_table;
 
 	private AuthenticationHandler change_handler, codegen_handler, meta_handler, server_handler;
 	private BlockingHandler login_handler;
@@ -144,6 +144,15 @@ public final class HTTPServer {
 		return new BlockingHandler(new HTTPLoginService(service));
 	}
 
+	private TokenTable createLoginTokenTable(ServerConfiguration config) {
+		long loginTimeout = TokenTable.DEFAULT_TIMEOUT_PERIOD;
+		String loginTimeoutValue = config.getProperty(ServerProperties.LOGIN_TIMEOUT_PERIOD);
+		if (loginTimeoutValue != null && !loginTimeoutValue.isEmpty()) {
+			loginTimeout = Long.parseLong(loginTimeoutValue);
+		}
+		return new TokenTable(loginTimeout);
+	}
+
 	public void start() throws ServerConfigurationInitializationException, SSLContextInitializationException {
 		initConfig();
 		
@@ -152,7 +161,7 @@ public final class HTTPServer {
 		
 		// create login handler
 		login_handler = loadAndCreateLogin(config);
-		
+		token_table = createLoginTokenTable(config);
 		
 		web_router.add("POST", LOGIN, login_handler);
 		admin_router.add("POST", LOGIN, login_handler);

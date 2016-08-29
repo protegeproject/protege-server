@@ -25,4 +25,9 @@ public final class ServerProperties {
      * Constants for Authentication module
      */
     public static final String AUTHENTICATION_CLASS = "authenticate";
+
+    /*
+     * Constants for timeout period
+     */
+    public static final String LOGIN_TIMEOUT_PERIOD = "login_timeout_period";
 }
