@@ -107,7 +107,7 @@ public final class HTTPServer {
 		RoutingHandler adminRouter = Handlers.routing();
 		
 		// create login handler
-		BlockingHandler login_handler = loadAndCreateLogin(serverConfiguration);
+		BlockingHandler login_handler = loadAndCreateLogin();
 		
 		webRouter.add("POST", ServerEndpoints.LOGIN, login_handler);
 		adminRouter.add("POST", ServerEndpoints.LOGIN, login_handler);
@@ -185,17 +185,16 @@ public final class HTTPServer {
 		isRunning = true;
 	}
 
-	private BlockingHandler loadAndCreateLogin(ServerConfiguration config) {
-		String authClassName = config.getProperty(ServerProperties.AUTHENTICATION_CLASS);
+	private BlockingHandler loadAndCreateLogin() throws ServerException {
+		String authClassName = serverConfiguration.getProperty(ServerProperties.AUTHENTICATION_CLASS);
 		LoginService service = null;
 		if (authClassName != null) {
 			try {
 				service = (LoginService) Class.forName(authClassName).newInstance();
-				service.setConfig(config);
+				service.setConfig(serverConfiguration);
 				
 			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, e.getMessage());
 			}
 		}
 		return new BlockingHandler(new HTTPLoginService(service));
