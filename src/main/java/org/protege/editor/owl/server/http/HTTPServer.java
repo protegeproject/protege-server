@@ -128,7 +128,7 @@ public final class HTTPServer {
 	
 	private BlockingHandler loadAndCreateLogin(ServerConfiguration config) {
 		
-		String authClassName = config.getProperty("authenticate");
+		String authClassName = config.getProperty(ServerProperties.AUTHENTICATION_CLASS);
 		LoginService service = null;
 		if (authClassName != null) {
 			try {

@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.http.HTTPServer;
+import org.protege.editor.owl.server.http.ServerProperties;
 import org.protege.editor.owl.server.http.exception.ServerException;
 import org.protege.editor.owl.server.http.messages.EVSHistory;
 import org.slf4j.Logger;
@@ -49,10 +50,10 @@ public class CodeGenHandler extends BaseRoutingHandler {
 				e1.printStackTrace();
 			}
 			
-			String p = config.getProperty("codegen_prefix");
-			String s = config.getProperty("codegen_suffix");
-			String d = config.getProperty("codegen_delimeter");
-			String cfn = config.getProperty("codegen_file");
+			String p = config.getProperty(ServerProperties.CODEGEN_PREFIX);
+			String s = config.getProperty(ServerProperties.CODEGEN_SUFFIX);
+			String d = config.getProperty(ServerProperties.CODEGEN_DELIMETER);
+			String cfn = config.getProperty(ServerProperties.EVS_HISTORY_FILE);
 			int seq = 0;
 			try {
 				File file = new File(cfn);
@@ -127,7 +128,7 @@ public class CodeGenHandler extends BaseRoutingHandler {
 
 	private void recordEvsHistory(HttpServerExchange exchange, EVSHistory hist) throws ServerException {
 		try {
-			String hisfile = config.getProperty("evshistory_file");
+			String hisfile = config.getProperty(ServerProperties.EVS_HISTORY_FILE);
 			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(hisfile, true)));
 			pw.println(hist.toRecord());
 			pw.close();
