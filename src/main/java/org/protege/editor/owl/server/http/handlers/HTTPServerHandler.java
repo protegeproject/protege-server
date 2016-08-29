@@ -1,6 +1,7 @@
 package org.protege.editor.owl.server.http.handlers;
 
 import org.protege.editor.owl.server.http.HTTPServer;
+import org.protege.editor.owl.server.http.ServerEndpoints;
 import org.protege.editor.owl.server.http.exception.ServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ public class HTTPServerHandler extends BaseRoutingHandler {
 
 	@Override
 	public void handleRequest(HttpServerExchange exchange) throws Exception {
-		if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.SERVER_RESTART) &&
+		if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.SERVER_RESTART) &&
 				exchange.getRequestMethod().equals(Methods.POST)) {
 			try {
 				HTTPServer.server().restart();
@@ -27,7 +28,7 @@ public class HTTPServerHandler extends BaseRoutingHandler {
 				exchange.endExchange(); // end the request
 			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.SERVER_STOP) &&
+		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.SERVER_STOP) &&
 				exchange.getRequestMethod().equals(Methods.POST)) {
 			try {
 				HTTPServer.server().stop();

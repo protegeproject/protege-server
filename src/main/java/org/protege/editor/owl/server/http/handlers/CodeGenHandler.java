@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.protege.editor.owl.server.base.ProtegeServer;
-import org.protege.editor.owl.server.http.HTTPServer;
+import org.protege.editor.owl.server.http.ServerEndpoints;
 import org.protege.editor.owl.server.http.ServerProperties;
 import org.protege.editor.owl.server.http.exception.ServerException;
 import org.protege.editor.owl.server.http.messages.EVSHistory;
@@ -39,7 +39,7 @@ public class CodeGenHandler extends BaseRoutingHandler {
 
 	@Override
 	public void handleRequest(HttpServerExchange exchange) {
-		if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.GEN_CODE)) {
+		if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.GEN_CODE)) {
 
 			int cnt = 1;
 			try {
@@ -94,10 +94,10 @@ public class CodeGenHandler extends BaseRoutingHandler {
 				exchange.endExchange(); // end the request
 			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.GEN_CODES)) { 
+		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.GEN_CODES)) { 
 			// NO-OP
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.EVS_REC)) {
+		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.EVS_REC)) {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 				EVSHistory hist = (EVSHistory) ois.readObject();

@@ -13,7 +13,7 @@ import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.change.ChangeManagementFilter;
 import org.protege.editor.owl.server.change.DefaultChangeService;
 import org.protege.editor.owl.server.conflict.ConflictDetectionFilter;
-import org.protege.editor.owl.server.http.HTTPServer;
+import org.protege.editor.owl.server.http.ServerEndpoints;
 import org.protege.editor.owl.server.http.exception.ServerException;
 import org.protege.editor.owl.server.policy.AccessControlFilter;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
@@ -43,7 +43,7 @@ public class HTTPChangeService extends BaseRoutingHandler {
 
 	@Override
 	public void handleRequest(HttpServerExchange exchange) {
-		if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.COMMIT)) {
+		if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.COMMIT)) {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 				ProjectId pid = (ProjectId) ois.readObject();
@@ -60,7 +60,7 @@ public class HTTPChangeService extends BaseRoutingHandler {
 				exchange.endExchange(); // end the request
 			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.ALL_CHANGES)) {
+		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.ALL_CHANGES)) {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 				HistoryFile file = (HistoryFile) ois.readObject();
@@ -76,7 +76,7 @@ public class HTTPChangeService extends BaseRoutingHandler {
 				exchange.endExchange(); // end the request
 			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.LATEST_CHANGES)) {
+		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.LATEST_CHANGES)) {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 				HistoryFile file = (HistoryFile) ois.readObject();
@@ -93,7 +93,7 @@ public class HTTPChangeService extends BaseRoutingHandler {
 				exchange.endExchange(); // end the request
 			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.HEAD)) {
+		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.HEAD)) {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 				HistoryFile file = (HistoryFile) ois.readObject();

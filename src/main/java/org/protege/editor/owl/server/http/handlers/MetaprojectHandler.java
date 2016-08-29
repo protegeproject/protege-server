@@ -1,18 +1,25 @@
 package org.protege.editor.owl.server.http.handlers;
 
-import edu.stanford.protege.metaproject.ConfigurationManager;
-import edu.stanford.protege.metaproject.api.*;
-import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
-import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HttpString;
-import io.undertow.util.Methods;
-import io.undertow.util.StatusCodes;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.change.ChangeManagementFilter;
 import org.protege.editor.owl.server.http.HTTPServer;
+import org.protege.editor.owl.server.http.ServerEndpoints;
 import org.protege.editor.owl.server.http.exception.ServerException;
 import org.protege.editor.owl.server.util.SnapShot;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
@@ -26,10 +33,22 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import edu.stanford.protege.metaproject.ConfigurationManager;
+import edu.stanford.protege.metaproject.api.Description;
+import edu.stanford.protege.metaproject.api.Name;
+import edu.stanford.protege.metaproject.api.PolicyFactory;
+import edu.stanford.protege.metaproject.api.Project;
+import edu.stanford.protege.metaproject.api.ProjectId;
+import edu.stanford.protege.metaproject.api.ProjectOptions;
+import edu.stanford.protege.metaproject.api.Serializer;
+import edu.stanford.protege.metaproject.api.ServerConfiguration;
+import edu.stanford.protege.metaproject.api.UserId;
+import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
+import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HttpString;
+import io.undertow.util.Methods;
+import io.undertow.util.StatusCodes;
 
 public class MetaprojectHandler extends BaseRoutingHandler {
 	
@@ -48,7 +67,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 
 	@Override
 	public void handleRequest(HttpServerExchange exchange) {
-		if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECTS)) {
+		if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.PROJECTS)) {
 			try {
 				retrieveProjectList(exchange);
 			}
@@ -59,7 +78,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				exchange.endExchange(); // end the request
 			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT) &&
+		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.PROJECT) &&
 				exchange.getRequestMethod().equals(Methods.POST)) {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
@@ -80,7 +99,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				exchange.endExchange(); // end the request
 			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT)
+		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.PROJECT)
 				&& exchange.getRequestMethod().equals(Methods.GET)) {
 			try {
 				openExistingProject(exchange);
@@ -92,7 +111,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				exchange.endExchange(); // end the request
 			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT)
+		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.PROJECT)
 				&& exchange.getRequestMethod().equals(Methods.DELETE)) {
 			try {
 				deleteExistingProject(exchange);
@@ -104,7 +123,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				exchange.endExchange(); // end the request
 			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT_SNAPSHOT)
+		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.PROJECT_SNAPSHOT)
 				&& exchange.getRequestMethod().equals(Methods.POST)) {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
@@ -122,7 +141,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				exchange.endExchange(); // end the request
 			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.PROJECT_SNAPSHOT_GET)) {
+		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.PROJECT_SNAPSHOT_GET)) {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 				ServerDocument sdoc = (ServerDocument) ois.readObject();
@@ -138,7 +157,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				exchange.endExchange(); // end the request
 			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.METAPROJECT) &&
+		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.METAPROJECT) &&
 				exchange.getRequestMethod().equals(Methods.GET)) {
 			try {
 				retrieveMetaproject(exchange);
@@ -150,7 +169,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				exchange.endExchange(); // end the request
 			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.METAPROJECT) &&
+		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.METAPROJECT) &&
 				exchange.getRequestMethod().equals(Methods.POST)) {
 			// TODO: After posting the new metaproject, we need to decide what to do with
 			//       the config that's loaded in RAM
