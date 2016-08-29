@@ -7,6 +7,7 @@ import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.UndertowOptions;
+import io.undertow.server.RoutingHandler;
 import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.util.StatusCodes;
@@ -16,10 +17,10 @@ import org.protege.editor.owl.server.http.exception.ServerConfigurationInitializ
 import org.protege.editor.owl.server.http.exception.ServerException;
 import org.protege.editor.owl.server.http.handlers.*;
 import org.protege.editor.owl.server.security.SSLContextFactory;
-import org.protege.editor.owl.server.security.SSLContextInitializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import javax.net.ssl.SSLContext;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,76 +57,151 @@ public final class HTTPServer {
 
 	private static Logger logger = LoggerFactory.getLogger(HTTPServer.class);
 
-	private String config_fname = null;
-	private ServerConfiguration config;
-	private ProtegeServer pserver;
+	private final String configurationFilePath;
 
-	private TokenTable token_table;
+	private ServerConfiguration serverConfiguration;
 
-	private AuthenticationHandler change_handler, codegen_handler, meta_handler, server_handler;
-	private BlockingHandler login_handler;
+	private TokenTable loginTokenTable;
 
-	private Undertow web_server;
-
-	private Undertow admin_server;
-	private boolean isRunning = false;
-
-	private URI uri;
-	private int admin_port;
-
-	private io.undertow.server.RoutingHandler web_router;
-	private io.undertow.server.RoutingHandler admin_router;
+	private Undertow webServer;
+	private Undertow adminServer;
 
 	private GracefulShutdownHandler webRouterHandler;
 	private GracefulShutdownHandler adminRouterHandler;
 
+	private boolean isRunning = false;
+
 	private static HTTPServer server;
+
+	/**
+	 * Default constructor
+	 */
+	public HTTPServer() {
+		this(System.getProperty(SERVER_CONFIGURATION_PROPERTY));
+	}
+
+	/**
+	 * HTTP server constructor.
+	 *
+	 * @param configurationFilePath
+	 *			The location of the server configuration file.
+	 */
+	public HTTPServer(@Nonnull String configurationFilePath) {
+		this.configurationFilePath = configurationFilePath;
+		server = this;
+	}
 
 	public static HTTPServer server() {
 		return server;
 	}
 
 	public void addSession(String key, AuthToken tok) {
-		token_table.put(key, tok);
+		loginTokenTable.put(key, tok);
 	}
 
 	public AuthToken getAuthToken(String tok) throws ServerException {
-		return token_table.get(tok);
-	}
-
-	public HTTPServer() {server = this;}
-	
-	public HTTPServer(String cfn) {
-		this.config_fname = cfn;
-		server = this;
-	}
-
-	public static void main(final String[] args) {
-		HTTPServer s = new HTTPServer();	
-		try {
-			s.start();
-		}
-		catch (ServerConfigurationInitializationException | SSLContextInitializationException e) {
-			// NO-OP: The exceptions are already logged by the module that generates the exception
-		}
+		return loginTokenTable.get(tok);
 	}
 
 	private void initConfig() throws ServerConfigurationInitializationException {
 		try {
-			if (config_fname == null) {
-				config_fname = System.getProperty(SERVER_CONFIGURATION_PROPERTY);
-			}
-			config = ConfigurationManager.getConfigurationLoader().loadConfiguration(new File(config_fname));
-			pserver = new ProtegeServer(config);
-			uri = config.getHost().getUri();
-			admin_port = config.getHost().getSecondaryPort().get().get();
+			serverConfiguration = ConfigurationManager.getConfigurationLoader().loadConfiguration(new File(configurationFilePath));
 		}
 		catch (FileNotFoundException | ObjectConversionException e) {
-			logger.error("Unable to load server configuration at location: " + config_fname, e);
+			logger.error("Unable to load server configuration at location: " + configurationFilePath, e);
 			throw new ServerConfigurationInitializationException("Unable to load server configuration", e);
 		}
 	}
-	
+
+	public void start() throws Exception {
+		initConfig();
+		final ProtegeServer pserver = new ProtegeServer(serverConfiguration);
+		final URI serverHostUri = serverConfiguration.getHost().getUri();
+		final int serverAdminPort = serverConfiguration.getHost().getSecondaryPort().get().get();
+		
+		RoutingHandler webRouter = Handlers.routing();
+		RoutingHandler adminRouter = Handlers.routing();
+		
+		// create login handler
+		BlockingHandler login_handler = loadAndCreateLogin(serverConfiguration);
+		loginTokenTable = createLoginTokenTable(serverConfiguration);
+		
+		webRouter.add("POST", LOGIN, login_handler);
+		adminRouter.add("POST", LOGIN, login_handler);
+		
+		// create change service handler
+		AuthenticationHandler changeServiceHandler = new AuthenticationHandler(new BlockingHandler(new HTTPChangeService(pserver)));
+		webRouter.add("POST", COMMIT,  changeServiceHandler);
+		webRouter.add("POST", HEAD,  changeServiceHandler);
+		webRouter.add("POST", LATEST_CHANGES,  changeServiceHandler);
+		webRouter.add("POST", ALL_CHANGES,  changeServiceHandler);
+		
+		// create code generator handler
+		AuthenticationHandler codeGenHandler = new AuthenticationHandler(new BlockingHandler(new CodeGenHandler(pserver)));
+		webRouter.add("GET", GEN_CODE, codeGenHandler);
+		webRouter.add("GET", GEN_CODES, codeGenHandler);
+		webRouter.add("POST", EVS_REC, codeGenHandler);
+		
+		// create mataproject handler
+		AuthenticationHandler metaprojectHandler = new AuthenticationHandler(new BlockingHandler(new MetaprojectHandler(pserver)));
+		webRouter.add("GET", METAPROJECT, metaprojectHandler);
+		webRouter.add("GET", PROJECT,  metaprojectHandler);
+		webRouter.add("POST", PROJECT_SNAPSHOT_GET,  metaprojectHandler);
+		webRouter.add("GET", PROJECTS, metaprojectHandler);
+		adminRouter.add("GET", METAPROJECT, metaprojectHandler);
+		adminRouter.add("POST", METAPROJECT, metaprojectHandler);
+		adminRouter.add("POST", PROJECT,  metaprojectHandler);
+		adminRouter.add("POST", PROJECT_SNAPSHOT,  metaprojectHandler);
+		adminRouter.add("DELETE", PROJECT,  metaprojectHandler);
+		
+		// create server handler
+		AuthenticationHandler serverHandler = new AuthenticationHandler(new BlockingHandler(new HTTPServerHandler()));
+		adminRouter.add("POST", SERVER_RESTART, serverHandler);
+		adminRouter.add("POST", SERVER_STOP, serverHandler);
+		
+		// Build the servers
+		webRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(webRouter));
+		adminRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(adminRouter));
+		
+		logger.info("Starting server instances");
+		if (serverHostUri.getScheme().equalsIgnoreCase("https")) {
+			SSLContext ctx = new SSLContextFactory().createSslContext();
+			webServer = Undertow.builder()
+					.addHttpsListener(serverHostUri.getPort(), serverHostUri.getHost(), ctx)
+					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
+					.setHandler(webRouterHandler)
+					.build();
+			webServer.start();
+			logger.info("... Web server has started at port " + serverHostUri.getPort());
+			
+			adminServer = Undertow.builder()
+					.addHttpsListener(serverAdminPort, serverHostUri.getHost(), ctx)
+					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
+					.setHandler(adminRouterHandler)
+					.build();
+			adminServer.start();
+			logger.info("... Admin server has started at port " + serverAdminPort);
+		}
+		else {
+			webServer = Undertow.builder()
+					.addHttpListener(serverHostUri.getPort(), serverHostUri.getHost())
+					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
+					.setHandler(webRouterHandler)
+					.build();
+			webServer.start();
+			logger.info("... Web server has started at port " + serverHostUri.getPort());
+			
+			adminServer = Undertow.builder()
+					.addHttpListener(serverAdminPort, serverHostUri.getHost())
+					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
+					.setHandler(adminRouterHandler)
+					.build();
+			adminServer.start();
+			logger.info("... Admin server has started at port " + serverAdminPort);
+		}
+		isRunning = true;
+	}
+
 	private BlockingHandler loadAndCreateLogin(ServerConfiguration config) {
 		
 		String authClassName = config.getProperty(ServerProperties.AUTHENTICATION_CLASS);
@@ -140,7 +216,6 @@ public final class HTTPServer {
 				e.printStackTrace();
 			}
 		}
-
 		return new BlockingHandler(new HTTPLoginService(service));
 	}
 
@@ -153,110 +228,24 @@ public final class HTTPServer {
 		return new TokenTable(loginTimeout);
 	}
 
-	public void start() throws ServerConfigurationInitializationException, SSLContextInitializationException {
-		initConfig();
-		
-		web_router = Handlers.routing();
-		admin_router = Handlers.routing();
-		
-		// create login handler
-		login_handler = loadAndCreateLogin(config);
-		token_table = createLoginTokenTable(config);
-		
-		web_router.add("POST", LOGIN, login_handler);
-		admin_router.add("POST", LOGIN, login_handler);
-		
-		// create change service handler
-		change_handler = new AuthenticationHandler(new BlockingHandler(new HTTPChangeService(pserver)));
-		web_router.add("POST", COMMIT,  change_handler);
-		web_router.add("POST", HEAD,  change_handler);
-		web_router.add("POST", LATEST_CHANGES,  change_handler);
-		web_router.add("POST", ALL_CHANGES,  change_handler);
-		
-		// create code generator handler
-		codegen_handler = new AuthenticationHandler(new BlockingHandler(new CodeGenHandler(pserver)));
-		web_router.add("GET", GEN_CODE, codegen_handler);
-		web_router.add("GET", GEN_CODES, codegen_handler);
-		web_router.add("POST", EVS_REC, codegen_handler);
-		
-		// create mataproject handler
-		meta_handler = new AuthenticationHandler(new BlockingHandler(new MetaprojectHandler(pserver)));
-		web_router.add("GET", METAPROJECT, meta_handler);
-		admin_router.add("GET", METAPROJECT, meta_handler);
-		admin_router.add("POST", METAPROJECT, meta_handler);
-		web_router.add("GET", PROJECT,  meta_handler);
-		admin_router.add("POST", PROJECT,  meta_handler);
-		admin_router.add("POST", PROJECT_SNAPSHOT,  meta_handler);
-		web_router.add("POST", PROJECT_SNAPSHOT_GET,  meta_handler);
-		admin_router.add("DELETE", PROJECT,  meta_handler);
-		web_router.add("GET", PROJECTS, meta_handler);
-		
-		// create server handler
-		server_handler = new AuthenticationHandler(new BlockingHandler(new HTTPServerHandler()));
-		admin_router.add("POST", SERVER_RESTART, server_handler);
-		admin_router.add("POST", SERVER_STOP, server_handler);
-		
-		// Build the servers
-		webRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(web_router));
-		adminRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(admin_router));
-		
-		logger.info("Starting server instances");
-		if (uri.getScheme().equalsIgnoreCase("https")) {
-			SSLContext ctx = new SSLContextFactory().createSslContext();
-			web_server = Undertow.builder()
-					.addHttpsListener(uri.getPort(), uri.getHost(), ctx)
-					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
-					.setHandler(webRouterHandler)
-					.build();
-			web_server.start();
-			logger.info("... Project server has started at port " + uri.getPort());
-			
-			admin_server = Undertow.builder()
-					.addHttpsListener(admin_port, uri.getHost(), ctx)
-					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
-					.setHandler(adminRouterHandler)
-					.build();
-			admin_server.start();
-			logger.info("... Admin server has started at port " + admin_port);
-		}
-		else {
-			web_server = Undertow.builder()
-					.addHttpListener(uri.getPort(), uri.getHost())
-					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
-					.setHandler(webRouterHandler)
-					.build();
-			web_server.start();
-			logger.info("... Project server has started at port " + uri.getPort());
-			
-			admin_server = Undertow.builder()
-					.addHttpListener(admin_port, uri.getHost())
-					.setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
-					.setHandler(adminRouterHandler)
-					.build();
-			admin_server.start();
-			logger.info("... Admin server has started at port " + admin_port);
-		}
-		isRunning = true;
-	}
-
 	public void stop() throws ServerException {
 		if (isRunning) {
 			logger.info("Stopping server instances");
 			try {
-				if (web_server != null) {
+				if (webServer != null) {
 					if (webRouterHandler != null) {
 						webRouterHandler.shutdown();
 					}
-					web_server.stop();
-					web_server = null;
-					logger.info("... Project server has stopped");
+					webServer.stop();
+					webServer = null;
+					logger.info("... Web server has stopped");
 				}
-				if (admin_server != null) {
+				if (adminServer != null) {
 					if (adminRouterHandler != null) {
 						adminRouterHandler.shutdown();
 					}
-					admin_server.stop();
-					admin_server = null;
+					adminServer.stop();
+					adminServer = null;
 					logger.info("... Admin server has stopped");
 				}
 				isRunning = false;
@@ -273,7 +262,17 @@ public final class HTTPServer {
 			stop();
 			start();
 		}
-		catch (ServerConfigurationInitializationException | SSLContextInitializationException e) {
+		catch (Exception e) {
+			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, e.getMessage());
+		}
+	}
+
+	public static void main(final String[] args) throws ServerException {
+		HTTPServer s = new HTTPServer();
+		try {
+			s.start();
+		}
+		catch (Exception e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, e.getMessage());
 		}
 	}
