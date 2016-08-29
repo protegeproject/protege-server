@@ -54,15 +54,13 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	
 	private static Logger logger = LoggerFactory.getLogger(MetaprojectHandler.class);
 	private static final PolicyFactory f = ConfigurationManager.getFactory();
-	private ProtegeServer server;
-	private ChangeManagementFilter cf;
 
-	private String configLocation;
+	private final ProtegeServer pserver;
+	private final ChangeManagementFilter cf;
 
 	public MetaprojectHandler(ProtegeServer pserver) {
-		server = pserver;
-		cf = new ChangeManagementFilter(server);
-		configLocation = System.getProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY);
+		this.pserver = pserver;
+		cf = new ChangeManagementFilter(pserver);
 	}
 
 	@Override
@@ -201,7 +199,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		try {
 			String uid = super.getQueryParameter(exchange, "userid");
 			UserId userId = f.getUserId(uid);
-			List<Project> projects = new ArrayList<>(server.getConfiguration().getProjects(userId));
+			List<Project> projects = new ArrayList<>(pserver.getConfiguration().getProjects(userId));
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 			os.writeObject(projects);
 		}
@@ -232,7 +230,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		try {
 			String pid = super.getQueryParameter(exchange, "projectid");
 			ProjectId projId  = f.getProjectId(pid);
-			ServerDocument sdoc = server.openProject(getAuthToken(exchange), projId);
+			ServerDocument sdoc = pserver.openProject(getAuthToken(exchange), projId);
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 			os.writeObject(sdoc);
 		}
@@ -316,7 +314,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	private void retrieveMetaproject(HttpServerExchange exchange) throws ServerException {
 		try {
 			Serializer serl = new DefaultJsonSerializer();
-			exchange.getResponseSender().send(serl.write(server.getConfiguration(), ServerConfiguration.class));
+			exchange.getResponseSender().send(serl.write(pserver.getConfiguration(), ServerConfiguration.class));
 		}
 		catch (Exception e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to get server configuration", e);
@@ -325,6 +323,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 
 	private void updateMetaproject(ServerConfiguration cfg) throws ServerException {
 		try {
+			String configLocation = System.getProperty(HTTPServer.SERVER_CONFIGURATION_PROPERTY);
 			ConfigurationManager.getConfigurationWriter().saveConfiguration(cfg, new File(configLocation));
 		}
 		catch (IOException e) {
