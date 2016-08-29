@@ -7,7 +7,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.protege.editor.owl.server.base.ProtegeServer;
 import org.protege.editor.owl.server.http.HTTPServer;
@@ -36,6 +39,16 @@ public class CodeGenHandler extends BaseRoutingHandler {
 	@Override
 	public void handleRequest(HttpServerExchange exchange) {
 		if (exchange.getRequestPath().equalsIgnoreCase(HTTPServer.GEN_CODE)) {
+
+			int cnt = 1;
+			try {
+				String scnt = getQueryParameter(exchange, "count");
+				cnt = (new Integer(scnt)).intValue();
+			} catch (ServerException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 			String p = config.getProperty("codegen_prefix");
 			String s = config.getProperty("codegen_suffix");
 			String d = config.getProperty("codegen_delimeter");
@@ -46,12 +59,21 @@ public class CodeGenHandler extends BaseRoutingHandler {
 				FileReader fileReader = new FileReader(file);
 				BufferedReader bufferedReader = new BufferedReader(fileReader);
 				seq = Integer.parseInt(bufferedReader.readLine().trim());
-				String sseq = (new Integer(seq)).toString();
-				String resp = p + d + sseq;
-				if (s != null) {
-					resp = resp + d + s;
-				}
-				exchange.getResponseSender().send(resp);
+				
+				List<String> codes = new ArrayList<String>();
+				String sseq = "0";
+				for (int j = 0; j < cnt; j++) {
+					sseq = (new Integer(seq++)).toString();
+					String code = p + d + sseq;
+					if (s != null) {
+						code = code + d + s;
+					}
+					codes.add(code);		    	
+				}			
+
+				ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
+				os.writeObject(codes);
+
 				try {
 					fileReader.close();
 				}
@@ -59,7 +81,7 @@ public class CodeGenHandler extends BaseRoutingHandler {
 					// Ignore the exception but report it into the log
 					logger.warn("Unable to close the file reader stream used to read the code generator configuration");
 				}
-				generateCode(exchange, file, seq);
+				flushCode(exchange, file, seq);
 			}
 			catch (IOException e) {
 				internalServerErrorStatusCode(exchange, "Server failed to read code generator configuration", e);
@@ -92,7 +114,7 @@ public class CodeGenHandler extends BaseRoutingHandler {
 		}
 	}
 
-	private void generateCode(HttpServerExchange exchange, File file, int seq) throws ServerException {
+	private void flushCode(HttpServerExchange exchange, File file, int seq) throws ServerException {
 		try {
 			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 			pw.println(seq + 1);
