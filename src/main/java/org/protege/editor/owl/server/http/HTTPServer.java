@@ -37,9 +37,9 @@ public final class HTTPServer {
 
 	private final String configurationFilePath;
 
-	private ServerConfiguration serverConfiguration;
+	private final TokenTable loginTokenTable;
 
-	private TokenTable loginTokenTable;
+	private ServerConfiguration serverConfiguration;
 
 	private Undertow webServer;
 	private Undertow adminServer;
@@ -54,7 +54,7 @@ public final class HTTPServer {
 	/**
 	 * Default constructor
 	 */
-	public HTTPServer() {
+	public HTTPServer() throws Exception {
 		this(System.getProperty(SERVER_CONFIGURATION_PROPERTY));
 	}
 
@@ -64,8 +64,10 @@ public final class HTTPServer {
 	 * @param configurationFilePath
 	 *			The location of the server configuration file.
 	 */
-	public HTTPServer(@Nonnull String configurationFilePath) {
+	public HTTPServer(@Nonnull String configurationFilePath) throws Exception {
 		this.configurationFilePath = configurationFilePath;
+		loadConfig(configurationFilePath);
+		loginTokenTable = createLoginTokenTable();
 		server = this;
 	}
 
@@ -81,18 +83,22 @@ public final class HTTPServer {
 		return loginTokenTable.get(tok);
 	}
 
-	private void initConfig() throws ServerConfigurationInitializationException {
+	private void loadConfig(String filePath) throws ServerConfigurationInitializationException {
 		try {
-			serverConfiguration = ConfigurationManager.getConfigurationLoader().loadConfiguration(new File(configurationFilePath));
+			serverConfiguration = ConfigurationManager.getConfigurationLoader()
+					.loadConfiguration(new File(filePath));
 		}
 		catch (FileNotFoundException | ObjectConversionException e) {
-			logger.error("Unable to load server configuration at location: " + configurationFilePath, e);
+			logger.error("Unable to load server configuration at location: " + filePath, e);
 			throw new ServerConfigurationInitializationException("Unable to load server configuration", e);
 		}
 	}
 
+	private void reloadConfig() throws ServerConfigurationInitializationException {
+		loadConfig(configurationFilePath);
+	}
+
 	public void start() throws Exception {
-		initConfig();
 		final ProtegeServer pserver = new ProtegeServer(serverConfiguration);
 		final URI serverHostUri = serverConfiguration.getHost().getUri();
 		final int serverAdminPort = serverConfiguration.getHost().getSecondaryPort().get().get();
@@ -102,7 +108,6 @@ public final class HTTPServer {
 		
 		// create login handler
 		BlockingHandler login_handler = loadAndCreateLogin(serverConfiguration);
-		loginTokenTable = createLoginTokenTable(serverConfiguration);
 		
 		webRouter.add("POST", ServerEndpoints.LOGIN, login_handler);
 		adminRouter.add("POST", ServerEndpoints.LOGIN, login_handler);
@@ -181,7 +186,6 @@ public final class HTTPServer {
 	}
 
 	private BlockingHandler loadAndCreateLogin(ServerConfiguration config) {
-		
 		String authClassName = config.getProperty(ServerProperties.AUTHENTICATION_CLASS);
 		LoginService service = null;
 		if (authClassName != null) {
@@ -197,9 +201,9 @@ public final class HTTPServer {
 		return new BlockingHandler(new HTTPLoginService(service));
 	}
 
-	private TokenTable createLoginTokenTable(ServerConfiguration config) {
+	private TokenTable createLoginTokenTable() {
 		long loginTimeout = TokenTable.DEFAULT_TIMEOUT_PERIOD;
-		String loginTimeoutValue = config.getProperty(ServerProperties.LOGIN_TIMEOUT_PERIOD);
+		String loginTimeoutValue = serverConfiguration.getProperty(ServerProperties.LOGIN_TIMEOUT_PERIOD);
 		if (loginTimeoutValue != null && !loginTimeoutValue.isEmpty()) {
 			loginTimeout = Long.parseLong(loginTimeoutValue);
 		}
@@ -238,6 +242,7 @@ public final class HTTPServer {
 		try {
 			logger.info("Received request to restart");
 			stop();
+			reloadConfig();
 			start();
 		}
 		catch (Exception e) {
@@ -246,8 +251,8 @@ public final class HTTPServer {
 	}
 
 	public static void main(final String[] args) throws ServerException {
-		HTTPServer s = new HTTPServer();
 		try {
+			HTTPServer s = new HTTPServer();
 			s.start();
 		}
 		catch (Exception e) {
