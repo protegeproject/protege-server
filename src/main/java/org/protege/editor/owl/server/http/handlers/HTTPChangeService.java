@@ -6,16 +6,12 @@ import java.io.ObjectOutputStream;
 
 import org.protege.editor.owl.server.api.ChangeService;
 import org.protege.editor.owl.server.api.CommitBundle;
+import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
-import org.protege.editor.owl.server.base.ProtegeServer;
-import org.protege.editor.owl.server.change.ChangeManagementFilter;
-import org.protege.editor.owl.server.change.DefaultChangeService;
-import org.protege.editor.owl.server.conflict.ConflictDetectionFilter;
 import org.protege.editor.owl.server.http.ServerEndpoints;
 import org.protege.editor.owl.server.http.exception.ServerException;
-import org.protege.editor.owl.server.policy.AccessControlFilter;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
@@ -29,16 +25,14 @@ import io.undertow.util.StatusCodes;
 
 public class HTTPChangeService extends BaseRoutingHandler {
 
-	private static Logger logger = LoggerFactory.getLogger(HTTPChangeService.class);
+	private static final Logger logger = LoggerFactory.getLogger(HTTPChangeService.class);
 
-	private ChangeService changeService;
-	private ConflictDetectionFilter cf;
-	private AccessControlFilter acf;
+	private final ServerLayer serverLayer;
+	private final ChangeService changeService;
 
-	public HTTPChangeService(ProtegeServer s) {
-		cf = new ConflictDetectionFilter(new ChangeManagementFilter(s));
-		acf = new AccessControlFilter(cf);
-		changeService = new DefaultChangeService(acf.getChangePool());
+	public HTTPChangeService(ServerLayer serverLayer, ChangeService changeService) {
+		this.serverLayer = serverLayer;
+		this.changeService = changeService;
 	}
 
 	@Override
@@ -114,7 +108,7 @@ public class HTTPChangeService extends BaseRoutingHandler {
 	private void submitCommitBundle(HttpServerExchange exchange, ProjectId pid,
 			CommitBundle bundle) throws ServerException {
 		try {
-			ChangeHistory hist = acf.commit(getAuthToken(exchange), pid, bundle);
+			ChangeHistory hist = serverLayer.commit(getAuthToken(exchange), pid, bundle);
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 			os.writeObject(hist);
 		}

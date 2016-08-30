@@ -19,7 +19,7 @@ public abstract class AbstractServerFilter extends ServerLayer {
     }
 
     @Override
-    protected ServerConfiguration getConfiguration() {
+    public ServerConfiguration getConfiguration() {
         return getDelegate().getConfiguration();
     }
 }

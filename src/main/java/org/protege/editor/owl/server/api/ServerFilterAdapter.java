@@ -4,7 +4,6 @@ import edu.stanford.protege.metaproject.api.*;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
-import org.protege.editor.owl.server.change.ChangeDocumentPool;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 
@@ -19,14 +18,8 @@ import java.util.Optional;
  */
 public class ServerFilterAdapter extends AbstractServerFilter {
 
-    private static ChangeDocumentPool changePool = new ChangeDocumentPool();
-
     public ServerFilterAdapter(ServerLayer delegate) {
         super(delegate);
-    }
-
-    public ChangeDocumentPool getChangePool() {
-        return changePool;
     }
 
     @Override
