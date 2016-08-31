@@ -53,7 +53,7 @@ public class CodeGenHandler extends BaseRoutingHandler {
 			String p = config.getProperty(ServerProperties.CODEGEN_PREFIX);
 			String s = config.getProperty(ServerProperties.CODEGEN_SUFFIX);
 			String d = config.getProperty(ServerProperties.CODEGEN_DELIMETER);
-			String cfn = config.getProperty(ServerProperties.EVS_HISTORY_FILE);
+			String cfn = config.getProperty(ServerProperties.CODEGEN_FILE);
 			int seq = 0;
 			try {
 				File file = new File(cfn);
