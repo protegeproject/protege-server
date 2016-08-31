@@ -136,20 +136,20 @@ public final class HTTPServer {
 		adminRouter.add("POST", LOGIN, login_handler);
 		
 		// create change service handler
-		AuthenticationHandler changeServiceHandler = new AuthenticationHandler(new BlockingHandler(new HTTPChangeService(server)));
+		HttpHandler changeServiceHandler = new AuthenticationHandler(new BlockingHandler(new HTTPChangeService(acf, changeService)));
 		webRouter.add("POST", COMMIT,  changeServiceHandler);
 		webRouter.add("POST", HEAD,  changeServiceHandler);
 		webRouter.add("POST", LATEST_CHANGES,  changeServiceHandler);
 		webRouter.add("POST", ALL_CHANGES,  changeServiceHandler);
 		
 		// create code generator handler
-		AuthenticationHandler codeGenHandler = new AuthenticationHandler(new BlockingHandler(new CodeGenHandler(pserver)));
+		HttpHandler codeGenHandler = new AuthenticationHandler(new BlockingHandler(new CodeGenHandler(pserver)));
 		webRouter.add("GET", GEN_CODE, codeGenHandler);
 		webRouter.add("GET", GEN_CODES, codeGenHandler);
 		webRouter.add("POST", EVS_REC, codeGenHandler);
 		
 		// create mataproject handler
-		AuthenticationHandler metaprojectHandler = new AuthenticationHandler(new BlockingHandler(new MetaprojectHandler(pserver)));
+		HttpHandler metaprojectHandler = new AuthenticationHandler(new BlockingHandler(new MetaprojectHandler(pserver)));
 		webRouter.add("GET", METAPROJECT, metaprojectHandler);
 		webRouter.add("GET", PROJECT,  metaprojectHandler);
 		webRouter.add("POST", PROJECT_SNAPSHOT_GET,  metaprojectHandler);
