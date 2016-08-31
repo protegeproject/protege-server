@@ -14,4 +14,5 @@ release.properties
 # artifacts
 usertok
 ~*
+samples/catalog-v001.xml
 

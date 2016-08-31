@@ -1,7 +1,7 @@
 {
   "host": {
     "uri": "http://localhost:8080",
-    "secondaryPort": 8081
+    "secondaryPort": "8081"
   },
   "root": "root/data",
   "policy": {
@@ -60,24 +60,29 @@
       "file": "root/data/foo/foo.history",
       "owner": "root",
       "options": {
-        "complex_properties": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN",
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION",
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#ALT_DEFINITION"
+        "deprecated_child": [
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_CHILD"
         ],
-        "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION": [
+        "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#ALT_DEFINITION": [
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Definition_Review_Date",
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Definition_Reviewer_Name",
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#def-source"
         ],
-        "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#ALT_DEFINITION": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Definition_Review_Date",
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Definition_Review_Name",
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#def-source"
+        "label_prop": [
+          "http://www.w3.org/2000/01/rdf-schema#label"
+        ],
+        "code_prop": [
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-00000029"
+        ],
+        "deprecated_role": [
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_ROLE"
         ],
         "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN": [
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#term-group",
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#term-source"
+        ],
+        "retired_root": [
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year"
         ],
         "immutable_properties": [
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_CHILD",
@@ -91,56 +96,51 @@
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Merge_Target",
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Split_From"
         ],
-        "code_prop": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-00000029"
-        ],
-        "label_prop": [
-          "http://www.w3.org/2000/01/rdf-schema#label"
-        ],
-        "pref_name": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Preferred_Name"
-        ],
-        "design_note": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Design_Note"
+        "preretired_root": [
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Preretired_Concepts"
         ],
         "editor_note": [
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Editor_Note"
         ],
-        "deprecated_child": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_CHILD"
-        ],
-        "deprecated_parent": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_PARENT"
-        ],
-        "deprecated_role": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_ROLE"
-        ],
-        "deprecated_in_role": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_SOURCE_ROLE"
+        "pref_name": [
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Preferred_Name"
         ],
         "deprecated_assoc": [
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_ASSOCIATION"
         ],
-        "deprecated_in_assoc": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_SOURCE_ASSOCIATION"
-        ],
         "merge_source": [
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Merge_Source"
         ],
-        "merge_target": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Merge_Target"
+        "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION": [
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Definition_Review_Date",
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Definition_Reviewer_Name",
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#def-source"
         ],
         "split_from": [
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Split_From"
         ],
-        "preretired_root": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Preretired_Concepts"
+        "deprecated_in_role": [
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_SOURCE_ROLE"
+        ],
+        "merge_target": [
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Merge_Target"
+        ],
+        "deprecated_in_assoc": [
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_SOURCE_ASSOCIATION"
+        ],
+        "deprecated_parent": [
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_PARENT"
+        ],
+        "complex_properties": [
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN",
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION",
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#ALT_DEFINITION"
+        ],
+        "design_note": [
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Design_Note"
         ],
         "premerged_root": [
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Premerged_Concepts"
-        ],
-        "retired_root": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Retired_Concept_Current_Year"
         ]
       }
     }
@@ -514,11 +514,11 @@
     }
   ],
   "properties": {
-    "codegen_prefix": "C",
     "codegen_suffix": "S",
     "codegen_file": "gencode",
+    "authenticate": "org.protege.editor.owl.server.security.DefaultLoginService",
     "codegen_delimeter": "-",
     "evshistory_file": "evs_history",
-    "authenticate": "org.protege.editor.owl.server.security.DefaultLoginService"
+    "codegen_prefix": "C"
   }
 }
