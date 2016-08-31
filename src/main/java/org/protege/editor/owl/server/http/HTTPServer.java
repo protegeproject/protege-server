@@ -40,6 +40,7 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 
 import static org.protege.editor.owl.server.http.ServerEndpoints.*;
+import static org.protege.editor.owl.server.http.ServerProperties.*;
 
 public final class HTTPServer {
 
@@ -212,7 +213,7 @@ public final class HTTPServer {
 	}
 
 	private BlockingHandler loadAndCreateLogin() throws ServerException {
-		String authClassName = serverConfiguration.getProperty(ServerProperties.AUTHENTICATION_CLASS);
+		String authClassName = serverConfiguration.getProperty(AUTHENTICATION_CLASS);
 		LoginService service = null;
 		if (authClassName != null) {
 			try {
@@ -228,7 +229,7 @@ public final class HTTPServer {
 
 	private TokenTable createLoginTokenTable() {
 		long loginTimeout = TokenTable.DEFAULT_TIMEOUT_PERIOD;
-		String loginTimeoutValue = serverConfiguration.getProperty(ServerProperties.LOGIN_TIMEOUT_PERIOD);
+		String loginTimeoutValue = serverConfiguration.getProperty(LOGIN_TIMEOUT_PERIOD);
 		if (loginTimeoutValue != null && !loginTimeoutValue.isEmpty()) {
 			loginTimeout = Long.parseLong(loginTimeoutValue);
 		}
