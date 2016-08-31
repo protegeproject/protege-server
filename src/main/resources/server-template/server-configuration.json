@@ -519,6 +519,7 @@
     "authenticate": "org.protege.editor.owl.server.security.DefaultLoginService",
     "codegen_delimeter": "-",
     "evshistory_file": "evs_history",
-    "codegen_prefix": "C"
+    "codegen_prefix": "C",
+    "login_timeout_period": "1800000"
   }
 }
