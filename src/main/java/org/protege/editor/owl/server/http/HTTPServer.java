@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
 
+import static org.protege.editor.owl.server.http.ServerEndpoints.*;
+
 public final class HTTPServer {
 
 	public static final String SERVER_CONFIGURATION_PROPERTY = "org.protege.owl.server.configuration";
@@ -109,38 +111,38 @@ public final class HTTPServer {
 		// create login handler
 		BlockingHandler login_handler = loadAndCreateLogin();
 		
-		webRouter.add("POST", ServerEndpoints.LOGIN, login_handler);
-		adminRouter.add("POST", ServerEndpoints.LOGIN, login_handler);
+		webRouter.add("POST", LOGIN, login_handler);
+		adminRouter.add("POST", LOGIN, login_handler);
 		
 		// create change service handler
 		AuthenticationHandler changeServiceHandler = new AuthenticationHandler(new BlockingHandler(new HTTPChangeService(pserver)));
-		webRouter.add("POST", ServerEndpoints.COMMIT,  changeServiceHandler);
-		webRouter.add("POST", ServerEndpoints.HEAD,  changeServiceHandler);
-		webRouter.add("POST", ServerEndpoints.LATEST_CHANGES,  changeServiceHandler);
-		webRouter.add("POST", ServerEndpoints.ALL_CHANGES,  changeServiceHandler);
+		webRouter.add("POST", COMMIT,  changeServiceHandler);
+		webRouter.add("POST", HEAD,  changeServiceHandler);
+		webRouter.add("POST", LATEST_CHANGES,  changeServiceHandler);
+		webRouter.add("POST", ALL_CHANGES,  changeServiceHandler);
 		
 		// create code generator handler
 		AuthenticationHandler codeGenHandler = new AuthenticationHandler(new BlockingHandler(new CodeGenHandler(pserver)));
-		webRouter.add("GET", ServerEndpoints.GEN_CODE, codeGenHandler);
-		webRouter.add("GET", ServerEndpoints.GEN_CODES, codeGenHandler);
-		webRouter.add("POST", ServerEndpoints.EVS_REC, codeGenHandler);
+		webRouter.add("GET", GEN_CODE, codeGenHandler);
+		webRouter.add("GET", GEN_CODES, codeGenHandler);
+		webRouter.add("POST", EVS_REC, codeGenHandler);
 		
 		// create mataproject handler
 		AuthenticationHandler metaprojectHandler = new AuthenticationHandler(new BlockingHandler(new MetaprojectHandler(pserver)));
-		webRouter.add("GET", ServerEndpoints.METAPROJECT, metaprojectHandler);
-		webRouter.add("GET", ServerEndpoints.PROJECT,  metaprojectHandler);
-		webRouter.add("POST", ServerEndpoints.PROJECT_SNAPSHOT_GET,  metaprojectHandler);
-		webRouter.add("GET", ServerEndpoints.PROJECTS, metaprojectHandler);
-		adminRouter.add("GET", ServerEndpoints.METAPROJECT, metaprojectHandler);
-		adminRouter.add("POST", ServerEndpoints.METAPROJECT, metaprojectHandler);
-		adminRouter.add("POST", ServerEndpoints.PROJECT,  metaprojectHandler);
-		adminRouter.add("POST", ServerEndpoints.PROJECT_SNAPSHOT,  metaprojectHandler);
-		adminRouter.add("DELETE", ServerEndpoints.PROJECT,  metaprojectHandler);
+		webRouter.add("GET", METAPROJECT, metaprojectHandler);
+		webRouter.add("GET", PROJECT,  metaprojectHandler);
+		webRouter.add("POST", PROJECT_SNAPSHOT_GET,  metaprojectHandler);
+		webRouter.add("GET", PROJECTS, metaprojectHandler);
+		adminRouter.add("GET", METAPROJECT, metaprojectHandler);
+		adminRouter.add("POST", METAPROJECT, metaprojectHandler);
+		adminRouter.add("POST", PROJECT,  metaprojectHandler);
+		adminRouter.add("POST", PROJECT_SNAPSHOT,  metaprojectHandler);
+		adminRouter.add("DELETE", PROJECT,  metaprojectHandler);
 		
 		// create server handler
 		AuthenticationHandler serverHandler = new AuthenticationHandler(new BlockingHandler(new HTTPServerHandler()));
-		adminRouter.add("POST", ServerEndpoints.SERVER_RESTART, serverHandler);
-		adminRouter.add("POST", ServerEndpoints.SERVER_STOP, serverHandler);
+		adminRouter.add("POST", SERVER_RESTART, serverHandler);
+		adminRouter.add("POST", SERVER_STOP, serverHandler);
 		
 		// Build the servers
 		webRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(webRouter));
