@@ -4,6 +4,7 @@ import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Project;
 import edu.stanford.protege.metaproject.api.ProjectId;
 import edu.stanford.protege.metaproject.api.exception.UnknownProjectIdException;
+import org.protege.editor.owl.server.api.ChangeService;
 import org.protege.editor.owl.server.api.CommitBundle;
 import org.protege.editor.owl.server.api.ServerFilterAdapter;
 import org.protege.editor.owl.server.api.ServerLayer;
@@ -17,8 +18,6 @@ import org.protege.editor.owl.server.versioning.api.HistoryFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 /**
  * Represents the conflict detection layer that will check if user changes .
  *
@@ -27,10 +26,13 @@ import java.io.IOException;
  */
 public class ConflictDetectionFilter extends ServerFilterAdapter {
 
-    private Logger logger = LoggerFactory.getLogger(ConflictDetectionFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConflictDetectionFilter.class);
 
-    public ConflictDetectionFilter(ServerLayer delegate) {
+    private final ChangeService changeService;
+
+    public ConflictDetectionFilter(ServerLayer delegate, ChangeService changeService) {
         super(delegate);
+        this.changeService = changeService;
     }
 
     @Override
@@ -41,10 +43,10 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
             // TODO: head revision is checked here, but another thread may already be proceeding to do a commit
             String projectFilePath = project.getFile().getAbsolutePath();
             HistoryFile historyFile = HistoryFile.openExisting(projectFilePath);
-            DocumentRevision serverHeadRevision = getHeadRevision(historyFile);
+            DocumentRevision serverHeadRevision = changeService.getHeadRevision(historyFile);
             DocumentRevision commitBaseRevision = commitBundle.getBaseRevision();
             if (isOutdated(commitBaseRevision, serverHeadRevision)) {
-            	logger.error("Out of sync");
+                logger.error("Out of sync");
                 throw new OutOfSyncException("The local copy is outdated. Please do update.");
             }
             return super.commit(token, projectId, commitBundle);
@@ -53,15 +55,11 @@ public class ConflictDetectionFilter extends ServerFilterAdapter {
             logger.error(printLog(token.getUser(), "Commit changes", e.getMessage()));
             throw new ServerServiceException(e.getMessage(), e);
         }
-        catch (InvalidHistoryFileException | IOException e) {
+        catch (InvalidHistoryFileException e) {
             String message = "Unable to access history file in remote server";
             logger.error(printLog(token.getUser(), "Commit changes", message), e);
             throw new ServerServiceException(message, e);
         }
-    }
-
-    private DocumentRevision getHeadRevision(HistoryFile historyFile) throws IOException {
-        return getChangePool().lookupHead(historyFile);
     }
 
     private boolean isOutdated(DocumentRevision clientHeadRevision, DocumentRevision serverHeadRevision) {

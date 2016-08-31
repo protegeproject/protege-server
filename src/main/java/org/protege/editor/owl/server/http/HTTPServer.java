@@ -7,15 +7,28 @@ import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.UndertowOptions;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.RoutingHandler;
 import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.util.StatusCodes;
+import org.protege.editor.owl.server.api.ChangeService;
+import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.LoginService;
 import org.protege.editor.owl.server.base.ProtegeServer;
+import org.protege.editor.owl.server.change.ChangeDocumentPool;
+import org.protege.editor.owl.server.change.ChangeManagementFilter;
+import org.protege.editor.owl.server.change.DefaultChangeService;
+import org.protege.editor.owl.server.conflict.ConflictDetectionFilter;
 import org.protege.editor.owl.server.http.exception.ServerConfigurationInitializationException;
 import org.protege.editor.owl.server.http.exception.ServerException;
-import org.protege.editor.owl.server.http.handlers.*;
+import org.protege.editor.owl.server.http.handlers.AuthenticationHandler;
+import org.protege.editor.owl.server.http.handlers.CodeGenHandler;
+import org.protege.editor.owl.server.http.handlers.HTTPChangeService;
+import org.protege.editor.owl.server.http.handlers.HTTPLoginService;
+import org.protege.editor.owl.server.http.handlers.HTTPServerHandler;
+import org.protege.editor.owl.server.http.handlers.MetaprojectHandler;
+import org.protege.editor.owl.server.policy.AccessControlFilter;
 import org.protege.editor.owl.server.security.SSLContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,10 +114,18 @@ public final class HTTPServer {
 	}
 
 	public void start() throws Exception {
-		final ProtegeServer pserver = new ProtegeServer(serverConfiguration);
-		final URI serverHostUri = serverConfiguration.getHost().getUri();
-		final int serverAdminPort = serverConfiguration.getHost().getSecondaryPort().get().get();
+		/*
+		 * Instantiate Protege server modules
+		 */
+		ChangeDocumentPool changePool = new ChangeDocumentPool();
+		ChangeService changeService = new DefaultChangeService(changePool);
+		ProtegeServer pserver = new ProtegeServer(serverConfiguration);
+		ServerLayer cmf = new ChangeManagementFilter(pserver, changePool);
+		ServerLayer acf = new AccessControlFilter(new ConflictDetectionFilter(cmf, changeService));
 		
+		/*
+		 * Instantiate and setup HTTP routing handlers
+		 */
 		RoutingHandler webRouter = Handlers.routing();
 		RoutingHandler adminRouter = Handlers.routing();
 		
@@ -115,20 +136,20 @@ public final class HTTPServer {
 		adminRouter.add("POST", LOGIN, login_handler);
 		
 		// create change service handler
-		AuthenticationHandler changeServiceHandler = new AuthenticationHandler(new BlockingHandler(new HTTPChangeService(pserver)));
+		HttpHandler changeServiceHandler = new AuthenticationHandler(new BlockingHandler(new HTTPChangeService(acf, changeService)));
 		webRouter.add("POST", COMMIT,  changeServiceHandler);
 		webRouter.add("POST", HEAD,  changeServiceHandler);
 		webRouter.add("POST", LATEST_CHANGES,  changeServiceHandler);
 		webRouter.add("POST", ALL_CHANGES,  changeServiceHandler);
 		
 		// create code generator handler
-		AuthenticationHandler codeGenHandler = new AuthenticationHandler(new BlockingHandler(new CodeGenHandler(pserver)));
+		HttpHandler codeGenHandler = new AuthenticationHandler(new BlockingHandler(new CodeGenHandler(pserver)));
 		webRouter.add("GET", GEN_CODE, codeGenHandler);
 		webRouter.add("GET", GEN_CODES, codeGenHandler);
 		webRouter.add("POST", EVS_REC, codeGenHandler);
 		
 		// create mataproject handler
-		AuthenticationHandler metaprojectHandler = new AuthenticationHandler(new BlockingHandler(new MetaprojectHandler(pserver)));
+		HttpHandler metaprojectHandler = new AuthenticationHandler(new BlockingHandler(new MetaprojectHandler(pserver)));
 		webRouter.add("GET", METAPROJECT, metaprojectHandler);
 		webRouter.add("GET", PROJECT,  metaprojectHandler);
 		webRouter.add("POST", PROJECT_SNAPSHOT_GET,  metaprojectHandler);
@@ -143,12 +164,15 @@ public final class HTTPServer {
 		AuthenticationHandler serverHandler = new AuthenticationHandler(new BlockingHandler(new HTTPServerHandler()));
 		adminRouter.add("POST", SERVER_RESTART, serverHandler);
 		adminRouter.add("POST", SERVER_STOP, serverHandler);
+
 		
 		// Build the servers
 		webRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(webRouter));
 		adminRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(adminRouter));
 		
 		logger.info("Starting server instances");
+		final URI serverHostUri = serverConfiguration.getHost().getUri();
+		final int serverAdminPort = serverConfiguration.getHost().getSecondaryPort().get().get();
 		if (serverHostUri.getScheme().equalsIgnoreCase("https")) {
 			SSLContext ctx = new SSLContextFactory().createSslContext();
 			webServer = Undertow.builder()

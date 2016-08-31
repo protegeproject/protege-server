@@ -15,7 +15,7 @@ public abstract class ServerLayer implements Server {
      *
      * @return Server configuration
      */
-    protected abstract ServerConfiguration getConfiguration();
+    public abstract ServerConfiguration getConfiguration();
 
     public void addServerListener(ServerListener listener) {
         listeners.add(listener);

@@ -26,17 +26,20 @@ import java.util.Optional;
  */
 public class ChangeManagementFilter extends ServerFilterAdapter {
 
-    private Logger logger = LoggerFactory.getLogger(ChangeManagementFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ChangeManagementFilter.class);
 
-    public ChangeManagementFilter(ServerLayer delegate) {
+    private final ChangeDocumentPool changePool;
+
+    public ChangeManagementFilter(ServerLayer delegate, ChangeDocumentPool changePool) {
         super(delegate);
+        this.changePool = changePool;
     }
 
     @Override
     public ServerDocument createProject(AuthToken token, ProjectId projectId, Name projectName, Description description,
             UserId owner, Optional<ProjectOptions> options) throws AuthorizationException, ServerServiceException {
         ServerDocument serverDocument = super.createProject(token, projectId, projectName, description, owner, options);
-        getChangePool().appendChanges(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
+        changePool.appendChanges(serverDocument.getHistoryFile(), ChangeHistoryImpl.createEmptyChangeHistory());
         return serverDocument;
     }
 
@@ -48,7 +51,7 @@ public class ChangeManagementFilter extends ServerFilterAdapter {
             Project project = getConfiguration().getProject(projectId);
             String projectFilePath = project.getFile().getAbsolutePath();
             HistoryFile historyFile = HistoryFile.openExisting(projectFilePath);
-            getChangePool().appendChanges(historyFile, changeHistory);
+            changePool.appendChanges(historyFile, changeHistory);
             return changeHistory;
         }
         catch (UnknownProjectIdException e) {

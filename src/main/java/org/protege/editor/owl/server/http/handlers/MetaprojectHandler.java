@@ -14,10 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
-import org.protege.editor.owl.server.base.ProtegeServer;
-import org.protege.editor.owl.server.change.ChangeManagementFilter;
 import org.protege.editor.owl.server.http.HTTPServer;
 import org.protege.editor.owl.server.http.ServerEndpoints;
 import org.protege.editor.owl.server.http.exception.ServerException;
@@ -52,15 +51,13 @@ import io.undertow.util.StatusCodes;
 
 public class MetaprojectHandler extends BaseRoutingHandler {
 	
-	private static Logger logger = LoggerFactory.getLogger(MetaprojectHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(MetaprojectHandler.class);
 	private static final PolicyFactory f = ConfigurationManager.getFactory();
 
-	private final ProtegeServer pserver;
-	private final ChangeManagementFilter cf;
+	private final ServerLayer serverLayer;
 
-	public MetaprojectHandler(ProtegeServer pserver) {
-		this.pserver = pserver;
-		cf = new ChangeManagementFilter(pserver);
+	public MetaprojectHandler(ServerLayer serverLayer) {
+		this.serverLayer = serverLayer;
 	}
 
 	@Override
@@ -199,7 +196,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		try {
 			String uid = super.getQueryParameter(exchange, "userid");
 			UserId userId = f.getUserId(uid);
-			List<Project> projects = new ArrayList<>(pserver.getConfiguration().getProjects(userId));
+			List<Project> projects = new ArrayList<>(serverLayer.getConfiguration().getProjects(userId));
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 			os.writeObject(projects);
 		}
@@ -211,7 +208,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	private void createNewProject(HttpServerExchange exchange, ProjectId pid, Name pname,
 			Description desc, UserId uid, Optional<ProjectOptions> oopts) throws ServerException {
 		try {
-			ServerDocument doc = cf.createProject(getAuthToken(exchange), pid, pname, desc, uid, oopts);
+			ServerDocument doc = serverLayer.createProject(getAuthToken(exchange), pid, pname, desc, uid, oopts);
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 			os.writeObject(doc);
 		}
@@ -230,7 +227,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		try {
 			String pid = super.getQueryParameter(exchange, "projectid");
 			ProjectId projId  = f.getProjectId(pid);
-			ServerDocument sdoc = pserver.openProject(getAuthToken(exchange), projId);
+			ServerDocument sdoc = serverLayer.openProject(getAuthToken(exchange), projId);
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 			os.writeObject(sdoc);
 		}
@@ -249,7 +246,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		try {
 			String pid = super.getQueryParameter(exchange, "projectid");
 			ProjectId projId  = f.getProjectId(pid);
-			cf.deleteProject(getAuthToken(exchange), projId, true);
+			serverLayer.deleteProject(getAuthToken(exchange), projId, true);
 		}
 		catch (AuthorizationException e) {
 			throw new ServerException(StatusCodes.UNAUTHORIZED, "Access denied", e);
@@ -314,7 +311,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	private void retrieveMetaproject(HttpServerExchange exchange) throws ServerException {
 		try {
 			Serializer serl = new DefaultJsonSerializer();
-			exchange.getResponseSender().send(serl.write(pserver.getConfiguration(), ServerConfiguration.class));
+			exchange.getResponseSender().send(serl.write(serverLayer.getConfiguration(), ServerConfiguration.class));
 		}
 		catch (Exception e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to get server configuration", e);
