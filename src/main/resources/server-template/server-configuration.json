@@ -72,7 +72,7 @@
           "http://www.w3.org/2000/01/rdf-schema#label"
         ],
         "code_prop": [
-          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C-00000029"
+          "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#code"
         ],
         "deprecated_role": [
           "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#OLD_ROLE"
