@@ -12,14 +12,17 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.protege.editor.owl.server.base.ProtegeServer;
+import javax.annotation.Nonnull;
+
 import org.protege.editor.owl.server.http.ServerEndpoints;
 import static org.protege.editor.owl.server.http.ServerProperties.*;
 import org.protege.editor.owl.server.http.exception.ServerException;
 import org.protege.editor.owl.server.http.messages.EVSHistory;
+import org.protege.editor.owl.server.security.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
@@ -29,18 +32,38 @@ public class CodeGenHandler extends BaseRoutingHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(CodeGenHandler.class);
 
-	private ProtegeServer server;
-	private ServerConfiguration config;
-	
-	public CodeGenHandler(ProtegeServer s) {
-		server = s;
-		config = server.getConfiguration();
+	private final ServerConfiguration serverConfiguration;
+	private final SessionManager sessionManager;
+
+	public CodeGenHandler(@Nonnull ServerConfiguration serverConfiguration, @Nonnull SessionManager sessionManager) {
+		this.serverConfiguration = serverConfiguration;
+		this.sessionManager = sessionManager;
 	}
 
 	@Override
 	public void handleRequest(HttpServerExchange exchange) {
-		if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.GEN_CODE)) {
+		try {
+			String tokenKey = getTokenKey(exchange);
+			AuthToken authToken = sessionManager.getAuthToken(tokenKey);
+			if (sessionManager.validate(authToken, getTokenOwner(exchange))) {
+				handlingRequest(authToken, exchange);
+			}
+			else {
+				exchange.setStatusCode(StatusCodes.UNAUTHORIZED);
+				exchange.getResponseHeaders().add(new HttpString("Error-Message"), "Access denied");
+			}
+		}
+		catch (ServerException e) {
+			handleServerException(exchange, e);
+		}
+		finally {
+			exchange.endExchange(); // end request
+		}
+	}
 
+	private void handlingRequest(AuthToken authToken, HttpServerExchange exchange) {
+		String requestPath = exchange.getRequestPath();
+		if (requestPath.equalsIgnoreCase(ServerEndpoints.GEN_CODE)) {
 			int cnt = 1;
 			try {
 				String scnt = getQueryParameter(exchange, "count");
@@ -50,14 +73,14 @@ public class CodeGenHandler extends BaseRoutingHandler {
 				e1.printStackTrace();
 			}
 			
-			String p = config.getProperty(CODEGEN_PREFIX);
-			String s = config.getProperty(CODEGEN_SUFFIX);
-			String d = config.getProperty(CODEGEN_DELIMETER);
-			String cfn = config.getProperty(CODEGEN_FILE);
+			String p = serverConfiguration.getProperty(CODEGEN_PREFIX);
+			String s = serverConfiguration.getProperty(CODEGEN_SUFFIX);
+			String d = serverConfiguration.getProperty(CODEGEN_DELIMETER);
+			String cfn = serverConfiguration.getProperty(CODEGEN_FILE);
 			int seq = 0;
 			try {
-				File file = new File(cfn);
-				FileReader fileReader = new FileReader(file);
+				File codeGenFile = new File(cfn);
+				FileReader fileReader = new FileReader(codeGenFile);
 				BufferedReader bufferedReader = new BufferedReader(fileReader);
 				seq = Integer.parseInt(bufferedReader.readLine().trim());
 				
@@ -69,8 +92,8 @@ public class CodeGenHandler extends BaseRoutingHandler {
 					if (s != null) {
 						code = code + d + s;
 					}
-					codes.add(code);		    	
-				}			
+					codes.add(code);
+				}
 
 				ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 				os.writeObject(codes);
@@ -82,7 +105,7 @@ public class CodeGenHandler extends BaseRoutingHandler {
 					// Ignore the exception but report it into the log
 					logger.warn("Unable to close the file reader stream used to read the code generator configuration");
 				}
-				flushCode(exchange, file, seq);
+				flushCode(codeGenFile, seq);
 			}
 			catch (IOException e) {
 				internalServerErrorStatusCode(exchange, "Server failed to read code generator configuration", e);
@@ -90,18 +113,15 @@ public class CodeGenHandler extends BaseRoutingHandler {
 			catch (ServerException e) {
 				handleServerException(exchange, e);
 			}
-			finally {
-				exchange.endExchange(); // end the request
-			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.GEN_CODES)) { 
+		else if (requestPath.equalsIgnoreCase(ServerEndpoints.GEN_CODES)) { 
 			// NO-OP
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.EVS_REC)) {
+		else if (requestPath.equalsIgnoreCase(ServerEndpoints.EVS_REC)) {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 				EVSHistory hist = (EVSHistory) ois.readObject();
-				recordEvsHistory(exchange, hist);
+				recordEvsHistory(hist);
 			}
 			catch (IOException | ClassNotFoundException e) {
 				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
@@ -109,15 +129,12 @@ public class CodeGenHandler extends BaseRoutingHandler {
 			catch (ServerException e) {
 				handleServerException(exchange, e);
 			}
-			finally {
-				exchange.endExchange(); // end the request
-			}
 		}
 	}
 
-	private void flushCode(HttpServerExchange exchange, File file, int seq) throws ServerException {
+	private void flushCode(File codeGenFile, int seq) throws ServerException {
 		try {
-			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(codeGenFile)));
 			pw.println(seq + 1);
 			pw.close();
 		}
@@ -126,9 +143,9 @@ public class CodeGenHandler extends BaseRoutingHandler {
 		}
 	}
 
-	private void recordEvsHistory(HttpServerExchange exchange, EVSHistory hist) throws ServerException {
+	private void recordEvsHistory(EVSHistory hist) throws ServerException {
 		try {
-			String hisfile = config.getProperty(EVS_HISTORY_FILE);
+			String hisfile = serverConfiguration.getProperty(EVS_HISTORY_FILE);
 			PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(hisfile, true)));
 			pw.println(hist.toRecord());
 			pw.close();
@@ -142,7 +159,6 @@ public class CodeGenHandler extends BaseRoutingHandler {
 		logger.error(cause.getMessage(), cause);
 		exchange.setStatusCode(StatusCodes.INTERNAL_SERVER_ERROR);
 		exchange.getResponseHeaders().add(new HttpString("Error-Message"), message);
-		exchange.endExchange(); // end the request
 	}
 
 	private void handleServerException(HttpServerExchange exchange, ServerException e) {

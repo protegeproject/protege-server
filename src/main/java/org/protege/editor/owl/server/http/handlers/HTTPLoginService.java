@@ -12,39 +12,42 @@ import io.undertow.util.HttpString;
 import io.undertow.util.StatusCodes;
 import org.protege.editor.owl.server.api.LoginService;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
-import org.protege.editor.owl.server.http.HTTPServer;
 import org.protege.editor.owl.server.http.messages.HttpAuthResponse;
 import org.protege.editor.owl.server.http.messages.LoginCreds;
+import org.protege.editor.owl.server.security.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStreamReader;
 import java.util.UUID;
 
+import javax.annotation.Nonnull;
+
 public class HTTPLoginService extends BaseRoutingHandler {
 	
 	private static Logger logger = LoggerFactory.getLogger(MetaprojectHandler.class);
 	
-	private LoginService loginService;
+	private final LoginService loginService;
+	private final SessionManager sessionManager;
 	
 	@Inject
-	public HTTPLoginService(LoginService s) {
-		loginService = s;
+	public HTTPLoginService(@Nonnull LoginService loginService, @Nonnull SessionManager sessionManager) {
+		this.loginService = loginService;
+		this.sessionManager = sessionManager;
 	}
 
 	@Override
-	public void handleRequest(final HttpServerExchange exchange) {
+	public void handleRequest(HttpServerExchange exchange) {
 		Serializer serl = new DefaultJsonSerializer();
 		try {
 			PolicyFactory f = ConfigurationManager.getFactory();
 			LoginCreds creds = (LoginCreds) serl.parse(new InputStreamReader(exchange.getInputStream()), LoginCreds.class);
-						
 			/*
 			 * Use the login service over the wire
 			 */
 			AuthToken authToken = loginService.login(f.getUserId(creds.getUser()),
 					f.getPlainPassword(creds.getPassword()));
-			sendLoginResponse(exchange, authToken);
+			sendLoginResponse(authToken, exchange);
 		}
 		catch (ObjectConversionException e) {
 			logger.error(e.getMessage(), e);
@@ -61,11 +64,11 @@ public class HTTPLoginService extends BaseRoutingHandler {
 		}
 	}
 
-	private void sendLoginResponse(final HttpServerExchange exchange, AuthToken authToken) {
+	private void sendLoginResponse(AuthToken authToken, HttpServerExchange exchange) {
 		Serializer serl = new DefaultJsonSerializer();
-		String key = UUID.randomUUID().toString();
-		HTTPServer.server().addSession(key, authToken);
-		exchange.getResponseSender().send(serl.write(new HttpAuthResponse(key, authToken.getUser()), HttpAuthResponse.class));
+		String tokenKey = UUID.randomUUID().toString();
+		sessionManager.addSession(tokenKey, authToken);
+		exchange.getResponseSender().send(serl.write(new HttpAuthResponse(tokenKey, authToken.getUser()), HttpAuthResponse.class));
 	}
 }
 

@@ -10,9 +10,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 import org.protege.editor.owl.server.api.ServerLayer;
 import org.protege.editor.owl.server.api.exception.AuthorizationException;
@@ -20,6 +23,7 @@ import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.http.HTTPServer;
 import org.protege.editor.owl.server.http.ServerEndpoints;
 import org.protege.editor.owl.server.http.exception.ServerException;
+import org.protege.editor.owl.server.security.SessionManager;
 import org.protege.editor.owl.server.util.SnapShot;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 import org.semanticweb.binaryowl.BinaryOWLOntologyDocumentSerializer;
@@ -33,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.stanford.protege.metaproject.ConfigurationManager;
+import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.Description;
 import edu.stanford.protege.metaproject.api.Name;
 import edu.stanford.protege.metaproject.api.PolicyFactory;
@@ -55,162 +60,155 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	private static final PolicyFactory f = ConfigurationManager.getFactory();
 
 	private final ServerLayer serverLayer;
+	private final HTTPServer httpServer;
+	private final SessionManager sessionManager;
 
-	public MetaprojectHandler(ServerLayer serverLayer) {
+	public MetaprojectHandler(@Nonnull ServerLayer serverLayer, @Nonnull HTTPServer httpServer,
+			@Nonnull SessionManager sessionManager) {
 		this.serverLayer = serverLayer;
+		this.httpServer = httpServer;
+		this.sessionManager = sessionManager;
 	}
 
 	@Override
 	public void handleRequest(HttpServerExchange exchange) {
-		if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.PROJECTS)) {
-			try {
-				retrieveProjectList(exchange);
+		try {
+			String tokenKey = getTokenKey(exchange);
+			AuthToken authToken = sessionManager.getAuthToken(tokenKey);
+			if (sessionManager.validate(authToken, getTokenOwner(exchange))) {
+				handlingRequest(authToken, exchange);
 			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
-			finally {
-				exchange.endExchange(); // end the request
-			}
-		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.PROJECT) &&
-				exchange.getRequestMethod().equals(Methods.POST)) {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				ProjectId pid = (ProjectId) ois.readObject();
-				Name pname = (Name) ois.readObject();
-				Description desc = (Description) ois.readObject();
-				UserId uid = (UserId) ois.readObject();
-				Optional<ProjectOptions> oopts = Optional.ofNullable((ProjectOptions) ois.readObject());
-				createNewProject(exchange, pid, pname, desc, uid, oopts);
-			}
-			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
-			finally {
-				exchange.endExchange(); // end the request
+			else {
+				exchange.setStatusCode(StatusCodes.UNAUTHORIZED);
+				exchange.getResponseHeaders().add(new HttpString("Error-Message"), "Access denied");
 			}
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.PROJECT)
-				&& exchange.getRequestMethod().equals(Methods.GET)) {
-			try {
-				openExistingProject(exchange);
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
-			finally {
-				exchange.endExchange(); // end the request
-			}
+		catch (ServerException e) {
+			handleServerException(exchange, e);
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.PROJECT)
-				&& exchange.getRequestMethod().equals(Methods.DELETE)) {
-			try {
-				deleteExistingProject(exchange);
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
-			finally {
-				exchange.endExchange(); // end the request
-			}
+		finally {
+			exchange.endExchange(); // end the request
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.PROJECT_SNAPSHOT)
-				&& exchange.getRequestMethod().equals(Methods.POST)) {
+	}
+
+	private void handlingRequest(AuthToken authToken, HttpServerExchange exchange) {
+		String requestPath = exchange.getRequestPath();
+		HttpString requestMethod = exchange.getRequestMethod();
+		if (requestPath.equalsIgnoreCase(ServerEndpoints.PROJECTS)) {
 			try {
-				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				ServerDocument sdoc = (ServerDocument) ois.readObject();
-				SnapShot shot = (SnapShot) ois.readObject();
-				createProjectSnapshot(exchange, sdoc, shot);
-			}
-			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
+				UserId userId = f.getUserId(getQueryParameter(exchange, "userid"));
+				retrieveProjectList(userId, exchange.getOutputStream());
 			}
 			catch (ServerException e) {
 				handleServerException(exchange, e);
 			}
-			finally {
-				exchange.endExchange(); // end the request
+		} else {
+			if (requestPath.equalsIgnoreCase(ServerEndpoints.PROJECT) && requestMethod.equals(Methods.POST)) {
+				try {
+					ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
+					ProjectId pid = (ProjectId) ois.readObject();
+					Name pname = (Name) ois.readObject();
+					Description desc = (Description) ois.readObject();
+					UserId uid = (UserId) ois.readObject();
+					Optional<ProjectOptions> oopts = Optional.ofNullable((ProjectOptions) ois.readObject());
+					createNewProject(authToken, pid, pname, desc, uid, oopts, exchange.getOutputStream());
+				}
+				catch (IOException | ClassNotFoundException e) {
+					internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
+				}
+				catch (ServerException e) {
+					handleServerException(exchange, e);
+				}
 			}
-		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.PROJECT_SNAPSHOT_GET)) {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				ServerDocument sdoc = (ServerDocument) ois.readObject();
-				retrieveProjectSnapshot(exchange, sdoc);
+			else if (requestPath.equalsIgnoreCase(ServerEndpoints.PROJECT) && requestMethod.equals(Methods.GET)) {
+				try {
+					ProjectId projectId = f.getProjectId(getQueryParameter(exchange, "projectid"));
+					openExistingProject(authToken, projectId, exchange.getOutputStream());
+				}
+				catch (ServerException e) {
+					handleServerException(exchange, e);
+				}
 			}
-			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
+			else if (requestPath.equalsIgnoreCase(ServerEndpoints.PROJECT) && requestMethod.equals(Methods.DELETE)) {
+				try {
+					ProjectId projectId = f.getProjectId(getQueryParameter(exchange, "projectid"));
+					deleteExistingProject(authToken, projectId);
+				}
+				catch (ServerException e) {
+					handleServerException(exchange, e);
+				}
 			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
+			else if (requestPath.equalsIgnoreCase(ServerEndpoints.PROJECT_SNAPSHOT) && requestMethod.equals(Methods.POST)) {
+				try {
+					ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
+					ServerDocument sdoc = (ServerDocument) ois.readObject();
+					SnapShot snapshot = (SnapShot) ois.readObject();
+					createProjectSnapshot(sdoc, snapshot, exchange.getOutputStream());
+				}
+				catch (IOException | ClassNotFoundException e) {
+					internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
+				}
+				catch (ServerException e) {
+					handleServerException(exchange, e);
+				}
 			}
-			finally {
-				exchange.endExchange(); // end the request
+			else if (requestPath.equalsIgnoreCase(ServerEndpoints.PROJECT_SNAPSHOT_GET)) {
+				try {
+					ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
+					ServerDocument sdoc = (ServerDocument) ois.readObject();
+					retrieveProjectSnapshot(sdoc, exchange.getOutputStream());
+				}
+				catch (IOException | ClassNotFoundException e) {
+					internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
+				}
+				catch (ServerException e) {
+					handleServerException(exchange, e);
+				}
 			}
-		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.METAPROJECT) &&
-				exchange.getRequestMethod().equals(Methods.GET)) {
-			try {
-				retrieveMetaproject(exchange);
+			else if (requestPath.equalsIgnoreCase(ServerEndpoints.METAPROJECT) && requestMethod.equals(Methods.GET)) {
+				try {
+					retrieveMetaproject(exchange);
+				}
+				catch (ServerException e) {
+					handleServerException(exchange, e);
+				}
 			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
-			finally {
-				exchange.endExchange(); // end the request
-			}
-		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.METAPROJECT) &&
-				exchange.getRequestMethod().equals(Methods.POST)) {
-			// TODO: After posting the new metaproject, we need to decide what to do with
-			//       the config that's loaded in RAM
-			try {
-				Serializer serl = new DefaultJsonSerializer();
-				ServerConfiguration cfg = serl.parse(new InputStreamReader(exchange.getInputStream()), ServerConfiguration.class);
-				updateMetaproject(cfg);
-			}
-			catch (ObjectConversionException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
-			finally {
-				exchange.endExchange(); // end the request
-			}
-			
-			try {
-				HTTPServer.server().restart();
-			} catch (ServerException e) {
-				logger.info("Server failed to restart, see sysadmin");
-				logger.info("Some details...",e);
+			else if (requestPath.equalsIgnoreCase(ServerEndpoints.METAPROJECT) && requestMethod.equals(Methods.POST)) {
+				// TODO: After posting the new metaproject, we need to decide what to do with
+				//       the config that's loaded in RAM
+				try {
+					Serializer serl = new DefaultJsonSerializer();
+					ServerConfiguration cfg = serl.parse(new InputStreamReader(exchange.getInputStream()), ServerConfiguration.class);
+					updateMetaproject(cfg);
+					httpServer.restart();
+				}
+				catch (ObjectConversionException e) {
+					internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
+				}
+				catch (ServerException e) {
+					handleServerException(exchange, e);
+				}
 			}
 		}
 	}
 
-	private void retrieveProjectList(HttpServerExchange exchange) throws ServerException {
+	private void retrieveProjectList(UserId userId, OutputStream os) throws ServerException {
 		try {
-			String uid = super.getQueryParameter(exchange, "userid");
-			UserId userId = f.getUserId(uid);
 			List<Project> projects = new ArrayList<>(serverLayer.getConfiguration().getProjects(userId));
-			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-			os.writeObject(projects);
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.writeObject(projects);
 		}
 		catch (IOException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to transmit the returned data", e);
 		}
 	}
 
-	private void createNewProject(HttpServerExchange exchange, ProjectId pid, Name pname,
-			Description desc, UserId uid, Optional<ProjectOptions> oopts) throws ServerException {
+	private void createNewProject(AuthToken authToken, ProjectId pid, Name pname,
+			Description desc, UserId uid, Optional<ProjectOptions> oopts, OutputStream os) throws ServerException {
 		try {
-			ServerDocument doc = serverLayer.createProject(getAuthToken(exchange), pid, pname, desc, uid, oopts);
-			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-			os.writeObject(doc);
+			ServerDocument doc = serverLayer.createProject(authToken, pid, pname, desc, uid, oopts);
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.writeObject(doc);
 		}
 		catch (AuthorizationException e) {
 			throw new ServerException(StatusCodes.UNAUTHORIZED, "Access denied", e);
@@ -223,13 +221,11 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		}
 	}
 
-	private void openExistingProject(HttpServerExchange exchange) throws ServerException {
+	private void openExistingProject(AuthToken authToken, ProjectId projectId, OutputStream os) throws ServerException {
 		try {
-			String pid = super.getQueryParameter(exchange, "projectid");
-			ProjectId projId  = f.getProjectId(pid);
-			ServerDocument sdoc = serverLayer.openProject(getAuthToken(exchange), projId);
-			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-			os.writeObject(sdoc);
+			ServerDocument sdoc = serverLayer.openProject(authToken, projectId);
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.writeObject(sdoc);
 		}
 		catch (AuthorizationException e) {
 			throw new ServerException(StatusCodes.UNAUTHORIZED, "Access denied", e);
@@ -242,11 +238,9 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		}
 	}
 
-	private void deleteExistingProject(HttpServerExchange exchange) throws ServerException {
+	private void deleteExistingProject(AuthToken authToken, ProjectId projectId) throws ServerException {
 		try {
-			String pid = super.getQueryParameter(exchange, "projectid");
-			ProjectId projId  = f.getProjectId(pid);
-			serverLayer.deleteProject(getAuthToken(exchange), projId, true);
+			serverLayer.deleteProject(authToken, projectId, true);
 		}
 		catch (AuthorizationException e) {
 			throw new ServerException(StatusCodes.UNAUTHORIZED, "Access denied", e);
@@ -256,48 +250,46 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		}
 	}
 
-	private void createProjectSnapshot(HttpServerExchange exchange, ServerDocument sdoc,
-			SnapShot shot) throws ServerException {
+	private void createProjectSnapshot(ServerDocument sdoc, SnapShot snapshot, OutputStream os) throws ServerException {
 		try {
-			long beg = System.currentTimeMillis();
-			String fileName = sdoc.getHistoryFile().getPath() + "-snapshot";
-			BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(new File(fileName)));
-			BinaryOWLOntologyDocumentSerializer serializer = new BinaryOWLOntologyDocumentSerializer();
-			serializer.write(new OWLOntologyWrapper(shot.getOntology()), new DataOutputStream(outputStream));
-			logger.info("Time to serialize out snapshot " + (System.currentTimeMillis() - beg)/1000);
-			try {
-				outputStream.close();
-			}
-			catch (IOException e) {
-				// Ignore the exception but report it into the log
-				logger.warn("Unable to close the file output stream used to serialize the snapshot");
-			}
-			try {
-				ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-				os.writeObject(sdoc);
-			}
-			catch (IOException e) {
-				throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to transmit the returned data", e);
-			}
+			String fname = sdoc.getHistoryFile().getPath() + "-snapshot";
+			saveProjectSnapshot(snapshot, new File(fname));
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.writeObject(sdoc);
 		}
 		catch (IOException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to create project snapshot", e);
 		}
 	}
 
-	private void retrieveProjectSnapshot(HttpServerExchange exchange, ServerDocument sdoc) throws ServerException {
-		OWLOntologyManager manIn = OWLManager.createOWLOntologyManager();
+	private void saveProjectSnapshot(SnapShot snapshot, File snapshotFile) throws IOException {
+		BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(snapshotFile));
 		try {
-			long beg = System.currentTimeMillis();
-			String fileName = sdoc.getHistoryFile().getPath() + "-snapshot";
-			BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(new File(fileName)));
-			OWLOntology ontIn = manIn.createOntology(); // use as a placeholder
 			BinaryOWLOntologyDocumentSerializer serializer = new BinaryOWLOntologyDocumentSerializer();
-			serializer.read(inputStream, new BinaryOWLOntologyBuildingHandler(ontIn), manIn.getOWLDataFactory());
-			System.out.println("Time to serialize in " + (System.currentTimeMillis() - beg)/1000);
+			long start = System.currentTimeMillis();
+			serializer.write(new OWLOntologyWrapper(snapshot.getOntology()), new DataOutputStream(outputStream));
+			logger.info("Saving snapshot in " + (System.currentTimeMillis() - start) + " ms");
+		}
+		finally {
+			if (outputStream != null) {
+				try {
+					outputStream.close();
+				}
+				catch (IOException e) {
+					// Ignore the exception but report it into the log
+					logger.warn("Unable to close the file output stream used to save the snapshot");
+				}
+			}
+		}
+	}
+
+	private void retrieveProjectSnapshot(ServerDocument sdoc, OutputStream os) throws ServerException {
+		try {
+			String fname = sdoc.getHistoryFile().getPath() + "-snapshot";
+			OWLOntology ontIn = loadProjectSnapshot(new File(fname));
 			try {
-				ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-				os.writeObject(new SnapShot(ontIn));
+				ObjectOutputStream oos = new ObjectOutputStream(os);
+				oos.writeObject(new SnapShot(ontIn));
 			}
 			catch (IOException e) {
 				throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to transmit the returned data", e);
@@ -305,6 +297,32 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		}
 		catch (OWLOntologyCreationException | IOException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to fetch project snapshot", e);
+		}
+	}
+
+	private OWLOntology loadProjectSnapshot(File snapshotFile) throws OWLOntologyCreationException, IOException {
+		BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(snapshotFile));
+		try {
+			OWLOntologyManager ontoManager = OWLManager.createOWLOntologyManager();
+			OWLOntology ontology = ontoManager.createOntology(); // use as a placeholder
+			BinaryOWLOntologyDocumentSerializer serializer = new BinaryOWLOntologyDocumentSerializer();
+			long start = System.currentTimeMillis();
+			serializer.read(inputStream,
+					new BinaryOWLOntologyBuildingHandler(ontology),
+					ontoManager.getOWLDataFactory());
+			System.out.println("Reading snapshot in " + (System.currentTimeMillis() - start) + " ms");
+			return ontology;
+		}
+		finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				}
+				catch (IOException e) {
+					// Ignore the exception but report it into the log
+					logger.warn("Unable to close the file input stream used to load the snapshot");
+				}
+			}
 		}
 	}
 

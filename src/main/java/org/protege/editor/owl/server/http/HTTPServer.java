@@ -1,7 +1,6 @@
 package org.protege.editor.owl.server.http;
 
 import edu.stanford.protege.metaproject.ConfigurationManager;
-import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
 import io.undertow.Handlers;
@@ -22,7 +21,6 @@ import org.protege.editor.owl.server.change.DefaultChangeService;
 import org.protege.editor.owl.server.conflict.ConflictDetectionFilter;
 import org.protege.editor.owl.server.http.exception.ServerConfigurationInitializationException;
 import org.protege.editor.owl.server.http.exception.ServerException;
-import org.protege.editor.owl.server.http.handlers.AuthenticationHandler;
 import org.protege.editor.owl.server.http.handlers.CodeGenHandler;
 import org.protege.editor.owl.server.http.handlers.HTTPChangeService;
 import org.protege.editor.owl.server.http.handlers.HTTPLoginService;
@@ -30,6 +28,8 @@ import org.protege.editor.owl.server.http.handlers.HTTPServerHandler;
 import org.protege.editor.owl.server.http.handlers.MetaprojectHandler;
 import org.protege.editor.owl.server.policy.AccessControlFilter;
 import org.protege.editor.owl.server.security.SSLContextFactory;
+import org.protege.editor.owl.server.security.SessionManager;
+import org.protege.editor.owl.server.security.TokenTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,7 @@ public final class HTTPServer {
 
 	private final String configurationFilePath;
 
-	private final TokenTable loginTokenTable;
+	private final SessionManager sessionManager;
 
 	private ServerConfiguration serverConfiguration;
 
@@ -64,8 +64,6 @@ public final class HTTPServer {
 	private GracefulShutdownHandler adminRouterHandler;
 
 	private boolean isRunning = false;
-
-	private static HTTPServer server;
 
 	/**
 	 * Default constructor
@@ -83,20 +81,8 @@ public final class HTTPServer {
 	public HTTPServer(@Nonnull String configurationFilePath) throws Exception {
 		this.configurationFilePath = configurationFilePath;
 		loadConfig(configurationFilePath);
-		loginTokenTable = createLoginTokenTable();
-		server = this;
-	}
-
-	public static HTTPServer server() {
-		return server;
-	}
-
-	public void addSession(String key, AuthToken tok) {
-		loginTokenTable.put(key, tok);
-	}
-
-	public AuthToken getAuthToken(String tok) throws ServerException {
-		return loginTokenTable.get(tok);
+		TokenTable tokenTable = createLoginTokenTable();
+		sessionManager = new SessionManager(tokenTable);
 	}
 
 	private void loadConfig(String filePath) throws ServerConfigurationInitializationException {
@@ -131,26 +117,27 @@ public final class HTTPServer {
 		RoutingHandler adminRouter = Handlers.routing();
 		
 		// create login handler
-		BlockingHandler login_handler = loadAndCreateLogin();
+		LoginService loginService = instantiateLoginService();
+		BlockingHandler login_handler = new BlockingHandler(new HTTPLoginService(loginService, sessionManager));
 		
 		webRouter.add("POST", LOGIN, login_handler);
 		adminRouter.add("POST", LOGIN, login_handler);
 		
 		// create change service handler
-		HttpHandler changeServiceHandler = new AuthenticationHandler(new BlockingHandler(new HTTPChangeService(acf, changeService)));
+		HttpHandler changeServiceHandler = new BlockingHandler(new HTTPChangeService(acf, changeService, sessionManager));
 		webRouter.add("POST", COMMIT,  changeServiceHandler);
 		webRouter.add("POST", HEAD,  changeServiceHandler);
 		webRouter.add("POST", LATEST_CHANGES,  changeServiceHandler);
 		webRouter.add("POST", ALL_CHANGES,  changeServiceHandler);
 		
 		// create code generator handler
-		HttpHandler codeGenHandler = new AuthenticationHandler(new BlockingHandler(new CodeGenHandler(pserver)));
+		HttpHandler codeGenHandler = new BlockingHandler(new CodeGenHandler(serverConfiguration, sessionManager));
 		webRouter.add("GET", GEN_CODE, codeGenHandler);
 		webRouter.add("GET", GEN_CODES, codeGenHandler);
 		webRouter.add("POST", EVS_REC, codeGenHandler);
 		
 		// create mataproject handler
-		HttpHandler metaprojectHandler = new AuthenticationHandler(new BlockingHandler(new MetaprojectHandler(pserver)));
+		HttpHandler metaprojectHandler = new BlockingHandler(new MetaprojectHandler(cmf, this, sessionManager));
 		webRouter.add("GET", METAPROJECT, metaprojectHandler);
 		webRouter.add("GET", PROJECT,  metaprojectHandler);
 		webRouter.add("POST", PROJECT_SNAPSHOT_GET,  metaprojectHandler);
@@ -162,10 +149,9 @@ public final class HTTPServer {
 		adminRouter.add("DELETE", PROJECT,  metaprojectHandler);
 		
 		// create server handler
-		AuthenticationHandler serverHandler = new AuthenticationHandler(new BlockingHandler(new HTTPServerHandler()));
+		HttpHandler serverHandler = new BlockingHandler(new HTTPServerHandler(this, sessionManager));
 		adminRouter.add("POST", SERVER_RESTART, serverHandler);
 		adminRouter.add("POST", SERVER_STOP, serverHandler);
-
 		
 		// Build the servers
 		webRouterHandler = Handlers.gracefulShutdown(Handlers.exceptionHandler(webRouter));
@@ -212,7 +198,7 @@ public final class HTTPServer {
 		isRunning = true;
 	}
 
-	private BlockingHandler loadAndCreateLogin() throws ServerException {
+	private LoginService instantiateLoginService() throws ServerException {
 		String authClassName = serverConfiguration.getProperty(AUTHENTICATION_CLASS);
 		LoginService service = null;
 		if (authClassName != null) {
@@ -224,7 +210,7 @@ public final class HTTPServer {
 				throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, e.getMessage());
 			}
 		}
-		return new BlockingHandler(new HTTPLoginService(service));
+		return service;
 	}
 
 	private TokenTable createLoginTokenTable() {

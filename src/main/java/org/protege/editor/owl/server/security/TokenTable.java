@@ -1,4 +1,4 @@
-package org.protege.editor.owl.server.http;
+package org.protege.editor.owl.server.security;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -67,6 +67,10 @@ public class TokenTable {
 			 */
 			throw new ServerException(440, "User session has expired. Please relogin");
 		}
+	}
+
+	public boolean contains(AuthToken token) {
+		return tokenCache.asMap().containsValue(token);
 	}
 
 	private AuthToken getAuthToken() {
