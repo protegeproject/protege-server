@@ -1,10 +1,9 @@
-package org.protege.editor.owl.server.http;
+package org.protege.editor.owl.server.security;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.protege.editor.owl.server.http.exception.ServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,16 +56,17 @@ public class TokenTable {
 		tokenToCache = null;
 	}
 
-	public AuthToken get(String key) throws ServerException {
+	public AuthToken get(String key) throws LoginTimeoutException {
 		try {
 			return tokenCache.getUnchecked(key);
 		}
 		catch (InvalidCacheLoadException e) {
-			/*
-			 * 440 Login Timeout. Reference: https://support.microsoft.com/en-us/kb/941201
-			 */
-			throw new ServerException(440, "User session has expired. Please relogin");
+			throw new LoginTimeoutException(); // Signal the exception as login timeout exception
 		}
+	}
+
+	public boolean contains(AuthToken token) {
+		return tokenCache.asMap().containsValue(token);
 	}
 
 	private AuthToken getAuthToken() {
