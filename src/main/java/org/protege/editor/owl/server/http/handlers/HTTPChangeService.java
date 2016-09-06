@@ -20,8 +20,6 @@ import org.protege.editor.owl.server.security.SessionManager;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.ProjectId;
@@ -30,8 +28,6 @@ import io.undertow.util.HttpString;
 import io.undertow.util.StatusCodes;
 
 public class HTTPChangeService extends BaseRoutingHandler {
-
-	private static final Logger logger = LoggerFactory.getLogger(HTTPChangeService.class);
 
 	private final ServerLayer serverLayer;
 	private final ChangeService changeService;
@@ -57,71 +53,50 @@ public class HTTPChangeService extends BaseRoutingHandler {
 				exchange.getResponseHeaders().add(new HttpString("Error-Message"), "Access denied");
 			}
 		}
+		catch (IOException | ClassNotFoundException e) {
+			internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
+		}
 		catch (LoginTimeoutException e) {
 			loginTimeoutErrorStatusCode(exchange, e);
+		}
+		catch (ServerException e) {
+			handleServerException(exchange, e);
 		}
 		finally {
 			exchange.endExchange(); // end the request
 		}
 	}
 
-	private void handlingRequest(AuthToken authToken, HttpServerExchange exchange) {
+	private void handlingRequest(AuthToken authToken, HttpServerExchange exchange)
+			throws IOException, ClassNotFoundException, ServerException {
 		String requestPath = exchange.getRequestPath();
 		if (requestPath.equalsIgnoreCase(ServerEndpoints.COMMIT)) {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				ProjectId pid = (ProjectId) ois.readObject();
-				CommitBundle bundle = (CommitBundle) ois.readObject();
-				submitCommitBundle(authToken, pid, bundle, exchange.getOutputStream());
-			}
-			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
+			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
+			ProjectId pid = (ProjectId) ois.readObject();
+			CommitBundle bundle = (CommitBundle) ois.readObject();
+			submitCommitBundle(authToken, pid, bundle, exchange.getOutputStream());
 		}
 		else if (requestPath.equalsIgnoreCase(ServerEndpoints.ALL_CHANGES)) {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				HistoryFile file = (HistoryFile) ois.readObject();
-				retrieveAllChanges(file, exchange.getOutputStream());
-			}
-			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
+			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
+			HistoryFile file = (HistoryFile) ois.readObject();
+			retrieveAllChanges(file, exchange.getOutputStream());
 		}
 		else if (requestPath.equalsIgnoreCase(ServerEndpoints.LATEST_CHANGES)) {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				HistoryFile file = (HistoryFile) ois.readObject();
-				DocumentRevision start = (DocumentRevision) ois.readObject();
-				retrieveLatestChanges(file, start, exchange.getOutputStream());
-			}
-			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
+			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
+			HistoryFile file = (HistoryFile) ois.readObject();
+			DocumentRevision start = (DocumentRevision) ois.readObject();
+			retrieveLatestChanges(file, start, exchange.getOutputStream());
 		}
 		else if (requestPath.equalsIgnoreCase(ServerEndpoints.HEAD)) {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				HistoryFile file = (HistoryFile) ois.readObject();
-				retrieveHeadRevision(file, exchange.getOutputStream());
-			}
-			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
+			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
+			HistoryFile file = (HistoryFile) ois.readObject();
+			retrieveHeadRevision(file, exchange.getOutputStream());
 		}
 	}
+
+	/*
+	 * Private methods that handlers each service provided by the server end-point above.
+	 */
 
 	private void submitCommitBundle(AuthToken authToken, ProjectId projectId, CommitBundle bundle,
 			OutputStream os) throws ServerException {
@@ -187,26 +162,5 @@ public class HTTPChangeService extends BaseRoutingHandler {
 		catch (IOException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to transmit the returned data", e);
 		}
-	}
-
-	private void loginTimeoutErrorStatusCode(HttpServerExchange exchange, LoginTimeoutException e) {
-		logger.error(e.getMessage(), e);
-		/*
-		 * 440 Login Timeout. Reference: https://support.microsoft.com/en-us/kb/941201
-		 */
-		exchange.setStatusCode(440);
-		exchange.getResponseHeaders().add(new HttpString("Error-Message"), "User session has expired. Please relogin");
-	}
-
-	private void internalServerErrorStatusCode(HttpServerExchange exchange, String message, Exception cause) {
-		logger.error(cause.getMessage(), cause);
-		exchange.setStatusCode(StatusCodes.INTERNAL_SERVER_ERROR);
-		exchange.getResponseHeaders().add(new HttpString("Error-Message"), message);
-	}
-
-	private void handleServerException(HttpServerExchange exchange, ServerException e) {
-		logger.error(e.getCause().getMessage(), e.getCause());
-		exchange.setStatusCode(e.getErrorCode());
-		exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage());
 	}
 }

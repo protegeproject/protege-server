@@ -59,26 +59,25 @@ public class CodeGenHandler extends BaseRoutingHandler {
 				exchange.getResponseHeaders().add(new HttpString("Error-Message"), "Access denied");
 			}
 		}
+		catch (IOException | ClassNotFoundException e) {
+			internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
+		}
 		catch (LoginTimeoutException e) {
 			loginTimeoutErrorStatusCode(exchange, e);
+		}
+		catch (ServerException e) {
+			handleServerException(exchange, e);
 		}
 		finally {
 			exchange.endExchange(); // end request
 		}
 	}
 
-	private void handlingRequest(AuthToken authToken, HttpServerExchange exchange) {
+	private void handlingRequest(AuthToken authToken, HttpServerExchange exchange)
+			throws IOException, ClassNotFoundException, ServerException {
 		String requestPath = exchange.getRequestPath();
 		if (requestPath.equalsIgnoreCase(ServerEndpoints.GEN_CODE)) {
-			int cnt = 1;
-			try {
-				String scnt = getQueryParameter(exchange, "count");
-				cnt = (new Integer(scnt)).intValue();
-			} catch (ServerException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
+			int cnt = readCountParameter(exchange);
 			String p = serverConfiguration.getProperty(CODEGEN_PREFIX);
 			String s = serverConfiguration.getProperty(CODEGEN_SUFFIX);
 			String d = serverConfiguration.getProperty(CODEGEN_DELIMETER);
@@ -100,42 +99,50 @@ public class CodeGenHandler extends BaseRoutingHandler {
 					}
 					codes.add(code);
 				}
-
 				ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
 				os.writeObject(codes);
-
+				
 				try {
 					fileReader.close();
 				}
 				catch (IOException e) {
 					// Ignore the exception but report it into the log
-					logger.warn("Unable to close the file reader stream used to read the code generator configuration");
+					logger.warn("Unable to close the file reader stream used to read the code generator configuration", e);
 				}
 				flushCode(codeGenFile, seq);
 			}
 			catch (IOException e) {
 				internalServerErrorStatusCode(exchange, "Server failed to read code generator configuration", e);
 			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
 		}
 		else if (requestPath.equalsIgnoreCase(ServerEndpoints.GEN_CODES)) { 
 			// NO-OP
 		}
 		else if (requestPath.equalsIgnoreCase(ServerEndpoints.EVS_REC)) {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				EVSHistory hist = (EVSHistory) ois.readObject();
-				recordEvsHistory(hist);
-			}
-			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
+			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
+			EVSHistory hist = (EVSHistory) ois.readObject();
+			recordEvsHistory(hist);
 		}
+	}
+
+	private int readCountParameter(HttpServerExchange exchange) {
+		int cnt = 1;
+		String scnt = "";
+		try {
+			scnt = getQueryParameter(exchange, "count");
+			cnt = Integer.parseInt(scnt);
+		}
+		catch (ServerException e) {
+			// Ignore the exception but report it into the log
+			logger.warn(e.getLocalizedMessage());
+			logger.warn("... Using default value (count = " + cnt + ")");
+		}
+		catch (NumberFormatException e) {
+			// Ignore the exception but report it into the log
+			logger.warn("Unable to convert to number (count = " + scnt + ")");
+			logger.warn("... Using default value (count = " + cnt + ")");
+		}
+		return cnt;
 	}
 
 	private void flushCode(File codeGenFile, int seq) throws ServerException {
@@ -159,26 +166,5 @@ public class CodeGenHandler extends BaseRoutingHandler {
 		catch (IOException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to record EVS history", e);
 		}
-	}
-
-	private void loginTimeoutErrorStatusCode(HttpServerExchange exchange, LoginTimeoutException e) {
-		logger.error(e.getMessage(), e);
-		/*
-		 * 440 Login Timeout. Reference: https://support.microsoft.com/en-us/kb/941201
-		 */
-		exchange.setStatusCode(440);
-		exchange.getResponseHeaders().add(new HttpString("Error-Message"), "User session has expired. Please relogin");
-	}
-
-	private void internalServerErrorStatusCode(HttpServerExchange exchange, String message, Exception cause) {
-		logger.error(cause.getMessage(), cause);
-		exchange.setStatusCode(StatusCodes.INTERNAL_SERVER_ERROR);
-		exchange.getResponseHeaders().add(new HttpString("Error-Message"), message);
-	}
-
-	private void handleServerException(HttpServerExchange exchange, ServerException e) {
-		logger.error(e.getCause().getMessage(), e.getCause());
-		exchange.setStatusCode(e.getErrorCode());
-		exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage());
 	}
 }
