@@ -76,7 +76,7 @@ public class CodeGenHandler extends BaseRoutingHandler {
 	private void handlingRequest(AuthToken authToken, HttpServerExchange exchange)
 			throws IOException, ClassNotFoundException, ServerException {
 		String requestPath = exchange.getRequestPath();
-		if (requestPath.equalsIgnoreCase(ServerEndpoints.GEN_CODE)) {
+		if (requestPath.equals(ServerEndpoints.GEN_CODE)) {
 			int cnt = readCountParameter(exchange);
 			String p = serverConfiguration.getProperty(CODEGEN_PREFIX);
 			String s = serverConfiguration.getProperty(CODEGEN_SUFFIX);
@@ -115,10 +115,10 @@ public class CodeGenHandler extends BaseRoutingHandler {
 				internalServerErrorStatusCode(exchange, "Server failed to read code generator configuration", e);
 			}
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.GEN_CODES)) { 
+		else if (requestPath.equals(ServerEndpoints.GEN_CODES)) { 
 			// NO-OP
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.EVS_REC)) {
+		else if (requestPath.equals(ServerEndpoints.EVS_REC)) {
 			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 			EVSHistory hist = (EVSHistory) ois.readObject();
 			recordEvsHistory(hist);

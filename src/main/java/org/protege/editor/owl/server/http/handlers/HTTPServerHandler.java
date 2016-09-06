@@ -51,10 +51,11 @@ public class HTTPServerHandler extends BaseRoutingHandler {
 
 	private void handlingRequest(AuthToken authToken, HttpServerExchange exchange) throws ServerException {
 		String requestPath = exchange.getRequestPath();
-		if (requestPath.equalsIgnoreCase(ServerEndpoints.SERVER_RESTART) && exchange.getRequestMethod().equals(Methods.POST)) {
+		HttpString requestMethod = exchange.getRequestMethod();
+		if (requestPath.equals(ServerEndpoints.SERVER_RESTART) && requestMethod.equals(Methods.POST)) {
 			httpServer.restart();
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.SERVER_STOP) && exchange.getRequestMethod().equals(Methods.POST)) {
+		else if (requestPath.equals(ServerEndpoints.SERVER_STOP) && requestMethod.equals(Methods.POST)) {
 			httpServer.stop();
 		}
 	}
