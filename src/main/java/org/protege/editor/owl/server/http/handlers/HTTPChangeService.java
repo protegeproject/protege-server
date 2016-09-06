@@ -15,6 +15,7 @@ import org.protege.editor.owl.server.api.exception.OutOfSyncException;
 import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.http.ServerEndpoints;
 import org.protege.editor.owl.server.http.exception.ServerException;
+import org.protege.editor.owl.server.security.LoginTimeoutException;
 import org.protege.editor.owl.server.security.SessionManager;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
@@ -56,8 +57,8 @@ public class HTTPChangeService extends BaseRoutingHandler {
 				exchange.getResponseHeaders().add(new HttpString("Error-Message"), "Access denied");
 			}
 		}
-		catch (ServerException e) {
-			handleServerException(exchange, e);
+		catch (LoginTimeoutException e) {
+			loginTimeoutErrorStatusCode(exchange, e);
 		}
 		finally {
 			exchange.endExchange(); // end the request
@@ -186,6 +187,15 @@ public class HTTPChangeService extends BaseRoutingHandler {
 		catch (IOException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to transmit the returned data", e);
 		}
+	}
+
+	private void loginTimeoutErrorStatusCode(HttpServerExchange exchange, LoginTimeoutException e) {
+		logger.error(e.getMessage(), e);
+		/*
+		 * 440 Login Timeout. Reference: https://support.microsoft.com/en-us/kb/941201
+		 */
+		exchange.setStatusCode(440);
+		exchange.getResponseHeaders().add(new HttpString("Error-Message"), "User session has expired. Please relogin");
 	}
 
 	private void internalServerErrorStatusCode(HttpServerExchange exchange, String message, Exception cause) {

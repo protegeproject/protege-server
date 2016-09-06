@@ -2,8 +2,6 @@ package org.protege.editor.owl.server.security;
 
 import javax.annotation.Nonnull;
 
-import org.protege.editor.owl.server.http.exception.ServerException;
-
 import edu.stanford.protege.metaproject.api.AuthToken;
 
 /**
@@ -22,7 +20,7 @@ public class SessionManager {
         loginTokenTable.put(tokenKey, authToken);
     }
 
-    public AuthToken getAuthToken(String tokenKey) throws ServerException {
+    public AuthToken getAuthToken(String tokenKey) throws LoginTimeoutException {
         return loginTokenTable.get(tokenKey);
     }
 

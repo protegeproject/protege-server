@@ -5,6 +5,7 @@ import edu.stanford.protege.metaproject.api.AuthToken;
 import org.protege.editor.owl.server.http.HTTPServer;
 import org.protege.editor.owl.server.http.ServerEndpoints;
 import org.protege.editor.owl.server.http.exception.ServerException;
+import org.protege.editor.owl.server.security.LoginTimeoutException;
 import org.protege.editor.owl.server.security.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +42,8 @@ public class HTTPServerHandler extends BaseRoutingHandler {
 				exchange.getResponseHeaders().add(new HttpString("Error-Message"), "Access denied");
 			}
 		}
-		catch (ServerException e) {
-			handleServerException(exchange, e);
+		catch (LoginTimeoutException e) {
+			loginTimeoutErrorStatusCode(exchange, e);
 		}
 		finally {
 			exchange.endExchange(); // end the request
@@ -69,6 +70,15 @@ public class HTTPServerHandler extends BaseRoutingHandler {
 				handleServerException(exchange, e);
 			}
 		}
+	}
+
+	private void loginTimeoutErrorStatusCode(HttpServerExchange exchange, LoginTimeoutException e) {
+		logger.error(e.getMessage(), e);
+		/*
+		 * 440 Login Timeout. Reference: https://support.microsoft.com/en-us/kb/941201
+		 */
+		exchange.setStatusCode(440);
+		exchange.getResponseHeaders().add(new HttpString("Error-Message"), "User session has expired. Please relogin");
 	}
 
 	private void handleServerException(HttpServerExchange exchange, ServerException e) {
