@@ -55,24 +55,24 @@ public class HTTPChangeService extends BaseRoutingHandler {
 	private void handlingRequest(HttpServerExchange exchange)
 			throws IOException, ClassNotFoundException, LoginTimeoutException, ServerException {
 		String requestPath = exchange.getRequestPath();
-		if (requestPath.equalsIgnoreCase(ServerEndpoints.COMMIT)) {
+		if (requestPath.equals(ServerEndpoints.COMMIT)) {
 			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 			ProjectId pid = (ProjectId) ois.readObject();
 			CommitBundle bundle = (CommitBundle) ois.readObject();
 			submitCommitBundle(getAuthToken(exchange), pid, bundle, exchange.getOutputStream());
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.ALL_CHANGES)) {
+		else if (requestPath.equals(ServerEndpoints.ALL_CHANGES)) {
 			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 			HistoryFile file = (HistoryFile) ois.readObject();
 			retrieveAllChanges(file, exchange.getOutputStream());
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.LATEST_CHANGES)) {
+		else if (requestPath.equals(ServerEndpoints.LATEST_CHANGES)) {
 			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 			HistoryFile file = (HistoryFile) ois.readObject();
 			DocumentRevision start = (DocumentRevision) ois.readObject();
 			retrieveLatestChanges(file, start, exchange.getOutputStream());
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.HEAD)) {
+		else if (requestPath.equals(ServerEndpoints.HEAD)) {
 			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 			HistoryFile file = (HistoryFile) ois.readObject();
 			retrieveHeadRevision(file, exchange.getOutputStream());

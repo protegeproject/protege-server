@@ -87,12 +87,11 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			LoginTimeoutException, ServerException {
 		String requestPath = exchange.getRequestPath();
 		HttpString requestMethod = exchange.getRequestMethod();
-		if (requestPath.equalsIgnoreCase(ServerEndpoints.PROJECTS)) {
+		if (requestPath.equals(ServerEndpoints.PROJECTS)) {
 			UserId userId = f.getUserId(getQueryParameter(exchange, "userid"));
 			retrieveProjectList(userId, exchange.getOutputStream());
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.PROJECT) &&
-					requestMethod.equals(Methods.POST)) {
+		else if (requestPath.equals(ServerEndpoints.PROJECT) && requestMethod.equals(Methods.POST)) {
 			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 			ProjectId pid = (ProjectId) ois.readObject();
 			Name pname = (Name) ois.readObject();
@@ -101,34 +100,29 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			Optional<ProjectOptions> oopts = Optional.ofNullable((ProjectOptions) ois.readObject());
 			createNewProject(getAuthToken(exchange), pid, pname, desc, uid, oopts, exchange.getOutputStream());
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.PROJECT)
-					&& requestMethod.equals(Methods.GET)) {
+		else if (requestPath.equals(ServerEndpoints.PROJECT) && requestMethod.equals(Methods.GET)) {
 			ProjectId projectId = f.getProjectId(getQueryParameter(exchange, "projectid"));
 			openExistingProject(getAuthToken(exchange), projectId, exchange.getOutputStream());
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.PROJECT)
-					&& requestMethod.equals(Methods.DELETE)) {
+		else if (requestPath.equals(ServerEndpoints.PROJECT) && requestMethod.equals(Methods.DELETE)) {
 			ProjectId projectId = f.getProjectId(getQueryParameter(exchange, "projectid"));
 			deleteExistingProject(getAuthToken(exchange), projectId);
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.PROJECT_SNAPSHOT)
-					&& requestMethod.equals(Methods.POST)) {
+		else if (requestPath.equals(ServerEndpoints.PROJECT_SNAPSHOT) && requestMethod.equals(Methods.POST)) {
 			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 			ServerDocument sdoc = (ServerDocument) ois.readObject();
 			SnapShot snapshot = (SnapShot) ois.readObject();
 			createProjectSnapshot(sdoc, snapshot, exchange.getOutputStream());
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.PROJECT_SNAPSHOT_GET)) {
+		else if (requestPath.equals(ServerEndpoints.PROJECT_SNAPSHOT_GET)) { // TODO: Use Method.GET?
 			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
 			ServerDocument sdoc = (ServerDocument) ois.readObject();
 			retrieveProjectSnapshot(sdoc, exchange.getOutputStream());
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.METAPROJECT)
-				&& requestMethod.equals(Methods.GET)) {
+		else if (requestPath.equals(ServerEndpoints.METAPROJECT) && requestMethod.equals(Methods.GET)) {
 			retrieveMetaproject(exchange);
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.METAPROJECT)
-				&& requestMethod.equals(Methods.POST)) {
+		else if (requestPath.equals(ServerEndpoints.METAPROJECT) && requestMethod.equals(Methods.POST)) {
 			Serializer serl = new DefaultJsonSerializer();
 			ServerConfiguration cfg = serl.parse(new InputStreamReader(exchange.getInputStream()), ServerConfiguration.class);
 			updateMetaproject(cfg);

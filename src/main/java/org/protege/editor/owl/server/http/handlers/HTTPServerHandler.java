@@ -5,6 +5,7 @@ import org.protege.editor.owl.server.http.ServerEndpoints;
 import org.protege.editor.owl.server.http.exception.ServerException;
 
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.HttpString;
 import io.undertow.util.Methods;
 
 public class HTTPServerHandler extends BaseRoutingHandler {
@@ -24,12 +25,11 @@ public class HTTPServerHandler extends BaseRoutingHandler {
 
 	private void handlingRequest(HttpServerExchange exchange) throws ServerException {
 		String requestPath = exchange.getRequestPath();
-		if (requestPath.equalsIgnoreCase(ServerEndpoints.SERVER_RESTART) &&
-				exchange.getRequestMethod().equals(Methods.POST)) {
+		HttpString requestMethod = exchange.getRequestMethod();
+		if (requestPath.equals(ServerEndpoints.SERVER_RESTART) && requestMethod.equals(Methods.POST)) {
 			HTTPServer.server().restart();
 		}
-		else if (requestPath.equalsIgnoreCase(ServerEndpoints.SERVER_STOP) &&
-				exchange.getRequestMethod().equals(Methods.POST)) {
+		else if (requestPath.equals(ServerEndpoints.SERVER_STOP) && requestMethod.equals(Methods.POST)) {
 			HTTPServer.server().stop();
 		}
 	}
