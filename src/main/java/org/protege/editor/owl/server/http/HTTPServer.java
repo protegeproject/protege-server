@@ -155,7 +155,7 @@ public final class HTTPServer {
 		HttpHandler metaprojectHandler = new AuthenticationHandler(new BlockingHandler(new MetaprojectHandler(pserver)));
 		webRouter.add("GET", METAPROJECT, metaprojectHandler);
 		webRouter.add("GET", PROJECT,  metaprojectHandler);
-		webRouter.add("POST", PROJECT_SNAPSHOT_GET,  metaprojectHandler);
+		webRouter.add("GET", PROJECT_SNAPSHOT,  metaprojectHandler);
 		webRouter.add("GET", PROJECTS, metaprojectHandler);
 		adminRouter.add("GET", METAPROJECT, metaprojectHandler);
 		adminRouter.add("POST", METAPROJECT, metaprojectHandler);

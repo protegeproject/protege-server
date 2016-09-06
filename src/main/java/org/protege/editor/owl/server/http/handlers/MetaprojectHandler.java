@@ -46,6 +46,7 @@ import edu.stanford.protege.metaproject.api.Serializer;
 import edu.stanford.protege.metaproject.api.ServerConfiguration;
 import edu.stanford.protege.metaproject.api.UserId;
 import edu.stanford.protege.metaproject.api.exception.ObjectConversionException;
+import edu.stanford.protege.metaproject.api.exception.UnknownProjectIdException;
 import edu.stanford.protege.metaproject.serialization.DefaultJsonSerializer;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
@@ -114,10 +115,9 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			SnapShot snapshot = (SnapShot) ois.readObject();
 			createProjectSnapshot(sdoc, snapshot, exchange.getOutputStream());
 		}
-		else if (requestPath.equals(ServerEndpoints.PROJECT_SNAPSHOT_GET)) { // TODO: Use Method.GET?
-			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-			ServerDocument sdoc = (ServerDocument) ois.readObject();
-			retrieveProjectSnapshot(sdoc, exchange.getOutputStream());
+		else if (requestPath.equals(ServerEndpoints.PROJECT_SNAPSHOT) && requestMethod.equals(Methods.GET)) {
+			ProjectId projectId = f.getProjectId(getQueryParameter(exchange, "projectid"));
+			retrieveProjectSnapshot(projectId, exchange.getOutputStream());
 		}
 		else if (requestPath.equals(ServerEndpoints.METAPROJECT) && requestMethod.equals(Methods.GET)) {
 			retrieveMetaproject(exchange);
@@ -194,8 +194,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 
 	private void createProjectSnapshot(ServerDocument sdoc, SnapShot snapshot, OutputStream os) throws ServerException {
 		try {
-			String fname = sdoc.getHistoryFile().getPath() + "-snapshot";
-			saveProjectSnapshot(snapshot, new File(fname));
+			saveProjectSnapshot(snapshot, getSnapShotFile(sdoc.getHistoryFile()));
 			ObjectOutputStream oos = new ObjectOutputStream(os);
 			oos.writeObject(sdoc);
 		}
@@ -225,10 +224,11 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		}
 	}
 
-	private void retrieveProjectSnapshot(ServerDocument sdoc, OutputStream os) throws ServerException {
+	private void retrieveProjectSnapshot(ProjectId projectId, OutputStream os) throws ServerException {
 		try {
-			String fname = sdoc.getHistoryFile().getPath() + "-snapshot";
-			OWLOntology ontIn = loadProjectSnapshot(new File(fname));
+			Project project = serverLayer.getConfiguration().getProject(projectId);
+			File projectFile = project.getFile();
+			OWLOntology ontIn = loadProjectSnapshot(getSnapShotFile(projectFile));
 			try {
 				ObjectOutputStream oos = new ObjectOutputStream(os);
 				oos.writeObject(new SnapShot(ontIn));
@@ -237,9 +237,14 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to transmit the returned data", e);
 			}
 		}
-		catch (OWLOntologyCreationException | IOException e) {
+		catch (OWLOntologyCreationException | IOException | UnknownProjectIdException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to fetch project snapshot", e);
 		}
+	}
+
+	private static File getSnapShotFile(File historyFile) {
+		String fname = historyFile.getAbsolutePath() + "-snapshot";
+		return new File(fname);
 	}
 
 	private OWLOntology loadProjectSnapshot(File snapshotFile) throws OWLOntologyCreationException, IOException {
