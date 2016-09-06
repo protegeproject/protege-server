@@ -9,6 +9,8 @@ import org.protege.editor.owl.server.http.exception.ServerException;
 import org.protege.editor.owl.server.security.LoginTimeoutException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 
@@ -21,6 +23,8 @@ import io.undertow.util.HttpString;
 import io.undertow.util.StatusCodes;
 
 public abstract class BaseRoutingHandler implements HttpHandler {
+
+	private static final Logger logger = LoggerFactory.getLogger(HttpHandler.class);
 
 	protected final OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
 
@@ -38,11 +42,13 @@ public abstract class BaseRoutingHandler implements HttpHandler {
 			throws ServerException {
 		final Map<String, Deque<String>> queryParams = theExchange.getQueryParameters();
 		if (!queryParams.containsKey(paramName) || queryParams.get(paramName).isEmpty()) {
-			throwBadRequest("Missing required parameter: " + paramName);
+			String message = "Missing required parameter: " + paramName;
+			throw new ServerException(StatusCodes.BAD_REQUEST, message);
 		}
 		final String paramVal = queryParams.get(paramName).getFirst();
 		if (Strings.isNullOrEmpty(paramVal)) {
-			throwBadRequest("Missing required parameter: " + paramName);
+			String message = "Missing required parameter: " + paramName;
+			throw new ServerException(StatusCodes.BAD_REQUEST, message);
 		}
 		return paramVal;
 	}
@@ -55,7 +61,29 @@ public abstract class BaseRoutingHandler implements HttpHandler {
 		return HTTPServer.server().getAuthToken(token);
 	}
 
-	protected ServerException throwBadRequest(final String theMsg) throws ServerException {
-		throw new ServerException(StatusCodes.BAD_REQUEST, theMsg);
+	/*
+	 * Server to client exception delivery. Detail error message is written to the server
+	 * log while a high-level server message is delivered to the client.
+	 */
+
+	protected void loginTimeoutErrorStatusCode(HttpServerExchange exchange, LoginTimeoutException cause) {
+		logger.error(cause.getMessage(), cause);
+		/*
+		 * 440 Login Timeout. Reference: https://support.microsoft.com/en-us/kb/941201
+		 */
+		exchange.setStatusCode(440);
+		exchange.getResponseHeaders().add(new HttpString("Error-Message"), "User session has expired. Please relogin");
+	}
+
+	protected void internalServerErrorStatusCode(HttpServerExchange exchange, String message, Exception cause) {
+		logger.error(cause.getMessage(), cause);
+		exchange.setStatusCode(StatusCodes.INTERNAL_SERVER_ERROR);
+		exchange.getResponseHeaders().add(new HttpString("Error-Message"), message);
+	}
+
+	protected void handleServerException(HttpServerExchange exchange, ServerException e) {
+		logger.error(e.getCause().getMessage(), e.getCause());
+		exchange.setStatusCode(e.getErrorCode());
+		exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage());
 	}
 }

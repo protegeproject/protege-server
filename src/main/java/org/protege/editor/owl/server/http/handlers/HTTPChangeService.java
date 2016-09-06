@@ -3,6 +3,7 @@ package org.protege.editor.owl.server.http.handlers;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 import org.protege.editor.owl.server.api.ChangeService;
 import org.protege.editor.owl.server.api.CommitBundle;
@@ -16,17 +17,13 @@ import org.protege.editor.owl.server.security.LoginTimeoutException;
 import org.protege.editor.owl.server.versioning.api.ChangeHistory;
 import org.protege.editor.owl.server.versioning.api.DocumentRevision;
 import org.protege.editor.owl.server.versioning.api.HistoryFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.ProjectId;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HttpString;
 import io.undertow.util.StatusCodes;
 
 public class HTTPChangeService extends BaseRoutingHandler {
-
-	private static final Logger logger = LoggerFactory.getLogger(HTTPChangeService.class);
 
 	private final ServerLayer serverLayer;
 	private final ChangeService changeService;
@@ -38,83 +35,60 @@ public class HTTPChangeService extends BaseRoutingHandler {
 
 	@Override
 	public void handleRequest(HttpServerExchange exchange) {
-		if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.COMMIT)) {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				ProjectId pid = (ProjectId) ois.readObject();
-				CommitBundle bundle = (CommitBundle) ois.readObject();
-				submitCommitBundle(exchange, pid, bundle);
-			}
-			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
-			}
-			catch (LoginTimeoutException e) {
-				loginTimeoutErrorStatusCode(exchange, e);
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
-			finally {
-				exchange.endExchange(); // end the request
-			}
+		try {
+			handlingRequest(exchange);
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.ALL_CHANGES)) {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				HistoryFile file = (HistoryFile) ois.readObject();
-				retrieveAllChanges(exchange, file);
-			}
-			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
-			finally {
-				exchange.endExchange(); // end the request
-			}
+		catch (IOException | ClassNotFoundException e) {
+			internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.LATEST_CHANGES)) {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				HistoryFile file = (HistoryFile) ois.readObject();
-				DocumentRevision start = (DocumentRevision) ois.readObject();
-				retrieveLatestChanges(exchange, file, start);
-			}
-			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
-			finally {
-				exchange.endExchange(); // end the request
-			}
+		catch (LoginTimeoutException e) {
+			loginTimeoutErrorStatusCode(exchange, e);
 		}
-		else if (exchange.getRequestPath().equalsIgnoreCase(ServerEndpoints.HEAD)) {
-			try {
-				ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-				HistoryFile file = (HistoryFile) ois.readObject();
-				retrieveHeadRevision(exchange, file);
-			}
-			catch (IOException | ClassNotFoundException e) {
-				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
-			}
-			catch (ServerException e) {
-				handleServerException(exchange, e);
-			}
-			finally {
-				exchange.endExchange(); // end the request
-			}
+		catch (ServerException e) {
+			handleServerException(exchange, e);
+		}
+		finally {
+			exchange.endExchange(); // end the request
 		}
 	}
 
-	private void submitCommitBundle(HttpServerExchange exchange, ProjectId pid,
-			CommitBundle bundle) throws LoginTimeoutException, ServerException {
+	private void handlingRequest(HttpServerExchange exchange)
+			throws IOException, ClassNotFoundException, LoginTimeoutException, ServerException {
+		String requestPath = exchange.getRequestPath();
+		if (requestPath.equalsIgnoreCase(ServerEndpoints.COMMIT)) {
+			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
+			ProjectId pid = (ProjectId) ois.readObject();
+			CommitBundle bundle = (CommitBundle) ois.readObject();
+			submitCommitBundle(getAuthToken(exchange), pid, bundle, exchange.getOutputStream());
+		}
+		else if (requestPath.equalsIgnoreCase(ServerEndpoints.ALL_CHANGES)) {
+			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
+			HistoryFile file = (HistoryFile) ois.readObject();
+			retrieveAllChanges(file, exchange.getOutputStream());
+		}
+		else if (requestPath.equalsIgnoreCase(ServerEndpoints.LATEST_CHANGES)) {
+			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
+			HistoryFile file = (HistoryFile) ois.readObject();
+			DocumentRevision start = (DocumentRevision) ois.readObject();
+			retrieveLatestChanges(file, start, exchange.getOutputStream());
+		}
+		else if (requestPath.equalsIgnoreCase(ServerEndpoints.HEAD)) {
+			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
+			HistoryFile file = (HistoryFile) ois.readObject();
+			retrieveHeadRevision(file, exchange.getOutputStream());
+		}
+	}
+
+	/*
+	 * Private methods that handlers each service provided by the server end-point above.
+	 */
+
+	private void submitCommitBundle(AuthToken authToken, ProjectId projectId, CommitBundle bundle,
+			OutputStream os) throws ServerException {
 		try {
-			ChangeHistory hist = serverLayer.commit(getAuthToken(exchange), pid, bundle);
-			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-			os.writeObject(hist);
+			ChangeHistory hist = serverLayer.commit(authToken, projectId, bundle);
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.writeObject(hist);
 		}
 		catch (AuthorizationException e) {
 			throw new ServerException(StatusCodes.UNAUTHORIZED, "Access denied", e);
@@ -130,12 +104,12 @@ public class HTTPChangeService extends BaseRoutingHandler {
 		}
 	}
 
-	private void retrieveAllChanges(HttpServerExchange exchange, HistoryFile file) throws ServerException {
+	private void retrieveAllChanges(HistoryFile file, OutputStream os) throws ServerException {
 		try {
 			DocumentRevision headRevision = changeService.getHeadRevision(file);
 			ChangeHistory history = changeService.getChanges(file, DocumentRevision.START_REVISION, headRevision);
-			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-			os.writeObject(history);
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.writeObject(history);
 		}
 		catch (ServerServiceException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to get all changes", e);
@@ -145,13 +119,13 @@ public class HTTPChangeService extends BaseRoutingHandler {
 		}
 	}
 
-	private void retrieveLatestChanges(HttpServerExchange exchange, HistoryFile file,
-			DocumentRevision start) throws ServerException {
+	private void retrieveLatestChanges(HistoryFile file, DocumentRevision start, OutputStream os)
+			throws ServerException {
 		try {
 			DocumentRevision headRevision = changeService.getHeadRevision(file);
 			ChangeHistory history = changeService.getChanges(file, start, headRevision);
-			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-			os.writeObject(history);
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.writeObject(history);
 		}
 		catch (ServerServiceException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to get the latest changes", e);
@@ -161,11 +135,11 @@ public class HTTPChangeService extends BaseRoutingHandler {
 		}
 	}
 
-	private void retrieveHeadRevision(HttpServerExchange exchange, HistoryFile file) throws ServerException {
+	private void retrieveHeadRevision(HistoryFile file, OutputStream os) throws ServerException {
 		try {
 			DocumentRevision headRevision = changeService.getHeadRevision(file);
-			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
-			os.writeObject(headRevision);
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.writeObject(headRevision);
 		}
 		catch (ServerServiceException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to get the head revision", e);
@@ -173,26 +147,5 @@ public class HTTPChangeService extends BaseRoutingHandler {
 		catch (IOException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to transmit the returned data", e);
 		}
-	}
-
-	private void loginTimeoutErrorStatusCode(HttpServerExchange exchange, LoginTimeoutException e) {
-		logger.error(e.getMessage(), e);
-		/*
-		 * 440 Login Timeout. Reference: https://support.microsoft.com/en-us/kb/941201
-		 */
-		exchange.setStatusCode(440);
-		exchange.getResponseHeaders().add(new HttpString("Error-Message"), "User session has expired. Please relogin");
-	}
-
-	private void internalServerErrorStatusCode(HttpServerExchange exchange, String message, Exception cause) {
-		logger.error(cause.getMessage(), cause);
-		exchange.setStatusCode(StatusCodes.INTERNAL_SERVER_ERROR);
-		exchange.getResponseHeaders().add(new HttpString("Error-Message"), message);
-	}
-
-	private void handleServerException(HttpServerExchange exchange, ServerException e) {
-		logger.error(e.getCause().getMessage(), e.getCause());
-		exchange.setStatusCode(e.getErrorCode());
-		exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage());
 	}
 }
