@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.codec.binary.Base64;
 import org.protege.editor.owl.server.http.HTTPServer;
 import org.protege.editor.owl.server.http.exception.ServerException;
+import org.protege.editor.owl.server.security.LoginTimeoutException;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
@@ -46,7 +47,7 @@ public abstract class BaseRoutingHandler implements HttpHandler {
 		return paramVal;
 	}
 
-	protected AuthToken getAuthToken(final HttpServerExchange ex) throws ServerException {
+	protected AuthToken getAuthToken(final HttpServerExchange ex) throws LoginTimeoutException {
 		String fauth = getHeaderValue(ex, Headers.AUTHORIZATION, "none");
 		String coded = fauth.substring(fauth.indexOf(" ") + 1);
 		String decAuth = new String(Base64.decodeBase64(coded));

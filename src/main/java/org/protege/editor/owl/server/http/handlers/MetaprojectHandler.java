@@ -20,6 +20,7 @@ import org.protege.editor.owl.server.api.exception.ServerServiceException;
 import org.protege.editor.owl.server.http.HTTPServer;
 import org.protege.editor.owl.server.http.ServerEndpoints;
 import org.protege.editor.owl.server.http.exception.ServerException;
+import org.protege.editor.owl.server.security.LoginTimeoutException;
 import org.protege.editor.owl.server.util.SnapShot;
 import org.protege.editor.owl.server.versioning.api.ServerDocument;
 import org.semanticweb.binaryowl.BinaryOWLOntologyDocumentSerializer;
@@ -87,6 +88,9 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			catch (IOException | ClassNotFoundException e) {
 				internalServerErrorStatusCode(exchange, "Server failed to receive the sent data", e);
 			}
+			catch (LoginTimeoutException e) {
+				loginTimeoutErrorStatusCode(exchange, e);
+			}
 			catch (ServerException e) {
 				handleServerException(exchange, e);
 			}
@@ -99,6 +103,9 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			try {
 				openExistingProject(exchange);
 			}
+			catch (LoginTimeoutException e) {
+				loginTimeoutErrorStatusCode(exchange, e);
+			}
 			catch (ServerException e) {
 				handleServerException(exchange, e);
 			}
@@ -110,6 +117,9 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 				&& exchange.getRequestMethod().equals(Methods.DELETE)) {
 			try {
 				deleteExistingProject(exchange);
+			}
+			catch (LoginTimeoutException e) {
+				loginTimeoutErrorStatusCode(exchange, e);
 			}
 			catch (ServerException e) {
 				handleServerException(exchange, e);
@@ -206,7 +216,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 	}
 
 	private void createNewProject(HttpServerExchange exchange, ProjectId pid, Name pname,
-			Description desc, UserId uid, Optional<ProjectOptions> oopts) throws ServerException {
+			Description desc, UserId uid, Optional<ProjectOptions> oopts) throws LoginTimeoutException, ServerException {
 		try {
 			ServerDocument doc = serverLayer.createProject(getAuthToken(exchange), pid, pname, desc, uid, oopts);
 			ObjectOutputStream os = new ObjectOutputStream(exchange.getOutputStream());
@@ -223,7 +233,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		}
 	}
 
-	private void openExistingProject(HttpServerExchange exchange) throws ServerException {
+	private void openExistingProject(HttpServerExchange exchange) throws LoginTimeoutException, ServerException {
 		try {
 			String pid = super.getQueryParameter(exchange, "projectid");
 			ProjectId projId  = f.getProjectId(pid);
@@ -242,7 +252,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		}
 	}
 
-	private void deleteExistingProject(HttpServerExchange exchange) throws ServerException {
+	private void deleteExistingProject(HttpServerExchange exchange) throws LoginTimeoutException, ServerException {
 		try {
 			String pid = super.getQueryParameter(exchange, "projectid");
 			ProjectId projId  = f.getProjectId(pid);
@@ -326,6 +336,15 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		catch (IOException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to save changes of the metaproject", e);
 		}
+	}
+
+	private void loginTimeoutErrorStatusCode(HttpServerExchange exchange, LoginTimeoutException e) {
+		logger.error(e.getMessage(), e);
+		/*
+		 * 440 Login Timeout. Reference: https://support.microsoft.com/en-us/kb/941201
+		 */
+		exchange.setStatusCode(440);
+		exchange.getResponseHeaders().add(new HttpString("Error-Message"), "User session has expired. Please relogin");
 	}
 
 	private void internalServerErrorStatusCode(HttpServerExchange exchange, String message, Exception cause) {

@@ -29,6 +29,7 @@ import org.protege.editor.owl.server.http.handlers.HTTPLoginService;
 import org.protege.editor.owl.server.http.handlers.HTTPServerHandler;
 import org.protege.editor.owl.server.http.handlers.MetaprojectHandler;
 import org.protege.editor.owl.server.policy.AccessControlFilter;
+import org.protege.editor.owl.server.security.LoginTimeoutException;
 import org.protege.editor.owl.server.security.SSLContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +96,7 @@ public final class HTTPServer {
 		loginTokenTable.put(key, tok);
 	}
 
-	public AuthToken getAuthToken(String tok) throws ServerException {
+	public AuthToken getAuthToken(String tok) throws LoginTimeoutException {
 		return loginTokenTable.get(tok);
 	}
 
