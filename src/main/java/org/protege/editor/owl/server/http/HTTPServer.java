@@ -145,7 +145,7 @@ public final class HTTPServer {
 		webRouter.add("POST", ALL_CHANGES,  changeServiceHandler);
 		
 		// create code generator handler
-		HttpHandler codeGenHandler = new AuthenticationHandler(new BlockingHandler(new CodeGenHandler(pserver)));
+		HttpHandler codeGenHandler = new AuthenticationHandler(new BlockingHandler(new CodeGenHandler(serverConfiguration)));
 		webRouter.add("GET", GEN_CODE, codeGenHandler);
 		webRouter.add("GET", GEN_CODES, codeGenHandler);
 		webRouter.add("POST", EVS_REC, codeGenHandler);
