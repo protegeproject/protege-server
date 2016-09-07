@@ -111,9 +111,9 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		}
 		else if (requestPath.equals(ServerEndpoints.PROJECT_SNAPSHOT) && requestMethod.equals(Methods.POST)) {
 			ObjectInputStream ois = new ObjectInputStream(exchange.getInputStream());
-			ServerDocument sdoc = (ServerDocument) ois.readObject();
+			ProjectId pid = (ProjectId) ois.readObject();
 			SnapShot snapshot = (SnapShot) ois.readObject();
-			createProjectSnapshot(sdoc, snapshot, exchange.getOutputStream());
+			createProjectSnapshot(pid, snapshot, exchange.getOutputStream());
 		}
 		else if (requestPath.equals(ServerEndpoints.PROJECT_SNAPSHOT) && requestMethod.equals(Methods.GET)) {
 			ProjectId projectId = f.getProjectId(getQueryParameter(exchange, "projectid"));
@@ -192,13 +192,13 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		}
 	}
 
-	private void createProjectSnapshot(ServerDocument sdoc, SnapShot snapshot, OutputStream os) throws ServerException {
+	private void createProjectSnapshot(ProjectId projectId, SnapShot snapshot, OutputStream os) throws ServerException {
 		try {
-			saveProjectSnapshot(snapshot, getSnapShotFile(sdoc.getHistoryFile()));
-			ObjectOutputStream oos = new ObjectOutputStream(os);
-			oos.writeObject(sdoc);
+			Project project = serverLayer.getConfiguration().getProject(projectId);
+			File projectFile = project.getFile();
+			saveProjectSnapshot(snapshot, getSnapShotFile(projectFile));
 		}
-		catch (IOException e) {
+		catch (IOException | UnknownProjectIdException e) {
 			throw new ServerException(StatusCodes.INTERNAL_SERVER_ERROR, "Server failed to create project snapshot", e);
 		}
 	}
