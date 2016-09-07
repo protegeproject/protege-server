@@ -60,6 +60,8 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 
 	private final ServerLayer serverLayer;
 
+	private boolean requiredRestarting = false;
+
 	public MetaprojectHandler(ServerLayer serverLayer) {
 		this.serverLayer = serverLayer;
 	}
@@ -80,6 +82,19 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 		}
 		finally {
 			exchange.endExchange(); // end the request
+		}
+		
+		// A special directive when the server needs to be restarted after completing the request
+		if (requiredRestarting) {
+			try {
+				HTTPServer.server().restart();
+			}
+			catch (ServerException e) {
+				handleServerException(exchange, e);
+			}
+			finally {
+				requiredRestarting = false;
+			}
 		}
 	}
 
@@ -126,7 +141,7 @@ public class MetaprojectHandler extends BaseRoutingHandler {
 			Serializer serl = new DefaultJsonSerializer();
 			ServerConfiguration cfg = serl.parse(new InputStreamReader(exchange.getInputStream()), ServerConfiguration.class);
 			updateMetaproject(cfg);
-			HTTPServer.server().restart();
+			requiredRestarting = true;
 		}
 	}
 
