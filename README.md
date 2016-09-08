@@ -8,3 +8,8 @@ The server plugin (v3) for Protégé 5 is under construction. The previous versi
 User docs: http://protegewiki.stanford.edu/wiki/Protege4ClientServer
 
 Developer docs: http://protegewiki.stanford.edu/wiki/Protege_4_Development_Environment
+
+HTTP branch
+-----------
+
+Currently we are developing the HTTP version of the server in the [http-metaproject-integration](https://github.com/protegeproject/protege-server/tree/http-metaproject-integration).
