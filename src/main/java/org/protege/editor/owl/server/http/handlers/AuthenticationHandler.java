@@ -3,12 +3,12 @@ package org.protege.editor.owl.server.http.handlers;
 import org.apache.commons.codec.binary.Base64;
 import org.protege.editor.owl.server.http.HTTPServer;
 import org.protege.editor.owl.server.http.exception.ServerException;
+import org.protege.editor.owl.server.security.LoginTimeoutException;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
-import io.undertow.util.HttpString;
 import io.undertow.util.StatusCodes;
 
 public final class AuthenticationHandler extends BaseRoutingHandler {
@@ -28,22 +28,30 @@ public final class AuthenticationHandler extends BaseRoutingHandler {
 		String token = decAuth.substring(decAuth.indexOf(":") + 1);
 		try {
 			AuthToken authToken = HTTPServer.server().getAuthToken(token);
-			if (authToken != null) {
-				if (userid.equalsIgnoreCase(authToken.getUser().getId().get())) {
+			if (authToken != null && authToken.isAuthorized()) {
+				if (isValid(userid, authToken)) {
 					handler.handleRequest(exchange);
 				}
 				else {
-					exchange.setStatusCode(StatusCodes.UNAUTHORIZED);
-					exchange.getResponseHeaders().add(new HttpString("Error-Message"), "Access denied");
-					exchange.endExchange();
+					throw new ServerException(StatusCodes.UNAUTHORIZED, "Invalid user token");
 				}
 			}
+			else {
+				throw new ServerException(StatusCodes.UNAUTHORIZED, "Access denied");
+			}
 		}
-		catch (ServerException e) {
-			exchange.setStatusCode(e.getErrorCode());
-			exchange.getResponseHeaders().add(new HttpString("Error-Message"), e.getMessage());
+		catch (LoginTimeoutException e) {
+			loginTimeoutErrorStatusCode(exchange, e);
 			exchange.endExchange();
 		}
+		catch (ServerException e) {
+			handleServerException(exchange, e);
+			exchange.endExchange();
+		}
+	}
+
+	private boolean isValid(String userid, AuthToken authToken) {
+		return userid.equalsIgnoreCase(authToken.getUser().getId().get());
 	}
 
 	public HttpHandler getHandler() {
