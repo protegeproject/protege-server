@@ -66,6 +66,10 @@ public class TokenTable {
 		}
 	}
 
+	public long size() {
+		return tokenCache.size();
+	}
+
 	private AuthToken getAuthToken() {
 		return tokenToCache;
 	}
