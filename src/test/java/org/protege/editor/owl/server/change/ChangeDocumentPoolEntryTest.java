@@ -26,8 +26,8 @@ public class ChangeDocumentPoolEntryTest {
     @Before
     public void setup() throws Exception {
         ClassLoader classloader = ChangeDocumentPoolEntry.class.getClassLoader();
-        File historyFile = new File(classloader.getResource(historyFilename).getFile());
-        historyFile = HistoryFile.openExisting(historyFile.getPath());
+        File inputFile = new File(classloader.getResource(historyFilename).getFile());
+        historyFile = HistoryFile.openExisting(inputFile.getPath());
     }
 
     @Test
