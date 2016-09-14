@@ -29,6 +29,7 @@ import org.protege.editor.owl.server.http.handlers.HTTPLoginService;
 import org.protege.editor.owl.server.http.handlers.HTTPServerHandler;
 import org.protege.editor.owl.server.http.handlers.MetaprojectHandler;
 import org.protege.editor.owl.server.policy.AccessControlFilter;
+import org.protege.editor.owl.server.security.DefaultLoginService;
 import org.protege.editor.owl.server.security.LoginTimeoutException;
 import org.protege.editor.owl.server.security.SSLContextFactory;
 import org.slf4j.Logger;
@@ -131,12 +132,18 @@ public final class HTTPServer {
 		RoutingHandler webRouter = Handlers.routing();
 		RoutingHandler adminRouter = Handlers.routing();
 		
-		// create login handler
+		// create login handler for web server
 		LoginService loginService = instantiateLoginService();
 		HttpHandler login_handler = new BlockingHandler(new HTTPLoginService(loginService));
 		
 		webRouter.add("POST", LOGIN, login_handler);
-		adminRouter.add("POST", LOGIN, login_handler);
+		
+		// use default login service for admin web server
+		LoginService adminLoginService = new DefaultLoginService();
+		adminLoginService.setConfig(serverConfiguration);
+		HttpHandler admin_login_handler = new BlockingHandler(new HTTPLoginService(adminLoginService));
+		
+		adminRouter.add("POST", LOGIN, admin_login_handler);
 		
 		// create change service handler
 		HttpHandler changeServiceHandler = new AuthenticationHandler(new BlockingHandler(new HTTPChangeService(acf, changeService)));
@@ -157,6 +164,7 @@ public final class HTTPServer {
 		webRouter.add("GET", PROJECT,  metaprojectHandler);
 		webRouter.add("GET", PROJECT_SNAPSHOT,  metaprojectHandler);
 		webRouter.add("GET", PROJECTS, metaprojectHandler);
+		
 		adminRouter.add("GET", METAPROJECT, metaprojectHandler);
 		adminRouter.add("POST", METAPROJECT, metaprojectHandler);
 		adminRouter.add("POST", PROJECT,  metaprojectHandler);
