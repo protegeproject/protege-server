@@ -95,6 +95,8 @@ public class ProtegeServer extends ServerLayer {
             logger.info(printLog(token.getUser(), "Remove user", user.toString()));
             configuration = new ConfigurationBuilder(configuration)
                     .removeUser(user)
+                    .removePolicy(userId)
+                    .unregisterUser(userId)
                     .createServerConfiguration();
             saveChanges();
         }
@@ -191,6 +193,7 @@ public class ProtegeServer extends ServerLayer {
             logger.info(printLog(token.getUser(), "Remove project", project.toString()));
             configuration = new ConfigurationBuilder(configuration)
                     .removeProject(project)
+                    .removePolicy(projectId)
                     .createServerConfiguration();
             if (includeFile) {
                 String projectFilePath = project.getFile().getAbsolutePath();
@@ -294,6 +297,7 @@ public class ProtegeServer extends ServerLayer {
             logger.info(printLog(token.getUser(), "Remove role", role.toString()));
             configuration = new ConfigurationBuilder(configuration)
                     .removeRole(role)
+                    .removePolicy(roleId)
                     .createServerConfiguration();
             saveChanges();
         }
@@ -350,6 +354,7 @@ public class ProtegeServer extends ServerLayer {
             logger.info(printLog(token.getUser(), "Remove operation", operation.toString()));
             configuration = new ConfigurationBuilder(configuration)
                     .removeOperation(operation)
+                    .removePolicy(operationId)
                     .createServerConfiguration();
             saveChanges();
         }
