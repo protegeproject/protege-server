@@ -140,11 +140,15 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof DocumentRevision)) {
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof DocumentRevision)) {
             return false;
         }
-        return revision == ((DocumentRevision) other).revision;
+        DocumentRevision other = (DocumentRevision) obj;
+        return this.revision == other.revision;
     }
 
     @Override
