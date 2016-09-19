@@ -1,6 +1,7 @@
 package org.protege.editor.owl.server.versioning;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
@@ -11,6 +12,27 @@ import org.protege.editor.owl.server.versioning.api.DocumentRevision;
  * Stanford Center for Biomedical Informatics Research
  */
 public class DocumentRevisionTest {
+
+    @Test
+    public void shouldBeEqualForSameRevisionNumber() {
+        DocumentRevision newRevision = DocumentRevision.create(2);
+        DocumentRevision otherRevision = DocumentRevision.create(2);
+        assertThat(newRevision, is(otherRevision));
+    }
+
+    @Test
+    public void shouldNotBeEqualForDifferentRevisionNumber() {
+        DocumentRevision newRevision = DocumentRevision.create(2);
+        DocumentRevision otherRevision = DocumentRevision.create(22);
+        assertThat(newRevision, is(not(otherRevision)));
+    }
+
+    @Test
+    public void shouldNotBeEqualForDifferentObject() {
+        DocumentRevision newRevision = DocumentRevision.create(2);
+        String otherRevision = "#22";
+        assertThat(newRevision, is(not(otherRevision)));
+    }
 
     @Test
     public void canCreate() {
