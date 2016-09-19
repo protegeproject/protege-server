@@ -12,8 +12,11 @@ public class DocumentRevision implements Comparable<DocumentRevision>, Serializa
 
     public static final DocumentRevision START_REVISION = DocumentRevision.create(0);
 
-    private int revision;
+    private final int revision;
 
+    /*
+     * Avoid external instantiation
+     */
     private DocumentRevision(int revision) {
         this.revision = revision;
     }
