@@ -130,6 +130,7 @@ public class HistoryFile extends File {
 
     private static String constructFilePath(String parentDir, String filename) {
         parentDir = appendEndFileSeparatorWhenMissing(parentDir);
+        filename = appendFileExtensionWhenMissing(filename);
         return parentDir + filename;
     }
 
@@ -151,5 +152,12 @@ public class HistoryFile extends File {
             parentDir = parentDir + File.separator;
         }
         return parentDir;
+    }
+
+    private static String appendFileExtensionWhenMissing(String filename) {
+        if (!filename.endsWith(EXTENSION)) {
+            filename = filename + EXTENSION;
+        }
+        return filename;
     }
 }

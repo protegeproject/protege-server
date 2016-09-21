@@ -166,9 +166,9 @@ public class ProtegeServer extends ServerLayer {
         }
     }
 
-    private HistoryFile createHistoryFile(String projectDir, String filename) throws IOException {
-        String rootDir = configuration.getServerRoot() + File.separator + projectDir;
-        filename = filename.replaceAll("\\s+","_"); // to snake-case
+    private HistoryFile createHistoryFile(String projectId, String projectName) throws IOException {
+        String rootDir = configuration.getServerRoot() + File.separator + projectId;
+        String filename = projectName.replaceAll("\\s+","_"); // to snake-case
         return HistoryFile.createNew(rootDir, filename);
     }
 
