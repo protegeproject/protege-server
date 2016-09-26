@@ -48,6 +48,8 @@ public final class HTTPServer {
 
 	public static final String SERVER_CONFIGURATION_PROPERTY = "org.protege.owl.server.configuration";
 
+	private static final long DEFAULT_TIMEOUT_PERIOD = 1800000; // 30 minutes
+	
 	public static final String DEFAULT_HOST = "localhost";
 	public static final int DEFAULT_PORT = 8080;
 
@@ -238,12 +240,12 @@ public final class HTTPServer {
 	}
 
 	private TokenTable createLoginTokenTable() {
-		long loginTimeout = TokenTable.DEFAULT_TIMEOUT_PERIOD;
+		long loginTimeout = DEFAULT_TIMEOUT_PERIOD;
 		String loginTimeoutValue = serverConfiguration.getProperty(LOGIN_TIMEOUT_PERIOD);
 		if (loginTimeoutValue != null && !loginTimeoutValue.isEmpty()) {
 			loginTimeout = Long.parseLong(loginTimeoutValue);
 		}
-		return new TokenTable(loginTimeout);
+		return TokenTable.create(loginTimeout);
 	}
 
 	public void stop() throws ServerException {
