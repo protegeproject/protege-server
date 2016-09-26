@@ -21,15 +21,15 @@ public final class AuthenticationHandler extends BaseRoutingHandler {
 
 	@Override
 	public void handleRequest(final HttpServerExchange exchange) throws Exception {
-		String fauth = getHeaderValue(exchange, Headers.AUTHORIZATION, "none");
-		String coded = fauth.substring(fauth.indexOf(" ") + 1);
-		String decAuth = new String(Base64.decodeBase64(coded));
-		String userid = decAuth.substring(0, decAuth.indexOf(":"));
-		String token = decAuth.substring(decAuth.indexOf(":") + 1);
+		String authHeaderMessage = getHeaderValue(exchange, Headers.AUTHORIZATION, "none");
+		String authBlockCode = authHeaderMessage.substring(authHeaderMessage.indexOf(" ") + 1);
+		String authString = new String(Base64.decodeBase64(authBlockCode));
+		String userId = authString.substring(0, authString.indexOf(":"));
+		String tokenString = authString.substring(authString.indexOf(":") + 1);
 		try {
-			AuthToken authToken = HTTPServer.server().getAuthToken(token);
+			AuthToken authToken = HTTPServer.server().getAuthToken(tokenString);
 			if (authToken != null && authToken.isAuthorized()) {
-				if (isValid(userid, authToken)) {
+				if (isValid(userId, authToken)) {
 					handler.handleRequest(exchange);
 				}
 				else {
