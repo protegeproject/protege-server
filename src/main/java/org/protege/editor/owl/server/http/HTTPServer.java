@@ -32,6 +32,7 @@ import org.protege.editor.owl.server.policy.AccessControlFilter;
 import org.protege.editor.owl.server.security.DefaultLoginService;
 import org.protege.editor.owl.server.security.LoginTimeoutException;
 import org.protege.editor.owl.server.security.SSLContextFactory;
+import org.protege.editor.owl.server.security.TokenTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

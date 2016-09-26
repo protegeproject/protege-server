@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.protege.editor.owl.server.security.LoginTimeoutException;
+import org.protege.editor.owl.server.security.TokenTable;
 
 import edu.stanford.protege.metaproject.api.AuthToken;
 import edu.stanford.protege.metaproject.api.User;
