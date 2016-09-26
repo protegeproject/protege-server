@@ -2,8 +2,6 @@ package org.protege.editor.owl.server.http;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
@@ -58,7 +56,6 @@ public class TokenTable {
 								authToken.getUser().getId().get(),
 								authToken.getUser().getName().get()));
 				}).build();
-		createTokenCleanupThread(timeoutInMilliseconds, tokenCache);
 		return new TokenTable(tokenCache);
 	}
 
@@ -95,25 +92,20 @@ public class TokenTable {
 	}
 
 	/**
-	 * Gets the number of current active user tokens.
+	 * Gets the number of current active user tokens. This method has an initial
+	 * <code>cleanup()</code> call before returning the table size.
 	 *
 	 * @return The number of current active user tokens
 	 */
 	public int size() {
+		cleanUp();
 		return (int) tokenCache.size();
 	}
 
-	private static void createTokenCleanupThread(long timeout, Cache<String, AuthToken> tokenCache) {
-		final ScheduledExecutorService executorService = Executors
-				.newSingleThreadScheduledExecutor(r -> {
-					Thread th = new Thread(r, "User Token Maintainer Thread");
-					th.setDaemon(false);
-					return th;
-				});
-		executorService.scheduleAtFixedRate(() -> {
-			if (tokenCache.size() > 0) {
-				tokenCache.cleanUp();
-			}
-		} , timeout, timeout, TimeUnit.MILLISECONDS);
+	/**
+	 * Performs a manual clean up to remove any inactive tokens.
+	 */
+	public void cleanUp() {
+		tokenCache.cleanUp();
 	}
 }
