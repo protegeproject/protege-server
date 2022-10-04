@@ -2,6 +2,7 @@ package org.protege.owl.server;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -158,11 +159,7 @@ public class TestUtilities {
      * @throws IOException	IOException
      */
     public static File createFileInTempDirectory(String name) throws IOException {
-        File tmpDirectory = File.createTempFile("Save", "test");
-        tmpDirectory.delete();
-        if (!tmpDirectory.mkdir()) {
-            throw new IOException("Coud not create temporary directory " + tmpDirectory);
-        }
+        File tmpDirectory = Files.createTempDirectory("Save" + "test").toFile();
         logger.info("Created temporary directory " + tmpDirectory + " for the file " + name);
         return new File(tmpDirectory, name);
     }
